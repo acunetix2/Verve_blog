@@ -1,24 +1,4 @@
 import ReactMarkdown from 'react-markdown';
-import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import tsx from 'react-syntax-highlighter/dist/esm/languages/prism/tsx';
-import typescript from 'react-syntax-highlighter/dist/esm/languages/prism/typescript';
-import javascript from 'react-syntax-highlighter/dist/esm/languages/prism/javascript';
-import jsx from 'react-syntax-highlighter/dist/esm/languages/prism/jsx';
-import bash from 'react-syntax-highlighter/dist/esm/languages/prism/bash';
-import css from 'react-syntax-highlighter/dist/esm/languages/prism/css';
-import json from 'react-syntax-highlighter/dist/esm/languages/prism/json';
-import python from 'react-syntax-highlighter/dist/esm/languages/prism/python';
-
-// Register languages
-SyntaxHighlighter.registerLanguage('tsx', tsx);
-SyntaxHighlighter.registerLanguage('typescript', typescript);
-SyntaxHighlighter.registerLanguage('javascript', javascript);
-SyntaxHighlighter.registerLanguage('jsx', jsx);
-SyntaxHighlighter.registerLanguage('bash', bash);
-SyntaxHighlighter.registerLanguage('css', css);
-SyntaxHighlighter.registerLanguage('json', json);
-SyntaxHighlighter.registerLanguage('python', python);
 
 interface MDXContentProps {
   content: string;
@@ -32,21 +12,14 @@ export const MDXContent = ({ content }: MDXContentProps) => {
           code({ node, inline, className, children, ...props }: any) {
             const match = /language-(\w+)/.exec(className || '');
             return !inline && match ? (
-              <SyntaxHighlighter
-                style={vscDarkPlus}
-                language={match[1]}
-                PreTag="div"
-                className="rounded-md border border-primary/30 shadow-glow"
-                customStyle={{
-                  backgroundColor: 'hsl(var(--card))',
-                  padding: '1.5rem',
-                  fontSize: '0.875rem',
-                  lineHeight: '1.5',
-                }}
-                {...props}
-              >
-                {String(children).replace(/\n$/, '')}
-              </SyntaxHighlighter>
+              <pre className="rounded-md border border-primary/30 shadow-glow bg-card p-6 overflow-x-auto my-4">
+                <code 
+                  className="text-muted-foreground font-mono text-sm leading-relaxed block"
+                  {...props}
+                >
+                  {children}
+                </code>
+              </pre>
             ) : (
               <code 
                 className="bg-muted/50 text-primary px-1.5 py-0.5 rounded text-sm font-mono border border-primary/20" 
