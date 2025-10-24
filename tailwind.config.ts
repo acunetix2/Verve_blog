@@ -13,6 +13,11 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        'mono': ['"JetBrains Mono"', 'monospace'],
+        'display': ['"Space Grotesk"', 'sans-serif'],
+        'body': ['"Space Grotesk"', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -22,6 +27,7 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          glow: "hsl(var(--primary-glow))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -62,6 +68,11 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      boxShadow: {
+        'glow': '0 0 20px hsl(var(--primary) / 0.5)',
+        'glow-lg': '0 0 30px hsl(var(--primary) / 0.6)',
+        'glow-secondary': '0 0 20px hsl(var(--secondary) / 0.5)',
       },
       keyframes: {
         "accordion-down": {
