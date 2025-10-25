@@ -105,7 +105,7 @@ const Index = () => {
       <footer className="border-t border-border mt-20">
         <div className="container py-8 text-center">
           <p className="text-sm font-mono text-muted-foreground">
-            <span className="text-primary">$</span> echo "Made with ❤️ by Verve Hub" 
+            <span className="text-primary">$</span> echo "Made with ❤️ by Iddy" 
             <span className="terminal-cursor"></span>
           </p>
         </div>

@@ -15,7 +15,7 @@ export const Header = () => {
 
         <nav className="flex items-center gap-6">
           <Link to="/" className="text-sm font-mono text-muted-foreground hover:text-primary transition-colors">
-            ~/posts
+            Posts
           </Link>
           <a 
             href="https://tryhackme.com" 
