@@ -1,0 +1,170 @@
+import { useEffect, useState } from "react";
+import { BlogCard } from "@/components/BlogCard";
+import { BlogPost, getAllTags } from "@/lib/blog";
+import axios from "axios";
+import { API_BASE_URL } from "@/config";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Link } from "react-router-dom";
+import { Search, X, Tag } from "lucide-react";
+
+export default function BlogList() {
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [filteredPosts, setFilteredPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const allTags = getAllTags();
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await axios.get<BlogPost[]>(`${API_BASE_URL}/posts`);
+        setPosts(response.data);
+        setFilteredPosts(response.data);
+      } catch (err) {
+        console.error("Error fetching posts:", err);
+        setError("Failed to load posts. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
+  useEffect(() => {
+    let updatedPosts = [...posts];
+
+    if (searchQuery) {
+      updatedPosts = updatedPosts.filter(
+        (post) =>
+          post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          post.description.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    if (selectedTag) {
+      updatedPosts = updatedPosts.filter((post) =>
+        post.tags.includes(selectedTag)
+      );
+    }
+
+    setFilteredPosts(updatedPosts);
+  }, [searchQuery, selectedTag, posts]);
+
+  const handleSearch = (value: string) => setSearchQuery(value);
+  const handleTagClick = (tag: string) =>
+    setSelectedTag(selectedTag === tag ? null : tag);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center py-20 text-muted-foreground font-mono">
+        Loading posts...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-20 text-red-500 font-mono">{error}</div>
+    );
+  }
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 py-10">
+      {/* Navigation */}
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-display font-bold text-foreground">
+          Cybersecurity Blog
+        </h1>
+        <Link
+          to="/"
+          className="bg-primary text-primary-foreground px-4 py-2 rounded hover:opacity-90 transition"
+        >
+          ← Back to Blog
+        </Link>
+      </div>
+
+      {/* Search */}
+      <div className="relative mb-6 max-w-md">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          placeholder="Search posts..."
+          value={searchQuery}
+          onChange={(e) => handleSearch(e.target.value)}
+          className="pl-10 pr-10 bg-input border-border focus:border-primary focus:ring-primary font-mono"
+        />
+        {searchQuery && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 p-0 hover:bg-destructive/20"
+            onClick={() => setSearchQuery("")}
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        )}
+      </div>
+
+      {/* Tags */}
+      <div className="flex flex-wrap gap-2 mb-6">
+        {allTags.map((tag) => (
+          <Badge
+            key={tag}
+            variant={selectedTag === tag ? "default" : "outline"}
+            className={`cursor-pointer font-mono text-xs transition-all ${
+              selectedTag === tag
+                ? "bg-primary text-primary-foreground shadow-glow"
+                : "border-border hover:border-primary hover:bg-primary/10"
+            }`}
+            onClick={() => handleTagClick(tag)}
+          >
+            {tag}
+          </Badge>
+        ))}
+        {selectedTag && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="ml-auto h-7 text-xs font-mono text-muted-foreground hover:text-destructive"
+            onClick={() => setSelectedTag(null)}
+          >
+            Clear Filter
+          </Button>
+        )}
+      </div>
+
+      {/* Posts Grid */}
+      {filteredPosts.length === 0 ? (
+        <div className="text-center py-20 text-muted-foreground font-mono">
+          No posts found.
+        </div>
+      ) : (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredPosts.map((post) => (
+            <div key={post.slug}>
+              <BlogCard post={post} />
+              {/* Tags inside post preview */}
+              <div className="flex flex-wrap gap-2 mt-2">
+                {post.tags.map((tag) => (
+                  <Badge
+                    key={tag}
+                    variant="outline"
+                    className="cursor-pointer font-mono text-xs border-border bg-muted/30 hover:bg-muted/50 transition-colors"
+                    onClick={() => handleTagClick(tag)}
+                  >
+                    <Tag className="h-3 w-3 mr-1" />
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}

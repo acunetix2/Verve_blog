@@ -1,22 +1,62 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { MDXContent } from "@/components/MDXContent";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { getPostBySlug } from "@/lib/blog";
 import { ArrowLeft, Calendar, Clock, User, Tag } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 
+interface Post {
+  _id: string;
+  title: string;
+  description: string;
+  content: string;
+  author: string;
+  date: string;
+  readTime: string;
+  tags: string[];
+  featured?: boolean;
+}
+
 const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
-  const post = slug ? getPostBySlug(slug) : undefined;
+  const [post, setPost] = useState<Post | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
+
+    const fetchPost = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/api/posts/${slug}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch post");
+        }
+        const data = await response.json();
+        setPost(data);
+      } catch (err) {
+        setError((err as Error).message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (slug) fetchPost();
   }, [slug]);
 
-  if (!post) {
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="font-mono text-muted-foreground animate-pulse">
+          Loading post...
+        </p>
+      </div>
+    );
+  }
+
+  if (error || !post) {
     return (
       <div className="min-h-screen bg-background">
         <Header />
@@ -25,7 +65,7 @@ const BlogPost = () => {
             404: Post Not Found
           </h1>
           <p className="text-muted-foreground mb-6 font-mono">
-            The post you're looking for doesn't exist.
+            {error || "The post you're looking for doesn't exist."}
           </p>
           <Link to="/">
             <Button className="font-mono bg-primary text-primary-foreground hover:bg-primary/90">
@@ -59,8 +99,8 @@ const BlogPost = () => {
         <div className="border-b border-border bg-muted/20">
           <div className="container py-4">
             <Link to="/">
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 size="sm"
                 className="font-mono text-muted-foreground hover:text-primary hover:bg-primary/10"
               >
@@ -91,10 +131,10 @@ const BlogPost = () => {
             <div className="flex flex-wrap gap-4 text-sm font-mono text-muted-foreground pt-4 border-t border-border">
               <span className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-primary" />
-                {new Date(post.date).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
+                {new Date(post.date).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
                 })}
               </span>
               <span className="flex items-center gap-2">
@@ -133,7 +173,7 @@ const BlogPost = () => {
                 <span className="text-primary">$</span> EOF - End of file
               </div>
               <Link to="/">
-                <Button 
+                <Button
                   variant="outline"
                   className="font-mono border-primary/30 text-primary hover:bg-primary/10 hover:shadow-glow"
                 >

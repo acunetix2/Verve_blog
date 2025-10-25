@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Search, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Search, X, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,19 +13,41 @@ interface BlogSearchProps {
 
 export const BlogSearch = ({ onSearch, onTagFilter, selectedTag }: BlogSearchProps) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const allTags = getAllTags();
+  const [allTags, setAllTags] = useState<string[]>([]);
+  const [loadingTags, setLoadingTags] = useState(true);
 
-  const handleSearch = (value: string) => {
-    setSearchQuery(value);
-    onSearch(value);
-  };
+  // Debounce search input for smoother UX
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      onSearch(searchQuery.trim());
+    }, 400);
+    return () => clearTimeout(handler);
+  }, [searchQuery, onSearch]);
+
+  // Load tags (either from backend or fallback)
+  useEffect(() => {
+    const loadTags = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/tags");
+        if (response.ok) {
+          const data = await response.json();
+          setAllTags(data);
+        } else {
+          // fallback if backend not implemented
+          setAllTags(getAllTags());
+        }
+      } catch {
+        setAllTags(getAllTags());
+      } finally {
+        setLoadingTags(false);
+      }
+    };
+    loadTags();
+  }, []);
 
   const handleTagClick = (tag: string) => {
-    if (selectedTag === tag) {
-      onTagFilter(null);
-    } else {
-      onTagFilter(tag);
-    }
+    if (selectedTag === tag) onTagFilter(null);
+    else onTagFilter(tag);
   };
 
   return (
@@ -37,7 +59,7 @@ export const BlogSearch = ({ onSearch, onTagFilter, selectedTag }: BlogSearchPro
           type="text"
           placeholder="Search posts... (try 'TryHackMe' or 'Linux')"
           value={searchQuery}
-          onChange={(e) => handleSearch(e.target.value)}
+          onChange={(e) => setSearchQuery(e.target.value)}
           className="pl-10 pr-10 font-mono bg-input border-border focus:border-primary focus:ring-primary"
         />
         {searchQuery && (
@@ -45,7 +67,7 @@ export const BlogSearch = ({ onSearch, onTagFilter, selectedTag }: BlogSearchPro
             variant="ghost"
             size="sm"
             className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 p-0 hover:bg-destructive/20"
-            onClick={() => handleSearch("")}
+            onClick={() => setSearchQuery("")}
           >
             <X className="h-4 w-4" />
           </Button>
@@ -69,22 +91,34 @@ export const BlogSearch = ({ onSearch, onTagFilter, selectedTag }: BlogSearchPro
             </Button>
           )}
         </div>
-        <div className="flex flex-wrap gap-2">
-          {allTags.map((tag) => (
-            <Badge
-              key={tag}
-              variant={selectedTag === tag ? "default" : "outline"}
-              className={`cursor-pointer font-mono text-xs transition-all ${
-                selectedTag === tag
-                  ? "bg-primary text-primary-foreground shadow-glow"
-                  : "border-border hover:border-primary hover:bg-primary/10"
-              }`}
-              onClick={() => handleTagClick(tag)}
-            >
-              {tag}
-            </Badge>
-          ))}
-        </div>
+
+        {/* Tag Badges */}
+        {loadingTags ? (
+          <div className="flex items-center gap-2 text-muted-foreground text-sm">
+            <Loader2 className="h-4 w-4 animate-spin" /> Loading tags...
+          </div>
+        ) : allTags.length === 0 ? (
+          <div className="text-muted-foreground text-sm italic">
+            No tags found.
+          </div>
+        ) : (
+          <div className="flex flex-wrap gap-2">
+            {allTags.map((tag) => (
+              <Badge
+                key={tag}
+                variant={selectedTag === tag ? "default" : "outline"}
+                className={`cursor-pointer font-mono text-xs transition-all ${
+                  selectedTag === tag
+                    ? "bg-primary text-primary-foreground shadow-glow"
+                    : "border-border hover:border-primary hover:bg-primary/10"
+                }`}
+                onClick={() => handleTagClick(tag)}
+              >
+                {tag}
+              </Badge>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Active Filters Display */}

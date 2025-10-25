@@ -4,8 +4,12 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
+
+// Pages
 import Index from "./pages/Index";
+import BlogList from "./pages/BlogList"; // Added
 import BlogPost from "./pages/BlogPost";
+import CreatePost from "./pages/CreatePost";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -18,9 +22,19 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
+            {/* Homepage */}
             <Route path="/" element={<Index />} />
+
+            {/* Blog List */}
+            <Route path="/blog" element={<BlogList />} /> {/* Added */}
+
+            {/* Blog Post Details */}
             <Route path="/post/:slug" element={<BlogPost />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+
+            {/* Create New Blog Post */}
+            <Route path="/create" element={<CreatePost />} />
+
+            {/* Catch-All 404 Page */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
