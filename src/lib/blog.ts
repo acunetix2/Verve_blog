@@ -13,10 +13,9 @@ export interface BlogPost {
 }
 
 // Import all markdown files from content/posts
-const postFiles = import.meta.glob<string>('../../content/posts/*.md', { 
+const postFiles = import.meta.glob<string>('/content/posts/*.md', { 
   eager: true,
-  query: '?raw',
-  import: 'default'
+  as: 'raw'
 });
 
 // Parse markdown files and extract frontmatter
