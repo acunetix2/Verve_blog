@@ -13,8 +13,8 @@ export interface BlogPost {
 }
 
 // Import all markdown files from content/posts
-const postFiles = import.meta.glob('/content/posts/*.md', { 
-  eager: true, 
+const postFiles = import.meta.glob<string>('../../content/posts/*.md', { 
+  eager: true,
   query: '?raw',
   import: 'default'
 });
@@ -23,25 +23,42 @@ const postFiles = import.meta.glob('/content/posts/*.md', {
 const parsePosts = (): BlogPost[] => {
   const posts: BlogPost[] = [];
   
-  for (const path in postFiles) {
-    const content = postFiles[path] as string;
-    const { data, content: markdownContent } = matter(content);
-    
-    // Extract slug from filename
-    const slug = path.split('/').pop()?.replace('.md', '') || '';
-    
-    posts.push({
-      slug,
-      title: data.title || '',
-      description: data.description || '',
-      author: data.author || '',
-      date: data.date || '',
-      readTime: data.readTime || '',
-      content: markdownContent,
-      tags: data.tags || [],
-      featured: data.featured || false,
-    });
+  console.log('Parsing posts...', Object.keys(postFiles).length, 'files found');
+  
+  try {
+    for (const path in postFiles) {
+      console.log('Processing:', path);
+      const content = postFiles[path] as string;
+      
+      if (!content) {
+        console.warn('Empty content for:', path);
+        continue;
+      }
+      
+      const { data, content: markdownContent } = matter(content);
+      
+      // Extract slug from filename
+      const slug = path.split('/').pop()?.replace('.md', '') || '';
+      
+      console.log('Post slug:', slug, 'Title:', data.title);
+      
+      posts.push({
+        slug,
+        title: data.title || '',
+        description: data.description || '',
+        author: data.author || '',
+        date: data.date || '',
+        readTime: data.readTime || '',
+        content: markdownContent,
+        tags: data.tags || [],
+        featured: data.featured || false,
+      });
+    }
+  } catch (error) {
+    console.error('Error parsing posts:', error);
   }
+  
+  console.log('Total posts parsed:', posts.length);
   
   // Sort by date (newest first)
   return posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -49,6 +66,8 @@ const parsePosts = (): BlogPost[] => {
 
 // Cache the parsed posts
 const allPosts = parsePosts();
+
+console.log('Blog system initialized with', allPosts.length, 'posts');
 
 export const getPostBySlug = (slug: string): BlogPost | undefined => {
   return allPosts.find((post) => post.slug === slug);
