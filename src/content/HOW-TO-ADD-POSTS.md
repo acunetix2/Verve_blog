@@ -1,10 +1,10 @@
 # How to Add New Blog Posts
 
-Adding a new blog post is simple! Just create a new markdown file in the `content/posts` folder.
+Adding a new blog post is simple! Just create a new markdown file in the `src/content/posts` folder.
 
 ## Steps to Add a New Post
 
-1. **Create a new `.md` file** in `content/posts/` folder
+1. **Create a new `.md` file** in `src/content/posts/` folder
    - Use a descriptive filename with hyphens (e.g., `my-awesome-post.md`)
    - The filename will be used as the URL slug
 
@@ -86,7 +86,7 @@ echo "Hello World"
 
 ## Example Post
 
-Check out the existing posts in `content/posts/` for examples!
+Check out the existing posts in `src/content/posts/` for examples!
 
 ## Tips
 
