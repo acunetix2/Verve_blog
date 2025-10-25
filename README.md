@@ -1,4 +1,3 @@
-Here’s a **clean, Lovable-free, professional `README.md`** for your **Verve Hub Cybersecurity Blog** 👇
 
 ---
 
@@ -40,8 +39,8 @@ Built using modern web technologies, it emphasizes **speed, simplicity, and a cy
 
 ### 1️⃣ Clone the repository
 ```bash
-git clone https://github.com/YOUR_USERNAME/verve-hub-blog.git
-cd verve-hub-blog
+git clone https://github.com/acunetix2/verve_blog.git
+cd verve_blog
 ````
 
 ### 2️⃣ Install dependencies
