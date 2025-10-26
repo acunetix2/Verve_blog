@@ -57,7 +57,7 @@ export const BlogSearch = ({ onSearch, onTagFilter, selectedTag }: BlogSearchPro
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
           type="text"
-          placeholder="Search posts... (try 'TryHackMe' or 'Linux')"
+          placeholder="Search posts..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="pl-10 pr-10 font-mono bg-input border-border focus:border-primary focus:ring-primary"

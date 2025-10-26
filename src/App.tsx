@@ -11,6 +11,7 @@ import BlogList from "./pages/BlogList"; // Added
 import BlogPost from "./pages/BlogPost";
 import CreatePost from "./pages/CreatePost";
 import NotFound from "./pages/NotFound";
+import About from "./pages/About.tsx";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,8 @@ const App = () => (
           <Routes>
             {/* Homepage */}
             <Route path="/" element={<Index />} />
+			{/*About*/}
+			<Route path="/about" element={<About />} />
 
             {/* Blog List */}
             <Route path="/blog" element={<BlogList />} /> {/* Added */}

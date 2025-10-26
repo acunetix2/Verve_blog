@@ -98,7 +98,7 @@ const BlogPost = () => {
         {/* Back Button */}
         <div className="border-b border-border bg-muted/20">
           <div className="container py-4">
-            <Link to="/">
+            <Link to="/blog">
               <Button
                 variant="ghost"
                 size="sm"
@@ -162,7 +162,7 @@ const BlogPost = () => {
           </header>
 
           {/* Post Content */}
-          <div className="prose-custom">
+          <div className="prose-custom text-white">
             <MDXContent content={post.content} />
           </div>
 

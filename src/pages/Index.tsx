@@ -2,8 +2,10 @@ import { useState } from "react";
 import { Header } from "@/components/Header";
 import { BlogCard } from "@/components/BlogCard";
 import { BlogSearch } from "@/components/BlogSearch";
+import Banner from "@/components/Banner";
 import { getAllPosts, getPostsByTag, searchPosts } from "@/lib/blog";
 import { Terminal, Zap } from "lucide-react";
+import { Github, Linkedin, Twitter, Mail } from "lucide-react";
 
 const Index = () => {
   const [filteredPosts, setFilteredPosts] = useState(getAllPosts());
@@ -45,34 +47,38 @@ const Index = () => {
       
       {/* Hero Section */}
       <section className="border-b border-border bg-gradient-to-b from-background to-muted/20">
-        <div className="container py-16 md:py-24">
-          <div className="max-w-3xl space-y-6">
-            <div className="flex items-center gap-3 text-primary">
-              <Terminal className="h-8 w-8" />
-              <span className="text-sm font-mono uppercase tracking-wider">
-                System Online
-              </span>
-            </div>
-            
-            <h1 className="text-5xl md:text-7xl font-display font-bold tracking-tight glow-text">
-              VERVE HUB
-            </h1>
-            
-            <p className="text-xl md:text-2xl text-muted-foreground font-mono">
-              Cybersecurity insights, TryHackMe writeups, and penetration testing guides.
-              <br />
-              <span className="text-primary">// Welcome to the digital underground</span>
-            </p>
+	  <div className="container py-16 md:py-24">
+		<div className="max-w-3xl space-y-6">
+		  <div className="flex items-center gap-3 text-primary">
+			<Terminal className="h-8 w-8" />
+			<span className="text-sm font-mono uppercase tracking-wider glow-text">
+			  System Online💎
+			  Logged In User: System <span className="terminal-cursor"></span>
+			</span>
+		  </div>
+		  
+		  <h1 className="text-3xl md:text-5xl font-display font-bold tracking-tight glow-text">
+			VERVE HUB BLOG🛡
+		  </h1>
+		  
+		  <p className="text-xl md:text-2xl text-muted-foreground font-mono">
+			Cybersecurity insights, TryHackMe writeups, Capture the Flag solutions and Guides.
+			<br />
+			<span className="text-primary">// Welcome to the digital underground</span>
+		  </p>
 
-            <div className="flex items-center gap-4 pt-4">
-              <div className="flex items-center gap-2 text-sm font-mono text-muted-foreground">
-                <Zap className="h-4 w-4 text-secondary" />
-                <span>{filteredPosts.length} posts available</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+		  {/* Added short contextual info */}
+		  <p className="text-base text-muted-foreground font-mono leading-relaxed">
+			This space shares practical experiences, learning notes, and walkthroughs from real-world
+			cybersecurity challenges. Whether you're training, researching, or exploring security concepts,
+			each post aims to simplify and inform.
+		  </p>
+		  <div className="text-center  font-display font-bold tracking-tight glow-text">
+			<Banner />
+		  </div>
+		</div>
+	  </div>
+	</section>
 
       {/* Blog Content */}
       <section className="container py-12">
@@ -94,22 +100,59 @@ const Index = () => {
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
-            {filteredPosts.map((post) => (
-              <BlogCard key={post.slug} post={post} />
+            {filteredPosts.map((posts) => (
+              <BlogCard key={posts.slug} post={posts} />
             ))}
           </div>
         )}
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border mt-20">
-        <div className="container py-8 text-center">
-          <p className="text-sm font-mono text-muted-foreground">
-            <span className="text-primary">$</span> echo "Made with ❤️ by Iddy" 
-            <span className="terminal-cursor"></span>
-          </p>
+		 <footer className="border-t border-border mt-20">
+      <div className="container py-8 text-center space-y-3">
+        <p className="text-sm font-mono text-muted-foreground">
+          <span className="text-primary">$</span> echo "Maintained by Iddy Chesire" 🛡
+          <span className="terminal-cursor"></span>
+        </p>
+        <p className="text-xs text-muted-foreground font-mono">
+          <span className="text-primary">Learn • Understand • Secure</span>
+        </p>
+
+        {/* Social Icons */}
+        <div className="flex justify-center gap-6 text-muted-foreground">
+          <a
+            href="https://github.com/acunetix2/verve_blog.git"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-primary transition-colors"
+          >
+            <Github size={20} />
+          </a>
+          <a
+            href="https://www.linkedin.com/in/iddy-chesire-55009b264/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-primary transition-colors"
+          >
+            <Linkedin size={20} />
+          </a>
+          <a
+            href="https://twitter.com/iddychesire"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-primary transition-colors"
+          >
+            <Twitter size={20} />
+          </a>
+          <a
+            href="mailto:iddychesire@gmail.com"
+            className="hover:text-primary transition-colors"
+          >
+            <Mail size={20} />
+          </a>
         </div>
-      </footer>
+      </div>
+    </footer>
     </div>
   );
 };

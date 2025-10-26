@@ -9,11 +9,17 @@ export const Header = () => {
         <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
           <Terminal className="h-6 w-6 text-primary" />
           <span className="text-xl font-display font-bold glow-text">
-            $VERVE_HUB BLOG<span className="terminal-cursor"></span>
+            $VERVE_HUB BLOG ⚔<span className="terminal-cursor"></span>
           </span>
         </Link>
 
         <nav className="flex items-center gap-6">
+          <Link
+            to="/about"
+            className="text-sm font-mono text-muted-foreground hover:text-secondary tansition-colors"
+          >
+            About
+          </Link>
           <Link
             to="/blog"
             className="text-sm font-mono text-muted-foreground hover:text-primary transition-colors"
@@ -26,8 +32,20 @@ export const Header = () => {
             rel="noopener noreferrer"
             className="text-sm font-mono text-muted-foreground hover:text-secondary transition-colors"
           >
-            tryhackme
+            Learn
           </a>
+
+          {/*  Create Post Button */}
+          <Link to="/create">
+            <Button
+              variant="outline"
+              size="sm"
+              className="font-mono border-primary/30 text-primary hover:bg-primary/10 hover:shadow-glow"
+            >
+              <PlusCircle className="h-4 w-4" />
+              New Post
+            </Button>
+          </Link>
           <Button
             variant="outline"
             size="sm"
@@ -36,18 +54,6 @@ export const Header = () => {
             <Search className="h-4 w-4 mr-2" />
             search
           </Button>
-
-          {/* 🆕 Create Post Button */}
-          <Link to="/create">
-            <Button
-              variant="default"
-              size="sm"
-              className="font-mono bg-primary text-white hover:bg-primary/90 flex items-center gap-2"
-            >
-              <PlusCircle className="h-4 w-4" />
-              Create Post
-            </Button>
-          </Link>
         </nav>
       </div>
     </header>

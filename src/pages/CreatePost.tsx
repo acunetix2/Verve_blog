@@ -97,7 +97,7 @@ const CreatePost: React.FC = () => {
           name="slug"
           value={formData.slug}
           onChange={handleChange}
-          placeholder="Unique slug (e.g. tryhackme-basics)"
+          placeholder="Unique slug (e.g. linux-basics)"
           className="w-full p-2 border rounded bg-input text-foreground"
           required
         />
