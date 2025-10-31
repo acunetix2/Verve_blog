@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 export default function Banner() {
   const lines = [
-    "------------------------ VERVE BLOG & WRITEUPS ------------------------",
+    "----------------------- VERVE BLOG & WRITEUPS -----------------------",
   ];
 
   const typingSpeed = 8; 
@@ -68,7 +68,7 @@ export default function Banner() {
   return (
     <div className="w-full flex justify-center mt-4">
       <div className="max-w-5xl w-full px-4">
-        <div className="text-center font-mono font-bold tracking-tight glow-text text-xs sm:text-sm md:text-base lg:text-lg">
+        <div className="text-center font-mono text-primary/100 font-bold  text-xs sm:text-sm md:text-base lg:text-lg">
           {lines.map((_, idx) => (
             <pre
               key={idx}

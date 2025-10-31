@@ -12,6 +12,7 @@ import BlogPost from "./pages/BlogPost";
 import CreatePost from "./pages/CreatePost";
 import NotFound from "./pages/NotFound";
 import About from "./pages/About.tsx";
+import AdminPage from "./pages/AdminPage";
 
 const queryClient = new QueryClient();
 
@@ -27,7 +28,8 @@ const App = () => (
             <Route path="/" element={<Index />} />
 			{/*About*/}
 			<Route path="/about" element={<About />} />
-
+			{/*Admin*/}
+			<Route path="/admin" element={<AdminPage />} />
             {/* Blog List */}
             <Route path="/blog" element={<BlogList />} /> {/* Added */}
 

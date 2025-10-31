@@ -13,15 +13,15 @@ export default function About() {
           variant="ghost"
           size="sm"
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2 font-mono text-muted-foreground hover:text-primary"
+          className="flex text-white items-center gap-2 font-mono border-blue-300 hover:white"
         >
           <ArrowLeft className="h-4 w-4" />
           Back
         </Button>
       </div>
 
-      <h1 className="text-4xl font-display font-bold mb-4">
-        About <span className="text-primary">Verve Blog</span>
+      <h1 className="text-4xl font-display text-white font-bold mb-4">
+        About <span className="text-white">Verve Blog</span>
       </h1>
 
       <p className="text-muted-foreground text-base font-mono mb-8 leading-relaxed">
@@ -32,9 +32,9 @@ export default function About() {
       </p>
 
       <div className="bg-card border border-border rounded-xl p-6 shadow-sm mb-8">
-        <h2 className="text-xl font-bold mb-2 text-primary">Owner</h2>
+        <h2 className="text-xl font-bold mb-2 text-white">Owner</h2>
         <p className="text-muted-foreground font-mono">
-          <span className="font-semibold text-foreground">Iddy Chesire</span> —
+          <span className="font-semibold text-foreground text-white">Iddy Chesire</span> —
           Cybersecurity Analyst, Software Developer, and Founder of Verve Blog.
           Passionate about building secure, user-focused digital experiences and
           promoting continuous learning in tech.
@@ -46,7 +46,7 @@ export default function About() {
       </p>
 
       <Link to="/blog">
-        <Button className="bg-primary text-primary-foreground hover:opacity-90 font-mono">
+        <Button className="bg-gray border-white text-white hover:purple-300 hover:bg-purple-400 hover:border-white">
           <PenTool className="h-4 w-4 mr-2" />
           View Posts
         </Button>

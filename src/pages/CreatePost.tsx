@@ -1,8 +1,8 @@
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import axios from "axios";
 import { API_BASE_URL } from "@/config.ts";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner"; 
+import { toast } from "sonner";
 
 interface PostFormData {
   title: string;
@@ -17,6 +17,7 @@ interface PostFormData {
 
 const CreatePost: React.FC = () => {
   const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   const [formData, setFormData] = useState<PostFormData>({
     title: "",
@@ -28,6 +29,17 @@ const CreatePost: React.FC = () => {
     content: "",
     featured: false,
   });
+
+  // ✅ Check authentication on mount
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      toast.error("Unauthorized access! Please log in as admin.");
+      navigate("/admin");
+    } else {
+      setIsAuthenticated(true);
+    }
+  }, [navigate]);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -48,6 +60,13 @@ const CreatePost: React.FC = () => {
     e.preventDefault();
 
     try {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        toast.error("Authentication required.");
+        navigate("/admin");
+        return;
+      }
+
       const payload = {
         ...formData,
         tags: formData.tags
@@ -56,18 +75,23 @@ const CreatePost: React.FC = () => {
           .filter(Boolean),
       };
 
-      await axios.post(`${API_BASE_URL}/posts`, payload);
-      toast.success("Your post has been published successfully!");
+      await axios.post(`${API_BASE_URL}/posts`, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      toast.success("✅ Post published successfully!");
       navigate("/");
     } catch (error) {
       console.error("Post creation failed:", error);
-      toast.error("⚠Something went wrong while publishing the post.");
+      toast.error("⚠ Something went wrong while publishing the post.");
     }
   };
 
-  const handleExit = () => {
-    navigate("/"); // redirects to homepage or post list
-  };
+  const handleExit = () => navigate("/");
+
+  if (!isAuthenticated) return null; // prevents flicker before auth check
 
   return (
     <div className="max-w-3xl mx-auto mt-10 p-6 border border-gray-200 rounded-lg shadow-sm bg-card">
@@ -106,7 +130,7 @@ const CreatePost: React.FC = () => {
           name="description"
           value={formData.description}
           onChange={handleChange}
-          placeholder="Short description of your post..."
+          placeholder="Short description..."
           className="w-full p-2 border rounded bg-input text-foreground"
           rows={2}
         />

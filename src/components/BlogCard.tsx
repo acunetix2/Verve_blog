@@ -11,17 +11,17 @@ interface BlogCardProps {
 export const BlogCard = ({ post }: BlogCardProps) => {
   return (
     <Link to={`/post/${post.slug}`}>
-      <Card className="group relative overflow-hidden border-border bg-card hover:border-primary/50 transition-all duration-300 hover:shadow-glow">
+      <Card className="group relative overflow-hidden border-border bg-card hover:border-white transition-all duration-300 hover:shadow-glow">
         {post.featured && (
           <div className="absolute top-4 right-4 z-10">
-            <Badge className="bg-primary/20 text-primary border-primary/50 font-mono text-xs">
+            <Badge className="bg-gray text-white border-white/50 hover:text-primary font-mono text-xs">
               FEATURED
             </Badge>
           </div>
         )}
         
         <div className="p-6 space-y-4">
-          <div className="flex items-center gap-4 text-xs font-mono text-muted-foreground">
+          <div className="flex items-center gap-4 text-white text-semibold text-xs font-mono text-muted-foreground">
             <span className="flex items-center gap-1">
               <Calendar className="h-3 w-3" />
               {new Date(post.date).toLocaleDateString('en-US', { 
@@ -37,7 +37,7 @@ export const BlogCard = ({ post }: BlogCardProps) => {
           </div>
 
           <div>
-            <h3 className="text-xl font-display font-semibold text-foreground group-hover:text-primary transition-colors mb-2">
+            <h3 className="text-xl text-white font-display font-semibold text-foreground group-hover:text-blue-300 transition-colors mb-2">
               {post.title}
             </h3>
             <p className="text-muted-foreground text-sm line-clamp-2">
@@ -45,12 +45,12 @@ export const BlogCard = ({ post }: BlogCardProps) => {
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap text-white gap-2">
             {post.tags.map((tag) => (
               <Badge
                 key={tag}
                 variant="outline"
-                className="font-mono text-xs border-border bg-muted/30 hover:bg-muted/50 transition-colors"
+                className="font-mono text-xs border-border  hover:bg-muted/50 transition-colors"
               >
                 <Tag className="h-3 w-3 mr-1" />
                 {tag}
@@ -58,7 +58,7 @@ export const BlogCard = ({ post }: BlogCardProps) => {
             ))}
           </div>
 
-          <div className="pt-2 text-sm font-mono text-muted-foreground group-hover:text-primary transition-colors">
+          <div className="pt-2 text-sm font-mono text-white text-muted-foreground group-hover:text-primary transition-colors">
             Read more →
           </div>
         </div>

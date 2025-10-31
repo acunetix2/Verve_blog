@@ -71,7 +71,7 @@ export default function BlogList() {
   // Loading & error states
   if (loading) {
     return (
-      <div className="flex justify-center items-center py-20 text-muted-foreground font-mono">
+      <div className="text-white flex justify-center items-center ">
         Loading posts...
       </div>
     );
@@ -87,12 +87,12 @@ export default function BlogList() {
     <div className="max-w-7xl mx-auto px-4 py-10">
       {/* Header */}
       <div className="flex justify-between items-center mb-8 flex-wrap gap-4">
-        <h1 className="text-3xl font-display font-bold text-foreground">
+        <h1 className="text-3xl font-display text-white font-bold text-foreground">
           Available WriteUps
         </h1>
         <Link
           to="/"
-          className="bg-primary text-primary-foreground px-4 py-2 rounded hover:opacity-90 transition"
+          className="text-white px-4 py-2 rounded hover:opacity-90 transition"
         >
           ← Back to Home
         </Link>
@@ -100,7 +100,7 @@ export default function BlogList() {
 
       {/* Search Bar */}
       <div className="relative mb-4 max-w-md">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white h-4 w-4 text-muted-foreground" />
         <Input
           placeholder="Search posts..."
           value={searchQuery}
@@ -182,7 +182,7 @@ export default function BlogList() {
                 transition-all duration-200
               "
             >
-              <div className="flex-1">
+              <div className="flex-1 text-white">
                 <BlogCard post={post} />
               </div>
 

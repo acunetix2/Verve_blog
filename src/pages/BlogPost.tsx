@@ -112,7 +112,7 @@ const BlogPost = () => {
         </div>
 
         {/* Post Header */}
-        <article className="container py-12 max-w-4xl">
+        <article className="container py-12 max-w-4xl text-white">
           <header className="mb-12 space-y-6">
             {post.featured && (
               <Badge className="bg-primary/20 text-primary border-primary/50 font-mono">
@@ -120,34 +120,34 @@ const BlogPost = () => {
               </Badge>
             )}
 
-            <h1 className="text-4xl md:text-5xl font-display font-bold text-foreground glow-text">
+            <h1 className="text-4xl md:text-5xl text-white font-display font-bold text-foreground ">
               {post.title}
             </h1>
 
-            <p className="text-xl text-muted-foreground leading-relaxed">
+            <p className="text-xl  text-white leading-relaxed">
               {post.description}
             </p>
 
             <div className="flex flex-wrap gap-4 text-sm font-mono text-muted-foreground pt-4 border-t border-border">
-              <span className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-primary" />
+              <span className="flex text-white items-center gap-2">
+                <Calendar className="h-4 w-4 text-white" />
                 {new Date(post.date).toLocaleDateString("en-US", {
                   year: "numeric",
                   month: "long",
                   day: "numeric",
                 })}
               </span>
-              <span className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-secondary" />
+              <span className="flex items-center text-white gap-2">
+                <Clock className="h-4 w-4 text-secondary text-white" />
                 {post.readTime}
               </span>
-              <span className="flex items-center gap-2">
+              <span className="flex items-center text-white gap-2">
                 <User className="h-4 w-4 text-accent" />
                 {post.author}
               </span>
             </div>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap text-white gap-2">
               {post.tags.map((tag) => (
                 <Badge
                   key={tag}
@@ -170,12 +170,12 @@ const BlogPost = () => {
           <footer className="mt-16 pt-8 border-t border-border">
             <div className="flex items-center justify-between">
               <div className="text-sm font-mono text-muted-foreground">
-                <span className="text-primary">$</span> EOF - End of file
+                <span className="text-primary">$</span> Happy Hacking!
               </div>
               <Link to="/">
                 <Button
                   variant="outline"
-                  className="font-mono border-primary/30 text-primary hover:bg-primary/10 hover:shadow-glow"
+                  className="font-mono border-primary/30 text-white hover:bg-primary/10 hover:shadow-glow"
                 >
                   Read more posts →
                 </Button>
