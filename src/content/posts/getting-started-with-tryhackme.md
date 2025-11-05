@@ -3,7 +3,7 @@ title: "Getting Started with TryHackMe"
 description: "A beginner's guide to starting your cybersecurity journey with TryHackMe platform"
 author: "Verve Team"
 date: "2024-01-15"
-readTime: "5 min read"
+readTime: "7 min read"
 tags: ["TryHackMe", "Beginner", "Tutorial"]
 featured: true
 ---

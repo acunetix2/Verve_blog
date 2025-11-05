@@ -60,7 +60,7 @@ export const BlogSearch = ({ onSearch, onTagFilter, selectedTag }: BlogSearchPro
           placeholder="Search posts..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-10 pr-10 font-mono bg-input border-border focus:border-primary focus:ring-primary"
+          className="pl-10 pr-10 font-mono bg-input border-border focus:border-blue-400 focus:ring-blue-400"
         />
         {searchQuery && (
           <Button

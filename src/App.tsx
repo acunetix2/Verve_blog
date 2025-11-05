@@ -30,15 +30,13 @@ const App = () => (
 			<Route path="/about" element={<About />} />
 			{/*Admin*/}
 			<Route path="/admin" element={<AdminPage />} />
+			{/* Create New Blog Post */}
+            <Route path="/admin/create" element={<CreatePost />} />
             {/* Blog List */}
             <Route path="/blog" element={<BlogList />} /> {/* Added */}
 
             {/* Blog Post Details */}
             <Route path="/post/:slug" element={<BlogPost />} />
-
-            {/* Create New Blog Post */}
-            <Route path="/create" element={<CreatePost />} />
-
             {/* Catch-All 404 Page */}
             <Route path="*" element={<NotFound />} />
           </Routes>
