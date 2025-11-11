@@ -141,7 +141,9 @@ export default function BlogList() {
             to="/"
             className="group px-6 py-2.5 bg-gradient-to-r from-cyan-950/40 to-blue-950/40 backdrop-blur-sm border border-cyan-500/30 rounded-lg font-mono text-cyan-300 hover:bg-cyan-500/10 hover:border-cyan-400/50 transition-all hover:shadow-lg hover:shadow-cyan-500/30"
           >
-            <span className="group-hover:-translate-x-1 inline-block transition-transform">←</span> Home
+		  <button className="rounded-full">
+            <span className="group-hover:-translate-x-1 rounded-full  inline-block transition-transform">←</span> Home
+			</button>
           </Link>
         </div>
 
@@ -257,7 +259,7 @@ export default function BlogList() {
             <div className="flex items-center justify-center gap-2">
               <Shield className="h-5 w-5 text-cyan-400" />
               <p className="text-sm font-mono text-gray-300">
-                <span className="text-cyan-400 font-bold">Admin: Iddy Chesire</span>
+                <span className="text-cyan-400 font-bold">Verve Hub Blog</span>
               </p>
             </div>
             <div className="flex items-center justify-center gap-3 text-sm font-mono">

@@ -14,6 +14,7 @@ import {
   Send,
   AlertCircle,
   XCircle,
+  CircleAlert,
 } from "lucide-react";
 
 interface PostFormData {
@@ -90,7 +91,7 @@ const CreatePost: React.FC = () => {
       };
 
       await axios.post(`${API_BASE_URL}/posts/create`, payload);
-      toast.success("✅ Post published successfully!");
+      toast.success("Post published successfully!");
       navigate("/admin");
     } catch (error) {
       console.error("Post creation failed:", error);
@@ -100,7 +101,7 @@ const CreatePost: React.FC = () => {
 
   const handleExit = () => navigate("/admin");
   
-  // ✅ Added clear form logic (no existing code removed)
+  // Added clear form logic (no existing code removed)
   const handleClear = () => {
     setFormData({
       title: "",
@@ -161,7 +162,7 @@ const CreatePost: React.FC = () => {
         <div className="flex items-center justify-between mb-8 pb-6 border-b border-cyan-500/20">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-gradient-to-br from-cyan-950/30 to-blue-950/30 border border-cyan-500/30 rounded-lg">
-              <Terminal className="h-6 w-6 text-cyan-400" />
+              <AlertCircle className="h-6 w-6 text-cyan-400" />
             </div>
             <div>
               <h1 className="text-3xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">
@@ -175,7 +176,7 @@ const CreatePost: React.FC = () => {
 
           <button
             onClick={handleExit}
-            className="group flex items-center gap-2 px-4 py-2 rounded-lg border border-cyan-500/30 bg-gray-900/50 text-cyan-300 hover:bg-cyan-500/10 hover:border-cyan-400/50 transition-all font-mono text-sm"
+            className="group flex items-center gap-2 px-4 py-2 rounded-full border border-cyan-500/30 bg-gray-900/50 text-cyan-300 hover:bg-cyan-500/10 hover:border-cyan-400/50 transition-all font-mono text-sm"
           >
             <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
             Exit

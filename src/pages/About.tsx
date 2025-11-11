@@ -116,13 +116,13 @@ export default function About() {
               </h2>
               <div className="flex flex-wrap justify-center md:justify-start gap-2 mb-4">
                 <span className="px-3 py-1 bg-cyan-950/30 border border-cyan-500/30 rounded-full text-xs font-mono text-cyan-300">
-                  Cybersecurity Researcher
+                  Founder
                 </span>
                 <span className="px-3 py-1 bg-blue-950/30 border border-blue-500/30 rounded-full text-xs font-mono text-blue-300">
                   Software Developer
                 </span>
                 <span className="px-3 py-1 bg-green-950/30 border border-green-500/30 rounded-full text-xs font-mono text-green-300">
-                  Founder
+                  Cybersecurity Researcher
                 </span>
 				<span className="px-3 py-1 bg-green-950/30 border border-green-500/30 rounded-full text-xs font-mono text-cyan-300">
 				Network Associate
@@ -133,7 +133,7 @@ export default function About() {
               </div>
               <p className="text-gray-300 font-mono text-sm leading-relaxed">
                 Passionate about building secure, user-focused digital experiences and 
-                promoting continuous learning in technology. Dedicated to making cybersecurity 
+                promoting continuous learning in technology. Dedicated to making learning cybersecurity 
                 accessible through practical write-ups, walkthroughs, and hands-on guides.
               </p>
             </div>

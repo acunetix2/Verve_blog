@@ -173,7 +173,7 @@ const AdminPage: React.FC = () => {
 
   // ✅ Delete post
   const handleDelete = async (id: string) => {
-    if (!toast.success("Confirm permanent deletion of this post?")) return;
+    if (!toast("Confirm permanent deletion of this post?")) return;
     try {
       await axios.delete(`http://localhost:5000/api/posts/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -342,12 +342,12 @@ const AdminPage: React.FC = () => {
                 {authLoading ? (
                   <>
                     <Loader2 size={18} className="mr-2 animate-spin" />
-                    <span>AUTHENTICATING</span>
+                    <span>Authenticating</span>
                   </>
                 ) : (
                   <>
                     <Shield size={18} className="mr-2 rounded-full shadow-lg shadow-cyan-500/20" />
-                    <span>AUTHENTICATE</span>
+                    <span>Verify</span>
                   </>
                 )}
               </button>
@@ -518,18 +518,25 @@ const AdminPage: React.FC = () => {
 
         {/* Posts List */}
         <section>
-          <div className="flex justify-between items-center mb-6">
+          <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400 flex items-center gap-2">
               <Terminal size={24} />
               DATABASE POSTS [{posts.length}]
             </h2>
             <button
               onClick={handleCreate}
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50"
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-4 py-1 rounded-full flex items-center transition-all shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50"
             >
-              <FilePlus2 size={18} />
+              <FilePlus2 size={16} />
               <span className="hidden sm:inline">New Post</span>
             </button>
+			<button
+			onClick={() => navigate("/admin/documents")}
+			className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white px-4 py-1 rounded-full flex items-center  transition-all shadow-lg shadow-green-500/30 hover:shadow-green-500/50"
+		  >
+			<FilePlus2 size={18} />
+			<span className="hidden sm:inline">Upload Document</span>
+		  </button>
           </div>
 
           {posts.length === 0 ? (

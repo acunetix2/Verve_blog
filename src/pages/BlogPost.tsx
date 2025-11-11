@@ -164,7 +164,7 @@ const BlogPost = () => {
         {/* Back Button */}
         <div className="relative z-10 border-b border-cyan-500/20 bg-gray-950/50 backdrop-blur-sm">
           <div className="container py-4">
-            <Link to="/">
+            <Link to="/blog">
               <Button
                 variant="ghost"
                 size="sm"

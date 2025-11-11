@@ -275,17 +275,6 @@ const Index = () => {
             <span>Knowledge Base</span>
           </div>
         </div>
-		<div>
-		<Link to="/admin">
-              <button
-                variant="outline"
-                size="sm"
-                className="group font-mono border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 hover:border-cyan-400/50 transition-all hover:shadow-lg hover:shadow-cyan-500/30"
-              >
-                <PlusCircle className="h-2 w-2 mr-2 group-hover:rotate-90 transition-transform duration-300" />
-              </button>
-            </Link>
-           </div>
       </footer>
     </div>
   );
