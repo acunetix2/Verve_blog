@@ -3,7 +3,6 @@ import { Eye, EyeOff, LogIn, AlertCircle, Shield, CheckCircle } from "lucide-rea
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -93,7 +92,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-cyan-950 pt-20">
-      <Navbar />
+	  <Navbar />
 	  {/* Background Effects */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 left-10 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl animate-pulse"></div>
@@ -127,7 +126,7 @@ export default function Login() {
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="email@example.com"
+                placeholder="Email"
                 className={`w-full p-3 rounded-lg bg-slate-800/50 border ${errors.email ? "border-red-500" : "border-cyan-900/50"} text-cyan-50 placeholder-cyan-300/30 focus:ring-2 focus:ring-cyan-500 outline-none transition`}
               />
               {errors.email && <p className="text-red-400 text-xs mt-1 flex items-center gap-1"><AlertCircle size={12} /> {errors.email}</p>}
@@ -143,7 +142,7 @@ export default function Login() {
                   type={showPassword ? "text" : "password"}
                   value={formData.password}
                   onChange={handleChange}
-                  placeholder="••••••••"
+                  placeholder="••••••••••"
                   className={`w-full p-3 rounded-lg bg-slate-800/50 border ${errors.password ? "border-red-500" : "border-cyan-900/50"} text-cyan-50 placeholder-cyan-300/30 focus:ring-2 focus:ring-cyan-500 outline-none transition pr-10`}
                 />
                 <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-3 flex items-center text-cyan-400 hover:text-cyan-300 transition">
@@ -182,13 +181,12 @@ export default function Login() {
             <p className="text-sm text-cyan-200/70 text-center mt-6">
               Don't have an account?{" "}
               <button type="button" onClick={() => navigate("/signup")} className="text-cyan-400 hover:text-cyan-300 transition font-medium">
-                Create one
+                Signup
               </button>
             </p>
           </form>
         </div>
       </div>
-	  <Footer />
     </div>
   );
 }

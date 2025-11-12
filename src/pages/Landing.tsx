@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { LogIn, UserPlus, Github, Linkedin, Twitter, BookOpen, Shield, TrendingUp, Users, Zap, Star, ArrowRight, Menu, X, ChevronDown, Award, Target, FileText, Lock, Code, Terminal } from "lucide-react";
+import { LogIn, Mail, Activity, UserPlus, Github, Linkedin, Twitter, BookOpen, Shield, TrendingUp, Users, Zap, Star, ArrowRight, Menu, X, ChevronDown, Award, Target, FileText, Lock, Code, Terminal } from "lucide-react";
 
 export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -30,10 +30,10 @@ export default function LandingPage() {
   }, []);
 
   const stats = [
-    { number: "2.5K+", label: "Active Learners" },
-    { number: "150+", label: "CTF Writeups" },
-    { number: "80+", label: "TryHackMe Rooms" },
-    { number: "50+", label: "Learning Docs" }
+    { number: "100+", label: "Active Users" },
+    { number: "20+", label: "CTF Writeups" },
+    { number: "30+", label: "TryHackMe Rooms" },
+    { number: "40+", label: "Learning Docs" }
   ];
 
   const testimonials = [
@@ -91,10 +91,10 @@ export default function LandingPage() {
       }`}>
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-cyan-500/30">
-            <Lock size={20} className="text-white" />
+            <Activity size={20} className="text-green-600" />
           </div>
           <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
-            Verve Hub
+            Verve Hub Blog
           </h1>
         </div>
         
@@ -139,7 +139,7 @@ export default function LandingPage() {
         {/* Status Badge */}
         <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30 rounded-full mb-8 backdrop-blur-sm hover:scale-105 transition-transform">
           <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-          <span className="text-sm text-green-400 font-medium">Live: New HackTheBox Season 5 Writeups Added</span>
+          <span className="text-sm text-green-400 font-medium">Live: New Writeups coming up</span>
         </div>
 
         {/* Main Heading */}
@@ -155,13 +155,13 @@ export default function LandingPage() {
         
         <p className="max-w-3xl text-cyan-200/90 text-lg sm:text-xl mb-12 leading-relaxed">
           Deep-dive CTF writeups, TryHackMe walkthroughs, and comprehensive learning resources. 
-          <span className="block mt-3 text-cyan-300 font-semibold text-xl">From reconnaissance to privilege escalation—everything documented.</span>
+          <span className="block mt-3 text-cyan-300 font-semibold text-xl">From reconnaissance to privilege escalation everything documented.</span>
         </p>
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-5 mb-16">
           <a
-            href="/login"
+            href="/signup"
             className="group flex items-center justify-center gap-3 px-10 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold rounded-2xl shadow-2xl shadow-cyan-500/50 transition-all hover:scale-105 hover:shadow-cyan-500/70"
           >
             <LogIn size={20} />
@@ -202,7 +202,7 @@ export default function LandingPage() {
             <h3 className="text-4xl sm:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500">
               Latest Writeups & Guides
             </h3>
-            <p className="text-cyan-200/70 text-lg">Fresh content added weekly</p>
+            <p className="text-cyan-200/70 text-lg">New content added weekly</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -247,7 +247,7 @@ export default function LandingPage() {
 
           <div className="text-center mt-12">
             <a
-              href="/writeups"
+              href="/blog"
               className="inline-flex items-center gap-2 px-8 py-4 bg-slate-900/60 border-2 border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/20 hover:border-cyan-400 font-semibold rounded-xl backdrop-blur-sm transition-all hover:scale-105"
             >
               View All Content
@@ -311,7 +311,7 @@ export default function LandingPage() {
                 <Code size={32} className="text-white" />
               </div>
               <h4 className="text-xl font-bold mb-4 text-white group-hover:text-cyan-400 transition-colors">Step-by-Step Methodology</h4>
-              <p className="text-cyan-200/70 leading-relaxed">Every writeup includes detailed enumeration, exploitation, and privilege escalation steps with command breakdowns.</p>
+              <p className="text-cyan-200/70 leading-relaxed">Writeups includes detailed enumeration, exploitation, and privilege escalation steps with command breakdowns.</p>
             </div>
 
             <div className="group bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-sm rounded-2xl p-8 border border-slate-800/50 hover:border-cyan-500/50 transition-all hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/20">
@@ -319,7 +319,7 @@ export default function LandingPage() {
                 <Terminal size={32} className="text-white" />
               </div>
               <h4 className="text-xl font-bold mb-4 text-white group-hover:text-cyan-400 transition-colors">Tool Mastery Guides</h4>
-              <p className="text-cyan-200/70 leading-relaxed">Learn to use essential tools like Nmap, Burp Suite, Metasploit, and custom scripts effectively in real scenarios.</p>
+              <p className="text-cyan-200/70 leading-relaxed">Learn to use essential tools like Nmap, Burp Suite, Metasploit, and custom scripts effectively in practical scenarios.</p>
             </div>
 
             <div className="group bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-sm rounded-2xl p-8 border border-slate-800/50 hover:border-cyan-500/50 transition-all hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/20">
@@ -343,7 +343,7 @@ export default function LandingPage() {
                 <TrendingUp size={32} className="text-white" />
               </div>
               <h4 className="text-xl font-bold mb-4 text-white group-hover:text-cyan-400 transition-colors">Regular Updates</h4>
-              <p className="text-cyan-200/70 leading-relaxed">New writeups added weekly covering the latest machines, challenges, and emerging attack techniques.</p>
+              <p className="text-cyan-200/70 leading-relaxed">New writeups added weekly covering the latest challenges and emerging attack techniques.</p>
             </div>
 
             <div className="group bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-sm rounded-2xl p-8 border border-slate-800/50 hover:border-cyan-500/50 transition-all hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/20">
@@ -351,7 +351,7 @@ export default function LandingPage() {
                 <Users size={32} className="text-white" />
               </div>
               <h4 className="text-xl font-bold mb-4 text-white group-hover:text-cyan-400 transition-colors">Community Driven</h4>
-              <p className="text-cyan-200/70 leading-relaxed">Join discussions, share alternative solutions, and learn from a community of passionate security enthusiasts.</p>
+              <p className="text-cyan-200/70 leading-relaxed">Verve Hub is free for every passionate security enthusiasts.</p>
             </div>
           </div>
         </div>
@@ -423,7 +423,7 @@ export default function LandingPage() {
         <div className="relative z-10 max-w-5xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-5 py-2 bg-cyan-500/10 border border-cyan-500/30 rounded-full mb-8">
             <Zap size={18} className="text-cyan-400" />
-            <span className="text-sm text-cyan-400 font-medium">Join 2,500+ Active Learners</span>
+            <span className="text-sm text-cyan-400 font-medium">Join 100+ Active Users</span>
           </div>
           
           <h3 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500">
@@ -431,13 +431,13 @@ export default function LandingPage() {
           </h3>
           <p className="text-cyan-200/90 text-lg md:text-xl mb-10 max-w-3xl mx-auto leading-relaxed">
             Access detailed CTF writeups, TryHackMe walkthroughs, and learning resources. 
-            <span className="block mt-2 text-cyan-300 font-semibold">Start your journey to OSCP, CEH, and beyond.</span>
+            <span className="block mt-2 text-cyan-300 font-semibold">Start your journey today.</span>
           </p>
           
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <a
               href="/signup"
-              className="group flex items-center justify-center gap-3 px-10 py-5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold text-lg rounded-2xl shadow-2xl shadow-cyan-500/50 transition-all hover:scale-105 hover:shadow-cyan-500/70"
+              className="group flex items-center justify-center gap-3 px-10 py-5 bg-cyan-500 hover:from-cyan-600 hover:to-blue-700 text-white font-bold text-lg rounded-2xl shadow-2xl shadow-cyan-500/50 transition-all hover:scale-105 hover:shadow-cyan-500/70"
             >
               <span>Get Started Free</span>
               <ArrowRight size={22} className="group-hover:translate-x-1 transition-transform" />
@@ -452,7 +452,7 @@ export default function LandingPage() {
           </div>
 
           <p className="mt-8 text-cyan-200/60 text-sm">
-            No credit card required • Free forever • 150+ writeups
+            No credit card required • Free forever • 100+ writeups
           </p>
         </div>
       </section>
@@ -467,28 +467,35 @@ export default function LandingPage() {
           
           <div className="flex justify-center gap-6 mb-12">
             <a 
-              href="https://github.com/" 
+              href="https://github.com/verveblog.git" 
               target="_blank" 
               rel="noopener noreferrer"
               className="group w-16 h-16 flex items-center justify-center bg-gradient-to-br from-slate-800/80 to-slate-800/40 hover:from-slate-700 hover:to-slate-800 border border-slate-700 hover:border-cyan-500 rounded-2xl transition-all hover:scale-110 hover:shadow-lg hover:shadow-cyan-500/20"
             >
-              <Github size={28} className="text-cyan-400 group-hover:text-cyan-300" />
+              <Github size={28} className="text-slate-400 group-hover:text-cyan-300" />
             </a>
             <a 
-              href="https://linkedin.com/" 
+              href="https://linkedin.com/in/iddy-chesire-55009b264/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="group w-16 h-16 flex items-center justify-center bg-gradient-to-br from-slate-800/80 to-slate-800/40 hover:from-slate-700 hover:to-slate-800 border border-slate-700 hover:border-cyan-500 rounded-2xl transition-all hover:scale-110 hover:shadow-lg hover:shadow-cyan-500/20"
+              className="group w-16 h-16 flex items-center justify-center bg-gradient-to-br from-slate-800/80 to-slate-800/40 hover:from-slate-700 hover:to-slate-800 border border-blue-700 hover:border-cyan-500 rounded-2xl transition-all hover:scale-110 hover:shadow-lg hover:shadow-cyan-500/20"
             >
-              <Linkedin size={28} className="text-cyan-400 group-hover:text-cyan-300" />
+              <Linkedin size={28} className="text-blue-500 group-hover:text-cyan-300" />
             </a>
             <a 
-              href="https://twitter.com/" 
+              href="https://twitter.com/iddychesire" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="group w-16 h-16 flex items-center justify-center bg-gradient-to-br from-slate-800/80 to-slate-800/40 hover:from-slate-700 hover:to-slate-800 border border-slate-700 hover:border-cyan-500 rounded-2xl transition-all hover:scale-110 hover:shadow-lg hover:shadow-cyan-500/20"
+              className="group w-16 h-16 flex border-gray-100 items-center justify-center bg-gradient-to-br from-slate-800/80 to-slate-800/40 hover:from-slate-700 hover:to-slate-800 border border-slate-700 hover:border-slate-500 rounded-2xl transition-all hover:scale-110 hover:shadow-lg hover:shadow-cyan-500/20"
             >
-              <Twitter size={28} className="text-cyan-400 group-hover:text-cyan-300" />
+              <Twitter size={28} className="text-gray-100 group-hover:text-cyan-300" />
+            </a>
+			<a 
+              href="mailto:iddychesire@gmail.com" 
+              target="_blank" 
+              className="group w-16 h-16 flex items-center justify-center bg-gradient-to-br from-slate-800/80 to-slate-800/40 hover:from-slate-700 hover:to-slate-800 border border-green-700 hover:border-cyan-500 rounded-2xl transition-all hover:scale-110 hover:shadow-lg hover:shadow-cyan-500/20"
+            >
+              <Mail size={28} className="text-green-400 group-hover:text-cyan-300" />
             </a>
           </div>
 
@@ -524,13 +531,13 @@ export default function LandingPage() {
                 Your comprehensive resource for cybersecurity learning. From beginner CTF challenges to advanced penetration testing techniques.
               </p>
               <div className="flex gap-4">
-                <a href="https://github.com/" className="text-cyan-400/70 hover:text-cyan-400 transition-colors">
+                <a href="https://github.com/verveblog.git" className="text-cyan-400/70 hover:text-cyan-400 transition-colors">
                   <Github size={20} />
                 </a>
-                <a href="https://linkedin.com/" className="text-cyan-400/70 hover:text-cyan-400 transition-colors">
+                <a href="https://linkedin.com/in/iddy-chesire-55009b264/" className="text-cyan-400/70 hover:text-cyan-400 transition-colors">
                   <Linkedin size={20} />
                 </a>
-                <a href="https://twitter.com/" className="text-cyan-400/70 hover:text-cyan-400 transition-colors">
+                <a href="https://twitter.com/iddychesire" className="text-cyan-400/70 hover:text-cyan-400 transition-colors">
                   <Twitter size={20} />
                 </a>
               </div>
@@ -539,10 +546,10 @@ export default function LandingPage() {
             <div>
               <h4 className="text-white font-semibold mb-4">Content</h4>
               <ul className="space-y-2 text-cyan-200/70">
-                <li><a href="/ctf" className="hover:text-cyan-400 transition-colors">CTF Writeups</a></li>
-                <li><a href="/tryhackme" className="hover:text-cyan-400 transition-colors">TryHackMe Rooms</a></li>
-                <li><a href="/guides" className="hover:text-cyan-400 transition-colors">Learning Guides</a></li>
-                <li><a href="/tools" className="hover:text-cyan-400 transition-colors">Tool Tutorials</a></li>
+                <li><a href="/login" className="hover:text-cyan-400 transition-colors">CTF Writeups</a></li>
+                <li><a href="https://tryhackme.com" className="hover:text-cyan-400 transition-colors">TryHackMe Rooms</a></li>
+                <li><a href="/signup" className="hover:text-cyan-400 transition-colors">Learning Guides</a></li>
+                <li><a href="/signup" className="hover:text-cyan-400 transition-colors">Tool Tutorials</a></li>
               </ul>
             </div>
 
@@ -557,7 +564,7 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <div className="pt-8 border-t border-cyan-800/20 text-center">
+          <div className="pt-4 border-t border-cyan-800/20 text-center">
             <p className="text-cyan-400/70">
               &copy; {new Date().getFullYear()} Verve Hub. Empowering cybersecurity learners worldwide.
             </p>

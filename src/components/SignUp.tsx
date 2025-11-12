@@ -13,7 +13,7 @@ export default function Signup() {
     email: "",
     password: "",
     confirmPassword: "",
-    agreeToTerms: true,
+    agreeToTerms: false,
   });
   const [errors, setErrors] = useState<any>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -111,7 +111,7 @@ export default function Signup() {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-cyan-950 pt-20">
-      <Navbar />
+	  <Navbar />
 	  {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 left-10 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl animate-pulse"></div>
@@ -160,7 +160,7 @@ export default function Signup() {
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="you@example.com"
+                placeholder="Valid email"
                 className={`w-full p-3 rounded-lg bg-slate-800/50 border ${errors.email ? "border-red-500" : "border-cyan-900/50"} text-cyan-50 placeholder-cyan-300/30 focus:ring-2 focus:ring-cyan-500 outline-none transition`}
               />
               {errors.email && <p className="text-red-400 text-xs mt-1 flex items-center gap-1"><AlertCircle size={12} /> {errors.email}</p>}

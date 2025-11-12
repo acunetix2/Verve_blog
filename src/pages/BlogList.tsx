@@ -138,7 +138,7 @@ export default function BlogList() {
 			<Activity className="h-8 w-8 text-cyan-400" />
           </div>
           <Link
-            to="/"
+            to="/home"
             className="group px-6 py-2.5 bg-gradient-to-r from-cyan-950/40 to-blue-950/40 backdrop-blur-sm border border-cyan-500/30 rounded-lg font-mono text-cyan-300 hover:bg-cyan-500/10 hover:border-cyan-400/50 transition-all hover:shadow-lg hover:shadow-cyan-500/30"
           >
 		  <button className="rounded-full">

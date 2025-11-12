@@ -36,7 +36,7 @@ const UploadPage: React.FC = () => {
       setUploading(true);
       setMessage({ type: "", text: "" });
 
-      await axios.post("http://localhost:5000/api/documents", formData, {
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/documents`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -60,7 +60,7 @@ const UploadPage: React.FC = () => {
           onClick={() => navigate("/")}
           className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent cursor-pointer flex items-center gap-2 hover:opacity-80 transition"
         >
-          <Home className="w-5 h-5 text-cyan-400" /> Verve Hub
+          <Home className="w-5 h-5 text-cyan-400" /> Verve Hub Blog
         </h1>
         <button
           onClick={() => navigate(-1)}

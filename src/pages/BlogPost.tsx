@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { MDXContent } from "@/components/MDXContent";
@@ -13,6 +13,13 @@ import {
   Shield,
   Terminal,
   Sparkles,
+  Heart,
+  MessageSquare,
+  Copy,
+  Twitter,
+  Linkedin,
+  CheckCircle2,
+  Eye,
 } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 
@@ -26,201 +33,213 @@ interface Post {
   readTime: string;
   tags: string[];
   featured?: boolean;
+  views?: number;
+}
+
+interface Comment {
+  _id?: string;
+  name: string;
+  text: string;
+  date?: string;
 }
 
 const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
   const [post, setPost] = useState<Post | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [likes, setLikes] = useState<number>(0);
+  const [liked, setLiked] = useState<boolean>(false);
+  const [views, setViews] = useState<number>(0);
+  const [viewed, setViewed] = useState<boolean>(false);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [commentText, setCommentText] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const fetchPostData = useCallback(async () => {
+    if (!slug) return;
+    setLoading(true);
+
+    try {
+      // Fetch post, likes, comments, and views in parallel
+      const [postRes, likesRes, commentsRes, viewsRes] = await Promise.all([
+        fetch(`http://localhost:5000/api/posts/${slug}`, { credentials: "include" }),
+        fetch(`http://localhost:5000/api/posts/${slug}/likes`, { credentials: "include" }),
+        fetch(`http://localhost:5000/api/posts/${slug}/comments`, { credentials: "include" }),
+        fetch(`http://localhost:5000/api/posts/${slug}/views`, { credentials: "include" }),
+      ]);
+
+      if (!postRes.ok) throw new Error("Failed to fetch post");
+
+      const postData = await postRes.json();
+      const likesData = await likesRes.json();
+      const commentsData: Comment[] = await commentsRes.json();
+      const viewsData = await viewsRes.json();
+
+      setPost(postData);
+      setLikes(likesData.likes || 0);
+      setLiked(likesData.userHasLiked || false);
+      setComments(commentsData || []);
+      setViews(viewsData.views || 0);
+      setViewed(viewsData.userHasViewed || false);
+
+      // Increment view only if user has not viewed yet
+      if (!viewsData.userHasViewed) {
+        const viewRes = await fetch(`http://localhost:5000/api/posts/${slug}/view`, {
+          method: "POST",
+          credentials: "include",
+        });
+        if (viewRes.ok) {
+          const updatedViewData = await viewRes.json();
+          setViews(updatedViewData.views);
+          setViewed(true);
+        }
+      }
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  }, [slug]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    fetchPostData();
+  }, [fetchPostData]);
 
-    const fetchPost = async () => {
-      try {
-        const response = await fetch(`http://localhost:5000/api/posts/${slug}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch post");
-        }
-        const data = await response.json();
-        setPost(data);
-      } catch (err) {
-        setError((err as Error).message);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const handleLike = async () => {
+    if (liked) return; // Restrict multiple likes per user
 
-    if (slug) fetchPost();
-  }, [slug]);
+    try {
+      const res = await fetch(`http://localhost:5000/api/posts/${slug}/like`, {
+        method: "POST",
+        credentials: "include",
+      });
 
-  if (loading) {
+      if (!res.ok) throw new Error("You must be logged in to like this post");
+
+      const data = await res.json();
+      setLikes(data.likes);
+      setLiked(true);
+    } catch (err) {
+      console.error("Like error:", err);
+      alert((err as Error).message);
+    }
+  };
+
+  const handleCommentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!commentText.trim()) return;
+
+    setSubmitting(true);
+    try {
+      const res = await fetch(`http://localhost:5000/api/posts/${slug}/comments-name`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ name: "Anonymous", text: commentText }),
+      });
+
+      if (!res.ok) throw new Error("You must be logged in to comment");
+
+      const newComment = await res.json();
+      setComments(prev => [...prev, newComment]);
+      setCommentText("");
+    } catch (err) {
+      console.error("Comment error:", err);
+      alert((err as Error).message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleShare = (platform?: string) => {
+    const url = window.location.href;
+    if (platform === "twitter") {
+      window.open(`https://twitter.com/intent/tweet?url=${url}&text=${post?.title}`, "_blank");
+    } else if (platform === "linkedin") {
+      window.open(`https://www.linkedin.com/shareArticle?mini=true&url=${url}&title=${post?.title}`, "_blank");
+    } else {
+      navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    }
+  };
+
+  if (loading)
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-950 via-black to-blue-950 flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-cyan-950/30 to-blue-950/30 border border-cyan-500/20 mb-4">
-            <Terminal className="h-10 w-10 text-cyan-400 animate-pulse" />
-          </div>
-          <p className="font-mono text-cyan-300 text-lg animate-pulse">
-            Loading post...
-          </p>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-950 via-black to-blue-950">
+        <div className="text-center space-y-3">
+          <Terminal className="h-10 w-10 text-cyan-400 animate-pulse mx-auto" />
+          <p className="text-cyan-300 font-mono animate-pulse">Loading post...</p>
         </div>
       </div>
     );
-  }
 
-  if (error || !post) {
+  if (error || !post)
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-950 via-black to-blue-950">
-        {/* Animated grid background */}
-        <div className="fixed inset-0 opacity-5 pointer-events-none">
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage:
-                "linear-gradient(rgba(6, 182, 212, 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(6, 182, 212, 0.2) 1px, transparent 1px)",
-              backgroundSize: "100px 100px",
-            }}
-          ></div>
-        </div>
-
         <Header />
-        <div className="relative z-10 container py-20 text-center">
-          <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-red-950/30 to-gray-950/30 border border-red-500/30 mb-8">
-            <Sparkles className="h-12 w-12 text-red-400" />
-          </div>
-          <h1 className="text-4xl md:text-5xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-400 mb-4">
+        <div className="container py-20 text-center">
+          <Sparkles className="h-12 w-12 text-red-400 mx-auto mb-4" />
+          <h1 className="text-5xl font-display font-bold bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent mb-4">
             404: Post Not Found
           </h1>
-          <p className="text-gray-400 mb-8 font-mono text-lg">
-            {error || "The post you're looking for doesn't exist."}
-          </p>
+          <p className="text-gray-400 font-mono mb-6">{error}</p>
           <Link to="/">
-            <Button className="group px-6 py-3 font-mono bg-gradient-to-r from-cyan-600 to-blue-600 text-white hover:from-cyan-500 hover:to-blue-500 border border-cyan-400/50 rounded-lg shadow-lg shadow-cyan-500/30 transition-all">
-              <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-              Back to Home
+            <Button className="bg-gradient-to-r from-cyan-600 to-blue-600 text-white border border-cyan-400/50">
+              <ArrowLeft className="mr-2 h-4 w-4" /> Back to Home
             </Button>
           </Link>
         </div>
       </div>
     );
-  }
 
   return (
     <>
       <Helmet>
         <title>{post.title} | Verve Hub</title>
         <meta name="description" content={post.description} />
-        <meta name="keywords" content={post.tags.join(", ")} />
-        <meta property="og:title" content={post.title} />
-        <meta property="og:description" content={post.description} />
-        <meta property="og:type" content="article" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={post.title} />
-        <meta name="twitter:description" content={post.description} />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-br from-gray-950 via-black to-blue-950 text-white">
-        {/* Animated grid background */}
-        <div className="fixed inset-0 opacity-5 pointer-events-none">
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage:
-                "linear-gradient(rgba(6, 182, 212, 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(6, 182, 212, 0.2) 1px, transparent 1px)",
-              backgroundSize: "100px 100px",
-            }}
-          ></div>
-        </div>
-
-        {/* Floating particles */}
-        <div className="fixed inset-0 overflow-hidden pointer-events-none">
-          {[...Array(12)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-1 h-1 bg-cyan-400 rounded-full opacity-20"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animation: `float ${8 + Math.random() * 15}s linear infinite`,
-                animationDelay: `${Math.random() * 5}s`,
-              }}
-            />
-          ))}
-        </div>
-
-        <style>{`
-          @keyframes float {
-            0%, 100% { transform: translateY(0) translateX(0); }
-            25% { transform: translateY(-30px) translateX(15px); }
-            50% { transform: translateY(-60px) translateX(-15px); }
-            75% { transform: translateY(-30px) translateX(15px); }
-          }
-        `}</style>
-
         <Header />
-
-        {/* Back Button */}
-        <div className="relative z-10 border-b border-cyan-500/20 bg-gray-950/50 backdrop-blur-sm">
-          <div className="container py-4">
-            <Link to="/blog">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="group font-mono text-cyan-300 hover:text-cyan-200 border border-cyan-500/30 hover:border-cyan-400/50 bg-gray-900/50 hover:bg-cyan-500/10 transition-all"
-              >
-                <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-                Back to posts
-              </Button>
-            </Link>
-          </div>
-        </div>
-
-        {/* Post Header */}
-        <article className="relative z-10 container py-12 max-w-4xl">
+        <article className="container py-12 max-w-4xl relative z-10">
+          {/* Header */}
           <header className="mb-12 space-y-6">
             {post.featured && (
-              <Badge className="bg-gradient-to-r from-cyan-600 to-blue-600 text-white border-cyan-400/50 font-mono shadow-lg shadow-cyan-500/30">
-                <Shield className="h-3 w-3 mr-1" />
-                FEATURED POST
+              <Badge className="bg-gradient-to-r from-cyan-600 to-blue-600 border-cyan-400/50 text-white">
+                <Shield className="h-3 w-3 mr-1" /> FEATURED
               </Badge>
             )}
-
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-400 leading-tight">
+            <h1 className="text-5xl font-display font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
               {post.title}
             </h1>
+            <p className="text-gray-300 font-mono">{post.description}</p>
 
-            <p className="text-xl text-gray-300 leading-relaxed font-mono">
-              {post.description}
-            </p>
-
-            <div className="flex flex-wrap gap-6 text-sm font-mono pt-6 border-t border-cyan-500/20">
-              <span className="flex items-center gap-2 text-cyan-300">
+            <div className="flex flex-wrap gap-6 text-sm font-mono text-gray-400 pt-4 border-t border-cyan-500/20">
+              <span className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-cyan-400" />
-                {new Date(post.date).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
+                {new Date(post.date).toLocaleDateString()}
               </span>
-              <span className="flex items-center gap-2 text-blue-300">
+              <span className="flex items-center gap-2">
                 <Clock className="h-4 w-4 text-blue-400" />
                 {post.readTime}
               </span>
-              <span className="flex items-center gap-2 text-white">
+              <span className="flex items-center gap-2">
                 <User className="h-4 w-4 text-white" />
                 {post.author}
+              </span>
+              <span className="flex items-center gap-2">
+                <Eye className="h-4 w-4 text-green-400" />
+                {views} views
               </span>
             </div>
 
             <div className="flex flex-wrap gap-2">
-              {post.tags.map((tag) => (
-                <Badge
-                  key={tag}
-                  variant="outline"
-                  className="font-mono text-xs border-cyan-500/30 bg-cyan-950/20 text-cyan-300 hover:bg-cyan-500/10 hover:border-cyan-400 transition-all"
-                >
+              {post.tags.map(tag => (
+                <Badge key={tag} variant="outline" className="border-cyan-500/30 text-cyan-300 font-mono bg-cyan-950/20">
                   <Tag className="h-3 w-3 mr-1" />
                   {tag}
                 </Badge>
@@ -228,42 +247,83 @@ const BlogPost = () => {
             </div>
           </header>
 
-          {/* Post Content */}
-          <div
-            className="prose prose-invert prose-cyan max-w-none 
-            prose-headings:font-display prose-headings:text-cyan-300
-            prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl
-            prose-p:text-gray-300 prose-p:leading-relaxed
-            prose-a:text-cyan-400 prose-a:no-underline hover:prose-a:text-cyan-300
-            prose-strong:text-cyan-200 prose-strong:font-bold
-            prose-code:text-cyan-400 prose-code:bg-gray-900/50 prose-code:px-2 prose-code:py-1 prose-code:rounded
-            prose-pre:bg-gray-900/50 prose-pre:border prose-pre:border-cyan-500/30 prose-pre:shadow-lg
-            prose-blockquote:border-l-cyan-500 prose-blockquote:text-gray-400
-            prose-ul:text-gray-300 prose-ol:text-gray-300
-            prose-li:marker:text-cyan-400
-            prose-img:rounded-lg prose-img:border prose-img:border-cyan-500/20"
-          >
+          {/* Content */}
+          <div className="prose prose-invert prose-cyan max-w-none">
             <MDXContent content={post.content} />
           </div>
 
-          {/* Post Footer */}
-          <footer className="mt-16 pt-8 border-t border-cyan-500/20">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
-              <div className="flex items-center gap-2 text-sm font-mono text-gray-400">
-                <Terminal className="h-4 w-4 text-cyan-400" />
-                <span className="text-cyan-400">$</span> Happy Hacking!
-              </div>
-              <Link to="/blog">
-                <Button
-                  variant="outline"
-                  className="group font-mono border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/10 hover:border-cyan-400/50 transition-all"
-                >
-                  Read more posts
-                  <span className="ml-2 inline-block group-hover:translate-x-1 transition-transform">
-                    →
-                  </span>
-                </Button>
-              </Link>
+          {/* Like & Share */}
+          <div className="mt-12 flex items-center justify-between border-t border-cyan-500/20 pt-6">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={handleLike}
+                disabled={liked}
+                className={`flex items-center gap-2 font-mono border px-4 py-2 rounded-lg transition-all ${
+                  liked ? "bg-cyan-600 text-white border-cyan-400 cursor-not-allowed" : "border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/10"
+                }`}
+              >
+                <Heart className={`h-4 w-4 ${liked ? "fill-current text-white" : "text-cyan-300"}`} /> {likes} Likes
+              </button>
+
+              <button
+                onClick={() => handleShare()}
+                className="flex items-center gap-2 border border-cyan-500/30 px-4 py-2 rounded-lg text-cyan-300 hover:bg-cyan-500/10"
+              >
+                {copied ? <CheckCircle2 className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4" />} Copy Link
+              </button>
+            </div>
+
+            <div className="flex gap-3">
+              <button onClick={() => handleShare("twitter")}>
+                <Twitter className="h-5 w-5 text-cyan-400 hover:text-cyan-300" />
+              </button>
+              <button onClick={() => handleShare("linkedin")}>
+                <Linkedin className="h-5 w-5 text-cyan-400 hover:text-cyan-300" />
+              </button>
+            </div>
+          </div>
+
+          {/* Comments */}
+          <section className="mt-16">
+            <h2 className="text-2xl font-display text-cyan-400 mb-6 flex items-center gap-2">
+              <MessageSquare className="h-5 w-5" /> Comments ({comments.length})
+            </h2>
+
+            <div className="space-y-6">
+              {comments.length > 0 ? (
+                comments.map(c => (
+                  <div key={c._id} className="border border-cyan-500/20 bg-gray-900/40 rounded-lg p-4">
+                    <p className="font-mono text-cyan-300">{c.name}</p>
+                    <p className="text-gray-300 mt-1">{c.text}</p>
+                    <p className="text-xs text-gray-500 mt-2">{new Date(c.date || Date.now()).toLocaleString()}</p>
+                  </div>
+                ))
+              ) : (
+                <p className="text-gray-500 font-mono">No comments yet. Be the first!</p>
+              )}
+            </div>
+
+            <form onSubmit={handleCommentSubmit} className="mt-8 space-y-4">
+              <textarea
+                placeholder="Write a comment..."
+                value={commentText}
+                onChange={e => setCommentText(e.target.value)}
+                className="w-full bg-gray-900 border border-cyan-500/20 text-white rounded-lg px-4 py-2 h-28 font-mono resize-none focus:border-cyan-400 focus:outline-none"
+              />
+              <Button
+                type="submit"
+                disabled={submitting || !commentText.trim()}
+                className="bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-mono"
+              >
+                {submitting ? "Posting..." : "Post Comment"}
+              </Button>
+            </form>
+          </section>
+
+          <footer className="mt-16 pt-8 border-t border-cyan-500/20 text-center">
+            <div className="text-sm font-mono text-gray-400">
+              <Terminal className="inline h-4 w-4 text-cyan-400 mr-1" />
+              <span className="text-cyan-400">$</span> Happy Hacking!
             </div>
           </footer>
         </article>

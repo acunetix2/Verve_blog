@@ -18,7 +18,8 @@ interface Document {
   _id: string;
   title: string;
   description?: string;
-  createdAt: string;
+  fileName: string;
+  uploadedAt: string;
 }
 
 const Documents: React.FC = () => {
@@ -35,19 +36,17 @@ const Documents: React.FC = () => {
       try {
         const res = await axios.get("http://localhost:5000/api/documents");
         setDocuments(res.data);
-        setMessage({ type: "success", text: "Documents loaded successfully!", duration: 1000 });
+        setMessage({ type: "success", text: "Documents loaded successfully!" });
       } catch (err) {
         setError("Failed to load documents. Try again later.");
-        setMessage({ type: "error", text: "Failed to load documents!", duration: 1000 });
+        setMessage({ type: "error", text: "Failed to load documents!" });
       } finally {
         setLoading(false);
       }
     };
-
     fetchDocuments();
   }, []);
 
-  // Auto-hide messages after 3 seconds
   useEffect(() => {
     if (message) {
       const timer = setTimeout(() => setMessage(null), 3000);
@@ -55,12 +54,33 @@ const Documents: React.FC = () => {
     }
   }, [message]);
 
+  // 🔹 Fetch presigned URL for download/preview
+  const getSignedUrl = async (docId: string) => {
+    try {
+      const res = await axios.get(`http://localhost:5000/api/documents/download/${docId}`);
+      return res.data.downloadUrl;
+    } catch (err) {
+      setMessage({ type: "error", text: "Failed to get download URL!" });
+      return null;
+    }
+  };
+
+  const handlePreview = async (docId: string) => {
+    const url = await getSignedUrl(docId);
+    if (url) setPreviewDoc(url);
+  };
+
+  const handleDownload = async (docId: string, title: string) => {
+  const url = await getSignedUrl(docId);
+  if (!url) return;
+  window.open(url, "_blank");
+};
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
-      {/* Top Navigation Bar */}
       <header className="w-full bg-slate-900/50 backdrop-blur-sm border-b border-cyan-500/20 px-6 py-4 flex justify-between items-center sticky top-0 z-10">
         <h1
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/home")}
           className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent cursor-pointer flex items-center gap-2 hover:opacity-80 transition"
         >
           <Home className="w-5 h-5 text-cyan-400" /> Verve Hub WriteUps
@@ -76,15 +96,14 @@ const Documents: React.FC = () => {
         </div>
       </header>
 
-      {/* Toast Messages */}
       {message && (
         <div
           className={`fixed top-6 right-6 px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 z-50 
                       backdrop-blur-md border transition-all duration-300 animate-in slide-in-from-top-5 ${
-            message.type === "success"
-              ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
-              : "bg-red-500/20 text-red-400 border-red-500/30"
-          }`}
+                        message.type === "success"
+                          ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
+                          : "bg-red-500/20 text-red-400 border-red-500/30"
+                      }`}
         >
           {message.type === "success" ? (
             <CheckCircle2 className="w-5 h-5" />
@@ -92,16 +111,12 @@ const Documents: React.FC = () => {
             <AlertCircle className="w-5 h-5" />
           )}
           <span className="font-medium">{message.text}</span>
-          <button
-            onClick={() => setMessage(null)}
-            className="ml-2 hover:opacity-70 transition"
-          >
+          <button onClick={() => setMessage(null)} className="ml-2 hover:opacity-70 transition">
             <XCircle className="w-5 h-5" />
           </button>
         </div>
       )}
 
-      {/* Documents Section */}
       <main className="flex-1 p-8">
         <div className="flex items-center gap-3 mb-8">
           <div className="p-3 bg-cyan-500/10 rounded-xl border border-cyan-500/20">
@@ -139,85 +154,77 @@ const Documents: React.FC = () => {
           </div>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {documents.map((doc) => {
-              const fileUrl = `http://localhost:5000/api/documents/${doc._id}`;
-              return (
-                <div
-                  key={doc._id}
-                  className="bg-slate-900/60 backdrop-blur-md border border-cyan-500/20 rounded-2xl p-6 
-                             shadow-xl hover:shadow-cyan-500/20 transition-all duration-300 
-                             transform hover:-translate-y-1 hover:border-cyan-500/40 
-                             relative overflow-hidden group"
-                >
-                  {/* Ambient glow effect on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/0 via-transparent to-blue-500/0 
-                                  group-hover:from-cyan-500/5 group-hover:to-blue-500/5 
-                                  transition-all duration-300 pointer-events-none"></div>
+            {documents.map((doc) => (
+              <div
+                key={doc._id}
+                className="bg-slate-900/60 backdrop-blur-md border border-cyan-500/20 rounded-2xl p-6 
+                           shadow-xl hover:shadow-cyan-500/20 transition-all duration-300 
+                           transform hover:-translate-y-1 hover:border-cyan-500/40 
+                           relative overflow-hidden group"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/0 via-transparent to-blue-500/0 
+                                group-hover:from-cyan-500/5 group-hover:to-blue-500/5 
+                                transition-all duration-300 pointer-events-none"></div>
 
-                  <div className="relative z-10">
-                    <div className="flex items-start justify-between mb-4">
-                      <h3 className="text-lg font-semibold text-slate-100 truncate flex-1 pr-2">
-                        {doc.title}
-                      </h3>
-                      <div className="p-2 bg-cyan-500/10 rounded-lg border border-cyan-500/20 shrink-0">
-                        <FileText className="text-cyan-400 w-5 h-5" />
-                      </div>
-                    </div>
-
-                    <p className="text-sm text-cyan-400 mb-2 gap-2 line-clamp-2 min-h-[2.5rem]">
-                      {doc.description || "No description provided."}
-                    </p>
-					<div className="flex items-center gap-1 mb-2 text-green-500"> File
-						<span className="px-2 py-1 text-cyan-400 bg-slate-800/90 rounded-md">
-							{doc.fileName}
-						</span>
-					  </div>
-
-                    <div className="flex items-center justify-between text-xs mb-4 pb-4 
-                                    border-b border-slate-700/50">
-                      <div className="flex items-center gap-2 text-green-500">Uploaded on:
-                        <span className="px-2 py-1 bg-slate-800/50 rounded-md"> 
-                          {new Date(doc.uploadedAt).toLocaleDateString()}
-                        </span>
-                        <span className="text-slate-600">•</span>
-                        <span>{new Date(doc.uploadedAt).toLocaleTimeString()}</span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => setPreviewDoc(fileUrl)}
-                        className="flex-1 flex items-center justify-center gap-2 
-                                   bg-gradient-to-r from-cyan-500 to-blue-500 
-                                   hover:from-cyan-400 hover:to-blue-400
-                                   px-3 py-2 rounded-lg text-white text-sm font-medium 
-                                   transition-all duration-200 shadow-lg shadow-cyan-500/20
-                                   transform hover:scale-[1.02] active:scale-[0.98]"
-                      >
-                        <Eye className="w-4 h-4" /> Preview
-                      </button>
-
-                      <a
-                        href={fileUrl}
-                        download={doc.title}
-                        className="flex items-center justify-center gap-2 
-                                   bg-slate-800/50 hover:bg-slate-700/50 
-                                   border border-slate-700/50 hover:border-cyan-500/30
-                                   px-3 py-2 rounded-lg text-slate-300 hover:text-cyan-400 
-                                   text-sm font-medium transition-all duration-200"
-                      >
-                        <Download className="w-4 h-4" />
-                      </a>
+                <div className="relative z-10">
+                  <div className="flex items-start justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-slate-100 truncate flex-1 pr-2">{doc.title}</h3>
+                    <div className="p-2 bg-cyan-500/10 rounded-lg border border-cyan-500/20 shrink-0">
+                      <FileText className="text-cyan-400 w-5 h-5" />
                     </div>
                   </div>
+
+                  <p className="text-sm text-cyan-400 mb-2 gap-2 line-clamp-2 min-h-[2.5rem]">
+                    {doc.description || "No description provided."}
+                  </p>
+
+                  <div className="flex items-center gap-1 mb-2 text-green-500">
+                    File
+                    <span className="px-2 py-1 text-cyan-400 bg-slate-800/90 rounded-md">{doc.fileName}</span>
+                  </div>
+
+                  <div className="flex items-center justify-between text-xs mb-4 pb-4 border-b border-slate-700/50">
+                    <div className="flex items-center gap-2 text-green-500">
+                      Uploaded on:
+                      <span className="px-2 py-1 bg-slate-800/50 rounded-md">
+                        {new Date(doc.uploadedAt).toLocaleDateString()}
+                      </span>
+                      <span className="text-slate-600">•</span>
+                      <span>{new Date(doc.uploadedAt).toLocaleTimeString()}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handlePreview(doc._id)}
+                      className="flex-1 flex items-center justify-center gap-2 
+                                 bg-gradient-to-r from-cyan-500 to-blue-500 
+                                 hover:from-cyan-400 hover:to-blue-400
+                                 px-3 py-2 rounded-lg text-white text-sm font-medium 
+                                 transition-all duration-200 shadow-lg shadow-cyan-500/20
+                                 transform hover:scale-[1.02] active:scale-[0.98]"
+                    >
+                      <Eye className="w-4 h-4" /> Preview
+                    </button>
+
+                    <button
+                      onClick={() => handleDownload(doc._id, doc.title)}
+                      className="flex items-center justify-center gap-2 
+                                 bg-slate-800/50 hover:bg-slate-700/50 
+                                 border border-slate-700/50 hover:border-cyan-500/30
+                                 px-3 py-2 rounded-lg text-slate-300 hover:text-cyan-400 
+                                 text-sm font-medium transition-all duration-200"
+                    >
+                      <Download className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
         )}
       </main>
 
-      {/* Preview Modal */}
       {previewDoc && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex justify-center items-center p-4 
                         animate-in fade-in duration-200">
@@ -229,8 +236,7 @@ const Documents: React.FC = () => {
                 Document Preview
               </h3>
               <button
-                className="p-2 text-slate-400 hover:text-red-400 hover:bg-red-500/10 
-                           rounded-lg transition-all duration-200"
+                className="p-2 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all duration-200"
                 onClick={() => setPreviewDoc(null)}
               >
                 <XCircle className="w-6 h-6" />

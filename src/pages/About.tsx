@@ -154,7 +154,7 @@ export default function About() {
               </Button>
             </Link>
             
-            <Link to="/">
+            <Link to="/home">
               <Button 
                 variant="outline"
                 className="px-8 py-6 bg-gray-900/50 text-cyan-300 font-mono text-base border border-cyan-500/30 hover:bg-cyan-500/10 hover:border-cyan-400/50 rounded-lg transition-all"
