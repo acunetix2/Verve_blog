@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { LogIn, Mail, Activity, UserPlus, Github, Linkedin, Twitter, BookOpen, Shield, TrendingUp, Users, Zap, Star, ArrowRight, Menu, X, ChevronDown, Award, Target, FileText, Lock, Code, Terminal } from "lucide-react";
+import { LogIn, Mail,Cpu,Server,Eye,Cloud, Activity, UserPlus, Github, Linkedin, Twitter, BookOpen, Shield, TrendingUp, Users, Zap, Star, ArrowRight, Menu, X, ChevronDown, Award, Target, FileText, Lock, Code, Terminal } from "lucide-react";
 
 export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -90,8 +90,8 @@ export default function LandingPage() {
         scrollY > 50 ? "backdrop-blur-xl bg-slate-950/90 shadow-2xl border-b border-cyan-500/10" : "backdrop-blur-md bg-slate-950/50"
       }`}>
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-cyan-500/30">
-            <Activity size={20} className="text-green-600" />
+          <div className="w-10 h-10 bg-gradient-to-br from-white to-white-600 rounded-lg flex items-center justify-center shadow-lg shadow-white">
+            <Cpu size={20} className="text-red-700" />
           </div>
           <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
             Verve Hub Blog
@@ -99,13 +99,12 @@ export default function LandingPage() {
         </div>
         
         {/* Desktop Nav */}
-        <nav className="hidden md:flex space-x-8">
-          <a href="#content" className="hover:text-cyan-400 transition-colors font-medium">Content</a>
-          <a href="#categories" className="hover:text-cyan-400 transition-colors font-medium">Categories</a>
-          <a href="#stats" className="hover:text-cyan-400 transition-colors font-medium">Stats</a>
-          <a href="#testimonials" className="hover:text-cyan-400 transition-colors font-medium">Reviews</a>
-        </nav>
-
+        <nav className="hidden md:flex space-x-6 text-sm tracking-wide">
+		  <a href="#content" className="hover:text-cyan-400 transition-colors font-medium">Content</a>
+		  <a href="#categories" className="hover:text-cyan-400 transition-colors font-medium">Categories</a>
+		  <a href="#stats" className="hover:text-cyan-400 transition-colors font-medium">Stats</a>
+		  <a href="#testimonials" className="hover:text-cyan-400 transition-colors font-medium">Reviews</a>
+		</nav>
         {/* Mobile Menu Button */}
         <button 
           className="md:hidden text-cyan-400 hover:text-cyan-300 transition-colors"

@@ -11,6 +11,7 @@ import {
   XCircle,
   CheckCircle2,
   AlertCircle,
+  Cpu,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -78,24 +79,29 @@ const Documents: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
-      <header className="w-full bg-slate-900/50 backdrop-blur-sm border-b border-cyan-500/20 px-6 py-4 flex justify-between items-center sticky top-0 z-10">
-        <h1
-          onClick={() => navigate("/home")}
-          className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent cursor-pointer flex items-center gap-2 hover:opacity-80 transition"
-        >
-          <Home className="w-5 h-5 text-cyan-400" /> Verve Hub WriteUps
-        </h1>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-2 px-4 py-2 rounded-full border-cyan-500 text-slate-400 
-                       hover:text-cyan-400 hover:bg-slate-800/50 transition-all duration-200"
-          >
-            <ArrowLeft className="w-4 h-4" /> Back
-          </button>
-        </div>
-      </header>
+		<header className="w-full bg-slate-900/50 backdrop-blur-sm border-b border-cyan-500/20 px-6 py-4 flex justify-between items-center sticky top-0 z-10">
+		  <div
+			onClick={() => navigate("/home")}
+			className="flex items-center gap-3 cursor-pointer"
+		  >
+			<div className="w-10 h-10 bg-gradient-to-br from-gray-800 to-gray-600 rounded-lg flex items-center justify-center shadow-lg shadow-cyan-500/40">
+			  <Cpu size={20} className="text-red-500" strokeWidth={2.5} />
+			</div>
+			<h1 className="text-2xl font-bold text-transparent bg-clip-text bg-white">
+			  Verve Hub Blog
+			</h1>
+		  </div>
 
+		  <div className="flex items-center gap-3">
+			<button
+			  onClick={() => navigate(-1)}
+			  className="flex items-center gap-2 px-4 py-2 rounded-full border border-cyan-500 text-slate-400 
+						 hover:text-cyan-400 hover:bg-slate-800/50 transition-all duration-200"
+			>
+			  <ArrowLeft className="w-4 h-4" /> Back
+			</button>
+		  </div>
+		</header>
       {message && (
         <div
           className={`fixed top-6 right-6 px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 z-50 

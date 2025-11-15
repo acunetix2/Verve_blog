@@ -2,8 +2,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
+import { useState, useEffect, createContext, useContext } from "react";
 
 // Pages
 import LandingPage from "./pages/Landing";
@@ -20,17 +21,71 @@ import Signup from "./components/Signup";
 import Login from "./components/Login";
 import Account from "./components/Account";
 
-// Mock authentication check (replace with your auth logic)
-const isAuthenticated = () => {
-  // e.g., check localStorage or context
-  return !!localStorage.getItem("token");
+//  Auth Context
+interface AuthContextType {
+  loading: boolean;
+  token: string | null;
+  role: "user" | "admin" | null;
+  refresh: () => void;
+}
+
+const AuthContext = createContext<AuthContextType>({
+  loading: true,
+  token: null,
+  role: null,
+  refresh: () => {},
+});
+
+const useAuth = () => useContext(AuthContext);
+
+const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState<string | null>(null);
+  const [role, setRole] = useState<"user" | "admin" | null>(null);
+
+  const refresh = () => {
+    const t = localStorage.getItem("token");
+    const r = localStorage.getItem("role") as "user" | "admin" | null;
+    setToken(t);
+    setRole(r ?? null);
+  };
+
+  useEffect(() => {
+    refresh();
+    setLoading(false);
+  }, []);
+
+  return (
+    <AuthContext.Provider value={{ loading, token, role, refresh }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
-// Protected Route wrapper
-const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
-  return isAuthenticated() ? children : <Navigate to="/login" replace />;
+// ProtectedRoute
+interface ProtectedRouteProps {
+  role?: "admin" | "user";
+}
+
+const ProtectedRoute = ({ role }: ProtectedRouteProps) => {
+  const { loading, token, role: userRole } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen text-cyan-400">
+        Checking authentication...
+      </div>
+    );
+  }
+
+  if (!token || (role && role !== userRole)) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <Outlet />;
 };
 
+// Query Client
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -39,91 +94,36 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <BrowserRouter>
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
+        <AuthProvider>
+          <BrowserRouter>
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
 
-            {/* Protected Routes */}
-            <Route
-              path="/home"
-              element={
-                <ProtectedRoute>
-                  <Index />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/about"
-              element={
-                <ProtectedRoute>
-                  <About />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin"
-              element={
-                <ProtectedRoute>
-                  <AdminPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/account"
-              element={
-                <ProtectedRoute>
-                  <Account />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin/create"
-              element={
-                <ProtectedRoute>
-                  <CreatePost />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/blog"
-              element={
-                <ProtectedRoute>
-                  <BlogList />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/resources"
-              element={
-                <ProtectedRoute>
-                  <Documents />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin/documents"
-              element={
-                <ProtectedRoute>
-                  <UploadPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/post/:slug"
-              element={
-                <ProtectedRoute>
-                  <BlogPost />
-                </ProtectedRoute>
-              }
-            />
+              {/* Protected User Routes */}
+              <Route element={<ProtectedRoute role="user" />}>
+                <Route path="/home" element={<Index />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/account" element={<Account />} />
+                <Route path="/blog" element={<BlogList />} />
+                <Route path="/resources" element={<Documents />} />
+                <Route path="/post/:slug" element={<BlogPost />} />
+              </Route>
 
-            {/* Catch-All 404 Page */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+              {/* Protected Admin Routes */}
+              <Route element={<ProtectedRoute role="admin" />}>
+                <Route path="/admin" element={<AdminPage />} />
+                <Route path="/admin/create" element={<CreatePost />} />
+                <Route path="/admin/documents" element={<UploadPage />} />
+              </Route>
+
+              {/* Catch-All 404 */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </AuthProvider>
       </TooltipProvider>
     </QueryClientProvider>
   </HelmetProvider>
