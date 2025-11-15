@@ -64,10 +64,10 @@ const BlogPost = () => {
     try {
       // Fetch post, likes, comments, and views in parallel
       const [postRes, likesRes, commentsRes, viewsRes] = await Promise.all([
-        fetch(`http://localhost:5000/api/posts/${slug}`, { credentials: "include" }),
-        fetch(`http://localhost:5000/api/posts/${slug}/likes`, { credentials: "include" }),
-        fetch(`http://localhost:5000/api/posts/${slug}/comments`, { credentials: "include" }),
-        fetch(`http://localhost:5000/api/posts/${slug}/views`, { credentials: "include" }),
+        fetch(`${import.meta.env.VITE_API_BASE_URL}/posts/${slug}`, { credentials: "include" }),
+        fetch(`${import.meta.env.VITE_API_BASE_URL}/posts/${slug}/likes`, { credentials: "include" }),
+        fetch(`${import.meta.env.VITE_API_BASE_URL}/posts/${slug}/comments`, { credentials: "include" }),
+        fetch(`${import.meta.env.VITE_API_BASE_URL}/posts/${slug}/views`, { credentials: "include" }),
       ]);
 
       if (!postRes.ok) throw new Error("Failed to fetch post");
@@ -86,7 +86,7 @@ const BlogPost = () => {
 
       // Increment view only if user has not viewed yet
       if (!viewsData.userHasViewed) {
-        const viewRes = await fetch(`http://localhost:5000/api/posts/${slug}/view`, {
+        const viewRes = await fetch(`${import.meta.env.VITE_API_BASE_URL}/posts/${slug}/view`, {
           method: "POST",
           credentials: "include",
         });
@@ -112,7 +112,7 @@ const BlogPost = () => {
     if (liked) return; // Restrict multiple likes per user
 
     try {
-      const res = await fetch(`http://localhost:5000/api/posts/${slug}/like`, {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/posts/${slug}/like`, {
         method: "POST",
         credentials: "include",
       });
@@ -134,7 +134,7 @@ const BlogPost = () => {
 
     setSubmitting(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/posts/${slug}/comments-name`, {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/posts/${slug}/comments-name`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

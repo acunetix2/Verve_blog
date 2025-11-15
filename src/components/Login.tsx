@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Eye, EyeOff, LogIn, AlertCircle, Shield, CheckCircle, Loader2, Sparkles } from "lucide-react";
+import { Eye, EyeOff, LogIn, AlertCircle, Shield,BarChart3, CheckCircle,Cpu, Loader2, Sparkles } from "lucide-react";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -18,18 +18,18 @@ export default function Login() {
   const [message, setMessage] = useState<{ type: string; text: string } | null>(null);
   const [redirecting, setRedirecting] = useState(false);
   const [processingAuth, setProcessingAuth] = useState(true);
-  const [loadingMessage, setLoadingMessage] = useState("Checking authentication...");
+  const [loadingMessage, setLoadingMessage] = useState("Initializing...");
   const [showSuccessTransition, setShowSuccessTransition] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
 
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 🚀 Handle Google OAuth token + auto-login
+  // Handle Google OAuth 
   useEffect(() => {
     const handleAuthentication = async () => {
       try {
-        // ✅ 1. Detect token in URL
+        // Detect token in URL
         const params = new URLSearchParams(location.search);
         const token = params.get("token");
         const role = params.get("role") || "user";
@@ -52,17 +52,16 @@ export default function Login() {
 
         const existingToken = localStorage.getItem("token");
 
-        // ✅ 2 & 3. If URL has token → Save to localStorage & Redirect immediately
+        // If URL has token then Save to localStorage & Redirect immediately
         if (token) {
           setLoadingMessage("🔐 Authenticating with Google...");
           
-          // ✅ 2. Save token to localStorage immediately
+          // Save token to localStorage immediately
           localStorage.setItem("token", token);
           localStorage.setItem("role", role);
           
           console.log("✅ Token saved to localStorage:", { token: token.substring(0, 20) + "...", role });
-
-          // ✅ Clean URL immediately (remove token from address bar)
+		  
           window.history.replaceState({}, document.title, location.pathname);
 
           setLoadingMessage(`✨ Welcome! Redirecting to ${role === "admin" ? "admin panel" : "dashboard"}...`);
@@ -70,7 +69,7 @@ export default function Login() {
           // Small delay for smooth UX
           await new Promise(resolve => setTimeout(resolve, 600));
           
-          // ✅ 3 & 4. Immediate redirect - No manual refresh needed
+          // Immediate redirect - No manual refresh needed
           console.log("✅ Redirecting to:", role === "admin" ? "/admin" : "/home");
           navigate(role === "admin" ? "/admin" : "/home", { replace: true });
           return;
@@ -164,7 +163,7 @@ export default function Login() {
         });
 
         // Show transition screen
-        setSuccessMessage(formData.isAdmin ? "Welcome back, Admin!" : "Welcome back!");
+        setSuccessMessage(formData.isAdmin ? "Initializing Verve Admin Panel!" : "Welcome back to Verve Hub Blog!");
         setShowSuccessTransition(true);
 
         // Wait for transition animation
@@ -197,21 +196,21 @@ export default function Login() {
     }
   }, [message]);
 
-  // 🔵 While processing OAuth token or existing session
+  // While processing OAuth token or existing session
   if (processingAuth) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-blue-950 to-cyan-950">
         <div className="text-center space-y-6">
           {/* Animated logo/icon */}
           <div className="relative w-20 h-20 mx-auto">
-            <div className="absolute inset-0 border-4 border-cyan-400/30 rounded-full"></div>
-            <div className="absolute inset-0 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
-            <div className="absolute inset-2 border-4 border-blue-400/50 border-b-transparent rounded-full animate-spin" style={{ animationDirection: "reverse", animationDuration: "1.5s" }}></div>
+            <div className="absolute inset-0 border-4 border-red-600 rounded-full" style={{ animationDirection: "normal", animationDuration: "1.5s" }}></div>
+            <div className="absolute inset-0 border-4 border-green-500 border-t-transparent rounded-full animate-spin" style={{ animationDirection: "normal", animationDuration: "1.5s" }}></div>
+            <div className="absolute inset-2 border-4 border-blue-600 border-b-transparent rounded-full animate-spin" style={{ animationDirection: "normal", animationDuration: "1.5s" }}></div>
           </div>
           
           {/* Loading message */}
           <div className="space-y-2">
-            <p className="text-cyan-400 text-lg font-semibold animate-pulse">
+            <p className="text-green-400 text-lg font-semibold animate-pulse">
               {loadingMessage}
             </p>
             <p className="text-cyan-300/60 text-sm">
@@ -222,8 +221,8 @@ export default function Login() {
           {/* Loading dots animation */}
           <div className="flex justify-center gap-2">
             <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
-            <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></div>
-            <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></div>
+            <div className="w-2 h-2 bg-red-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></div>
+            <div className="w-2 h-2 bg-green-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></div>
           </div>
         </div>
       </div>
@@ -256,8 +255,8 @@ export default function Login() {
           {/* Success Icon with pulse animation */}
           <div className="relative w-28 h-28 mx-auto">
             <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full animate-ping opacity-20"></div>
-            <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full flex items-center justify-center shadow-2xl shadow-cyan-500/50">
-              <CheckCircle className="text-white" size={56} strokeWidth={2.5} />
+            <div className="absolute inset-0 bg-gradient-to-r from-white to-white rounded-full flex items-center justify-center shadow-2xl shadow-cyan-500/50">
+              <BarChart3 className="text-green-500" size={56} strokeWidth={2.5} />
             </div>
           </div>
 
@@ -266,10 +265,10 @@ export default function Login() {
             <h2 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-500 animate-gradient">
               {successMessage}
             </h2>
-            <p className="text-cyan-300/80 text-lg font-medium flex items-center justify-center gap-2">
-              <Sparkles size={20} className="animate-pulse" />
+            <p className="text-green-700 text-lg font-medium flex items-center justify-center gap-2">
+              <Cpu size={20} className="animate-pulse text-red-700" />
               Taking you to your dashboard
-              <Sparkles size={20} className="animate-pulse" />
+              <Cpu size={20} className="animate-pulse text-red-700" />
             </p>
           </div>
 
@@ -458,7 +457,7 @@ export default function Login() {
               className="w-full bg-slate-800/60 border-2 border-cyan-700/40 hover:bg-slate-800/80 hover:border-cyan-600/60 text-white font-semibold py-3.5 rounded-xl flex items-center justify-center gap-3 transition-all duration-300 shadow-lg shadow-cyan-500/10 hover:shadow-cyan-500/20 hover:scale-[1.02] active:scale-[0.98]"
             >
               <FcGoogle size={22} />
-              <span>Sign in with Google</span>
+              <span>Continue with Google</span>
             </button>
 
             {/* Sign up */}

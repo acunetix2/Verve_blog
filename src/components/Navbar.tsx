@@ -16,20 +16,19 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 w-full bg-slate-900/90 backdrop-blur-md border-b border-cyan-900/50 z-50 shadow-md">
-      <div className="max-w-6xl mx-auto px-4 py-3 flex items-center gap-3">
-        <button
-          onClick={handleLogoClick}
-          className="flex items-center gap-2 text-sm md:text-base font-semibold text-cyan-400 hover:text-cyan-200 transition-colors"
-        >
-          <div className="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center shadow-md shadow-cyan-500/40 group-hover:shadow-cyan-400/60 transition-shadow">
-            <Cpu className="h-4 w-4 text-cyan-400" strokeWidth={2.5} />
-          </div>
-          <span className="tracking-tight select-none">
-            Verve Hub Blog
-          </span>
-        </button>
-      </div>
+    <nav className="fixed top-0 left-0 py-3 w-full bg-gray-900/90 backdrop-blur-md border-b border-green-900/50 z-50 shadow-md">
+      <div
+			onClick={handleLogoClick}
+			className="flex items-center gap-3 cursor-pointer"
+		  >
+			<div className="w-10 h-10 bg-gradient-to-br from-gray-800 to-gray-600 rounded-lg flex items-center justify-center shadow-lg shadow-cyan-500/40">
+			  <Cpu size={20} className="text-red-500" strokeWidth={2.5} />
+			</div>
+			<h1 className="text-2xl font-bold text-transparent bg-clip-text bg-cyan-400">
+			  Verve Hub Blog
+			</h1>
+		  </div>
+
     </nav>
   );
 }

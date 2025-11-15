@@ -105,7 +105,7 @@ const App = () => (
               {/* Protected User Routes */}
               <Route element={<ProtectedRoute role="user" />}>
                 <Route path="/home" element={<Index />} />
-                <Route path="/about" element={<About />} />
+                <Route path="/home/about" element={<About />} />
                 <Route path="/account" element={<Account />} />
                 <Route path="/blog" element={<BlogList />} />
                 <Route path="/resources" element={<Documents />} />

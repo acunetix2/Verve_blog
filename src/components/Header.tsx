@@ -18,7 +18,7 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: "About", path: "/about" },
+  { label: "About", path: "/home/about" },
   { label: "Posts", path: "/blog" },
   { label: "Resources", path: "/resources" },
   {
@@ -99,14 +99,14 @@ export const Header = () => {
 			  aria-label="Go to homepage"
 			>
 			  <div className="w-10 h-10 bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg flex items-center justify-center shadow-md shadow-red-500/40 group-hover:shadow-cyan-400/60 transition-shadow">
-				<Cpu className="h-5 w-5 text-red-700 group-hover:text-green-700" strokeWidth={2.5} />
+				<Cpu className="h-5 w-8 text-red-700 group-hover:text-green-700" strokeWidth={2.5} />
 			  </div>
 			  <div className="flex flex-col">
-				<span className="text-sm md:text-base font-semibold text-red-700 dark:text-white tracking-tight">
+				<span className="text-sm md:text-base font-semibold text-cyan-600 dark:text-white tracking-tight">
 				  Verve Hub DashBoard
 				</span>
-				<span className="text-[10px] md:text-xs font-medium text-green-700 dark:text-gray-500 tracking-wider uppercase">
-				  Security Research
+				<span className="text-[10px] md:text-xs font-bold font-medium text-green-700 dark:text-gray-500 tracking-wider">
+				  Security Research and Learning
 				</span>
 			  </div>
 			</Link>
@@ -119,7 +119,7 @@ export const Header = () => {
                     href={item.path}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                    className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-700 bg-gray-200 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
                   >
                     {item.label}
                     <ExternalLink size={14} className="opacity-50" />
@@ -128,7 +128,7 @@ export const Header = () => {
                   <Link
                     key={item.label}
                     to={item.path}
-                    className="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                    className="px-3 py-2 text-sm font-medium text-gray-700 bg-gray-200 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
                   >
                     {item.label}
                   </Link>
@@ -143,10 +143,10 @@ export const Header = () => {
                 href="https://github.com/acunetix2/verve_blog.git"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                className="inline-flex items-center bg-gray-200 gap-1.5 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
               >
                 <Github size={16} />
-                GitHub
+                
               </a>
 
               {/* User Dropdown */}

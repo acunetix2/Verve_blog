@@ -31,9 +31,6 @@ export default function Signup() {
     if (/[^a-zA-Z\d]/.test(password)) strength++;
     return strength;
   };
-  const handleGoogleLogin = () => {
-	window.open(`${import.meta.env.VITE_API_BASE_URL}/auth/google`, "_self");
-	};
   const getStrengthColor = (strength: number) => {
     if (strength <= 1) return "bg-red-500";
     if (strength <= 2) return "bg-cyan-500";
@@ -256,18 +253,6 @@ export default function Signup() {
               <button type="button" onClick={() => navigate("/login")} className="text-cyan-400 hover:text-cyan-300 transition font-medium">
                 Log in
               </button>
-			  <div className="relative flex items-center my-4">
-				  <div className="flex-grow border-t border-cyan-800/50"></div>
-				  <span className="mx-2 text-cyan-300/60 text-xs">OR</span>
-				  <div className="flex-grow border-t border-cyan-800/50"></div>
-				</div>
-				<button
-				  type="button"
-				  onClick={handleGoogleLogin}
-				  className="w-full border border-cyan-700 hover:bg-slate-800/60 text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-2 transition-all shadow-lg shadow-cyan-500/20"
-				>
-				  <FcGoogle size={22} /> Sign in with Google
-				</button>
             </p>
           </form>
         </div>
