@@ -146,7 +146,7 @@ export const Header = () => {
                 className="inline-flex items-center bg-gray-200 gap-1.5 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
               >
                 <Github size={16} />
-                
+                Github
               </a>
 
               {/* User Dropdown */}
@@ -216,7 +216,7 @@ const UserDropdown = ({
             className="w-8 h-8 rounded-full object-cover ring-2 ring-gray-200 dark:ring-gray-700"
           />
         ) : (
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white font-semibold text-xs shadow-sm">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-700 to-green-700 flex items-center justify-center text-white font-semibold text-xs shadow-sm">
             {user?.name ? getInitials(user.name) : "U"}
           </div>
         )}
@@ -242,13 +242,13 @@ const UserDropdown = ({
           <div className="py-1">
             <button
               onClick={() => {
-                navigate("/account");
+                navigate("/home/account");
                 setOpen(false);
               }}
               className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
             >
               <Settings size={16} className="text-gray-500 dark:text-gray-400" />
-              <span>Account Settings</span>
+              <span>Settings</span>
             </button>
             <button
               onClick={() => {
@@ -280,7 +280,7 @@ const LogoutModal = ({
   <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
     <div className="bg-white dark:bg-gray-900 rounded-2xl w-full max-w-md shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
       <div className="px-6 py-5 border-b border-gray-100 dark:border-gray-800">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+        <h2 className="text-lg font-semibold text-red-700 dark:text-white">
           {redirecting ? "Logging out..." : "Confirm Logout"}
         </h2>
       </div>
@@ -288,14 +288,14 @@ const LogoutModal = ({
         <p className="text-sm text-gray-600 dark:text-gray-400">
           {redirecting
             ? "You are being redirected to the login page."
-            : "Are you sure you want to log out of your account?"}
+            : "Are you sure you want to logout of your account?"}
         </p>
       </div>
       {!redirecting && (
         <div className="px-6 py-4 bg-gray-50 dark:bg-gray-800/50 flex justify-end gap-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-300 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
           >
             Cancel
           </button>

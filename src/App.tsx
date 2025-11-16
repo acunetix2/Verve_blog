@@ -106,7 +106,7 @@ const App = () => (
               <Route element={<ProtectedRoute role="user" />}>
                 <Route path="/home" element={<Index />} />
                 <Route path="/home/about" element={<About />} />
-                <Route path="/account" element={<Account />} />
+                <Route path="/home/account" element={<Account />} />
                 <Route path="/blog" element={<BlogList />} />
                 <Route path="/resources" element={<Documents />} />
                 <Route path="/post/:slug" element={<BlogPost />} />

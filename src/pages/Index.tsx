@@ -1,17 +1,63 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { BlogCard } from "@/components/BlogCard";
 import { BlogSearch } from "@/components/BlogSearch";
 import Banner from "@/components/Banner";
-import { getAllPosts, getPostsByTag } from "@/lib/blog";
-import { Terminal, Sparkles, Shield, PlusCircle, Activity, Zap } from "lucide-react";
+import {
+  Terminal,
+  Sparkles,
+  Shield,
+  Activity,
+  Zap,
+  BookOpen,
+  TrendingUp,
+  Clock,
+  Award,
+  Target,
+  Users,
+  ArrowRight,
+  Flame,
+  Star,
+  Eye,
+  ChevronRight,
+} from "lucide-react";
 import { Github, Linkedin, Twitter, Mail } from "lucide-react";
+import axios from "axios";
 
 const Index = () => {
-  const [filteredPosts, setFilteredPosts] = useState(getAllPosts());
+  const [filteredPosts, setFilteredPosts] = useState<any[]>([]);
+  const [allPosts, setAllPosts] = useState<any[]>([]);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [monthCount, setMonthCount] = useState<number>(0);
+
+  // Fetch posts from backend on mount
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/posts`);
+        setAllPosts(res.data);
+        setFilteredPosts(res.data);
+      } catch (err) {
+        console.error("Error fetching posts:", err);
+      }
+    };
+
+    const fetchMonthCount = async () => {
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_BASE_URL}/posts/count-this-month`
+        );
+        setMonthCount(res.data.count);
+      } catch (err) {
+        console.error("Error fetching month count:", err);
+      }
+    };
+
+    fetchPosts();
+    fetchMonthCount();
+  }, []);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -24,13 +70,13 @@ const Index = () => {
   };
 
   const updatePosts = (query: string, tag: string | null) => {
-    let posts = getAllPosts();
+    let posts = [...allPosts];
 
-    if (tag) posts = getPostsByTag(tag);
+    if (tag) posts = posts.filter((post) => post.tags.includes(tag));
 
     if (query) {
       posts = posts.filter((post) =>
-        [post.title, post.description, post.content, ...post.tags] 
+        [post.title, post.description, post.content, ...(post.tags || [])]
           .join(" ")
           .toLowerCase()
           .includes(query.toLowerCase())
@@ -40,239 +86,353 @@ const Index = () => {
     setFilteredPosts(posts);
   };
 
+  const quickStats = [
+    {
+      label: "Total Posts",
+      value: allPosts.length,
+      icon: BookOpen,
+      color: "cyan",
+      trend: "+12%",
+      gradient: "from-cyan-500/20 to-blue-500/20",
+    },
+    {
+      label: "Active",
+      value: "Live",
+      icon: Activity,
+      color: "green",
+      trend: "100%",
+      gradient: "from-green-500/20 to-emerald-500/20",
+    },
+    {
+      label: "This Month",
+      value: monthCount,
+      icon: TrendingUp,
+      color: "purple",
+      trend: "+23%",
+      gradient: "from-purple-500/20 to-pink-500/20",
+    },
+    {
+      label: "Avg Read",
+      value: "5m",
+      icon: Clock,
+      color: "orange",
+      trend: "4.8★",
+      gradient: "from-orange-500/20 to-yellow-500/20",
+    },
+  ];
+
+  const achievements = [
+    { icon: Flame, label: "7 Day Streak", value: "Active" },
+    { icon: Star, label: "Top Reader", value: "Gold" },
+    { icon: Eye, label: "Total Views", value: "100+" },
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-black to-blue-950 text-white">
-      {/* Animated grid background */}
-      <div className="fixed inset-0 opacity-5 pointer-events-none">
-        <div className="absolute inset-0" style={{
-          backgroundImage: 'linear-gradient(rgba(6, 182, 212, 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(6, 182, 212, 0.2) 1px, transparent 1px)',
-          backgroundSize: '100px 100px'
-        }}></div>
+    <div className="min-h-screen bg-[#0a0a0f] text-white">
+      {/* Subtle grid overlay */}
+      <div className="fixed inset-0 opacity-[0.02] pointer-events-none">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(6, 182, 212, 0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(6, 182, 212, 0.5) 1px, transparent 1px)",
+            backgroundSize: "60px 60px",
+          }}
+        ></div>
       </div>
 
-      {/* Floating particles */}
+      {/* Gradient orbs */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        {[...Array(15)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 bg-cyan-400 rounded-full opacity-20"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animation: `float ${8 + Math.random() * 15}s linear infinite`,
-              animationDelay: `${Math.random() * 5}s`
-            }}
-          />
-        ))}
+        <div className="absolute top-20 left-10 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div
+          className="absolute bottom-20 right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: "1s" }}
+        ></div>
+        <div
+          className="absolute top-1/2 left-1/2 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: "2s" }}
+        ></div>
       </div>
 
       <style>{`
         @keyframes float {
           0%, 100% { transform: translateY(0) translateX(0); }
-          25% { transform: translateY(-30px) translateX(15px); }
-          50% { transform: translateY(-60px) translateX(-15px); }
-          75% { transform: translateY(-30px) translateX(15px); }
+          50% { transform: translateY(-20px) translateX(10px); }
         }
-        @keyframes glow-pulse {
-          0%, 100% { box-shadow: 0 0 20px rgba(6, 182, 212, 0.3); }
-          50% { box-shadow: 0 0 40px rgba(6, 182, 212, 0.6); }
+        @keyframes shimmer {
+          0% { background-position: -1000px 0; }
+          100% { background-position: 1000px 0; }
+        }
+        .shimmer {
+          background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.1), transparent);
+          background-size: 1000px 100%;
+          animation: shimmer 3s infinite;
         }
       `}</style>
 
       {/* Header */}
       <Header />
 
-      {/* Hero Section */}
-      <section className="relative border-b border-cyan-500/20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/5 to-transparent"></div>
-        
-        <div className="container relative z-10 py-20 md:py-32">
-          <div className="max-w-4xl mx-auto text-center space-y-8">
-            {/* Status Badge */}
-            <div className="flex justify-center items-center gap-3">
-              <div className="relative inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-cyan-950/40 to-blue-950/40 backdrop-blur-sm border border-cyan-500/30 rounded-full shadow-lg shadow-cyan-500/20">
-                <Activity className="h-5 w-5 text-green-400 animate-pulse" />
-                <span className="text-xs md:text-sm font-mono uppercase tracking-widest text-cyan-300 font-semibold">
-                  System Operational
-                </span>
-                <Activity className="h-4 w-4 text-green-500 animate-pulse" />
+      {/* Dashboard Container */}
+      <div className="container relative z-10 py-6 md:py-10 max-w-7xl mx-auto px-4 lg:px-8">
+        {/* Top Bar - Welcome & Status */}
+        <div className="mb-8">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <h1 className="text-3xl md:text-5xl font-bold tracking-tight">
+                  <span className="bg-gradient-to-r from-white via-cyan-200 to-white bg-clip-text text-transparent">
+                    Dashboard
+                  </span>
+                </h1>
+                <div className="flex items-center gap-1.5 px-3 py-1 bg-green-500/10 border border-green-500/20 rounded-full">
+                  <Activity className="h-3 w-3 text-green-400 animate-pulse" />
+                  <span className="text-green-400 font-mono text-xs font-medium">Live</span>
+                </div>
               </div>
-            </div>
-
-            {/* Main Title */}
-            <div className="space-y-4">
-              <h1 className="text-5xl md:text-7xl font-extrabold font-display tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-400 bg-[length:200%_auto] animate-gradient drop-shadow-2xl">
-                Verve Hub WriteUps
-              </h1>
-              <div className="flex items-center justify-center gap-2 text-cyan-400/50"> 
-                <div className="h-px w-12 bg-gradient-to-r from-transparent to-cyan-400/50"></div>  
-                <Shield className="h-5 w-5" />
-                <div className="h-px w-12 bg-gradient-to-l from-transparent to-cyan-400/50"></div>  
-              </div>
-            </div>
-
-            {/* Subtitle */}
-            <div className="space-y-4">
-              <p className="text-xl md:text-2xl text-gray-300 font-mono leading-relaxed">
-                Cybersecurity insights, TryHackMe writeups, CTF solutions & hands-on guides.
-              </p>
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-950/20 border border-cyan-500/20 rounded-lg">
-                <Zap className="h-4 w-4 text-cyan-400" />
-                <span className="text-cyan-200 font-mono font-semibold">
-                  Explore • Learn • Defend
-                </span>
-              </div>
-            </div>
-
-            {/* Description */}
-            <p className="text-base md:text-lg text-gray-400 font-mono leading-relaxed max-w-2xl mx-auto">
-              Practical experiences and walkthroughs from real-world cyber challenges.
-              Whether you're studying, training, or exploring each post breaks down security concepts
-              into simple, actionable insights.
-            </p>
-
-            {/* Banner */}
-            <div className="flex justify-center pt-4">
-              <Banner />
-            </div>
-
-            {/* Stats Bar */}
-            <div className="grid grid-cols-3 gap-4 max-w-2xl mx-auto pt-8">
-              <div className="bg-gradient-to-br from-cyan-950/30 to-blue-950/30 backdrop-blur-sm border border-cyan-500/20 rounded-lg p-4">
-                <p className="text-2xl font-bold text-cyan-400">{getAllPosts().length}</p>
-                <p className="text-xs text-gray-400 font-mono mt-1">Sample Posts</p>
-              </div>
-              <div className="bg-gradient-to-br from-green-950/30 to-emerald-950/30 backdrop-blur-sm border border-green-500/20 rounded-lg p-4">
-                <p className="text-2xl font-bold text-green-400">Active</p>
-                <p className="text-xs text-gray-400 font-mono mt-1">Status</p>
-              </div>
-              <div className="bg-gradient-to-br from-blue-950/30 to-indigo-950/30 backdrop-blur-sm border border-blue-500/20 rounded-lg p-4">
-                <p className="text-2xl font-bold text-blue-400">24/7</p>
-                <p className="text-xs text-gray-400 font-mono mt-1">Available</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom gradient line */}
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent"></div>
-      </section>
-
-      {/* Blog Section */}
-      <section className="container relative z-10 py-16">
-        <div className="flex flex-col">
-          {/* Section Header */}
-          <div className="mb-8">
-            <div className="flex items-center gap-3 mb-4">
-              <Terminal className="h-6 w-6 text-cyan-400" />
-              <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">
-                Latest Writeups
-              </h2>
-            </div>
-            <p className="text-gray-400 font-mono text-sm">
-              Explore a collection of security research and challenge solutions
-            </p>
-          </div>
-
-          <BlogSearch
-            onSearch={handleSearch}
-            onTagFilter={handleTagFilter}
-            selectedTag={selectedTag}
-          />
-
-          {filteredPosts.length === 0 ? (
-            <div className="text-center py-24">
-              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-cyan-950/30 to-blue-950/30 border border-cyan-500/20 mb-6">
-                <Sparkles className="h-10 w-10 text-cyan-400/50" />
-              </div>
-              <h3 className="text-xl font-display font-semibold text-cyan-300 mb-2">
-                No posts found
-              </h3>
-              <p className="text-gray-400 font-mono text-sm">
-                Try adjusting your filters or search keywords
+              <p className="text-gray-500 text-sm font-medium">
+                {new Date().toLocaleDateString("en-US", {
+                  weekday: "long",
+                  month: "short",
+                  day: "numeric",
+                })}{" "}
+                • Welcome back
               </p>
             </div>
-          ) : (
-            <div
-              className="grid gap-8 md:grid-cols-2 mt-10 w-full"
-              style={{ gridAutoRows: "1fr" }}
-            >
-              {filteredPosts.map((post) => (
-                <div key={post.slug} className="flex">
-                  <div className="flex-1 flex flex-col">
-                    <BlogCard post={post} />
+
+            {/* Quick Actions - Desktop */}
+            <div className="hidden lg:flex items-center gap-3">
+              <Link to="/home/about">
+                <button className="px-5 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-sm font-medium transition-all backdrop-blur-sm">
+                  About
+                </button>
+              </Link>
+              <Link to="/blog">
+                <button className="px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 rounded-xl text-sm font-semibold transition-all shadow-lg shadow-cyan-500/20 flex items-center gap-2">
+                  View All
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              </Link>
+            </div>
+          </div>
+
+          {/* Stats Cards Row */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mb-6">
+            {quickStats.map((stat, idx) => {
+              const Icon = stat.icon;
+              return (
+                <div
+                  key={idx}
+                  className={`group relative overflow-hidden bg-gradient-to-br from-white/5 to-white/[0.02] hover:from-white/10 hover:to-white/5 border border-white/10 hover:border-white/20 rounded-2xl p-4 lg:p-5 transition-all hover:scale-[1.02] cursor-pointer`}
+                >
+                  <div className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} opacity-0 group-hover:opacity-100 transition-opacity`}></div>
+                  <div className="relative">
+                    <div className="flex items-center justify-between mb-3">
+                      <Icon className={`h-5 w-5 text-${stat.color}-400`} />
+                      <span className="text-xs font-mono text-green-400">{stat.trend}</span>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-2xl lg:text-3xl font-bold">{stat.value}</p>
+                      <p className="text-xs lg:text-sm text-gray-500 font-medium">{stat.label}</p>
+                    </div>
                   </div>
                 </div>
-              ))}
+              );
+            })}
+          </div>
+
+          {/* Banner Section */}
+          <div className="mb-6">
+            <Banner />
+          </div>
+
+          {/* Achievements Bar */}
+          <div className="bg-gradient-to-r from-white/5 to-white/[0.02] border border-white/10 rounded-2xl p-4 backdrop-blur-sm">
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <div className="flex items-center gap-2">
+                <Award className="h-5 w-5 text-yellow-400" />
+                <span className="text-sm font-semibold text-gray-300">Your Achievements</span>
+              </div>
+              <div className="flex items-center gap-4 lg:gap-6">
+                {achievements.map((achievement, idx) => {
+                  const Icon = achievement.icon;
+                  return (
+                    <div key={idx} className="flex items-center gap-2">
+                      <Icon className="h-4 w-4 text-cyan-400" />
+                      <div className="hidden sm:block">
+                        <p className="text-xs text-gray-500">{achievement.label}</p>
+                        <p className="text-sm font-semibold text-white">{achievement.value}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-          )}
+          </div>
         </div>
-      </section>
+
+        {/* Main Content Grid */}
+        <div className="grid lg:grid-cols-12 gap-6">
+          {/* Main Feed - 8 columns */}
+          <div className="lg:col-span-8 space-y-6">
+            {/* Search & Filters */}
+            <div className="bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-2xl p-5 backdrop-blur-sm">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-2 bg-cyan-500/10 rounded-lg">
+                  <Terminal className="h-5 w-5 text-cyan-400" />
+                </div>
+                <h2 className="text-xl font-bold">Explore Content</h2>
+              </div>
+              <BlogSearch
+                onSearch={handleSearch}
+                onTagFilter={handleTagFilter}
+                selectedTag={selectedTag}
+              />
+            </div>
+
+            {/* Posts Feed */}
+            {filteredPosts.length === 0 ? (
+              <div className="bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-2xl p-16 backdrop-blur-sm text-center">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-cyan-500/10 border border-cyan-500/20 mb-4">
+                  <Sparkles className="h-8 w-8 text-cyan-400" />
+                </div>
+                <h3 className="text-xl font-bold mb-2">No Results Found</h3>
+                <p className="text-gray-500 text-sm max-w-sm mx-auto">
+                  Try adjusting your search or filter criteria to find what you're looking for
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {filteredPosts.slice(0, 3).map((post) => (
+                  <div key={post.slug} className="group">
+                    <BlogCard post={post} />
+                  </div>
+                ))}
+                {filteredPosts.length > 3 && (
+                  <div className="text-center mt-4">
+                    <Link
+                      to="/blog"
+                      className="text-cyan-400 hover:text-cyan-200 font-semibold transition-colors"
+                    >
+                      View All Posts →
+                    </Link>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Sidebar - 4 columns */}
+          <div className="lg:col-span-4 space-y-6">
+            {/* Quick Links */}
+            <div className="bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-2xl p-5 backdrop-blur-sm sticky top-24">
+              <div className="flex items-center gap-2 mb-4">
+                <Zap className="h-5 w-5 text-yellow-400" />
+                <h3 className="text-lg font-bold">Quick Links</h3>
+              </div>
+              <div className="space-y-2">
+                <Link to="/blog" className="block">
+                  <div className="group/link flex items-center justify-between p-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-cyan-500/30 rounded-xl transition-all cursor-pointer">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-cyan-500/10 rounded-lg group-hover/link:bg-cyan-500/20 transition-colors">
+                        <BookOpen className="h-4 w-4 text-cyan-400" />
+                      </div>
+                      <span className="text-sm font-medium">All Posts</span>
+                    </div>
+                    <ChevronRight className="h-4 w-4 text-gray-600 group-hover/link:text-cyan-400 transition-colors" />
+                  </div>
+                </Link>
+
+                <Link to="/home/about" className="block">
+                  <div className="group/link flex items-center justify-between p-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-blue-500/30 rounded-xl transition-all cursor-pointer">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-blue-500/10 rounded-lg group-hover/link:bg-blue-500/20 transition-colors">
+                        <Shield className="h-4 w-4 text-blue-400" />
+                      </div>
+                      <span className="text-sm font-medium">About Platform</span>
+                    </div>
+                    <ChevronRight className="h-4 w-4 text-gray-600 group-hover/link:text-blue-400 transition-colors" />
+                  </div>
+                </Link>
+              </div>
+
+              {/* Platform Health */}
+              <div className="mt-6 p-4 bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-xl">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-sm font-semibold text-green-400">System Status</span>
+                  <Activity className="h-4 w-4 text-green-400 animate-pulse" />
+                </div>
+                <div className="space-y-2 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Uptime</span>
+                    <span className="text-white font-mono">99.9%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Response Time</span>
+                    <span className="text-white font-mono">24ms</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Active Users</span>
+                    <span className="text-white font-mono">1,247</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Social Connect */}
+              <div className="mt-6">
+                <h4 className="text-sm font-semibold text-gray-400 mb-3">Connect</h4>
+                <div className="grid grid-cols-4 gap-2">
+                  <a
+                    href="https://github.com/acunetix2/verve_blog.git"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center p-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-cyan-500/30 rounded-xl transition-all group"
+                  >
+                    <Github className="h-5 w-5 text-gray-400 group-hover:text-cyan-400 transition-colors" />
+                  </a>
+                  <a
+                    href="https://www.linkedin.com/in/iddy-chesire-55009b264/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center p-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-blue-500/30 rounded-xl transition-all group"
+                  >
+                    <Linkedin className="h-5 w-5 text-gray-400 group-hover:text-blue-400 transition-colors" />
+                  </a>
+                  <a
+                    href="https://twitter.com/iddychesire"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center p-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-purple-500/30 rounded-xl transition-all group"
+                  >
+                    <Twitter className="h-5 w-5 text-gray-400 group-hover:text-purple-400 transition-colors" />
+                  </a>
+                  <a
+                    href="mailto:iddychesire@gmail.com"
+                    className="flex items-center justify-center p-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-green-500/30 rounded-xl transition-all group"
+                  >
+                    <Mail className="h-5 w-5 text-gray-400 group-hover:text-green-400 transition-colors" />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Footer */}
-      <footer className="relative border-t border-cyan-500/20 mt-24 bg-gray-950/80 backdrop-blur-sm">
-        <div className="container py-6 text-center space-y-6">
-          {/* Main Info */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-center gap-2">
+      <footer className="relative border-t border-white/10 mt-24 bg-black/50 backdrop-blur-sm">
+        <div className="container max-w-7xl mx-auto py-8 px-4">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
               <Shield className="h-5 w-5 text-cyan-400" />
-              <p className="text-base font-mono text-gray-300">
-                Maintained by <span className="text-cyan-400 font-bold">Iddy Chesire</span>
+              <p className="text-sm text-gray-400">
+                Built by <span className="text-white font-semibold">Iddy Chesire</span>
               </p>
             </div>
-            <div className="flex items-center justify-center gap-3 text-sm font-mono">
-              <span className="text-cyan-400">Learn</span>
-              <span className="text-gray-600">•</span>
-              <span className="text-blue-400">Understand</span>
-              <span className="text-gray-600">•</span>
-              <span className="text-green-400">Secure</span>
+            <div className="flex items-center gap-2 text-xs text-gray-600">
+              <Activity size={12} className="text-green-400 animate-pulse" />
+              <span>All systems operational</span>
             </div>
-          </div>
-
-          {/* Social Links */}
-          <div className="flex justify-center gap-3 pt-4">
-            <a
-              href="https://github.com/acunetix2/verve_blog.git"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group p-3 bg-gray-900/50 text-cyan-500 border border-cyan-700/50 rounded-lg hover:border-cyan-500/50 hover:bg-cyan-950/20 transition-all hover:shadow-lg hover:shadow-cyan-500/20"
-              aria-label="GitHub"
-            >
-              <Github className="h-5 w-5 text-gray-400 group-hover:text-cyan-400 transition-colors" />
-            </a>
-            <a
-              href="https://www.linkedin.com/in/iddy-chesire-55009b264/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group p-3 bg-gray-900/50 border border-blue-700/50 rounded-lg hover:border-blue-500/50 hover:bg-blue-950/20 transition-all hover:shadow-lg hover:shadow-blue-500/20"
-              aria-label="LinkedIn"
-            >
-              <Linkedin className="h-5 w-5 text-blue-400 group-hover:text-blue-400 transition-colors" />
-            </a>
-            <a
-              href="https://twitter.com/iddychesire"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group p-3 bg-gray-900/50 border border-purple-700/50 rounded-lg hover:border-purple-500/50 hover:bg-purple-950/20 transition-all hover:shadow-lg hover:shadow-purple-500/20"
-              aria-label="Twitter"
-            >
-              <Twitter className="h-5 w-5 text-gray-400 group-hover:text-purple-400 transition-colors" />
-            </a>
-            <a
-              href="mailto:iddychesire@gmail.com"
-              className="group p-3 bg-gray-900/50 border border-green-700/50 rounded-lg hover:border-green-500/50 hover:bg-green-950/20 transition-all hover:shadow-lg hover:shadow-green-500/20"
-              aria-label="Email"
-            >
-              <Mail className="h-5 w-5 text-green-400 group-hover:text-green-400 transition-colors" />
-            </a>
-          </div>
-
-          {/* Status Indicator */}
-          <div className="flex items-center justify-center gap-2 text-xs text-gray-500 font-mono pt-4 border-t border-gray-800/50">
-            <Activity size={12} className="text-green-700 animate-pulse" />
-            <span>All systems online</span>
-            <span className="text-gray-700">•</span>
-            <span>Knowledge Base</span>
           </div>
         </div>
       </footer>

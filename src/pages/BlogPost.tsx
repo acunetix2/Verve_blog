@@ -210,7 +210,7 @@ const BlogPost = () => {
           <header className="mb-12 space-y-6">
             {post.featured && (
               <Badge className="bg-gradient-to-r from-cyan-600 to-blue-600 border-cyan-400/50 text-white">
-                <Shield className="h-3 w-3 mr-1" /> FEATURED
+                <Shield className="h-3 w-3 mr-1" /> Featured
               </Badge>
             )}
             <h1 className="text-5xl font-display font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">

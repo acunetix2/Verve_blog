@@ -66,7 +66,7 @@ const AdminPage: React.FC = () => {
         return;
       }
       try {
-        const res = await axios.get("http://localhost:5000/api/auth/verify", {
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/auth/verify`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (res.data.valid) {
@@ -96,7 +96,7 @@ const AdminPage: React.FC = () => {
   // Fetch posts
   const fetchPosts = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/posts");
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/posts`);
       setPosts(res.data);
       toast.success("Posts synchronized", {
         icon: <CheckCircle2 className="text-green-500" />,
@@ -119,7 +119,7 @@ const AdminPage: React.FC = () => {
     e.preventDefault();
     setAuthLoading(true);
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", credentials);
+      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/login`, credentials);
       localStorage.setItem("token", res.data.token);
       setToken(res.data.token);
       setIsLoggedIn(true);
@@ -162,7 +162,7 @@ const AdminPage: React.FC = () => {
       });
     try {
       if (editing && form._id) {
-        await axios.put(`http://localhost:5000/api/posts/${form._id}`, form, {
+        await axios.put(`${import.meta.env.VITE_API_BASE_URL}/posts/${form._id}`, form, {
           headers: { Authorization: `Bearer ${token}` },
         });
         toast.success("Entry updated successfully", {
@@ -170,7 +170,7 @@ const AdminPage: React.FC = () => {
           duration: 1000,
         });
       } else {
-        await axios.post("http://localhost:5000/api/posts", form, {
+        await axios.post(`${import.meta.env.VITE_API_BASE_URL}/posts`, form, {
           headers: { Authorization: `Bearer ${token}` },
         });
         toast.success("Post created successfully", {
@@ -193,7 +193,7 @@ const AdminPage: React.FC = () => {
   const handleDelete = async (id: string) => {
     if (!window.confirm("Confirm permanent deletion of this post?")) return;
     try {
-      await axios.delete(`http://localhost:5000/api/posts/${id}`, {
+      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/posts/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Post deleted successfully", {

@@ -229,7 +229,7 @@ export default function Login() {
     );
   }
 
-  // 🎉 Success Transition Screen
+  // Success Transition Screen
   if (showSuccessTransition) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-blue-950 to-cyan-950 relative overflow-hidden">
@@ -290,7 +290,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-cyan-950 pt-20">
-      {/* 🌐 Navbar */}
+      {/*  Navbar */}
       <Navbar />
 
       {/* BACKGROUND ORBS */}
@@ -311,7 +311,7 @@ export default function Login() {
             formData.isAdmin ? "border-cyan-500/40 shadow-cyan-500/20" : "border-cyan-900/30"
           }`}
         >
-          {/* ==================== HEADER ==================== */}
+          {/* HEADER */}
           <div className="text-center mb-8 space-y-2">
             <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-500 mb-2 tracking-tight animate-gradient">
               Verve Hub Blog
@@ -325,7 +325,7 @@ export default function Login() {
             </p>
           </div>
 
-          {/* ==================== ERROR / SUCCESS ALERT ==================== */}
+          {/* ERROR / SUCCESS ALERT  */}
           {message && (
             <div
               className={`p-4 mb-6 rounded-xl flex items-center gap-3 text-sm font-medium transition-all duration-500 transform ${
@@ -343,7 +343,7 @@ export default function Login() {
             </div>
           )}
 
-          {/* ==================== FORM ==================== */}
+          {/* FORM */}
           <form className="space-y-6" onSubmit={handleSubmit}>
             {/* Email */}
             <div className="space-y-2">

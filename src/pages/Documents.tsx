@@ -35,7 +35,7 @@ const Documents: React.FC = () => {
   useEffect(() => {
     const fetchDocuments = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/documents");
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/documents`);
         setDocuments(res.data);
         setMessage({ type: "success", text: "Documents loaded successfully!" });
       } catch (err) {
@@ -58,7 +58,7 @@ const Documents: React.FC = () => {
   // 🔹 Fetch presigned URL for download/preview
   const getSignedUrl = async (docId: string) => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/documents/download/${docId}`);
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/documents/download/${docId}`);
       return res.data.downloadUrl;
     } catch (err) {
       setMessage({ type: "error", text: "Failed to get download URL!" });

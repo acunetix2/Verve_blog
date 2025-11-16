@@ -17,7 +17,7 @@ const NotFound = () => {
 			type="outline"
 			className="flex text-blue-400"
 			>
-        <a href="/" className="text-blue-500 underline hover:text-blue-700">
+        <a href="/home" className="text-blue-500 underline hover:text-blue-700">
           Return to Home
         </a>
 		</button>
