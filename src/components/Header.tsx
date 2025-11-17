@@ -1,8 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Terminal, Search,Cpu, PlusCircle, Shield, Activity, LogOut, Settings, ChevronDown, ExternalLink, Github } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Menu, Cpu, ChevronDown, ExternalLink, Github, CheckCircle2, Bell, Settings, LogOut } from "lucide-react";
 import { useState, useEffect, useCallback, useRef } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import axios from "axios";
+import { useLiveNotifications } from "@/hooks/useLiveNotifications";
 
 interface User {
   name: string;
@@ -18,7 +19,7 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: "About", path: "/home/about" },
+  { label: "About", path: "/me/about" },
   { label: "Posts", path: "/blog" },
   { label: "Resources", path: "/resources" },
   {
@@ -28,7 +29,7 @@ const NAV_ITEMS: NavItem[] = [
   },
 ];
 
-export const Header = () => {
+export const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) => {
   const [user, setUser] = useState<User | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [logoutModalOpen, setLogoutModalOpen] = useState(false);
@@ -38,6 +39,10 @@ export const Header = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const dropdownRef = useRef<HTMLDivElement>(null);
+  
+  const [showNotifications, setShowNotifications] = useState(false);
+  const notificationRef = useRef<HTMLDivElement>(null);
+  const { notifications, markAsRead } = useLiveNotifications();
 
   const fetchUser = useCallback(async () => {
     if (!token) return;
@@ -62,17 +67,17 @@ export const Header = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
+  
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setDropdownOpen(false);
+      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+        setShowNotifications(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
+	
   const handleLogout = () => {
     setRedirecting(true);
     setTimeout(() => {
@@ -92,25 +97,38 @@ export const Header = () => {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <Link
-			  to="/home"
-			  className="flex items-center gap-3 group"
-			  aria-label="Go to homepage"
-			>
-			  <div className="w-10 h-10 bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg flex items-center justify-center shadow-md shadow-red-500/40 group-hover:shadow-cyan-400/60 transition-shadow">
-				<Cpu className="h-5 w-8 text-red-700 group-hover:text-green-700" strokeWidth={2.5} />
-			  </div>
-			  <div className="flex flex-col">
-				<span className="text-sm md:text-base font-semibold text-cyan-600 dark:text-white tracking-tight">
-				  Verve Hub DashBoard
-				</span>
-				<span className="text-[10px] md:text-xs font-bold font-medium text-green-700 dark:text-gray-500 tracking-wider">
-				  Security Research and Learning
-				</span>
-			  </div>
-			</Link>
-            {/* Navigation */}
+            {/* Left side: Hamburger + Logo */}
+            <div className="flex items-center gap-3">
+              {/* Hamburger Menu Button */}
+              <button
+                onClick={onToggleSidebar}
+                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-300"
+                aria-label="Toggle sidebar"
+              >
+                <Menu size={20} />
+              </button>
+
+              {/* Logo */}
+              <Link
+                to="/me"
+                className="flex items-center gap-3 group"
+                aria-label="Go to homepage"
+              >
+                <div className="w-10 h-10 bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg flex items-center justify-center shadow-md shadow-red-500/40 group-hover:shadow-cyan-400/60 transition-shadow">
+                  <Cpu className="h-5 w-8 text-red-700 group-hover:text-green-700" strokeWidth={2.5} />
+                </div>
+                <div className="hidden sm:flex flex-col">
+                  <span className="text-sm md:text-base font-semibold text-cyan-600 dark:text-white tracking-tight">
+                    Verve Hub WriteUps
+                  </span>
+                  <span className="text-[10px] md:text-xs font-bold font-medium text-green-700 dark:text-gray-500 tracking-wider">
+                    Security Research and Learning
+                  </span>
+                </div>
+              </Link>
+            </div>
+
+            {/* Right side: Navigation */}
             <nav className="flex items-center gap-1">
               {NAV_ITEMS.map((item) =>
                 item.external ? (
@@ -119,7 +137,7 @@ export const Header = () => {
                     href={item.path}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-700 bg-gray-200 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                    className="hidden md:inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-700 bg-gray-200 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
                   >
                     {item.label}
                     <ExternalLink size={14} className="opacity-50" />
@@ -128,7 +146,7 @@ export const Header = () => {
                   <Link
                     key={item.label}
                     to={item.path}
-                    className="px-3 py-2 text-sm font-medium text-gray-700 bg-gray-200 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                    className="hidden md:block px-3 py-2 text-sm font-medium text-gray-700 bg-gray-200 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
                   >
                     {item.label}
                   </Link>
@@ -136,19 +154,69 @@ export const Header = () => {
               )}
 
               {/* Divider */}
-              <div className="w-px h-6 bg-gray-200 dark:bg-gray-800 mx-2" />
+              <div className="hidden md:block w-px h-6 bg-gray-200 dark:bg-gray-800 mx-2" />
 
-              {/* GitHub Button */}
-              <a
-                href="https://github.com/acunetix2/verve_blog.git"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center bg-gray-200 gap-1.5 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
-              >
-                <Github size={16} />
-                Github
-              </a>
+              {/* Notification Button */}
+              <div className="relative" ref={notificationRef}>
+                <button
+                  onClick={() => setShowNotifications(!showNotifications)}
+                  className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-300"
+                >
+                  <Bell size={20} />
+                  {notifications.some(n => !n.read) && (
+                    <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                  )}
+                </button>
 
+                {showNotifications && (
+                  <div className="absolute right-0 mt-2 w-80 max-h-96 overflow-y-auto bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl shadow-lg p-4">
+                    {notifications.length === 0 && (
+                      <p className="text-center text-slate-400">No notifications</p>
+                    )}
+
+                    <AnimatePresence>
+                      {notifications.map((n) => {
+                        const bgColor =
+                          n.type === "document"
+                            ? "bg-cyan-500/10 border-cyan-500/20"
+                            : "bg-emerald-500/10 border-emerald-500/20";
+                        const textColor =
+                          n.type === "document" ? "text-cyan-400" : "text-emerald-400";
+                        const Icon = n.type === "document" ? Bell : CheckCircle2;
+
+                        return (
+                          <motion.div
+                            key={n.id}
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            className={`flex items-start gap-3 p-3 rounded-xl border ${bgColor} ${
+                              n.read ? "opacity-50" : "opacity-100"
+                            }`}
+                          >
+                            <Icon className={`w-5 h-5 ${textColor} mt-1`} />
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-slate-100">{n.title}</h3>
+                              <p className={`text-sm ${textColor} mt-1`}>{n.message}</p>
+                              <span className="text-xs text-slate-500">
+                                {new Date(n.time).toLocaleTimeString()}
+                              </span>
+                            </div>
+                            {!n.read && (
+                              <button
+                                onClick={() => markAsRead(n.id)}
+                                className="text-slate-400 hover:text-red-400"
+                              >
+                                ×
+                              </button>
+                            )}
+                          </motion.div>
+                        );
+                      })}
+                    </AnimatePresence>
+                  </div>
+                )}
+              </div>
               {/* User Dropdown */}
               <UserDropdown
                 user={user}
@@ -242,7 +310,7 @@ const UserDropdown = ({
           <div className="py-1">
             <button
               onClick={() => {
-                navigate("/home/account");
+                navigate("/me/account");
                 setOpen(false);
               }}
               className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"

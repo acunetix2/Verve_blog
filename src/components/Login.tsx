@@ -70,8 +70,8 @@ export default function Login() {
           await new Promise(resolve => setTimeout(resolve, 600));
           
           // Immediate redirect - No manual refresh needed
-          console.log("✅ Redirecting to:", role === "admin" ? "/admin" : "/home");
-          navigate(role === "admin" ? "/admin" : "/home", { replace: true });
+          console.log("✅ Redirecting to:", role === "admin" ? "/admin" : "/me");
+          navigate(role === "admin" ? "/admin" : "/me", { replace: true });
           return;
         }
 
@@ -85,7 +85,7 @@ export default function Login() {
           // Ensure smooth redirect
           await new Promise(resolve => setTimeout(resolve, 400));
           
-          navigate(savedRole === "admin" ? "/admin" : "/home", { replace: true });
+          navigate(savedRole === "admin" ? "/admin" : "/me", { replace: true });
           return;
         }
 
@@ -173,7 +173,7 @@ export default function Login() {
 
         // Navigate after transition
         await new Promise(resolve => setTimeout(resolve, 500));
-        navigate(formData.isAdmin ? "/admin" : "/home", { replace: true });
+        navigate(formData.isAdmin ? "/admin" : "/me", { replace: true });
       } else {
         setMessage({ type: "error", text: res.data.message || "Login failed" });
       }

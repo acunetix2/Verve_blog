@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom
 import { HelmetProvider } from "react-helmet-async";
 import { useState, useEffect, createContext, useContext } from "react";
 
+// Wrapper
+import VerveHubWrapper from "@/components/VerveHubWrapper";
 // Pages
 import LandingPage from "./pages/Landing";
 import Index from "./pages/Index";
@@ -21,7 +23,7 @@ import Signup from "./components/Signup";
 import Login from "./components/Login";
 import Account from "./components/Account";
 
-//  Auth Context
+// --- Auth Context ---
 interface AuthContextType {
   loading: boolean;
   token: string | null;
@@ -62,7 +64,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-// ProtectedRoute
+// --- ProtectedRoute ---
 interface ProtectedRouteProps {
   role?: "admin" | "user";
 }
@@ -97,29 +99,33 @@ const App = () => (
         <AuthProvider>
           <BrowserRouter>
             <Routes>
-              {/* Public Routes */}
+              {/* Public */}
               <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
 
-              {/* Protected User Routes */}
+              {/* Protected User Routes + Wrapper */}
               <Route element={<ProtectedRoute role="user" />}>
-                <Route path="/home" element={<Index />} />
-                <Route path="/home/about" element={<About />} />
-                <Route path="/home/account" element={<Account />} />
-                <Route path="/blog" element={<BlogList />} />
-                <Route path="/resources" element={<Documents />} />
-                <Route path="/post/:slug" element={<BlogPost />} />
+                <Route element={<VerveHubWrapper />}>
+                  <Route path="/me" element={<Index />} />
+                  <Route path="/me/about" element={<About />} />
+                  <Route path="/me/account" element={<Account />} />
+                  <Route path="/blog" element={<BlogList />} />
+                  <Route path="/resources" element={<Documents />} />
+                  <Route path="/post/:slug" element={<BlogPost />} />
+                </Route>
               </Route>
 
-              {/* Protected Admin Routes */}
+              {/* Protected Admin */}
               <Route element={<ProtectedRoute role="admin" />}>
-                <Route path="/admin" element={<AdminPage />} />
-                <Route path="/admin/create" element={<CreatePost />} />
-                <Route path="/admin/documents" element={<UploadPage />} />
+                <Route element={<VerveHubWrapper />}>
+                  <Route path="/admin" element={<AdminPage />} />
+                  <Route path="/admin/create" element={<CreatePost />} />
+                  <Route path="/admin/documents" element={<UploadPage />} />
+                </Route>
               </Route>
 
-              {/* Catch-All 404 */}
+              {/* 404 */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

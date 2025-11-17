@@ -100,7 +100,7 @@ const Index = () => {
       value: "Live",
       icon: Activity,
       color: "green",
-      trend: "100%",
+      trend: "99.9%",
       gradient: "from-green-500/20 to-emerald-500/20",
     },
     {
@@ -108,7 +108,7 @@ const Index = () => {
       value: monthCount,
       icon: TrendingUp,
       color: "purple",
-      trend: "+23%",
+      trend: "+13%",
       gradient: "from-purple-500/20 to-pink-500/20",
     },
     {
@@ -116,7 +116,7 @@ const Index = () => {
       value: "5m",
       icon: Clock,
       color: "orange",
-      trend: "4.8★",
+      trend: "4.1★",
       gradient: "from-orange-500/20 to-yellow-500/20",
     },
   ];
@@ -171,7 +171,6 @@ const Index = () => {
       `}</style>
 
       {/* Header */}
-      <Header />
 
       {/* Dashboard Container */}
       <div className="container relative z-10 py-6 md:py-10 max-w-7xl mx-auto px-4 lg:px-8">
@@ -373,7 +372,7 @@ const Index = () => {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400">Active Users</span>
-                    <span className="text-white font-mono">1,247</span>
+                    <span className="text-white font-mono">100+</span>
                   </div>
                 </div>
               </div>
@@ -388,7 +387,7 @@ const Index = () => {
                     rel="noopener noreferrer"
                     className="flex items-center justify-center p-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-cyan-500/30 rounded-xl transition-all group"
                   >
-                    <Github className="h-5 w-5 text-gray-400 group-hover:text-cyan-400 transition-colors" />
+                    <Github className="h-4 w-4 text-gray-400 group-hover:text-cyan-400 transition-colors" />
                   </a>
                   <a
                     href="https://www.linkedin.com/in/iddy-chesire-55009b264/"
@@ -396,7 +395,7 @@ const Index = () => {
                     rel="noopener noreferrer"
                     className="flex items-center justify-center p-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-blue-500/30 rounded-xl transition-all group"
                   >
-                    <Linkedin className="h-5 w-5 text-gray-400 group-hover:text-blue-400 transition-colors" />
+                    <Linkedin className="h-4 w-4 text-gray-400 group-hover:text-blue-400 transition-colors" />
                   </a>
                   <a
                     href="https://twitter.com/iddychesire"
@@ -404,13 +403,13 @@ const Index = () => {
                     rel="noopener noreferrer"
                     className="flex items-center justify-center p-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-purple-500/30 rounded-xl transition-all group"
                   >
-                    <Twitter className="h-5 w-5 text-gray-400 group-hover:text-purple-400 transition-colors" />
+                    <Twitter className="h-4 w-4 text-gray-400 group-hover:text-purple-400 transition-colors" />
                   </a>
                   <a
                     href="mailto:iddychesire@gmail.com"
                     className="flex items-center justify-center p-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-green-500/30 rounded-xl transition-all group"
                   >
-                    <Mail className="h-5 w-5 text-gray-400 group-hover:text-green-400 transition-colors" />
+                    <Mail className="h-4 w-4 text-gray-400 group-hover:text-green-400 transition-colors" />
                   </a>
                 </div>
               </div>

@@ -37,7 +37,6 @@ const Documents: React.FC = () => {
       try {
         const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/documents`);
         setDocuments(res.data);
-        setMessage({ type: "success", text: "Documents loaded successfully!" });
       } catch (err) {
         setError("Failed to load documents. Try again later.");
         setMessage({ type: "error", text: "Failed to load documents!" });
@@ -78,30 +77,7 @@ const Documents: React.FC = () => {
 };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
-		<header className="w-full bg-slate-900/50 backdrop-blur-sm border-b border-cyan-500/20 px-6 py-4 flex justify-between items-center sticky top-0 z-10">
-		  <div
-			onClick={() => navigate("/home")}
-			className="flex items-center gap-3 cursor-pointer"
-		  >
-			<div className="w-10 h-10 bg-gradient-to-br from-gray-800 to-gray-600 rounded-lg flex items-center justify-center shadow-lg shadow-cyan-500/40">
-			  <Cpu size={20} className="text-red-500" strokeWidth={2.5} />
-			</div>
-			<h1 className="text-2xl font-bold text-transparent bg-clip-text bg-white">
-			  Verve Hub Blog
-			</h1>
-		  </div>
-
-		  <div className="flex items-center gap-3">
-			<button
-			  onClick={() => navigate(-1)}
-			  className="flex items-center gap-2 px-4 py-2 rounded-full border border-cyan-500 text-slate-400 
-						 hover:text-cyan-400 hover:bg-slate-800/50 transition-all duration-200"
-			>
-			  <ArrowLeft className="w-4 h-4" /> Back
-			</button>
-		  </div>
-		</header>
+    <div className="min-h-screen w-full bg-slate-950 text-slate-100 flex flex-col">		
       {message && (
         <div
           className={`fixed top-6 right-6 px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 z-50 

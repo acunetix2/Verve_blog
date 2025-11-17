@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { Eye, EyeOff, AlertCircle, CheckCircle, Trash2, LogOut, User, Mail, Lock, Camera, Shield, Clock } from "lucide-react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { X, Eye, EyeOff, AlertCircle, CheckCircle, Trash2, LogOut, User, Mail, Lock, Camera, Shield, Clock } from "lucide-react";
 
 interface User {
   name: string;
@@ -165,7 +163,7 @@ export default function Account() {
       const confirm = window.confirm("You have unsaved changes. Are you sure you want to leave?");
       if (!confirm) return;
     }
-    navigate("/home");
+    navigate("/me");
   };
 
   if (!user) {
@@ -187,7 +185,6 @@ export default function Account() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-      <Navbar />
       
       <div className="flex-grow container mx-auto px-4 py-8 pt-24 max-w-5xl">
         {/* Header */}
@@ -201,8 +198,7 @@ export default function Account() {
             className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg transition-colors border border-slate-700"
             aria-label="Exit to home"
           >
-            <LogOut size={18} />
-            <span className="hidden sm:inline">Exit</span>
+            <X size={18} />
           </button>
         </div>
 
@@ -521,8 +517,6 @@ export default function Account() {
           </div>
         </div>
       </div>
-
-      <Footer />
     </div>
   );
 }
