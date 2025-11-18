@@ -19,7 +19,7 @@ import About from "./pages/About";
 import AdminPage from "./pages/AdminPage";
 import UploadPage from "./pages/Upload";
 import Documents from "./pages/Documents";
-import Signup from "./components/Signup";
+import Signup from "@/components/Signup";
 import Login from "./components/Login";
 import Account from "./components/Account";
 
