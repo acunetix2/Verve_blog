@@ -158,20 +158,14 @@ const Documents: React.FC = () => {
 
                   <p className="text-sm text-cyan-400 mb-2 gap-2 line-clamp-2 min-h-[2.5rem]">
                     {doc.description || "No description provided."}
-                  </p>
-
-                  <div className="flex items-center gap-1 mb-2 text-green-500">
-                    File
-                    <span className="px-2 py-1 text-cyan-400 bg-slate-800/90 rounded-md">{doc.fileName}</span>
-                  </div>
-
+                  </p>              
                   <div className="flex items-center justify-between text-xs mb-4 pb-4 border-b border-slate-700/50">
                     <div className="flex items-center gap-2 text-green-500">
                       Uploaded on:
                       <span className="px-2 py-1 bg-slate-800/50 rounded-md">
                         {new Date(doc.uploadedAt).toLocaleDateString()}
                       </span>
-                      <span className="text-slate-600">•</span>
+                      <span className="text-green-600">•</span>
                       <span>{new Date(doc.uploadedAt).toLocaleTimeString()}</span>
                     </div>
                   </div>

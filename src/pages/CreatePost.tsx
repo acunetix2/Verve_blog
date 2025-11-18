@@ -118,65 +118,40 @@ const CreatePost: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-black to-blue-950 text-white">
-      {/* Grid background */}
-      <div className="fixed inset-0 opacity-5 pointer-events-none">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(6, 182, 212, 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(6, 182, 212, 0.2) 1px, transparent 1px)",
-            backgroundSize: "100px 100px",
-          }}
-        ></div>
-      </div>
-
-      {/* Floating particles */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        {[...Array(10)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 bg-cyan-400 rounded-full opacity-20"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animation: `float ${8 + Math.random() * 15}s linear infinite`,
-              animationDelay: `${Math.random() * 5}s`,
-            }}
-          />
-        ))}
-      </div>
-
+    <div className="min-h-screen bg-white text-gray-900">
       <style>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0) translateX(0); }
-          25% { transform: translateY(-30px) translateX(15px); }
-          50% { transform: translateY(-60px) translateX(-15px); }
-          75% { transform: translateY(-30px) translateX(15px); }
+        @import url('https://fonts.googleapis.com/css2?family=Sohne:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Source+Serif+Pro:wght@400;600;700&display=swap');
+        
+        * {
+          font-family: 'Sohne', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+          font-family: 'Source Serif Pro', Georgia, Cambria, 'Times New Roman', Times, serif;
+        }
+        
+        textarea, input[type="text"] {
+          font-family: 'Sohne', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
       `}</style>
 
       {/* Main Container */}
-      <div className="relative z-10 max-w-4xl mx-auto px-6 py-10">
+      <div className="relative z-10 max-w-3xl mx-auto px-6 py-12">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8 pb-6 border-b border-cyan-500/20">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-br from-cyan-950/30 to-blue-950/30 border border-cyan-500/30 rounded-lg">
-              <AlertCircle className="h-6 w-6 text-cyan-400" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">
-                Create New Post
-              </h1>
-              <p className="text-sm font-mono text-gray-400 mt-1">
-                Post Management Panel
-              </p>
-            </div>
+        <div className="flex items-center justify-between mb-12 pb-8 border-b border-gray-200">
+          <div>
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">
+              Create New Post
+            </h1>
+            <p className="text-base text-gray-600">
+              Share your story with the world
+            </p>
           </div>
 
           <button
             onClick={handleExit}
-            className="group flex items-center gap-2 px-4 py-2 rounded-full border border-cyan-500/30 bg-gray-900/50 text-cyan-300 hover:bg-cyan-500/10 hover:border-cyan-400/50 transition-all font-mono text-sm"
+            className="group flex items-center gap-2 px-5 py-2.5 rounded-full border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all text-sm font-medium"
           >
             <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
             Exit
@@ -184,18 +159,18 @@ const CreatePost: React.FC = () => {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-8">
           {/* Title */}
           <div className="space-y-2">
             <label
-              className={`flex items-center gap-2 text-sm font-mono ${
-                errors.title ? "text-red-400" : "text-cyan-300"
+              className={`flex items-center gap-2 text-sm font-medium ${
+                errors.title ? "text-red-600" : "text-gray-700"
               }`}
             >
               <FileText className="h-4 w-4" />
               Post Title *
               {errors.title && (
-                <span className="flex items-center text-red-400 text-xs ml-2">
+                <span className="flex items-center text-red-600 text-xs ml-2">
                   <AlertCircle size={12} className="mr-1" /> Required
                 </span>
               )}
@@ -205,25 +180,25 @@ const CreatePost: React.FC = () => {
               value={formData.title}
               onChange={handleChange}
               placeholder="Enter post title..."
-              className={`w-full p-3 rounded-lg bg-gray-900/50 text-white placeholder:text-gray-500 font-mono transition-all border ${
+              className={`w-full p-4 rounded-md bg-white text-gray-900 placeholder:text-gray-400 transition-all border text-lg ${
                 errors.title
-                  ? "border-red-500 focus:ring-2 focus:ring-red-400/40"
-                  : "border-cyan-500/30 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20"
-              }`}
+                  ? "border-red-500 focus:ring-2 focus:ring-red-400/40 focus:border-red-500"
+                  : "border-gray-300 focus:border-gray-900 focus:ring-2 focus:ring-gray-900/10"
+              } outline-none`}
             />
           </div>
 
           {/* Slug */}
           <div className="space-y-2">
             <label
-              className={`flex items-center gap-2 text-sm font-mono ${
-                errors.slug ? "text-red-400" : "text-cyan-300"
+              className={`flex items-center gap-2 text-sm font-medium ${
+                errors.slug ? "text-red-600" : "text-gray-700"
               }`}
             >
               <Terminal className="h-4 w-4" />
               URL Slug *
               {errors.slug && (
-                <span className="flex items-center text-red-400 text-xs ml-2">
+                <span className="flex items-center text-red-600 text-xs ml-2">
                   <AlertCircle size={12} className="mr-1" /> Required
                 </span>
               )}
@@ -233,17 +208,17 @@ const CreatePost: React.FC = () => {
               value={formData.slug}
               onChange={handleChange}
               placeholder="unique-slug-here"
-              className={`w-full p-3 rounded-lg bg-gray-900/50 text-white placeholder:text-gray-500 font-mono transition-all border ${
+              className={`w-full p-4 rounded-md bg-white text-gray-900 placeholder:text-gray-400 transition-all border ${
                 errors.slug
-                  ? "border-red-500 focus:ring-2 focus:ring-red-400/40"
-                  : "border-cyan-500/30 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20"
-              }`}
+                  ? "border-red-500 focus:ring-2 focus:ring-red-400/40 focus:border-red-500"
+                  : "border-gray-300 focus:border-gray-900 focus:ring-2 focus:ring-gray-900/10"
+              } outline-none`}
             />
           </div>
 
           {/* Description */}
           <div className="space-y-2">
-            <label className="flex items-center gap-2 text-sm font-mono text-cyan-300">
+            <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
               <FileText className="h-4 w-4" />
               Description
             </label>
@@ -252,15 +227,15 @@ const CreatePost: React.FC = () => {
               value={formData.description}
               onChange={handleChange}
               placeholder="Brief description of your post..."
-              className="w-full p-3 border border-cyan-500/30 rounded-lg bg-gray-900/50 text-white placeholder:text-gray-500 font-mono transition-all resize-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20"
+              className="w-full p-4 border border-gray-300 rounded-md bg-white text-gray-900 placeholder:text-gray-400 transition-all resize-none focus:border-gray-900 focus:ring-2 focus:ring-gray-900/10 outline-none"
               rows={3}
             />
           </div>
 
           {/* Author & Read Time */}
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="flex items-center gap-2 text-sm font-mono text-cyan-300">
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
                 <User className="h-4 w-4" />
                 Author
               </label>
@@ -269,12 +244,12 @@ const CreatePost: React.FC = () => {
                 value={formData.author}
                 onChange={handleChange}
                 placeholder="Author name"
-                className="w-full p-3 border border-cyan-500/30 rounded-lg bg-gray-900/50 text-white placeholder:text-gray-500 font-mono transition-all focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20"
+                className="w-full p-4 border border-gray-300 rounded-md bg-white text-gray-900 placeholder:text-gray-400 transition-all focus:border-gray-900 focus:ring-2 focus:ring-gray-900/10 outline-none"
               />
             </div>
 
             <div className="space-y-2">
-              <label className="flex items-center gap-2 text-sm font-mono text-cyan-300">
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
                 <Clock className="h-4 w-4" />
                 Read Time
               </label>
@@ -283,14 +258,14 @@ const CreatePost: React.FC = () => {
                 value={formData.readTime}
                 onChange={handleChange}
                 placeholder="5 min read"
-                className="w-full p-3 border border-cyan-500/30 rounded-lg bg-gray-900/50 text-white placeholder:text-gray-500 font-mono transition-all focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20"
+                className="w-full p-4 border border-gray-300 rounded-md bg-white text-gray-900 placeholder:text-gray-400 transition-all focus:border-gray-900 focus:ring-2 focus:ring-gray-900/10 outline-none"
               />
             </div>
           </div>
 
           {/* Tags */}
           <div className="space-y-2">
-            <label className="flex items-center gap-2 text-sm font-mono text-cyan-300">
+            <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
               <Tag className="h-4 w-4" />
               Tags (comma-separated)
             </label>
@@ -299,21 +274,21 @@ const CreatePost: React.FC = () => {
               value={formData.tags}
               onChange={handleChange}
               placeholder="linux, security, web"
-              className="w-full p-3 border border-cyan-500/30 rounded-lg bg-gray-900/50 text-white placeholder:text-gray-500 font-mono transition-all focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20"
+              className="w-full p-4 border border-gray-300 rounded-md bg-white text-gray-900 placeholder:text-gray-400 transition-all focus:border-gray-900 focus:ring-2 focus:ring-gray-900/10 outline-none"
             />
           </div>
 
           {/* Content */}
           <div className="space-y-2">
             <label
-              className={`flex items-center gap-2 text-sm font-mono ${
-                errors.content ? "text-red-400" : "text-cyan-300"
+              className={`flex items-center gap-2 text-sm font-medium ${
+                errors.content ? "text-red-600" : "text-gray-700"
               }`}
             >
               <Terminal className="h-4 w-4" />
               Post Content (Markdown) *
               {errors.content && (
-                <span className="flex items-center text-red-400 text-xs ml-2">
+                <span className="flex items-center text-red-600 text-xs ml-2">
                   <AlertCircle size={12} className="mr-1" /> Required
                 </span>
               )}
@@ -323,39 +298,39 @@ const CreatePost: React.FC = () => {
               value={formData.content}
               onChange={handleChange}
               placeholder="Write your post content here..."
-              className={`w-full p-3 rounded-lg bg-gray-900/50 text-white placeholder:text-gray-500 font-mono transition-all resize-none border ${
+              className={`w-full p-4 rounded-md bg-white text-gray-900 placeholder:text-gray-400 transition-all resize-none border ${
                 errors.content
-                  ? "border-red-500 focus:ring-2 focus:ring-red-400/40"
-                  : "border-cyan-500/30 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20"
-              }`}
-              rows={12}
+                  ? "border-red-500 focus:ring-2 focus:ring-red-400/40 focus:border-red-500"
+                  : "border-gray-300 focus:border-gray-900 focus:ring-2 focus:ring-gray-900/10"
+              } outline-none text-lg leading-relaxed`}
+              rows={14}
             />
           </div>
 
           {/* Featured */}
-          <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-cyan-950/20 to-blue-950/20 border border-cyan-500/30 rounded-lg">
+          <div className="flex items-center gap-3 p-4 bg-gray-50 border border-gray-200 rounded-md">
             <input
               type="checkbox"
               name="featured"
               checked={formData.featured}
               onChange={handleChange}
-              className="w-3 h-3s accent-cyan-500 cursor-pointer"
+              className="w-4 h-4 accent-gray-900 cursor-pointer"
               id="featured"
             />
             <label
               htmlFor="featured"
-              className="flex items-center gap-2 text-sm font-mono text-cyan-300 cursor-pointer"
+              className="flex items-center gap-2 text-sm font-medium text-gray-700 cursor-pointer"
             >
-              <Shield className="h-4 w-4 text-cyan-400" />
+              <Shield className="h-4 w-4 text-gray-600" />
               Mark as featured post
             </label>
           </div>
 
           {/* Submit */}
-          <div className="flex gap-4 pt-4">
+          <div className="flex gap-4 pt-6">
             <button
               type="submit"
-              className="group flex-1 rounded-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-mono font-semibold rounded-full hover:from-cyan-500 hover:to-blue-500 border border-cyan-400/50 shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50 transition-all"
+              className="group flex-1 flex items-center justify-center gap-2 px-8 py-3.5 bg-gray-900 text-white font-medium rounded-full hover:bg-gray-800 transition-all shadow-sm"
             >
               <Send className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
               Publish
@@ -364,9 +339,9 @@ const CreatePost: React.FC = () => {
             <button
               type="button"
               onClick={handleClear}
-              className="group flex-1 rounded-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-gray-800 to-gray-900 text-gray-200 font-mono font-semibold hover:from-gray-700 hover:to-gray-800 border border-gray-600/50 shadow-md shadow-gray-800/30 hover:shadow-gray-600/50 transition-all"
+              className="group flex-1 flex items-center justify-center gap-2 px-8 py-3.5 bg-white text-gray-700 font-medium rounded-full hover:bg-gray-50 border border-gray-300 hover:border-gray-400 transition-all"
             >
-              <XCircle className="h-5 w-5 text-red-400 group-hover:rotate-90 transition-transform" />
+              <XCircle className="h-5 w-5 text-red-500 group-hover:rotate-90 transition-transform" />
               Clear Form
             </button>
           </div>

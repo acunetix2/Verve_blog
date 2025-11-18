@@ -342,7 +342,7 @@ const Index = () => {
                   </div>
                 </Link>
 
-                <Link to="/home/about" className="block">
+                <Link to="/me/about" className="block">
                   <div className="group/link flex items-center justify-between p-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-blue-500/30 rounded-xl transition-all cursor-pointer">
                     <div className="flex items-center gap-3">
                       <div className="p-2 bg-blue-500/10 rounded-lg group-hover/link:bg-blue-500/20 transition-colors">

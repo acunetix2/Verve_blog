@@ -181,7 +181,7 @@ export default function Login() {
       const msg =
         formData.isAdmin && err.response?.status === 401
           ? "Unauthorized: Admin access only."
-          : err.response?.data?.message || "Invalid credentials or server error.";
+          : err.response?.data?.message || "Incorrect username or password";
 
       setMessage({ type: "error", text: msg });
     } finally {

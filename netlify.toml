@@ -1,0 +1,6 @@
+[build]
+  # This is correct based on your package.json:
+  command = "npm run build" 
+
+  # CRITICAL CHANGE: Set publish to 'dist' (the Vite default)
+  publish = "dist"

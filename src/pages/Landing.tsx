@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { LogIn, Mail,Cpu,Server,Eye,Cloud, Activity, UserPlus, Github, Linkedin, Twitter, BookOpen, Shield, TrendingUp, Users, Zap, Star, ArrowRight, Menu, X, ChevronDown, Award, Target, FileText, Lock, Code, Terminal } from "lucide-react";
+import { LogIn, Mail, Cpu, Github, Linkedin, Twitter, BookOpen, Shield, TrendingUp, Users, Zap, Star, ArrowRight, Menu, X, ChevronDown, Award, Target, FileText, Lock, Code, Terminal } from "lucide-react";
 
 export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -56,8 +56,7 @@ export default function LandingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-x-hidden relative">
-      {/* Animated Gradient Background */}
+    <div className="min-h-screen bg-black text-white overflow-x-hidden relative font-serif">
       <div className="fixed inset-0 -z-10">
         <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950"></div>
         <div 
@@ -69,7 +68,6 @@ export default function LandingPage() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/20 via-slate-900/5 to-transparent"></div>
       </div>
 
-      {/* Floating particles effect */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
         {[...Array(20)].map((_, i) => (
           <div
@@ -85,7 +83,6 @@ export default function LandingPage() {
         ))}
       </div>
 
-      {/* Header */}
       <header className={`w-full py-4 px-6 md:px-8 flex justify-between items-center fixed top-0 z-50 transition-all duration-300 ${
         scrollY > 50 ? "backdrop-blur-xl bg-slate-950/90 shadow-2xl border-b border-cyan-500/10" : "backdrop-blur-md bg-slate-950/50"
       }`}>
@@ -93,19 +90,17 @@ export default function LandingPage() {
           <div className="w-10 h-10 bg-gradient-to-br from-white to-white-600 rounded-lg flex items-center justify-center shadow-lg shadow-white">
             <Cpu size={20} className="text-red-700" />
           </div>
-          <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
+          <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 font-sans">
             Verve Hub Blog
           </h1>
         </div>
         
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex space-x-6 text-sm tracking-wide">
-		  <a href="#content" className="hover:text-cyan-400 transition-colors font-medium">Content</a>
-		  <a href="#categories" className="hover:text-cyan-400 transition-colors font-medium">Categories</a>
-		  <a href="#stats" className="hover:text-cyan-400 transition-colors font-medium">Stats</a>
-		  <a href="#testimonials" className="hover:text-cyan-400 transition-colors font-medium">Reviews</a>
-		</nav>
-        {/* Mobile Menu Button */}
+        <nav className="hidden md:flex space-x-6 text-sm tracking-wide font-sans">
+          <a href="#content" className="hover:text-cyan-400 transition-colors font-medium">Content</a>
+          <a href="#categories" className="hover:text-cyan-400 transition-colors font-medium">Categories</a>
+          <a href="#stats" className="hover:text-cyan-400 transition-colors font-medium">Stats</a>
+          <a href="#testimonials" className="hover:text-cyan-400 transition-colors font-medium">Reviews</a>
+        </nav>
         <button 
           className="md:hidden text-cyan-400 hover:text-cyan-300 transition-colors"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -114,9 +109,8 @@ export default function LandingPage() {
         </button>
       </header>
 
-      {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-slate-950/98 backdrop-blur-2xl md:hidden pt-24 px-8 animate-in fade-in slide-in-from-top">
+        <div className="fixed inset-0 z-40 bg-slate-950/98 backdrop-blur-2xl md:hidden pt-24 px-8 animate-in fade-in slide-in-from-top font-sans">
           <nav className="flex flex-col space-y-6 text-xl">
             <a href="#content" onClick={() => setIsMenuOpen(false)} className="hover:text-cyan-400 transition-colors font-medium border-b border-slate-800 pb-4">Content</a>
             <a href="#categories" onClick={() => setIsMenuOpen(false)} className="hover:text-cyan-400 transition-colors font-medium border-b border-slate-800 pb-4">Categories</a>
@@ -126,23 +120,19 @@ export default function LandingPage() {
         </div>
       )}
 
-      {/* Hero Section */}
       <section className="relative flex flex-col items-center justify-center text-center min-h-screen px-6 pt-32 pb-20">
-        {/* Animated Background Elements */}
         <div className="absolute inset-0 -z-10 overflow-hidden">
           <div className="absolute top-20 left-10 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl animate-pulse"></div>
           <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }}></div>
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-500/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "2s" }}></div>
         </div>
 
-        {/* Status Badge */}
-        <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30 rounded-full mb-8 backdrop-blur-sm hover:scale-105 transition-transform">
+        <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30 rounded-full mb-8 backdrop-blur-sm hover:scale-105 transition-transform font-sans">
           <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
           <span className="text-sm text-green-400 font-medium">Live: New Writeups coming up</span>
         </div>
 
-        {/* Main Heading */}
-        <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold mb-8 leading-tight">
+        <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold mb-8 leading-tight font-sans">
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 animate-gradient">
             Verve Hub
           </span>
@@ -157,8 +147,7 @@ export default function LandingPage() {
           <span className="block mt-3 text-cyan-300 font-semibold text-xl">From reconnaissance to privilege escalation everything documented.</span>
         </p>
 
-        {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row gap-5 mb-16">
+        <div className="flex flex-col sm:flex-row gap-5 mb-16 font-sans">
           <a
             href="/signup"
             className="group flex items-center justify-center gap-3 px-10 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold rounded-2xl shadow-2xl shadow-cyan-500/50 transition-all hover:scale-105 hover:shadow-cyan-500/70"
@@ -176,8 +165,7 @@ export default function LandingPage() {
           </a>
         </div>
 
-        {/* Quick Stats Preview */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-4xl w-full">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-4xl w-full font-sans">
           {stats.map((stat, index) => (
             <div key={index} className="bg-slate-900/40 backdrop-blur-sm border border-slate-800/50 rounded-xl p-4 hover:border-cyan-500/50 transition-all hover:scale-105">
               <div className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-1">
@@ -188,16 +176,14 @@ export default function LandingPage() {
           ))}
         </div>
 
-        {/* Scroll Indicator */}
         <a href="#content" className="absolute bottom-8 animate-bounce cursor-pointer">
           <ChevronDown size={32} className="text-cyan-400/70 hover:text-cyan-400 transition-colors" />
         </a>
       </section>
 
-      {/* Recent Content Preview */}
       <section id="content" className="py-20 px-6 relative">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
+          <div className="text-center mb-16 font-sans">
             <h3 className="text-4xl sm:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500">
               Latest Writeups & Guides
             </h3>
@@ -210,7 +196,7 @@ export default function LandingPage() {
                 <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 rounded-full blur-2xl group-hover:bg-cyan-500/10 transition-colors"></div>
                 
                 <div className="relative z-10">
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center justify-between mb-4 font-sans">
                     <span className={`px-3 py-1 text-xs font-semibold rounded-lg ${
                       item.difficulty === "Easy" ? "bg-green-500/20 text-green-400 border border-green-500/30" :
                       item.difficulty === "Hard" ? "bg-red-500/20 text-red-400 border border-red-500/30" :
@@ -223,11 +209,11 @@ export default function LandingPage() {
                     </span>
                   </div>
                   
-                  <h4 className="text-xl font-bold text-white mb-3 group-hover:text-cyan-400 transition-colors">
+                  <h4 className="text-xl font-bold text-white mb-3 group-hover:text-cyan-400 transition-colors font-sans">
                     {item.title}
                   </h4>
                   
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2 font-sans">
                     {item.tags.map((tag, i) => (
                       <span key={i} className="px-2 py-1 text-xs bg-slate-800/50 text-cyan-300/70 rounded border border-slate-700/50">
                         {tag}
@@ -235,7 +221,7 @@ export default function LandingPage() {
                     ))}
                   </div>
 
-                  <div className="mt-6 flex items-center text-cyan-400 text-sm font-medium group-hover:translate-x-2 transition-transform">
+                  <div className="mt-6 flex items-center text-cyan-400 text-sm font-medium group-hover:translate-x-2 transition-transform font-sans">
                     <span>Read Writeup</span>
                     <ArrowRight size={16} className="ml-2" />
                   </div>
@@ -247,7 +233,7 @@ export default function LandingPage() {
           <div className="text-center mt-12">
             <a
               href="/blog"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-slate-900/60 border-2 border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/20 hover:border-cyan-400 font-semibold rounded-xl backdrop-blur-sm transition-all hover:scale-105"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-slate-900/60 border-2 border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/20 hover:border-cyan-400 font-semibold rounded-xl backdrop-blur-sm transition-all hover:scale-105 font-sans"
             >
               View All Content
               <ArrowRight size={20} />
@@ -256,10 +242,9 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Content Categories */}
       <section id="categories" className="py-20 px-6 bg-slate-950/50 backdrop-blur-sm relative">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
+          <div className="text-center mb-16 font-sans">
             <h3 className="text-4xl sm:text-5xl font-bold mb-4">Content Categories</h3>
             <p className="text-cyan-200/70 text-lg">Organized learning paths for your cybersecurity journey</p>
           </div>
@@ -269,20 +254,15 @@ export default function LandingPage() {
               const Icon = category.icon;
               return (
                 <div key={index} className="group relative bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-sm rounded-2xl p-8 border border-slate-800/50 hover:border-cyan-500/50 transition-all hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/20 text-center overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-10 transition-opacity" style={{
-                    backgroundImage: `linear-gradient(135deg, var(--tw-gradient-stops))`,
-                    backgroundSize: '200% 200%'
-                  }}></div>
-                  
                   <div className={`w-20 h-20 bg-gradient-to-br ${category.color} rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:rotate-6 group-hover:scale-110 transition-all shadow-lg`}>
                     <Icon size={36} className="text-white" />
                   </div>
                   
-                  <h4 className="text-2xl font-bold mb-2 text-white group-hover:text-cyan-400 transition-colors">
+                  <h4 className="text-2xl font-bold mb-2 text-white group-hover:text-cyan-400 transition-colors font-sans">
                     {category.title}
                   </h4>
                   
-                  <div className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-3">
+                  <div className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-3 font-sans">
                     {category.count}
                   </div>
                   
@@ -296,76 +276,46 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Features Section */}
       <section className="py-20 px-6">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
+          <div className="text-center mb-16 font-sans">
             <h3 className="text-4xl sm:text-5xl font-bold mb-4">Why Verve Hub?</h3>
             <p className="text-cyan-200/70 text-lg">Everything you need to level up your security skills</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="group bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-sm rounded-2xl p-8 border border-slate-800/50 hover:border-cyan-500/50 transition-all hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/20">
-              <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center mb-6 group-hover:rotate-6 transition-transform shadow-lg shadow-cyan-500/30">
-                <Code size={32} className="text-white" />
-              </div>
-              <h4 className="text-xl font-bold mb-4 text-white group-hover:text-cyan-400 transition-colors">Step-by-Step Methodology</h4>
-              <p className="text-cyan-200/70 leading-relaxed">Writeups includes detailed enumeration, exploitation, and privilege escalation steps with command breakdowns.</p>
-            </div>
-
-            <div className="group bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-sm rounded-2xl p-8 border border-slate-800/50 hover:border-cyan-500/50 transition-all hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/20">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center mb-6 group-hover:rotate-6 transition-transform shadow-lg shadow-purple-500/30">
-                <Terminal size={32} className="text-white" />
-              </div>
-              <h4 className="text-xl font-bold mb-4 text-white group-hover:text-cyan-400 transition-colors">Tool Mastery Guides</h4>
-              <p className="text-cyan-200/70 leading-relaxed">Learn to use essential tools like Nmap, Burp Suite, Metasploit, and custom scripts effectively in practical scenarios.</p>
-            </div>
-
-            <div className="group bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-sm rounded-2xl p-8 border border-slate-800/50 hover:border-cyan-500/50 transition-all hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/20">
-              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mb-6 group-hover:rotate-6 transition-transform shadow-lg shadow-green-500/30">
-                <Award size={32} className="text-white" />
-              </div>
-              <h4 className="text-xl font-bold mb-4 text-white group-hover:text-cyan-400 transition-colors">Certification Prep</h4>
-              <p className="text-cyan-200/70 leading-relaxed">Content aligned with OSCP, CEH, and other certifications. Practice with exam-style challenges and methodology.</p>
-            </div>
-
-            <div className="group bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-sm rounded-2xl p-8 border border-slate-800/50 hover:border-cyan-500/50 transition-all hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/20">
-              <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-xl flex items-center justify-center mb-6 group-hover:rotate-6 transition-transform shadow-lg shadow-yellow-500/30">
-                <FileText size={32} className="text-white" />
-              </div>
-              <h4 className="text-xl font-bold mb-4 text-white group-hover:text-cyan-400 transition-colors">Comprehensive Notes</h4>
-              <p className="text-cyan-200/70 leading-relaxed">Downloadable cheatsheets, study guides, and reference materials for quick revision and interview prep.</p>
-            </div>
-
-            <div className="group bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-sm rounded-2xl p-8 border border-slate-800/50 hover:border-cyan-500/50 transition-all hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/20">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl flex items-center justify-center mb-6 group-hover:rotate-6 transition-transform shadow-lg shadow-blue-500/30">
-                <TrendingUp size={32} className="text-white" />
-              </div>
-              <h4 className="text-xl font-bold mb-4 text-white group-hover:text-cyan-400 transition-colors">Regular Updates</h4>
-              <p className="text-cyan-200/70 leading-relaxed">New writeups added weekly covering the latest challenges and emerging attack techniques.</p>
-            </div>
-
-            <div className="group bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-sm rounded-2xl p-8 border border-slate-800/50 hover:border-cyan-500/50 transition-all hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/20">
-              <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-pink-600 rounded-xl flex items-center justify-center mb-6 group-hover:rotate-6 transition-transform shadow-lg shadow-red-500/30">
-                <Users size={32} className="text-white" />
-              </div>
-              <h4 className="text-xl font-bold mb-4 text-white group-hover:text-cyan-400 transition-colors">Community Driven</h4>
-              <p className="text-cyan-200/70 leading-relaxed">Verve Hub is free for every passionate security enthusiasts.</p>
-            </div>
+            {[
+              { icon: Code, color: "from-cyan-500 to-blue-600", title: "Step-by-Step Methodology", desc: "Writeups includes detailed enumeration, exploitation, and privilege escalation steps with command breakdowns." },
+              { icon: Terminal, color: "from-purple-500 to-pink-600", title: "Tool Mastery Guides", desc: "Learn to use essential tools like Nmap, Burp Suite, Metasploit, and custom scripts effectively in practical scenarios." },
+              { icon: Award, color: "from-green-500 to-emerald-600", title: "Certification Prep", desc: "Content aligned with OSCP, CEH, and other certifications. Practice with exam-style challenges and methodology." },
+              { icon: FileText, color: "from-yellow-500 to-orange-600", title: "Comprehensive Notes", desc: "Downloadable cheatsheets, study guides, and reference materials for quick revision and interview prep." },
+              { icon: TrendingUp, color: "from-blue-500 to-cyan-600", title: "Regular Updates", desc: "New writeups added weekly covering the latest challenges and emerging attack techniques." },
+              { icon: Users, color: "from-red-500 to-pink-600", title: "Community Driven", desc: "Verve Hub is free for every passionate security enthusiasts." }
+            ].map((feature, idx) => {
+              const Icon = feature.icon;
+              return (
+                <div key={idx} className="group bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-sm rounded-2xl p-8 border border-slate-800/50 hover:border-cyan-500/50 transition-all hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/20">
+                  <div className={`w-16 h-16 bg-gradient-to-br ${feature.color} rounded-xl flex items-center justify-center mb-6 group-hover:rotate-6 transition-transform shadow-lg`}>
+                    <Icon size={32} className="text-white" />
+                  </div>
+                  <h4 className="text-xl font-bold mb-4 text-white group-hover:text-cyan-400 transition-colors font-sans">{feature.title}</h4>
+                  <p className="text-cyan-200/70 leading-relaxed">{feature.desc}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* Testimonials */}
       <section id="testimonials" className="py-20 px-6 bg-slate-950/50 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
+          <div className="text-center mb-16 font-sans">
             <h3 className="text-4xl sm:text-5xl font-bold mb-4">Success Stories</h3>
             <p className="text-cyan-200/70 text-lg">How Verve Hub helped others level up</p>
           </div>
 
           <div className="max-w-4xl mx-auto">
-            <div className="relative bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-sm rounded-3xl p-10 md:p-16 border border-slate-800/50 overflow-hidden">
+            <div className="relative bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-sm rounded-3xl p-6 md:p-16 border border-slate-800/50 overflow-hidden">
               <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/5 rounded-full blur-3xl"></div>
               <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl"></div>
               
@@ -384,7 +334,7 @@ export default function LandingPage() {
                   <p className="text-xl md:text-2xl text-cyan-100 mb-8 italic leading-relaxed">
                     "{testimonial.text}"
                   </p>
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-4 font-sans">
                     <div className="w-14 h-14 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center text-xl font-bold">
                       {testimonial.name.charAt(0)}
                     </div>
@@ -414,18 +364,17 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="py-24 px-6 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-cyan-900/20 via-blue-900/20 to-purple-900/20"></div>
         <div className="absolute inset-0 backdrop-blur-sm"></div>
         
         <div className="relative z-10 max-w-5xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-5 py-2 bg-cyan-500/10 border border-cyan-500/30 rounded-full mb-8">
+          <div className="inline-flex items-center gap-2 px-5 py-2 bg-cyan-500/10 border border-cyan-500/30 rounded-full mb-8 font-sans">
             <Zap size={18} className="text-cyan-400" />
             <span className="text-sm text-cyan-400 font-medium">Join 100+ Active Users</span>
           </div>
           
-          <h3 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500">
+          <h3 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 font-sans">
             Ready to Master Cybersecurity?
           </h3>
           <p className="text-cyan-200/90 text-lg md:text-xl mb-10 max-w-3xl mx-auto leading-relaxed">
@@ -433,7 +382,7 @@ export default function LandingPage() {
             <span className="block mt-2 text-cyan-300 font-semibold">Start your journey today.</span>
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center font-sans">
             <a
               href="/signup"
               className="group flex items-center justify-center gap-3 px-10 py-5 bg-cyan-500 hover:from-cyan-600 hover:to-blue-700 text-white font-bold text-lg rounded-2xl shadow-2xl shadow-cyan-500/50 transition-all hover:scale-105 hover:shadow-cyan-500/70"
@@ -456,10 +405,9 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Contact Section */}
       <section id="contact" className="py-20 px-6 bg-slate-950/70 backdrop-blur-sm">
         <div className="max-w-4xl mx-auto text-center">
-          <h3 className="text-3xl sm:text-4xl font-bold mb-6">Get In Touch</h3>
+          <h3 className="text-3xl sm:text-4xl font-bold mb-6 font-sans">Get In Touch</h3>
           <p className="text-cyan-200/80 mb-10 text-lg">
             Have questions? Want to contribute? Reach out through any channel below.
           </p>

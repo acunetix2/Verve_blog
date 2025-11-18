@@ -15,7 +15,7 @@ export const useLiveNotifications = () => {
   const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
-    const s = io(import.meta.env.VITE_API_BASE_URL); // e.g. ws://localhost:4000
+    const s = io(import.meta.env.VITE_API_BASE_URL2); // e.g. ws://localhost:4000
     setSocket(s);
 
     s.on("new-document", (doc: any) => {

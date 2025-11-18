@@ -10,6 +10,7 @@ import {
   LogOut,
   Sparkles,
   Layers,
+  Github,
 } from "lucide-react";
 
 type NavItem = {
@@ -22,8 +23,8 @@ type NavItem = {
 const NAV_ITEMS: NavItem[] = [
   { label: "Dashboard", path: "/me", icon: <Home size={20} /> },
   { label: "About", path: "/me/about", icon: <BookOpen size={20} /> },
-  { label: "Posts", path: "/blog", icon: <Archive size={20} /> },
-  { label: "Resources", path: "/resources", icon: <Layers size={16} /> },
+  { label: "Posts", path: "/me/blog", icon: <Archive size={20} /> },
+  { label: "Resources", path: "/me/resources", icon: <Layers size={16} /> },
   { label: "Learn", path: "https://tryhackme.com", external: true, icon: <GraduationCap size={20} /> },
 ];
 
@@ -133,6 +134,14 @@ export default function Sidebar({ collapsed = false, onCollapse, sidebarOpen, on
               >
                 <Settings size={18} />
               </Link>
+			  <a
+                href="https://github.com/acunetix2/verve_blog.git"
+				target="_blank"
+                className="p-2 rounded-full hover:bg-gray-100 transition-colors text-gray-600 hover:text-black"
+                title="Settings"
+              >
+                <Github size={18} />
+              </a>
             </div>
           </div>
         </div>
