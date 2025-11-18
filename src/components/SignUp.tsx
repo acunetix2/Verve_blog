@@ -136,7 +136,6 @@ export default function Signup() {
           )}
 
           <form className="space-y-5" onSubmit={handleSubmit}>
-            {/* Full Name */}
             <div>
               <label htmlFor="fullName" className="block text-cyan-100 text-sm mb-2">Full Name</label>
               <input
