@@ -20,6 +20,7 @@ import {
   Linkedin,
   CheckCircle2,
   Eye,
+  Share2,
 } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 
@@ -169,10 +170,10 @@ const BlogPost = () => {
 
   if (loading)
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-950 via-black to-blue-950">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-950 via-black to-blue-950 px-4">
         <div className="text-center space-y-3">
-          <Terminal className="h-10 w-10 text-cyan-400 animate-pulse mx-auto" />
-          <p className="text-cyan-300 font-mono animate-pulse">Loading post...</p>
+          <Terminal className="h-8 w-8 sm:h-10 sm:w-10 text-cyan-400 animate-pulse mx-auto" />
+          <p className="text-cyan-300 font-mono animate-pulse text-sm sm:text-base">Loading post...</p>
         </div>
       </div>
     );
@@ -181,14 +182,14 @@ const BlogPost = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-950 via-black to-blue-950">
         <Header />
-        <div className="container py-20 text-center">
-          <Sparkles className="h-12 w-12 text-red-400 mx-auto mb-4" />
-          <h1 className="text-5xl font-display font-bold bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent mb-4">
+        <div className="container py-12 sm:py-20 text-center px-4">
+          <Sparkles className="h-10 w-10 sm:h-12 sm:w-12 text-red-400 mx-auto mb-4" />
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent mb-4">
             404: Post Not Found
           </h1>
-          <p className="text-gray-400 font-mono mb-6">{error}</p>
+          <p className="text-gray-400 font-mono mb-6 text-sm sm:text-base">{error}</p>
           <Link to="/">
-            <Button className="bg-gradient-to-r from-cyan-600 to-blue-600 text-white border border-cyan-400/50">
+            <Button className="bg-gradient-to-r from-cyan-600 to-blue-600 text-white border border-cyan-400/50 text-sm sm:text-base">
               <ArrowLeft className="mr-2 h-4 w-4" /> Back to Home
             </Button>
           </Link>
@@ -205,42 +206,43 @@ const BlogPost = () => {
 
       <div className="min-h-screen bg-gradient-to-br from-gray-950 via-black to-blue-950 text-white">
         <Header />
-        <article className="container py-12 max-w-4xl relative z-10">
+        <article className="container py-8 sm:py-12 max-w-4xl relative z-10 px-4 sm:px-6">
           {/* Header */}
-          <header className="mb-12 space-y-6">
+          <header className="mb-8 sm:mb-12 space-y-4 sm:space-y-6">
             {post.featured && (
-              <Badge className="bg-gradient-to-r from-cyan-600 to-blue-600 border-cyan-400/50 text-white">
+              <Badge className="bg-gradient-to-r from-cyan-600 to-blue-600 border-cyan-400/50 text-white text-xs sm:text-sm">
                 <Shield className="h-3 w-3 mr-1" /> Featured
               </Badge>
             )}
-            <h1 className="text-5xl font-display font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent leading-tight">
               {post.title}
             </h1>
-            <p className="text-gray-300 font-mono">{post.description}</p>
+            <p className="text-gray-300 font-mono text-sm sm:text-base leading-relaxed">{post.description}</p>
 
-            <div className="flex flex-wrap gap-6 text-sm font-mono text-gray-400 pt-4 border-t border-cyan-500/20">
-              <span className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-cyan-400" />
-                {new Date(post.date).toLocaleDateString()}
+            <div className="flex flex-wrap gap-3 sm:gap-6 text-xs sm:text-sm font-mono text-gray-400 pt-3 sm:pt-4 border-t border-cyan-500/20">
+              <span className="flex items-center gap-1.5 sm:gap-2">
+                <Calendar className="h-3 w-3 sm:h-4 sm:w-4 text-cyan-400" />
+                <span className="hidden xs:inline">{new Date(post.date).toLocaleDateString()}</span>
+                <span className="xs:hidden">{new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
               </span>
-              <span className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-blue-400" />
+              <span className="flex items-center gap-1.5 sm:gap-2">
+                <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-blue-400" />
                 {post.readTime}
               </span>
-              <span className="flex items-center gap-2">
-                <User className="h-4 w-4 text-white" />
-                {post.author}
+              <span className="flex items-center gap-1.5 sm:gap-2">
+                <User className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
+                <span className="truncate max-w-[100px] sm:max-w-none">{post.author}</span>
               </span>
-              <span className="flex items-center gap-2">
-                <Eye className="h-4 w-4 text-green-400" />
-                {views} views
+              <span className="flex items-center gap-1.5 sm:gap-2">
+                <Eye className="h-3 w-3 sm:h-4 sm:w-4 text-green-400" />
+                {views} <span className="hidden xs:inline">views</span>
               </span>
             </div>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
               {post.tags.map(tag => (
-                <Badge key={tag} variant="outline" className="border-cyan-500/30 text-cyan-300 font-mono bg-cyan-950/20">
-                  <Tag className="h-3 w-3 mr-1" />
+                <Badge key={tag} variant="outline" className="border-cyan-500/30 text-cyan-300 font-mono bg-cyan-950/20 text-xs">
+                  <Tag className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-1" />
                   {tag}
                 </Badge>
               ))}
@@ -248,82 +250,98 @@ const BlogPost = () => {
           </header>
 
           {/* Content */}
-          <div className="prose prose-invert prose-cyan max-w-none">
+          <div className="prose prose-sm sm:prose prose-invert prose-cyan max-w-none">
             <MDXContent content={post.content} />
           </div>
 
           {/* Like & Share */}
-          <div className="mt-12 flex items-center justify-between border-t border-cyan-500/20 pt-6">
-            <div className="flex items-center gap-4">
+          <div className="mt-8 sm:mt-12 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 border-t border-cyan-500/20 pt-4 sm:pt-6">
+            <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-2 sm:gap-4">
               <button
                 onClick={handleLike}
                 disabled={liked}
-                className={`flex items-center gap-2 font-mono border px-4 py-2 rounded-lg transition-all ${
+                className={`flex items-center justify-center gap-2 font-mono border px-4 py-2.5 sm:py-2 rounded-lg transition-all text-sm ${
                   liked ? "bg-cyan-600 text-white border-cyan-400 cursor-not-allowed" : "border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/10"
                 }`}
               >
-                <Heart className={`h-4 w-4 ${liked ? "fill-current text-white" : "text-cyan-300"}`} /> {likes} Likes
+                <Heart className={`h-4 w-4 ${liked ? "fill-current text-white" : "text-cyan-300"}`} /> 
+                <span>{likes} Likes</span>
               </button>
 
               <button
                 onClick={() => handleShare()}
-                className="flex items-center gap-2 border border-cyan-500/30 px-4 py-2 rounded-lg text-cyan-300 hover:bg-cyan-500/10"
+                className="flex items-center justify-center gap-2 border border-cyan-500/30 px-4 py-2.5 sm:py-2 rounded-lg text-cyan-300 hover:bg-cyan-500/10 text-sm"
               >
-                {copied ? <CheckCircle2 className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4" />} Copy Link
+                {copied ? <CheckCircle2 className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4" />} 
+                <span>{copied ? "Copied!" : "Copy Link"}</span>
               </button>
             </div>
 
-            <div className="flex gap-3">
-              <button onClick={() => handleShare("twitter")}>
-                <Twitter className="h-5 w-5 text-cyan-400 hover:text-cyan-300" />
+            <div className="flex gap-3 justify-center sm:justify-start">
+              <button 
+                onClick={() => handleShare("twitter")}
+                className="p-2.5 sm:p-2 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 hover:border-cyan-500/50 rounded-lg transition-all"
+                aria-label="Share on Twitter"
+              >
+                <Twitter className="h-4 w-4 sm:h-5 sm:w-5 text-cyan-400 hover:text-cyan-300" />
               </button>
-              <button onClick={() => handleShare("linkedin")}>
-                <Linkedin className="h-5 w-5 text-cyan-400 hover:text-cyan-300" />
+              <button 
+                onClick={() => handleShare("linkedin")}
+                className="p-2.5 sm:p-2 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 hover:border-blue-500/50 rounded-lg transition-all"
+                aria-label="Share on LinkedIn"
+              >
+                <Linkedin className="h-4 w-4 sm:h-5 sm:w-5 text-blue-400 hover:text-blue-300" />
               </button>
             </div>
           </div>
 
           {/* Comments */}
-          <section className="mt-16">
-            <h2 className="text-2xl font-display text-cyan-400 mb-6 flex items-center gap-2">
-              <MessageSquare className="h-5 w-5" /> Comments ({comments.length})
+          <section className="mt-12 sm:mt-16">
+            <h2 className="text-xl sm:text-2xl font-display text-cyan-400 mb-4 sm:mb-6 flex items-center gap-2">
+              <MessageSquare className="h-4 w-4 sm:h-5 sm:w-5" /> 
+              <span>Comments ({comments.length})</span>
             </h2>
 
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {comments.length > 0 ? (
                 comments.map(c => (
-                  <div key={c._id} className="border border-cyan-500/20 bg-gray-900/40 rounded-lg p-4">
-                    <p className="font-mono text-cyan-300">{c.name}</p>
-                    <p className="text-gray-300 mt-1">{c.text}</p>
-                    <p className="text-xs text-gray-500 mt-2">{new Date(c.date || Date.now()).toLocaleString()}</p>
+                  <div key={c._id} className="border border-cyan-500/20 bg-gray-900/40 rounded-lg p-3 sm:p-4 hover:border-cyan-500/30 transition-colors">
+                    <p className="font-mono text-cyan-300 text-sm sm:text-base font-semibold">{c.name}</p>
+                    <p className="text-gray-300 mt-1.5 sm:mt-2 text-sm sm:text-base leading-relaxed">{c.text}</p>
+                    <p className="text-[10px] sm:text-xs text-gray-500 mt-2">{new Date(c.date || Date.now()).toLocaleString()}</p>
                   </div>
                 ))
               ) : (
-                <p className="text-gray-500 font-mono">No comments yet. Be the first!</p>
+                <div className="text-center py-8 sm:py-12 border border-dashed border-cyan-500/20 rounded-lg">
+                  <MessageSquare className="h-8 w-8 sm:h-10 sm:w-10 text-cyan-400/50 mx-auto mb-3" />
+                  <p className="text-gray-500 font-mono text-sm sm:text-base">No comments yet. Be the first!</p>
+                </div>
               )}
             </div>
 
-            <form onSubmit={handleCommentSubmit} className="mt-8 space-y-4">
+            <form onSubmit={handleCommentSubmit} className="mt-6 sm:mt-8 space-y-3 sm:space-y-4">
               <textarea
                 placeholder="Write a comment..."
                 value={commentText}
                 onChange={e => setCommentText(e.target.value)}
-                className="w-full bg-gray-900 border border-cyan-500/20 text-white rounded-lg px-4 py-2 h-28 font-mono resize-none focus:border-cyan-400 focus:outline-none"
+                className="w-full bg-gray-900 border border-cyan-500/20 text-white rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 h-24 sm:h-28 font-mono resize-none focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 text-sm sm:text-base transition-all"
               />
               <Button
                 type="submit"
                 disabled={submitting || !commentText.trim()}
-                className="bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-mono"
+                className="w-full sm:w-auto bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-mono hover:from-cyan-500 hover:to-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base px-6 sm:px-8 py-2.5 sm:py-3"
               >
                 {submitting ? "Posting..." : "Post Comment"}
               </Button>
             </form>
           </section>
 
-          <footer className="mt-16 pt-8 border-t border-cyan-500/20 text-center">
-            <div className="text-sm font-mono text-gray-400">
-              <Terminal className="inline h-4 w-4 text-cyan-400 mr-1" />
-              <span className="text-cyan-400">$</span> Happy Hacking!
+          <footer className="mt-12 sm:mt-16 pt-6 sm:pt-8 border-t border-cyan-500/20 text-center">
+            <div className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-cyan-950/30 to-blue-950/30 border border-cyan-500/20 rounded-lg">
+              <Terminal className="h-3 w-3 sm:h-4 sm:w-4 text-cyan-400" />
+              <span className="text-xs sm:text-sm font-mono text-gray-400">
+                <span className="text-cyan-400">$</span> Happy Hacking!
+              </span>
             </div>
           </footer>
         </article>

@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import {
   Terminal,
@@ -254,18 +255,18 @@ const AdminPage: React.FC = () => {
   // Loading Screen
   if (loading)
     return (
-      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950">
-        <div className="text-center space-y-6">
+      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 px-4">
+        <div className="text-center space-y-4 sm:space-y-6">
           <div className="relative">
             <div className="absolute inset-0 animate-ping opacity-20">
-              <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500" />
+              <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500" />
             </div>
-            <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-2xl shadow-blue-500/50">
-              <Cpu className="w-10 h-10 text-white animate-pulse" />
+            <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-2xl shadow-blue-500/50">
+              <Cpu className="w-8 h-8 sm:w-10 sm:h-10 text-white animate-pulse" />
             </div>
           </div>
           <div className="space-y-2">
-            <div className="text-white font-semibold text-xl tracking-wide">
+            <div className="text-white font-semibold text-lg sm:text-xl tracking-wide">
               Initializing Admin Dashboard
             </div>
             <div className="flex items-center justify-center gap-1">
@@ -282,29 +283,29 @@ const AdminPage: React.FC = () => {
   const LogoutModal = () => (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4">
       <div className="bg-slate-900 rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-800 animate-in fade-in zoom-in duration-200">
-        <div className="bg-gradient-to-br from-red-500/20 via-red-600/10 to-transparent p-8 border-b border-red-500/20">
-          <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-red-500/50">
-            <LogOut className="w-8 h-8 text-white" />
+        <div className="bg-gradient-to-br from-red-500/20 via-red-600/10 to-transparent p-6 sm:p-8 border-b border-red-500/20">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-red-500/50">
+            <LogOut className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
           </div>
-          <h2 className="text-2xl font-bold text-white text-center">End Session</h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-white text-center">End Session</h2>
           <p className="text-slate-400 text-center mt-2 text-sm">Confirm logout action</p>
         </div>
         
-        <div className="p-6 space-y-6">
-          <p className="text-slate-300 text-center">
+        <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+          <p className="text-slate-300 text-center text-sm sm:text-base">
             You will be redirected to the login page and all unsaved changes will be lost.
           </p>
           
           <div className="flex gap-3">
             <button
               onClick={() => setShowLogoutModal(false)}
-              className="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium px-6 py-3 rounded-xl transition-all border border-slate-700"
+              className="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl transition-all border border-slate-700 text-sm sm:text-base"
             >
               Cancel
             </button>
             <button
               onClick={handleLogout}
-              className="flex-1 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold px-6 py-3 rounded-xl transition-all shadow-lg shadow-red-500/30"
+              className="flex-1 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl transition-all shadow-lg shadow-red-500/30 text-sm sm:text-base"
             >
               Logout
             </button>
@@ -321,26 +322,26 @@ const AdminPage: React.FC = () => {
       
       {/* Header */}
       <header className="sticky top-0 z-40 border-b border-slate-800/50 bg-slate-900/80 backdrop-blur-xl shadow-lg">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <div className="w-12 h-12 bg-gradient-to-br from-gray-800  to-gray-900 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/50 hover:text-green-700">
-                  <Cpu className="text-red-700 w-6 h-6" />
+        <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
+          <div className="flex justify-between items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
+              <div className="relative shrink-0">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/50">
+                  <Cpu className="text-red-700 w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-slate-900 shadow-lg shadow-green-400/50"></div>
+                <div className="absolute -top-1 -right-1 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-400 rounded-full border-2 border-slate-900 shadow-lg shadow-green-400/50"></div>
               </div>
-              <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
+              <div className="min-w-0">
+                <h1 className="text-base sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent truncate">
                   Verve Hub Admin Dashboard
                 </h1>
-                <div className="flex items-center gap-3 mt-0.5">
+                <div className="flex items-center gap-2 sm:gap-3 mt-0.5">
                   <span className="text-xs text-green-400 flex items-center gap-1 font-medium">
                     <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
                     Live
                   </span>
-                  <span className="text-xs text-slate-600">•</span>
-                  <span className="text-xs text-red-400">
+                  <span className="text-xs text-slate-600 hidden xs:inline">•</span>
+                  <span className="text-xs text-red-400 hidden xs:inline">
                     Secure Access
                   </span>
                 </div>
@@ -348,116 +349,116 @@ const AdminPage: React.FC = () => {
             </div>
             <button
               onClick={() => setShowLogoutModal(true)}
-              className="bg-gradient-to-r from-red-500/10 to-red-600/10 hover:from-red-500/20 hover:to-red-600/20 text-red-400 border border-red-500/30 px-4 py-2 rounded-xl flex items-center gap-2 transition-all font-medium"
+              className="bg-gradient-to-r from-red-500/10 to-red-600/10 hover:from-red-500/20 hover:to-red-600/20 text-red-400 border border-red-500/30 px-3 sm:px-4 py-2 rounded-xl flex items-center gap-2 transition-all font-medium shrink-0 text-sm"
             >
-              <LogOut size={18} />
+              <LogOut size={16} className="sm:w-[18px] sm:h-[18px]" />
               <span className="hidden sm:inline">Logout</span>
             </button>
           </div>
         </div>
       </header>
 
-      <div className="container mx-auto px-6 py-8">
+      <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Analytics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
           <div className="relative group">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
-            <div className="relative bg-gradient-to-br from-slate-800/90 to-slate-900/90 border border-slate-700/50 rounded-2xl p-6 backdrop-blur-sm hover:border-blue-500/50 transition-all">
-              <div className="flex items-start justify-between mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/50">
-                  <FileText className="text-white w-6 h-6" />
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-xl sm:rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
+            <div className="relative bg-gradient-to-br from-slate-800/90 to-slate-900/90 border border-slate-700/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 backdrop-blur-sm hover:border-blue-500/50 transition-all">
+              <div className="flex items-start justify-between mb-3 sm:mb-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/50">
+                  <FileText className="text-white w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
-                <span className="text-green-400 text-sm font-semibold flex items-center gap-1">
-                  <TrendingUp size={14} />
-                  Active
+                <span className="text-green-400 text-xs sm:text-sm font-semibold flex items-center gap-1">
+                  <TrendingUp size={12} className="sm:w-[14px] sm:h-[14px]" />
+                  <span className="hidden xs:inline">Active</span>
                 </span>
               </div>
               <div>
-                <p className="text-slate-400 text-sm mb-1 font-medium">Total Posts</p>
-                <p className="text-4xl font-bold text-white mb-1">{posts.length}</p>
-                <p className="text-xs text-slate-500">All time content</p>
+                <p className="text-slate-400 text-xs sm:text-sm mb-1 font-medium">Total Posts</p>
+                <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-1">{posts.length}</p>
+                <p className="text-xs text-slate-500 hidden xs:block">All time content</p>
               </div>
             </div>
           </div>
           
           <div className="relative group">
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
-            <div className="relative bg-gradient-to-br from-slate-800/90 to-slate-900/90 border border-slate-700/50 rounded-2xl p-6 backdrop-blur-sm hover:border-purple-500/50 transition-all">
-              <div className="flex items-start justify-between mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/50">
-                  <Calendar className="text-white w-6 h-6" />
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-xl sm:rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
+            <div className="relative bg-gradient-to-br from-slate-800/90 to-slate-900/90 border border-slate-700/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 backdrop-blur-sm hover:border-purple-500/50 transition-all">
+              <div className="flex items-start justify-between mb-3 sm:mb-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/50">
+                  <Calendar className="text-white w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
-                <span className="text-purple-400 text-sm font-semibold">7 days</span>
+                <span className="text-purple-400 text-xs sm:text-sm font-semibold"><span className="hidden xs:inline">7 days</span><span className="xs:hidden">7d</span></span>
               </div>
               <div>
-                <p className="text-slate-400 text-sm mb-1 font-medium">Recent Activity</p>
-                <p className="text-4xl font-bold text-white mb-1">{analytics.recentPosts}</p>
-                <p className="text-xs text-slate-500">Posts this week</p>
+                <p className="text-slate-400 text-xs sm:text-sm mb-1 font-medium">Recent<span className="hidden xs:inline"> Activity</span></p>
+                <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-1">{analytics.recentPosts}</p>
+                <p className="text-xs text-slate-500 hidden xs:block">Posts this week</p>
               </div>
             </div>
           </div>
           
           <div className="relative group">
-            <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
-            <div className="relative bg-gradient-to-br from-slate-800/90 to-slate-900/90 border border-slate-700/50 rounded-2xl p-6 backdrop-blur-sm hover:border-amber-500/50 transition-all">
-              <div className="flex items-start justify-between mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/50">
-                  <TrendingUp className="text-white w-6 h-6" />
+            <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-xl sm:rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
+            <div className="relative bg-gradient-to-br from-slate-800/90 to-slate-900/90 border border-slate-700/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 backdrop-blur-sm hover:border-amber-500/50 transition-all">
+              <div className="flex items-start justify-between mb-3 sm:mb-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/50">
+                  <TrendingUp className="text-white w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
-                <span className="text-amber-400 text-sm font-semibold">Growth</span>
+                <span className="text-amber-400 text-xs sm:text-sm font-semibold hidden xs:inline">Growth</span>
               </div>
               <div>
-                <p className="text-slate-400 text-sm mb-1 font-medium">Growth Rate</p>
-                <p className="text-4xl font-bold text-white mb-1">{analytics.growthRate}%</p>
-                <p className="text-xs text-slate-500">Weekly performance</p>
+                <p className="text-slate-400 text-xs sm:text-sm mb-1 font-medium">Growth<span className="hidden xs:inline"> Rate</span></p>
+                <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-1">{analytics.growthRate}%</p>
+                <p className="text-xs text-slate-500 hidden xs:block">Weekly performance</p>
               </div>
             </div>
           </div>
           
           <div className="relative group">
-            <div className="absolute inset-0 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
-            <div className="relative bg-gradient-to-br from-slate-800/90 to-slate-900/90 border border-slate-700/50 rounded-2xl p-6 backdrop-blur-sm hover:border-green-500/50 transition-all">
-              <div className="flex items-start justify-between mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg shadow-green-500/50">
-                  <Zap className="text-white w-6 h-6 animate-pulse" />
+            <div className="absolute inset-0 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-xl sm:rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
+            <div className="relative bg-gradient-to-br from-slate-800/90 to-slate-900/90 border border-slate-700/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 backdrop-blur-sm hover:border-green-500/50 transition-all">
+              <div className="flex items-start justify-between mb-3 sm:mb-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg shadow-green-500/50">
+                  <Zap className="text-white w-5 h-5 sm:w-6 sm:h-6 animate-pulse" />
                 </div>
-                <span className="text-green-400 text-sm font-semibold">Status</span>
+                <span className="text-green-400 text-xs sm:text-sm font-semibold hidden xs:inline">Status</span>
               </div>
               <div>
-                <p className="text-slate-400 text-sm mb-1 font-medium">System Health</p>
-                <p className="text-2xl font-bold text-white mb-1">Optimal</p>
-                <p className="text-xs text-slate-500">{editing ? "Edit mode" : "Ready to create"}</p>
+                <p className="text-slate-400 text-xs sm:text-sm mb-1 font-medium">System<span className="hidden xs:inline"> Health</span></p>
+                <p className="text-xl sm:text-2xl font-bold text-white mb-1">Optimal</p>
+                <p className="text-xs text-slate-500 hidden xs:block">{editing ? "Edit mode" : "Ready to create"}</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Create/Edit Section */}
-        <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-slate-700/50 rounded-2xl p-8 mb-8 backdrop-blur-sm">
-          <div className="flex items-center gap-3 mb-6">
+        <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-slate-700/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8 backdrop-blur-sm">
+          <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
             {editing ? (
-              <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/50">
-                <Edit className="text-white w-6 h-6" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/50 shrink-0">
+                <Edit className="text-white w-5 h-5 sm:w-6 sm:h-6" />
               </div>
             ) : (
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/50">
-                <Plus className="text-white w-6 h-6" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/50 shrink-0">
+                <Plus className="text-white w-5 h-5 sm:w-6 sm:h-6" />
               </div>
             )}
-            <div>
-              <h2 className="text-2xl font-bold text-white">
+            <div className="min-w-0">
+              <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-white truncate">
                 {editing ? "Edit Content" : "Create New Post"}
               </h2>
-              <p className="text-slate-400 text-sm mt-0.5">
+              <p className="text-slate-400 text-xs sm:text-sm mt-0.5 hidden xs:block">
                 {editing ? "Update existing content" : "Add new content to your platform"}
               </p>
             </div>
           </div>
           
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             <div>
-              <label className="text-slate-300 font-medium text-sm mb-3 block flex items-center gap-2">
-                <FileText size={16} className="text-blue-400" />
+              <label className="text-slate-300 font-medium text-xs sm:text-sm mb-2 sm:mb-3 block flex items-center gap-2">
+                <FileText size={14} className="text-blue-400 sm:w-4 sm:h-4" />
                 Post Title
               </label>
               <input
@@ -465,38 +466,38 @@ const AdminPage: React.FC = () => {
                 placeholder="Enter a compelling title..."
                 value={form.title}
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
-                className="bg-slate-900/50 border border-slate-700 text-white placeholder-slate-500 p-4 w-full rounded-xl focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all"
+                className="bg-slate-900/50 border border-slate-700 text-white placeholder-slate-500 p-3 sm:p-4 w-full rounded-lg sm:rounded-xl focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all text-sm sm:text-base"
                 required
               />
             </div>
             
             <div>
-              <label className="text-slate-300 font-medium text-sm mb-3 block flex items-center gap-2">
-                <Edit size={16} className="text-cyan-400" />
+              <label className="text-slate-300 font-medium text-xs sm:text-sm mb-2 sm:mb-3 block flex items-center gap-2">
+                <Edit size={14} className="text-cyan-400 sm:w-4 sm:h-4" />
                 Content Body
               </label>
               <textarea
                 placeholder="Write your content here..."
                 value={form.content}
                 onChange={(e) => setForm({ ...form, content: e.target.value })}
-                className="bg-slate-900/50 border border-slate-700 text-white placeholder-slate-500 p-4 w-full h-48 rounded-xl resize-none focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all"
+                className="bg-slate-900/50 border border-slate-700 text-white placeholder-slate-500 p-3 sm:p-4 w-full h-32 sm:h-48 rounded-lg sm:rounded-xl resize-none focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all text-sm sm:text-base"
                 required
               />
             </div>
             
-            <div className="flex flex-wrap gap-3 pt-2">
+            <div className="flex flex-col xs:flex-row gap-2 sm:gap-3 pt-2">
               <button
                 type="submit"
-                className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-semibold px-8 py-3 rounded-xl transition-all shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 flex items-center gap-2"
+                className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-semibold px-6 sm:px-8 py-2.5 sm:py-3 rounded-lg sm:rounded-xl transition-all shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 flex items-center justify-center gap-2 text-sm sm:text-base"
               >
                 {editing ? (
                   <>
-                    <CheckCircle2 size={20} />
+                    <CheckCircle2 size={18} className="sm:w-5 sm:h-5" />
                     <span>Update Post</span>
                   </>
                 ) : (
                   <>
-                    <Plus size={20} />
+                    <Plus size={18} className="sm:w-5 sm:h-5" />
                     <span>Publish Post</span>
                   </>
                 )}
@@ -506,9 +507,9 @@ const AdminPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 font-medium px-8 py-3 rounded-xl transition-all flex items-center gap-2"
+                  className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 font-medium px-6 sm:px-8 py-2.5 sm:py-3 rounded-lg sm:rounded-xl transition-all flex items-center justify-center gap-2 text-sm sm:text-base"
                 >
-                  <XCircle size={20} />
+                  <XCircle size={18} className="sm:w-5 sm:h-5" />
                   <span>Cancel</span>
                 </button>
               )}
@@ -518,17 +519,16 @@ const AdminPage: React.FC = () => {
 
         {/* Posts List */}
         <section>
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-            <div>
-              <h2 className="text-2xl font-bold text-white flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/50">
-                  <Terminal size={20} className="text-white" />
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+            <div className="min-w-0">
+              <h2 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2 sm:gap-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/50 shrink-0">
+                  <Terminal size={16} className="text-white sm:w-5 sm:h-5" />
                 </div>
-                Content Library
+                <span className="truncate">Content Library</span>
               </h2>
-              <p className="text-slate-400 text-sm mt-1 ml-13">{filteredPosts.length} items found</p>
-            </div>
-            
+              <p className="text-slate-400 text-xs sm:text-sm mt-1 ml-10 sm:ml-13">{filteredPosts.length} items found</p>
+            </div>           
             <div className="flex flex-wrap gap-3">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5" />
