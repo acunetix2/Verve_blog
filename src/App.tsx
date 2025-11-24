@@ -22,6 +22,11 @@ import Documents from "./pages/Documents";
 import Signup from "@/components/Signup";
 import Login from "./components/Login";
 import Account from "./components/Account";
+import Resources from "./pages/Resources";
+import Support from "./pages/Support";
+import Community from "./pages/Community";
+import Documentation from "./pages/Documentation";
+import Newsletter from "./pages/Newsletter";
 
 // --- Auth Context ---
 interface AuthContextType {
@@ -113,6 +118,11 @@ const App = () => (
                   <Route path="/me/blog" element={<BlogList />} />
                   <Route path="/me/resources" element={<Documents />} />
                   <Route path="/post/:slug" element={<BlogPost />} />
+				  <Route path="/resource" element={<Resources />} />
+				  <Route path="/documentation" element={<Documentation />} />
+				  <Route path="/support" element={<Support />} />
+				  <Route path="/community" element={<Community />} />
+				  <Route path="/newsletter" element={<Newsletter />} />
                 </Route>
               </Route>
 
