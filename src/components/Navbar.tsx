@@ -25,7 +25,7 @@ export default function Navbar() {
 			  <Cpu size={20} className="text-red-500" strokeWidth={2.5} />
 			</div>
 			<h1 className="text-2xl font-bold text-transparent bg-clip-text bg-cyan-400">
-			  Verve Hub Blog
+			  Verve Hub WriteUps
 			</h1>
 		  </div>
 

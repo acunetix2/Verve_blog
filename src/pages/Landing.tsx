@@ -91,7 +91,7 @@ export default function LandingPage() {
             <Cpu size={20} className="text-red-700" />
           </div>
           <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 font-sans">
-            Verve Hub Blog
+            Verve Hub WriteUps
           </h1>
         </div>
         
