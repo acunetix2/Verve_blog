@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Eye, EyeOff, LogIn, AlertCircle, Shield,BarChart3, CheckCircle,Cpu, Loader2, Sparkles } from "lucide-react";
+import { Eye, EyeOff, LogIn, AlertCircle, CheckCircle, Cpu, Loader2, BarChart3 } from "lucide-react";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
-import Navbar from "@/components/Navbar";
 import { FcGoogle } from "react-icons/fc";
 
 export default function Login() {
@@ -10,7 +9,6 @@ export default function Login() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    isAdmin: false,
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -127,8 +125,8 @@ export default function Login() {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: type === "checkbox" ? checked : value }));
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
     setMessage(null);
   };
@@ -141,9 +139,7 @@ export default function Login() {
     setMessage(null);
 
     try {
-      const endpoint = formData.isAdmin
-        ? `${import.meta.env.VITE_API_BASE_URL}/auth/login`
-        : `${import.meta.env.VITE_API_BASE_URL}/users/login`;
+      const endpoint = `${import.meta.env.VITE_API_BASE_URL}/users/login`;
 
       const res = await axios.post(endpoint, {
         email: formData.email,
@@ -151,19 +147,20 @@ export default function Login() {
       });
 
       if (res.data.token) {
+        // Use the role from backend response
+        const userRole = res.data.user?.role || "user";
+        
         localStorage.setItem("token", res.data.token);
-        localStorage.setItem("role", formData.isAdmin ? "admin" : res.data.user?.role || "user");
+        localStorage.setItem("role", userRole);
 
         // Show success message
         setMessage({
           type: "success",
-          text: formData.isAdmin
-            ? "Welcome back, Admin!"
-            : "Login successful!",
+          text: "Login successful!",
         });
 
         // Show transition screen
-        setSuccessMessage(formData.isAdmin ? "Initializing Verve Admin Panel!" : "Welcome back to Verve Hub Blog!");
+        setSuccessMessage(userRole === "admin" ? "Initializing Verve Admin Panel!" : "Welcome back to Verve Hub Blog!");
         setShowSuccessTransition(true);
 
         // Wait for transition animation
@@ -171,18 +168,14 @@ export default function Login() {
 
         setRedirecting(true);
 
-        // Navigate after transition
+        // Navigate based on backend role
         await new Promise(resolve => setTimeout(resolve, 500));
-        navigate(formData.isAdmin ? "/admin" : "/me", { replace: true });
+        navigate(userRole === "admin" ? "/admin" : "/me", { replace: true });
       } else {
         setMessage({ type: "error", text: res.data.message || "Login failed" });
       }
     } catch (err: any) {
-      const msg =
-        formData.isAdmin && err.response?.status === 401
-          ? "Unauthorized: Admin access only."
-          : err.response?.data?.message || "Incorrect username or password";
-
+      const msg = err.response?.data?.message || "Incorrect username or password";
       setMessage({ type: "error", text: msg });
     } finally {
       setIsLoading(false);
@@ -289,10 +282,7 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-cyan-950 pt-20">
-      {/*  Navbar */}
-      <Navbar />
-
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-cyan-950">
       {/* BACKGROUND ORBS */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl animate-pulse"></div>
@@ -302,26 +292,14 @@ export default function Login() {
 
       {/* AUTH CARD */}
       <div className="relative z-10 flex items-center justify-center min-h-screen px-4 py-12">
-        <div
-          className={`w-full max-w-md transform transition-all duration-700 ease-out ${
-            formData.isAdmin
-              ? "bg-gradient-to-br from-slate-900/95 via-blue-900/90 to-cyan-900/85 scale-[1.02]"
-              : "bg-slate-900/85 scale-100"
-          } backdrop-blur-xl rounded-3xl shadow-2xl p-8 border ${
-            formData.isAdmin ? "border-cyan-500/40 shadow-cyan-500/20" : "border-cyan-900/30"
-          }`}
-        >
+        <div className="w-full max-w-md transform transition-all duration-700 ease-out bg-slate-900/85 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-cyan-900/30">
           {/* HEADER */}
           <div className="text-center mb-8 space-y-2">
             <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-500 mb-2 tracking-tight animate-gradient">
               Verve Hub Blog
             </h1>
-            <p
-              className={`text-sm transition-all duration-500 ${
-                formData.isAdmin ? "text-cyan-300 font-medium" : "text-cyan-200/70"
-              }`}
-            >
-              {formData.isAdmin ? "🔐 Admin Access Panel" : "👋 Welcome back"}
+            <p className="text-sm text-cyan-200/70">
+              👋 Welcome back
             </p>
           </div>
 
@@ -402,23 +380,8 @@ export default function Login() {
               )}
             </div>
 
-            {/* Admin toggle */}
-            <div className="flex items-center justify-between text-sm pt-1">
-              <label className="flex items-center text-cyan-200/80 cursor-pointer group">
-                <input
-                  type="checkbox"
-                  name="isAdmin"
-                  checked={formData.isAdmin}
-                  onChange={handleChange}
-                  className="mr-2 w-4 h-4 rounded bg-slate-800/50 border-cyan-900/50 accent-cyan-500 cursor-pointer transition-transform duration-200 group-hover:scale-110"
-                />
-                <Shield
-                  size={16}
-                  className="mr-1.5 text-cyan-400 transition-transform duration-200 group-hover:scale-110"
-                />
-                <span className="font-medium">Login as Admin</span>
-              </label>
-
+            {/* Forgot password */}
+            <div className="flex items-center justify-end text-sm pt-1">
               <button type="button" className="text-cyan-400 hover:text-cyan-300 transition-all duration-200 font-medium hover:underline">
                 Forgot password?
               </button>
@@ -438,7 +401,7 @@ export default function Login() {
               ) : (
                 <>
                   <LogIn size={19} />
-                  <span>{formData.isAdmin ? "Sign in as Admin" : "Sign In"}</span>
+                  <span>Sign In</span>
                 </>
               )}
             </button>
