@@ -42,7 +42,7 @@ export const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) =>
   
   const [showNotifications, setShowNotifications] = useState(false);
   const notificationRef = useRef<HTMLDivElement>(null);
-  const { notifications, markAsRead } = useLiveNotifications();
+  const { notifications, markAsRead, markAllAsRead } = useLiveNotifications();
 
   const fetchUser = useCallback(async () => {
     if (!token) return;
@@ -130,78 +130,114 @@ export const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) =>
 
             {/* Right side: Navigation */}
             <nav className="flex items-center gap-1">
-              
 
               {/* Divider */}
               <div className="hidden md:block w-px h-6 bg-gray-200 dark:bg-gray-800 mx-2" />
 
-              {/* Notification Button */}
-              <div className="relative" ref={notificationRef}>
-                <button
-                  onClick={() => setShowNotifications(!showNotifications)}
-                  className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-300"
-                >
-                  <Bell size={20} />
-                  {notifications.some(n => !n.read) && (
-                    <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                  )}
-                </button>
+              {/* Modern Notification Dropdown */}
+				<div className="relative" ref={notificationRef}>
+				  <button
+					onClick={() => setShowNotifications(!showNotifications)}
+					className="relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-300"
+					aria-label="Toggle notifications"
+				  >
+					<Bell size={20} />
+					{notifications.some(n => !n.read) && (
+					  <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full animate-ping" />
+					)}
+				  </button>
 
-                {showNotifications && (
-                  <div className="absolute right-0 mt-2 w-96 max-h-[32rem] overflow-y-auto bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg shadow-xl">
-                    <div className="sticky top-0 bg-green-400 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-4 py-3">
-                      <h3 className="font-semibold text-gray-900 dark:text-white">Notifications</h3>
-                    </div>
-                    
-                    {notifications.length === 0 && (
-                      <div className="px-4 py-12 text-center">
-                        <p className="text-gray-500 dark:text-gray-400">No notifications</p>
-                      </div>
-                    )}
+				  {showNotifications && (
+					<motion.div
+					  initial={{ opacity: 0, scale: 0.95, y: -10 }}
+					  animate={{ opacity: 1, scale: 1, y: 0 }}
+					  exit={{ opacity: 0, scale: 0.95, y: -10 }}
+					  className="absolute right-0 mt-2 w-96 max-h-[32rem] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col"
+					>
+					  {/* Header */}
+					  <div className="sticky top-0 z-10 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-4 py-3 flex justify-between items-center">
+						<h3 className="font-semibold text-gray-900 dark:text-white text-sm md:text-base">
+						  Notifications
+						</h3>
+						{notifications.length > 0 && (
+						  <button
+							onClick={markAllAsRead}
+							className="text-xs text-gray-600 dark:text-gray-400 hover:underline"
+						  >
+							Mark all as read
+						  </button>
+						)}
+					  </div>
 
-                    <AnimatePresence>
-                      {notifications.map((n) => {
-                        const Icon = n.type === "document" ? Bell : CheckCircle2;
+					  {/* Notification list */}
+					  <div className="flex-1 overflow-y-auto">
+						{notifications.length === 0 && (
+						  <div className="px-4 py-12 text-center">
+							<p className="text-gray-500 dark:text-gray-400 text-sm">No notifications</p>
+						  </div>
+						)}
 
-                        return (
-                          <motion.div
-                            key={n.id}
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            className={`flex items-start gap-3 px-4 py-4 border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer ${
-                              !n.read ? "bg-blue-50/30 dark:bg-blue-900/10" : ""
-                            }`}
-                          >
-                            <Icon className={`w-5 h-5 mt-0.5 flex-shrink-0 ${
-                              n.type === "document" ? "text-blue-600 dark:text-blue-400" : "text-green-600 dark:text-green-400"
-                            }`} />
-                            <div className="flex-1 min-w-0">
-                              <h4 className="font-medium text-gray-900 dark:text-white text-sm mb-0.5">{n.title}</h4>
-                              <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{n.message}</p>
-                              <span className="text-xs text-gray-500 dark:text-gray-500 mt-1 inline-block">
-                                {new Date(n.time).toLocaleTimeString()}
-                              </span>
-                            </div>
-                            {!n.read && (
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  markAsRead(n.id);
-                                }}
-                                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-xl leading-none flex-shrink-0"
-                                aria-label="Mark as read"
-                              >
-                                ×
-                              </button>
-                            )}
-                          </motion.div>
-                        );
-                      })}
-                    </AnimatePresence>
-                  </div>
-                )}
-              </div>
+						<AnimatePresence>
+						  {notifications.map((n) => {
+							const Icon = n.type === "document" ? Bell : CheckCircle2;
+							return (
+							  <motion.div
+								key={n.id}
+								initial={{ opacity: 0, x: 20 }}
+								animate={{ opacity: 1, x: 0 }}
+								exit={{ opacity: 0, x: 20 }}
+								className={`flex items-start gap-3 px-4 py-3 border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer ${
+								  !n.read ? "bg-blue-50/20 dark:bg-blue-900/10" : "bg-transparent"
+								}`}
+							  >
+								<Icon
+								  className={`w-5 h-5 mt-0.5 flex-shrink-0 ${
+									n.type === "document"
+									  ? "text-blue-600 dark:text-blue-400"
+									  : "text-green-600 dark:text-green-400"
+								  }`}
+								/>
+								<div className="flex-1 min-w-0">
+								  <h4 className="font-medium text-gray-900 dark:text-white text-sm md:text-[15px] truncate">
+									{n.title}
+								  </h4>
+								  <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed truncate">
+									{n.message}
+								  </p>
+								  <span className="text-xs text-gray-500 dark:text-gray-500 mt-1 inline-block">
+									{new Date(n.time).toLocaleString([], { dateStyle: "short", timeStyle: "short" })}
+								  </span>
+								</div>
+								{!n.read && (
+								  <button
+									onClick={(e) => {
+									  e.stopPropagation();
+									  markAsRead(n.id);
+									}}
+									className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-lg leading-none flex-shrink-0"
+									aria-label="Mark as read"
+								  >
+									×
+								  </button>
+								)}
+							  </motion.div>
+							);
+						  })}
+						</AnimatePresence>
+					  </div>
+
+					  {/* Footer */}
+					  {notifications.length > 0 && (
+						<div className="px-4 py-2 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50 text-center text-xs text-gray-500 dark:text-gray-400">
+						  {notifications.filter(n => !n.read).length} new notification
+						  {notifications.filter(n => !n.read).length !== 1 ? "s" : ""}
+						</div>
+					  )}
+					</motion.div>
+				  )}
+				</div>
+
+
               {/* User Dropdown */}
               <UserDropdown
                 user={user}
