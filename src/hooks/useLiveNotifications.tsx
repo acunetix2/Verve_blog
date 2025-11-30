@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { io, Socket } from "socket.io-client";
 import axios from "axios";
 
@@ -8,75 +8,135 @@ export type Notification = {
   title: string;
   message: string;
   time: string;
-  read?: boolean; // local read status per client
+  read?: boolean;
 };
 
 export const useLiveNotifications = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [socket, setSocket] = useState<Socket | null>(null);
+  const socketRef = useRef<Socket | null>(null);
 
-  // Fetch all global notifications from backend
-  const fetchNotifications = async () => {
+  const READ_KEY = "read_notifications_ids";
+
+  // -----------------------------
+  // Helpers for localStorage
+  // -----------------------------
+  const getReadIds = () => {
+    try {
+      return JSON.parse(localStorage.getItem(READ_KEY) || "[]") as string[];
+    } catch {
+      return [];
+    }
+  };
+
+  const saveReadIds = (ids: string[]) => {
+    localStorage.setItem(READ_KEY, JSON.stringify(ids));
+  };
+
+  // -----------------------------
+  // Fetch notifications
+  // -----------------------------
+  const fetchNotifications = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) return;
+
       const res = await axios.get(
         `${import.meta.env.VITE_API_BASE_URL}/notifications`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
+
+      const readIds = getReadIds();
+
       setNotifications(
         res.data
-          .sort((a: any, b: any) => new Date(b.time).getTime() - new Date(a.time).getTime())
+          .sort(
+            (a: any, b: any) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          )
           .map((n: any) => ({
             id: n._id,
             type: n.type,
             title: n.title,
             message: n.message,
-            time: n.time,
-            read: false, // each client tracks local read status
+            time: n.createdAt,
+            read: readIds.includes(n._id),
           }))
       );
     } catch (err) {
       console.error("Failed to fetch notifications:", err);
     }
-  };
+  }, []);
 
-  // Mark notification as read locally
+  // -----------------------------
+  // Mark one as read
+  // -----------------------------
   const markAsRead = (id: string) => {
+    const readIds = getReadIds();
+    if (!readIds.includes(id)) saveReadIds([...readIds, id]);
+
     setNotifications((prev) =>
       prev.map((n) => (n.id === id ? { ...n, read: true } : n))
     );
   };
 
-  useEffect(() => {
-    fetchNotifications(); // load existing notifications on mount
+  // -----------------------------
+  // Mark all as read
+  // -----------------------------
+  const markAllAsRead = () => {
+    const allIds = notifications.map((n) => n.id);
+    saveReadIds(allIds);
 
-    // Connect to Socket.IO server
-    const s = io(import.meta.env.VITE_API_BASE_URL2, {
-      auth: { token: localStorage.getItem("token") || "" },
-    });
-    setSocket(s);
+    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+  };
 
-    // Listen for new global notifications
-    const handleNewNotification = (data: any, type: "document" | "post") => {
+  // -----------------------------
+  // Handle new Socket.IO notification
+  // -----------------------------
+  const handleNewNotification = useCallback(
+    (data: any, type: "document" | "post") => {
+      const readIds = getReadIds();
+
       const newNotification: Notification = {
         id: data._id,
         type,
         title: type === "document" ? "New Resource Uploaded" : "New WriteUp Post",
         message: data.title,
-        time: new Date().toISOString(),
-        read: false,
+        time: data.createdAt || new Date().toISOString(),
+        read: readIds.includes(data._id),
       };
-      setNotifications((prev) => [newNotification, ...prev]);
-    };
 
-    s.on("new-document", (doc: any) => handleNewNotification(doc, "document"));
-    s.on("new-post", (post: any) => handleNewNotification(post, "post"));
+      setNotifications((prev) => [newNotification, ...prev]);
+    },
+    []
+  );
+
+  // -----------------------------
+  // Initialize Socket.IO
+  // -----------------------------
+  useEffect(() => {
+    fetchNotifications();
+
+    const token = localStorage.getItem("token") || "";
+    const socket = io(import.meta.env.VITE_API_BASE_URL2, { auth: { token } });
+    socketRef.current = socket;
+
+    socket.on("new-document", (doc: any) => handleNewNotification(doc, "document"));
+    socket.on("new-post", (post: any) => handleNewNotification(post, "post"));
 
     return () => {
-      s.disconnect();
+      socket.off("new-document");
+      socket.off("new-post");
+      socket.disconnect();
     };
-  }, []);
+  }, [fetchNotifications, handleNewNotification]);
 
-  return { notifications, markAsRead, fetchNotifications };
+  // -----------------------------
+  // Unread count
+  // -----------------------------
+  const unreadCount = useMemo(
+    () => notifications.filter((n) => !n.read).length,
+    [notifications]
+  );
+
+  return { notifications, markAsRead, markAllAsRead, fetchNotifications, unreadCount };
 };

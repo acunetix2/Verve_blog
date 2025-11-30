@@ -29,6 +29,19 @@ const NAV_ITEMS: NavItem[] = [
   },
 ];
 
+// Custom hook for click outside detection
+const useClickOutside = (ref: React.RefObject<HTMLElement>, handler: () => void) => {
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        handler();
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [ref, handler]);
+};
+
 export const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) => {
   const [user, setUser] = useState<User | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -42,7 +55,9 @@ export const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) =>
   
   const [showNotifications, setShowNotifications] = useState(false);
   const notificationRef = useRef<HTMLDivElement>(null);
-  const { notifications, markAsRead, markAllAsRead } = useLiveNotifications();
+  
+  // Enhanced hook usage with unreadCount
+  const { notifications, markAsRead, markAllAsRead, unreadCount } = useLiveNotifications();
 
   const fetchUser = useCallback(async () => {
     if (!token) return;
@@ -60,23 +75,26 @@ export const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) =>
     fetchUser();
   }, [fetchUser]);
 
+  // Optimized scroll handler with useCallback
+  const handleScroll = useCallback(() => {
+    setScrolled(window.scrollY > 10);
+  }, []);
+
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
-    };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [handleScroll]);
   
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
-        setShowNotifications(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  // Click outside handlers using custom hook
+  useClickOutside(notificationRef, () => setShowNotifications(false));
+  useClickOutside(dropdownRef, () => setDropdownOpen(false));
+
+  // Enhanced mark all as read with auto-close
+  const handleMarkAllAsRead = useCallback(() => {
+    markAllAsRead();
+    // Optional: Auto-close after marking all as read
+    setTimeout(() => setShowNotifications(false), 500);
+  }, [markAllAsRead]);
 	
   const handleLogout = () => {
     setRedirecting(true);
@@ -134,109 +152,142 @@ export const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) =>
               {/* Divider */}
               <div className="hidden md:block w-px h-6 bg-gray-200 dark:bg-gray-800 mx-2" />
 
-              {/* Modern Notification Dropdown */}
-				<div className="relative" ref={notificationRef}>
-				  <button
-					onClick={() => setShowNotifications(!showNotifications)}
-					className="relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-300"
-					aria-label="Toggle notifications"
-				  >
-					<Bell size={20} />
-					{notifications.some(n => !n.read) && (
-					  <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full animate-ping" />
-					)}
-				  </button>
+              {/* Enhanced Notification Dropdown */}
+              <div className="relative" ref={notificationRef}>
+                <button
+                  onClick={() => setShowNotifications(!showNotifications)}
+                  className="relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-300"
+                  aria-label="Toggle notifications"
+                >
+                  <Bell size={20} />
+                  {/* Numeric badge instead of just ping */}
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 rounded-full text-white text-[10px] flex items-center justify-center font-bold px-1 shadow-lg animate-pulse">
+                      {unreadCount > 99 ? '99+' : unreadCount}
+                    </span>
+                  )}
+                </button>
 
-				  {showNotifications && (
-					<motion.div
-					  initial={{ opacity: 0, scale: 0.95, y: -10 }}
-					  animate={{ opacity: 1, scale: 1, y: 0 }}
-					  exit={{ opacity: 0, scale: 0.95, y: -10 }}
-					  className="absolute right-0 mt-2 w-96 max-h-[32rem] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col"
-					>
-					  {/* Header */}
-					  <div className="sticky top-0 z-10 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-4 py-3 flex justify-between items-center">
-						<h3 className="font-semibold text-gray-900 dark:text-white text-sm md:text-base">
-						  Notifications
-						</h3>
-						{notifications.length > 0 && (
-						  <button
-							onClick={markAllAsRead}
-							className="text-xs text-gray-600 dark:text-gray-400 hover:underline"
-						  >
-							Mark all as read
-						  </button>
-						)}
-					  </div>
+                {showNotifications && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute right-0 mt-2 w-96 max-h-[32rem] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col"
+                  >
+                    {/* Header */}
+                    <div className="sticky top-0 z-10 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-4 py-3 flex justify-between items-center">
+                      <h3 className="font-semibold text-gray-900 dark:text-white text-sm md:text-base">
+                        Notifications
+                        {unreadCount > 0 && (
+                          <span className="ml-2 text-xs font-normal text-gray-500 dark:text-gray-400">
+                            ({unreadCount} new)
+                          </span>
+                        )}
+                      </h3>
+                      {notifications.length > 0 && unreadCount > 0 && (
+                        <button
+                          onClick={handleMarkAllAsRead}
+                          className="text-xs text-blue-600 dark:text-blue-400 hover:underline font-medium"
+                        >
+                          Mark all as read
+                        </button>
+                      )}
+                    </div>
 
-					  {/* Notification list */}
-					  <div className="flex-1 overflow-y-auto">
-						{notifications.length === 0 && (
-						  <div className="px-4 py-12 text-center">
-							<p className="text-gray-500 dark:text-gray-400 text-sm">No notifications</p>
-						  </div>
-						)}
+                    {/* Notification list */}
+                    <div className="flex-1 overflow-y-auto">
+                      {notifications.length === 0 && (
+                        <div className="px-4 py-12 text-center">
+                          <Bell className="w-12 h-12 mx-auto text-gray-300 dark:text-gray-700 mb-3" />
+                          <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">No notifications</p>
+                          <p className="text-gray-400 dark:text-gray-500 text-xs mt-1">You're all caught up!</p>
+                        </div>
+                      )}
 
-						<AnimatePresence>
-						  {notifications.map((n) => {
-							const Icon = n.type === "document" ? Bell : CheckCircle2;
-							return (
-							  <motion.div
-								key={n.id}
-								initial={{ opacity: 0, x: 20 }}
-								animate={{ opacity: 1, x: 0 }}
-								exit={{ opacity: 0, x: 20 }}
-								className={`flex items-start gap-3 px-4 py-3 border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer ${
-								  !n.read ? "bg-blue-50/20 dark:bg-blue-900/10" : "bg-transparent"
-								}`}
-							  >
-								<Icon
-								  className={`w-5 h-5 mt-0.5 flex-shrink-0 ${
-									n.type === "document"
-									  ? "text-blue-600 dark:text-blue-400"
-									  : "text-green-600 dark:text-green-400"
-								  }`}
-								/>
-								<div className="flex-1 min-w-0">
-								  <h4 className="font-medium text-gray-900 dark:text-white text-sm md:text-[15px] truncate">
-									{n.title}
-								  </h4>
-								  <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed truncate">
-									{n.message}
-								  </p>
-								  <span className="text-xs text-gray-500 dark:text-gray-500 mt-1 inline-block">
-									{new Date(n.time).toLocaleString([], { dateStyle: "short", timeStyle: "short" })}
-								  </span>
-								</div>
-								{!n.read && (
-								  <button
-									onClick={(e) => {
-									  e.stopPropagation();
-									  markAsRead(n.id);
-									}}
-									className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-lg leading-none flex-shrink-0"
-									aria-label="Mark as read"
-								  >
-									×
-								  </button>
-								)}
-							  </motion.div>
-							);
-						  })}
-						</AnimatePresence>
-					  </div>
+                      <AnimatePresence mode="popLayout">
+                        {notifications.map((n) => {
+                          const Icon = n.type === "document" ? Bell : CheckCircle2;
+                          const isNew = new Date().getTime() - new Date(n.time).getTime() < 60000; // New if < 1 min old
+                          
+                          return (
+                            <motion.div
+                              key={n.id}
+                              initial={{ opacity: 0, x: 20 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              exit={{ opacity: 0, x: -20, height: 0 }}
+                              transition={{ duration: 0.2 }}
+                              className={`relative flex items-start gap-3 px-4 py-3 border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer ${
+                                !n.read ? "bg-blue-50/30 dark:bg-blue-900/10" : "bg-transparent"
+                              }`}
+                              onClick={() => {
+                                if (!n.read) markAsRead(n.id);
+                              }}
+                            >
+                              {/* Unread indicator dot */}
+                              {!n.read && (
+                                <div className="absolute left-1.5 top-1/2 -translate-y-1/2 w-2 h-2 bg-blue-500 rounded-full" />
+                              )}
+                              
+                              <Icon
+                                className={`w-5 h-5 mt-0.5 flex-shrink-0 ${
+                                  n.type === "document"
+                                    ? "text-blue-600 dark:text-blue-400"
+                                    : "text-green-600 dark:text-green-400"
+                                }`}
+                              />
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2">
+                                  <h4 className="font-medium text-gray-900 dark:text-white text-sm md:text-[15px] truncate">
+                                    {n.title}
+                                  </h4>
+                                  {isNew && (
+                                    <span className="px-1.5 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-[10px] font-semibold rounded">
+                                      NEW
+                                    </span>
+                                  )}
+                                </div>
+                                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed line-clamp-2 mt-0.5">
+                                  {n.message}
+                                </p>
+                                <span className="text-xs text-gray-500 dark:text-gray-500 mt-1 inline-block">
+                                  {new Date(n.time).toLocaleString([], { dateStyle: "short", timeStyle: "short" })}
+                                </span>
+                              </div>
+                              {!n.read && (
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    markAsRead(n.id);
+                                  }}
+                                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-lg leading-none flex-shrink-0 p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded transition-colors"
+                                  aria-label="Mark as read"
+                                >
+                                  ×
+                                </button>
+                              )}
+                            </motion.div>
+                          );
+                        })}
+                      </AnimatePresence>
+                    </div>
 
-					  {/* Footer */}
-					  {notifications.length > 0 && (
-						<div className="px-4 py-2 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50 text-center text-xs text-gray-500 dark:text-gray-400">
-						  {notifications.filter(n => !n.read).length} new notification
-						  {notifications.filter(n => !n.read).length !== 1 ? "s" : ""}
-						</div>
-					  )}
-					</motion.div>
-				  )}
-				</div>
-
+                    {/* Footer */}
+                    {notifications.length > 0 && (
+                      <div className="px-4 py-2 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50 text-center text-xs text-gray-500 dark:text-gray-400">
+                        {unreadCount > 0 ? (
+                          <span className="font-medium text-blue-600 dark:text-blue-400">
+                            {unreadCount} unread notification{unreadCount !== 1 ? "s" : ""}
+                          </span>
+                        ) : (
+                          <span className="text-green-600 dark:text-green-400">All caught up! ✓</span>
+                        )}
+                      </div>
+                    )}
+                  </motion.div>
+                )}
+              </div>
 
               {/* User Dropdown */}
               <UserDropdown
@@ -311,12 +362,18 @@ const UserDropdown = ({
         )}
         <ChevronDown 
           size={16} 
-          className={`text-gray-500 dark:text-gray-400 transition-transform ${open ? "rotate-180" : ""}`} 
+          className={`text-gray-500 dark:text-gray-400 transition-transform duration-200 ${open ? "rotate-180" : ""}`} 
         />
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl shadow-lg overflow-hidden">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: -10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: -10 }}
+          transition={{ duration: 0.15 }}
+          className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl shadow-lg overflow-hidden"
+        >
           {user && (
             <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
               <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
@@ -350,7 +407,7 @@ const UserDropdown = ({
               <span>Logout</span>
             </button>
           </div>
-        </div>
+        </motion.div>
       )}
     </div>
   );
@@ -367,7 +424,12 @@ const LogoutModal = ({
   onConfirm: () => void;
 }) => (
   <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-    <div className="bg-white dark:bg-gray-900 rounded-2xl w-full max-w-md shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      className="bg-white dark:bg-gray-900 rounded-2xl w-full max-w-md shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden"
+    >
       <div className="px-6 py-5 border-b border-gray-100 dark:border-gray-800">
         <h2 className="text-lg font-semibold text-red-700 dark:text-white">
           {redirecting ? "Logging out..." : "Confirm Logout"}
@@ -404,6 +466,6 @@ const LogoutModal = ({
           </div>
         </div>
       )}
-    </div>
+    </motion.div>
   </div>
 );
