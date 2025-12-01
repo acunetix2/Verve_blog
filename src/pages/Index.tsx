@@ -183,18 +183,18 @@ const categories = [
         {/* Elegant Header */}
         <header className="py-12 sm:py-16 lg:py-20 border-b border-border/50">
           <div className="max-w-4xl mx-auto text-center space-y-6 animate-fade-in-up">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/5 border border-cyan-500/30 rounded-full text-xs font-medium text-white mb-4">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-primary/5 border border-cyan-500/30 rounded-full text-xs font-medium">
 			  <Activity className="h-3 w-3 text-cyan-400 animate-pulse" />
 			  All Systems Operational
 			</div>
 
 			<h1 className="text-5xl sm:text-6xl lg:text-7xl font-serif font-semibold tracking-tight editorial-heading">
-			  <span className="bg-gradient-to-br from-white via-cyan-400 to-white bg-clip-text text-transparent">
+			  <span className="bg-gradient-to-br from-foreground via-cyan-400 to-foreground bg-clip-text text-transparent">
 				Verve Hub Writeups
 			  </span>
 			</h1>
 
-			<p className="text-lg sm:text-xl text-white/70 max-w-2xl mx-auto leading-relaxed">
+			<p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
 			  A curated collection of thoughts, insights, and learning writeups and documents worth your time
 			</p>
             <div className="flex items-center justify-center gap-3 pt-4">

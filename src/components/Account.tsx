@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { X, Eye, EyeOff, AlertCircle, CheckCircle, Trash2, LogOut, User, Mail, Lock, Camera, Shield, Clock } from "lucide-react";
+import { X, Eye, EyeOff, AlertCircle, CheckCircle, Trash2, User, Mail, Lock, Camera, Shield, Clock, ArrowLeft } from "lucide-react";
 
 interface User {
   name: string;
@@ -26,10 +26,13 @@ export default function Account() {
   const [isDirty, setIsDirty] = useState(false);
   const [message, setMessage] = useState<{ type: string; text: string } | null>(null);
 
-  const token = localStorage.getItem("token");
-  if (!token) navigate("/login");
-
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
     const fetchUser = async () => {
       try {
         const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/users/me`, {
@@ -43,7 +46,15 @@ export default function Account() {
       }
     };
     fetchUser();
-  }, [token, navigate]);
+  }, [navigate]);
+
+  useEffect(() => {
+    return () => {
+      if (avatarPreview && avatarPreview.startsWith('blob:')) {
+        URL.revokeObjectURL(avatarPreview);
+      }
+    };
+  }, [avatarPreview]);
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -72,6 +83,9 @@ export default function Account() {
   };
 
   const handleProfileUpdate = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
     setIsLoading(true);
     setMessage(null);
     try {
@@ -88,7 +102,8 @@ export default function Account() {
       setIsDirty(false);
       setAvatarFile(null);
       setMessage({ type: "success", text: "Profile updated successfully!" });
-      setTimeout(() => setMessage(null), 5000);
+      const timeoutId = setTimeout(() => setMessage(null), 5000);
+      return () => clearTimeout(timeoutId);
     } catch (err: any) {
       setMessage({ type: "error", text: err.response?.data?.message || "Update failed. Please try again." });
     } finally {
@@ -109,6 +124,10 @@ export default function Account() {
       setMessage({ type: "error", text: "New passwords do not match" });
       return;
     }
+
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
     setIsLoading(true);
     setMessage(null);
     try {
@@ -117,7 +136,8 @@ export default function Account() {
       });
       setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
       setMessage({ type: "success", text: "Password updated successfully!" });
-      setTimeout(() => setMessage(null), 5000);
+      const timeoutId = setTimeout(() => setMessage(null), 5000);
+      return () => clearTimeout(timeoutId);
     } catch (err: any) {
       setMessage({ type: "error", text: err.response?.data?.message || "Password change failed. Please check your current password." });
     } finally {
@@ -135,6 +155,9 @@ export default function Account() {
       "This is your final warning.\n\nType your confirmation by clicking OK to proceed with account deletion."
     );
     if (!doubleCheck) return;
+
+    const token = localStorage.getItem("token");
+    if (!token) return;
 
     try {
       await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/users/me`, {
@@ -168,10 +191,10 @@ export default function Account() {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-950">
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400 mx-auto mb-4"></div>
-          <p className="text-cyan-200">Loading your account...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
+          <p className="text-gray-600 font-serif text-lg">Loading your account...</p>
         </div>
       </div>
     );
@@ -184,339 +207,351 @@ export default function Account() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-      
-      <div className="flex-grow container mx-auto px-4 py-8 pt-24 max-w-5xl">
-        {/* Header */}
-        <div className="mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Account Settings</h1>
-            <p className="text-slate-400">Manage your profile, security, and preferences</p>
+    <div className="min-h-screen bg-white">
+      {/* Header */}
+      <header className="border-b border-gray-200 bg-white sticky top-0 z-10">
+        <div className="max-w-4xl mx-auto px-6 py-6">
+          <div className="flex items-center justify-between">
+            <button
+              onClick={handleExit}
+              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors group"
+              aria-label="Go back"
+            >
+              <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+              <span className="font-serif text-lg">Back</span>
+            </button>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+                <User size={16} className="text-gray-600" />
+              </div>
+            </div>
           </div>
-          <button
-            onClick={handleExit}
-            className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg transition-colors border border-slate-700"
-            aria-label="Exit to home"
-          >
-            <X size={18} />
-          </button>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="max-w-4xl mx-auto px-6 py-12">
+        {/* Title */}
+        <div className="mb-12">
+          <h1 className="font-serif text-5xl font-bold text-gray-900 mb-3 tracking-tight">Settings</h1>
+          <p className="text-xl text-gray-600 font-serif">Manage your account preferences and security</p>
         </div>
 
         {/* Global Message */}
         {message && (
-          <div className={`mb-6 p-4 rounded-lg flex items-start gap-3 ${
+          <div className={`mb-8 p-5 rounded-lg flex items-start gap-3 border ${
             message.type === "error" 
-              ? "bg-red-500/10 border border-red-500/30 text-red-400" 
-              : "bg-green-500/10 border border-green-500/30 text-green-400"
+              ? "bg-red-50 border-red-200 text-red-800" 
+              : "bg-green-50 border-green-200 text-green-800"
           }`}>
-            {message.type === "error" ? <AlertCircle size={20} className="flex-shrink-0 mt-0.5" /> : <CheckCircle size={20} className="flex-shrink-0 mt-0.5" />}
-            <p>{message.text}</p>
+            {message.type === "error" ? 
+              <AlertCircle size={20} className="flex-shrink-0 mt-0.5" /> : 
+              <CheckCircle size={20} className="flex-shrink-0 mt-0.5" />
+            }
+            <p className="font-sans text-sm leading-relaxed">{message.text}</p>
           </div>
         )}
 
-        {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Sidebar Navigation */}
-          <div className="lg:col-span-1">
-            <nav className="bg-slate-900/50 backdrop-blur-sm rounded-xl border border-slate-800 p-2 space-y-1">
-              {tabs.map(tab => {
-                const Icon = tab.icon;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-                      activeTab === tab.id
-                        ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
-                        : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'
-                    }`}
-                  >
-                    <Icon size={18} />
-                    <span className="font-medium">{tab.label}</span>
-                  </button>
-                );
-              })}
-            </nav>
+        {/* Tab Navigation */}
+        <nav className="mb-10 border-b border-gray-200">
+          <div className="flex gap-8">
+            {tabs.map(tab => {
+              const Icon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center gap-2 pb-4 border-b-2 transition-all font-serif text-lg ${
+                    activeTab === tab.id
+                      ? 'border-gray-900 text-gray-900'
+                      : 'border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-300'
+                  }`}
+                >
+                  <Icon size={18} />
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </nav>
 
-            {/* Account Info Card */}
-            <div className="mt-4 bg-slate-900/50 backdrop-blur-sm rounded-xl border border-slate-800 p-4">
-              <div className="text-sm space-y-2">
-                <div className="flex items-center gap-2 text-slate-400">
-                  <Shield size={14} />
-                  <span>Role: <span className="text-cyan-400 font-medium">{user.role}</span></span>
+        {/* Content Area */}
+        <div className="max-w-2xl">
+          {/* Profile Tab */}
+          {activeTab === 'profile' && (
+            <div className="space-y-10">
+              <div>
+                <h2 className="font-serif text-3xl font-bold text-gray-900 mb-2">Profile</h2>
+                <p className="text-gray-600 font-sans text-base leading-relaxed">
+                  This information will be displayed publicly so be careful what you share.
+                </p>
+              </div>
+
+              {/* Avatar Section */}
+              <div className="pb-10 border-b border-gray-200">
+                <label className="block font-serif text-sm font-semibold text-gray-900 mb-4">
+                  Photo
+                </label>
+                <div className="flex items-center gap-6">
+                  <div className="relative group">
+                    <img 
+                      src={avatarPreview || "/default-avatar.png"} 
+                      alt="Profile avatar" 
+                      className="w-24 h-24 rounded-full object-cover ring-2 ring-gray-200 group-hover:ring-gray-400 transition-all"
+                    />
+                    <label 
+                      htmlFor="avatar-upload" 
+                      className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                    >
+                      <Camera size={24} className="text-white" />
+                    </label>
+                    <input 
+                      id="avatar-upload"
+                      type="file" 
+                      accept="image/*" 
+                      onChange={handleAvatarChange}
+                      className="hidden"
+                      aria-label="Upload profile picture"
+                    />
+                  </div>
+                  <div>
+                    <label 
+                      htmlFor="avatar-upload" 
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-sans text-sm rounded-lg cursor-pointer transition-colors"
+                    >
+                      <Camera size={16} />
+                      Change
+                    </label>
+                    <p className="text-gray-500 font-sans text-sm mt-2">JPG, PNG or GIF. Max 5MB.</p>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 text-slate-400">
-                  <Clock size={14} />
-                  <span>Since: {new Date(user.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</span>
+              </div>
+
+              {/* Form Fields */}
+              <div className="space-y-8">
+                <div>
+                  <label htmlFor="name" className="block font-serif text-sm font-semibold text-gray-900 mb-3">
+                    Full Name
+                  </label>
+                  <input 
+                    id="name"
+                    name="name" 
+                    type="text"
+                    value={formData.name} 
+                    onChange={handleFormChange} 
+                    placeholder="Enter your full name"
+                    className="w-full px-4 py-3 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all font-sans"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="email" className="block font-serif text-sm font-semibold text-gray-900 mb-3">
+                    Email Address
+                  </label>
+                  <input 
+                    id="email"
+                    name="email" 
+                    type="email"
+                    value={formData.email} 
+                    onChange={handleFormChange} 
+                    placeholder="your.email@example.com"
+                    className="w-full px-4 py-3 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all font-sans"
+                  />
+                </div>
+
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                  <div className="flex items-center gap-3 text-sm text-gray-600 font-sans">
+                    <Shield size={16} />
+                    <span>Role: <strong className="text-gray-900">{user.role}</strong></span>
+                    <span className="mx-2">•</span>
+                    <Clock size={16} />
+                    <span>Member since {new Date(user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center gap-3 pt-6 border-t border-gray-200">
+                <button 
+                  onClick={handleProfileUpdate} 
+                  disabled={isLoading || !isDirty}
+                  className="px-6 py-3 bg-gray-900 hover:bg-gray-800 disabled:bg-gray-300 disabled:text-gray-500 text-white font-sans font-medium rounded-lg transition-colors disabled:cursor-not-allowed"
+                >
+                  {isLoading ? "Saving..." : "Save Changes"}
+                </button>
+                {isDirty && (
+                  <button 
+                    onClick={handleCancel}
+                    className="px-6 py-3 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-sans font-medium rounded-lg transition-colors"
+                  >
+                    Cancel
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Security Tab */}
+          {activeTab === 'security' && (
+            <div className="space-y-10">
+              <div>
+                <h2 className="font-serif text-3xl font-bold text-gray-900 mb-2">Security</h2>
+                <p className="text-gray-600 font-sans text-base leading-relaxed">
+                  Update your password to keep your account secure.
+                </p>
+              </div>
+
+              <div className="space-y-8">
+                <div>
+                  <label htmlFor="current-password" className="block font-serif text-sm font-semibold text-gray-900 mb-3">
+                    Current Password
+                  </label>
+                  <div className="relative">
+                    <input 
+                      id="current-password"
+                      type={showPassword.current ? "text" : "password"} 
+                      name="currentPassword" 
+                      value={passwordData.currentPassword} 
+                      onChange={handlePasswordChange}
+                      placeholder="Enter current password"
+                      className="w-full px-4 py-3 pr-12 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all font-sans"
+                    />
+                    <button 
+                      type="button" 
+                      onClick={() => setShowPassword(prev => ({ ...prev, current: !prev.current }))}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      aria-label={showPassword.current ? "Hide password" : "Show password"}
+                    >
+                      {showPassword.current ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="new-password" className="block font-serif text-sm font-semibold text-gray-900 mb-3">
+                    New Password
+                  </label>
+                  <div className="relative">
+                    <input 
+                      id="new-password"
+                      type={showPassword.new ? "text" : "password"} 
+                      name="newPassword" 
+                      value={passwordData.newPassword} 
+                      onChange={handlePasswordChange}
+                      placeholder="Enter new password (min. 8 characters)"
+                      className="w-full px-4 py-3 pr-12 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all font-sans"
+                    />
+                    <button 
+                      type="button" 
+                      onClick={() => setShowPassword(prev => ({ ...prev, new: !prev.new }))}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      aria-label={showPassword.new ? "Hide password" : "Show password"}
+                    >
+                      {showPassword.new ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="confirm-password" className="block font-serif text-sm font-semibold text-gray-900 mb-3">
+                    Confirm New Password
+                  </label>
+                  <div className="relative">
+                    <input 
+                      id="confirm-password"
+                      type={showPassword.confirm ? "text" : "password"} 
+                      name="confirmPassword" 
+                      value={passwordData.confirmPassword} 
+                      onChange={handlePasswordChange}
+                      placeholder="Confirm new password"
+                      className="w-full px-4 py-3 pr-12 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all font-sans"
+                    />
+                    <button 
+                      type="button" 
+                      onClick={() => setShowPassword(prev => ({ ...prev, confirm: !prev.confirm }))}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      aria-label={showPassword.confirm ? "Hide password" : "Show password"}
+                    >
+                      {showPassword.confirm ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-5">
+                <h4 className="font-serif text-sm font-semibold text-gray-900 mb-3">Password Requirements</h4>
+                <ul className="font-sans text-sm text-gray-600 space-y-2 leading-relaxed">
+                  <li>• At least 8 characters long</li>
+                  <li>• Mix of letters and numbers recommended</li>
+                  <li>• Avoid common or easily guessed passwords</li>
+                </ul>
+              </div>
+
+              <div className="pt-6 border-t border-gray-200">
+                <button 
+                  onClick={handlePasswordUpdate} 
+                  disabled={isLoading}
+                  className="w-full px-6 py-3 bg-gray-900 hover:bg-gray-800 disabled:bg-gray-300 disabled:text-gray-500 text-white font-sans font-medium rounded-lg transition-colors disabled:cursor-not-allowed"
+                >
+                  {isLoading ? "Updating..." : "Update Password"}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Danger Zone Tab */}
+          {activeTab === 'danger' && (
+            <div className="space-y-10">
+              <div>
+                <h2 className="font-serif text-3xl font-bold text-red-600 mb-2">Danger Zone</h2>
+                <p className="text-gray-600 font-sans text-base leading-relaxed">
+                  Irreversible and destructive actions.
+                </p>
+              </div>
+
+              <div className="bg-red-50 border-2 border-red-200 rounded-lg p-8">
+                <div className="flex items-start gap-5">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
+                    <Trash2 size={24} className="text-red-600" />
+                  </div>
+                  <div className="flex-grow">
+                    <h3 className="font-serif text-xl font-bold text-gray-900 mb-3">Delete Account</h3>
+                    <p className="text-gray-700 font-sans text-base leading-relaxed mb-4">
+                      Once you delete your account, there is no going back. Please be certain.
+                    </p>
+                    <div className="bg-white rounded-lg p-4 mb-6 border border-red-200">
+                      <p className="text-gray-700 font-sans text-sm font-semibold mb-2">This action will:</p>
+                      <ul className="text-gray-600 font-sans text-sm space-y-1.5 leading-relaxed">
+                        <li>• Permanently delete all your personal data</li>
+                        <li>• Remove all your content and activity history</li>
+                        <li>• Revoke your access to all services immediately</li>
+                        <li>• Cannot be undone or recovered by anyone</li>
+                      </ul>
+                    </div>
+                    <button 
+                      onClick={handleDeleteAccount}
+                      className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-sans font-medium rounded-lg transition-colors flex items-center gap-2"
+                    >
+                      <Trash2 size={18} />
+                      Delete My Account
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-5">
+                <div className="flex items-start gap-3">
+                  <AlertCircle size={20} className="text-amber-600 flex-shrink-0 mt-0.5" />
+                  <p className="text-amber-900 font-sans text-sm leading-relaxed">
+                    <strong className="font-semibold">Important:</strong> Account deletion is permanent and cannot be reversed. 
+                    Make sure you have exported or backed up any important data before proceeding.
+                  </p>
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* Content Area */}
-          <div className="lg:col-span-3">
-            <div className="bg-slate-900/50 backdrop-blur-sm rounded-xl border border-slate-800 p-6 sm:p-8">
-              {/* Profile Tab */}
-              {activeTab === 'profile' && (
-                <div className="space-y-6">
-                  <div>
-                    <h2 className="text-xl font-semibold text-white mb-4">Profile Information</h2>
-                    <p className="text-slate-400 text-sm mb-6">Update your personal details and profile picture</p>
-                  </div>
-
-                  {/* Avatar Section */}
-                  <div className="flex items-center gap-6 pb-6 border-b border-slate-800">
-                    <div className="relative group">
-                      <img 
-                        src={avatarPreview || "/default-avatar.png"} 
-                        alt="Profile avatar" 
-                        className="w-24 h-24 rounded-full object-cover border-2 border-slate-700 group-hover:border-cyan-500 transition-colors"
-                      />
-                      <label 
-                        htmlFor="avatar-upload" 
-                        className="absolute inset-0 flex items-center justify-center bg-black/60 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
-                      >
-                        <Camera size={24} className="text-white" />
-                      </label>
-                      <input 
-                        id="avatar-upload"
-                        type="file" 
-                        accept="image/*" 
-                        onChange={handleAvatarChange}
-                        className="hidden"
-                        aria-label="Upload profile picture"
-                      />
-                    </div>
-                    <div>
-                      <h3 className="text-white font-medium mb-1">Profile Picture</h3>
-                      <p className="text-slate-400 text-sm mb-2">JPG, PNG or GIF. Max 5MB.</p>
-                      <label 
-                        htmlFor="avatar-upload" 
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm rounded-lg cursor-pointer transition-colors"
-                      >
-                        <Camera size={16} />
-                        Change Photo
-                      </label>
-                    </div>
-                  </div>
-
-                  {/* Form Fields */}
-                  <div className="space-y-4">
-                    <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-slate-300 mb-2">
-                        Full Name
-                      </label>
-                      <div className="relative">
-                        <User size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
-                        <input 
-                          id="name"
-                          name="name" 
-                          type="text"
-                          value={formData.name} 
-                          onChange={handleFormChange} 
-                          placeholder="Enter your full name"
-                          className="w-full pl-10 pr-4 py-3 rounded-lg bg-slate-800/50 border border-slate-700 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-colors"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-2">
-                        Email Address
-                      </label>
-                      <div className="relative">
-                        <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
-                        <input 
-                          id="email"
-                          name="email" 
-                          type="email"
-                          value={formData.email} 
-                          onChange={handleFormChange} 
-                          placeholder="your.email@example.com"
-                          className="w-full pl-10 pr-4 py-3 rounded-lg bg-slate-800/50 border border-slate-700 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-colors"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex items-center gap-3 pt-4">
-                    <button 
-                      onClick={handleProfileUpdate} 
-                      disabled={isLoading || !isDirty}
-                      className="px-6 py-3 bg-cyan-500 hover:bg-cyan-600 disabled:bg-slate-700 disabled:text-slate-500 text-white font-medium rounded-lg transition-colors disabled:cursor-not-allowed"
-                    >
-                      {isLoading ? "Saving..." : "Save Changes"}
-                    </button>
-                    {isDirty && (
-                      <button 
-                        onClick={handleCancel}
-                        className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium rounded-lg transition-colors"
-                      >
-                        Cancel
-                      </button>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* Security Tab */}
-              {activeTab === 'security' && (
-                <div className="space-y-6">
-                  <div>
-                    <h2 className="text-xl font-semibold text-white mb-4">Password & Security</h2>
-                    <p className="text-slate-400 text-sm mb-6">Manage your password and security settings</p>
-                  </div>
-
-                  <div className="space-y-4">
-                    <div>
-                      <label htmlFor="current-password" className="block text-sm font-medium text-slate-300 mb-2">
-                        Current Password
-                      </label>
-                      <div className="relative">
-                        <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
-                        <input 
-                          id="current-password"
-                          type={showPassword.current ? "text" : "password"} 
-                          name="currentPassword" 
-                          value={passwordData.currentPassword} 
-                          onChange={handlePasswordChange}
-                          placeholder="Enter current password"
-                          className="w-full pl-10 pr-12 py-3 rounded-lg bg-slate-800/50 border border-slate-700 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-colors"
-                        />
-                        <button 
-                          type="button" 
-                          onClick={() => setShowPassword(prev => ({ ...prev, current: !prev.current }))}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
-                          aria-label={showPassword.current ? "Hide password" : "Show password"}
-                        >
-                          {showPassword.current ? <EyeOff size={18} /> : <Eye size={18} />}
-                        </button>
-                      </div>
-                    </div>
-
-                    <div>
-                      <label htmlFor="new-password" className="block text-sm font-medium text-slate-300 mb-2">
-                        New Password
-                      </label>
-                      <div className="relative">
-                        <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
-                        <input 
-                          id="new-password"
-                          type={showPassword.new ? "text" : "password"} 
-                          name="newPassword" 
-                          value={passwordData.newPassword} 
-                          onChange={handlePasswordChange}
-                          placeholder="Enter new password (min. 8 characters)"
-                          className="w-full pl-10 pr-12 py-3 rounded-lg bg-slate-800/50 border border-slate-700 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-colors"
-                        />
-                        <button 
-                          type="button" 
-                          onClick={() => setShowPassword(prev => ({ ...prev, new: !prev.new }))}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
-                          aria-label={showPassword.new ? "Hide password" : "Show password"}
-                        >
-                          {showPassword.new ? <EyeOff size={18} /> : <Eye size={18} />}
-                        </button>
-                      </div>
-                    </div>
-
-                    <div>
-                      <label htmlFor="confirm-password" className="block text-sm font-medium text-slate-300 mb-2">
-                        Confirm New Password
-                      </label>
-                      <div className="relative">
-                        <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
-                        <input 
-                          id="confirm-password"
-                          type={showPassword.confirm ? "text" : "password"} 
-                          name="confirmPassword" 
-                          value={passwordData.confirmPassword} 
-                          onChange={handlePasswordChange}
-                          placeholder="Confirm new password"
-                          className="w-full pl-10 pr-12 py-3 rounded-lg bg-slate-800/50 border border-slate-700 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-colors"
-                        />
-                        <button 
-                          type="button" 
-                          onClick={() => setShowPassword(prev => ({ ...prev, confirm: !prev.confirm }))}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
-                          aria-label={showPassword.confirm ? "Hide password" : "Show password"}
-                        >
-                          {showPassword.confirm ? <EyeOff size={18} /> : <Eye size={18} />}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-slate-800/30 border border-slate-700 rounded-lg p-4">
-                    <h4 className="text-sm font-medium text-slate-300 mb-2">Password Requirements:</h4>
-                    <ul className="text-sm text-slate-400 space-y-1">
-                      <li>• At least 8 characters long</li>
-                      <li>• Mix of letters, numbers recommended</li>
-                      <li>• Avoid common passwords</li>
-                    </ul>
-                  </div>
-
-                  <button 
-                    onClick={handlePasswordUpdate} 
-                    disabled={isLoading}
-                    className="w-full px-6 py-3 bg-emerald-500 hover:bg-emerald-600 disabled:bg-slate-700 disabled:text-slate-500 text-white font-medium rounded-lg transition-colors disabled:cursor-not-allowed"
-                  >
-                    {isLoading ? "Updating..." : "Update Password"}
-                  </button>
-                </div>
-              )}
-
-              {/* Danger Zone Tab */}
-              {activeTab === 'danger' && (
-                <div className="space-y-6">
-                  <div>
-                    <h2 className="text-xl font-semibold text-red-400 mb-4">Danger Zone</h2>
-                    <p className="text-slate-400 text-sm mb-6">Irreversible actions that affect your account</p>
-                  </div>
-
-                  <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-6">
-                    <div className="flex items-start gap-4">
-                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
-                        <Trash2 size={20} className="text-red-400" />
-                      </div>
-                      <div className="flex-grow">
-                        <h3 className="text-white font-semibold mb-2">Delete Account</h3>
-                        <p className="text-slate-400 text-sm mb-4">
-                          Once you delete your account, there is no going back. This action is permanent and will:
-                        </p>
-                        <ul className="text-slate-400 text-sm space-y-1 mb-6">
-                          <li>• Delete all your personal data</li>
-                          <li>• Remove all your content and history</li>
-                          <li>• Revoke access to all services</li>
-                          <li>• Cannot be undone or recovered</li>
-                        </ul>
-                        <button 
-                          onClick={handleDeleteAccount}
-                          className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors flex items-center gap-2"
-                        >
-                          <Trash2 size={18} />
-                          Delete My Account
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4">
-                    <div className="flex items-start gap-3">
-                      <AlertCircle size={20} className="text-amber-400 flex-shrink-0 mt-0.5" />
-                      <p className="text-amber-300 text-sm">
-                        <strong>Warning:</strong> Account deletion is permanent and cannot be reversed. 
-                        Make sure you have backed up any important data before proceeding.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
+          )}
         </div>
-      </div>
+      </main>
     </div>
   );
 }

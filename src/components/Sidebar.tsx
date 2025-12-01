@@ -11,6 +11,7 @@ import {
   Sparkles,
   Layers,
   Github,
+  Wallet,
 } from "lucide-react";
 
 type NavItem = {
@@ -25,6 +26,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "About", path: "/me/about", icon: <BookOpen size={20} /> },
   { label: "Posts", path: "/me/blog", icon: <Archive size={20} /> },
   { label: "Resources", path: "/me/resources", icon: <Layers size={16} /> },
+  { label: "Billing", path: "/me/billing", icon: <Wallet size={16} /> },
   { label: "Learn", path: "https://tryhackme.com", external: true, icon: <GraduationCap size={20} /> },
 ];
 

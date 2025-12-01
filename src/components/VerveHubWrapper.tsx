@@ -31,7 +31,7 @@ export default function VerveHubWrapper() {
       {/* ----- MAIN CONTENT WRAPPER ----- */}
       <div
         className={`flex-1 flex flex-col transition-all duration-300
-          ${collapsed ? "lg:ml-0" : "lg:ml-64"}`}
+          ${collapsed ? "lg:ml-0" : "lg:ml-0"}`}
       >
         <Header
           onToggleSidebar={() => {

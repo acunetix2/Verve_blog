@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { useState, useEffect, createContext, useContext } from "react";
+import { ThemeProvider } from "@/components/ThemeContext";
 
 // Wrapper
 import VerveHubWrapper from "@/components/VerveHubWrapper";
@@ -27,6 +28,7 @@ import Support from "./pages/Support";
 import Community from "./pages/Community";
 import Documentation from "./pages/Documentation";
 import Newsletter from "./pages/Newsletter";
+import Billing from "./pages/Billing";
 
 // --- Auth Context ---
 interface AuthContextType {
@@ -96,6 +98,7 @@ const ProtectedRoute = ({ role }: ProtectedRouteProps) => {
 const queryClient = new QueryClient();
 
 const App = () => (
+<ThemeProvider>
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -123,6 +126,7 @@ const App = () => (
 				  <Route path="/support" element={<Support />} />
 				  <Route path="/community" element={<Community />} />
 				  <Route path="/newsletter" element={<Newsletter />} />
+				  <Route path="/me/billing" element={<Billing />} />
                 </Route>
               </Route>
 
@@ -143,6 +147,7 @@ const App = () => (
       </TooltipProvider>
     </QueryClientProvider>
   </HelmetProvider>
+  </ThemeProvider>
 );
 
 export default App;
