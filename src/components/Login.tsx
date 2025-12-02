@@ -296,7 +296,7 @@ export default function Login() {
           {/* HEADER */}
           <div className="text-center mb-8 space-y-2">
             <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-500 mb-2 tracking-tight animate-gradient">
-              Verve Hub Blog
+              Verve Hub WriteUps
             </h1>
             <p className="text-sm text-cyan-200/70">
               👋 Welcome back
