@@ -105,7 +105,11 @@ export const useLiveNotifications = () => {
         read: readIds.includes(data._id),
       };
 
-      setNotifications((prev) => [newNotification, ...prev]);
+      setNotifications((prev) => {
+        // Prevent duplicates
+        if (prev.find((n) => n.id === newNotification.id)) return prev;
+        return [newNotification, ...prev];
+      });
     },
     []
   );
@@ -116,17 +120,23 @@ export const useLiveNotifications = () => {
   useEffect(() => {
     fetchNotifications();
 
-    const token = localStorage.getItem("token") || "";
-    const socket = io(import.meta.env.VITE_API_BASE_URL2, { auth: { token } });
-    socketRef.current = socket;
+    // Only create socket if it doesn't exist
+    if (!socketRef.current) {
+      const token = localStorage.getItem("token") || "";
+      const socket = io(import.meta.env.VITE_API_BASE_URL2, { auth: { token } });
+      socketRef.current = socket;
 
-    socket.on("new-document", (doc: any) => handleNewNotification(doc, "document"));
-    socket.on("new-post", (post: any) => handleNewNotification(post, "post"));
+      socket.on("new-document", (doc: any) => handleNewNotification(doc, "document"));
+      socket.on("new-post", (post: any) => handleNewNotification(post, "post"));
+    }
 
     return () => {
-      socket.off("new-document");
-      socket.off("new-post");
-      socket.disconnect();
+      if (socketRef.current) {
+        socketRef.current.off("new-document");
+        socketRef.current.off("new-post");
+        socketRef.current.disconnect();
+        socketRef.current = null;
+      }
     };
   }, [fetchNotifications, handleNewNotification]);
 
