@@ -3,6 +3,7 @@ import { Eye, EyeOff, LogIn, AlertCircle, CheckCircle, Cpu, Loader2, BarChart3 }
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
+import { Link } from "react-router-dom";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -160,7 +161,7 @@ export default function Login() {
         });
 
         // Show transition screen
-        setSuccessMessage(userRole === "admin" ? "Initializing Verve Admin Panel!" : "Welcome back to Verve Hub Blog!");
+        setSuccessMessage(userRole === "admin" ? "Initializing Verve Admin Panel!" : "Welcome back to Verve Hub WriteUps!");
         setShowSuccessTransition(true);
 
         // Wait for transition animation
@@ -203,7 +204,7 @@ export default function Login() {
           
           {/* Loading message */}
           <div className="space-y-2">
-            <p className="text-green-400 text-lg font-semibold animate-pulse">
+            <p className="text-green-400 text-sm animate-pulse">
               {loadingMessage}
             </p>
             <p className="text-cyan-300/60 text-sm">
@@ -255,13 +256,13 @@ export default function Login() {
 
           {/* Success Message */}
           <div className="space-y-3 animate-fade-in-up">
-            <h2 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-500 animate-gradient">
+            <h2 className="text-2xl text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-500 animate-gradient">
               {successMessage}
             </h2>
             <p className="text-green-700 text-lg font-medium flex items-center justify-center gap-2">
-              <Cpu size={20} className="animate-pulse text-red-700" />
+              <Eye size={20} className="animate-pulse text-blue-700" />
               Taking you to your dashboard
-              <Cpu size={20} className="animate-pulse text-red-700" />
+              <Eye size={20} className="animate-pulse text-blue-700" />
             </p>
           </div>
 
@@ -380,13 +381,14 @@ export default function Login() {
               )}
             </div>
 
-            {/* Forgot password */}
             <div className="flex items-center justify-end text-sm pt-1">
-              <button type="button" className="text-cyan-400 hover:text-cyan-300 transition-all duration-200 font-medium hover:underline">
-                Forgot password?
-              </button>
-            </div>
-
+			  <Link
+				to="/forgot-password"
+				className="text-cyan-400 hover:text-cyan-300 transition-all duration-200 font-medium hover:underline"
+			  >
+				Forgot password?
+			  </Link>
+			</div>
             {/* Submit */}
             <button
               type="submit"

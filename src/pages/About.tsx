@@ -56,19 +56,6 @@ export default function About() {
       `}</style>
 
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12 md:py-16">
-        {/* Back Button */}
-        <div className="flex justify-start mb-8 sm:mb-12">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate(-1)}
-            className="group flex items-center gap-2 font-mono text-xs sm:text-sm text-cyan-300 hover:text-cyan-200 border border-cyan-500/30 hover:border-cyan-400/50 bg-gray-900/50 hover:bg-cyan-500/10 transition-all px-3 sm:px-4 py-2"
-          >
-            <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4 group-hover:-translate-x-1 transition-transform" />
-            Back
-          </Button>
-        </div>
-
         {/* Hero Section */}
         <div className="text-center mb-12 sm:mb-16 space-y-4 sm:space-y-6">
           <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-cyan-950/30 to-blue-950/30 border border-cyan-500/30 mb-4 sm:mb-6">
@@ -164,7 +151,7 @@ export default function About() {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-stretch sm:items-center">
-            <Link to="/blog" className="w-full sm:w-auto">
+            <Link to="/me/blog" className="w-full sm:w-auto">
               <Button className="w-full group px-6 sm:px-8 py-4 sm:py-6 bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-mono text-sm sm:text-base hover:from-cyan-500 hover:to-blue-500 border border-cyan-400/50 rounded-lg shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50 transition-all">
                 <PenTool className="h-4 w-4 sm:h-5 sm:w-5 mr-2 group-hover:rotate-12 transition-transform" />
                 View All Posts

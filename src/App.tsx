@@ -29,6 +29,8 @@ import Community from "./pages/Community";
 import Documentation from "./pages/Documentation";
 import Newsletter from "./pages/Newsletter";
 import Billing from "./pages/Billing";
+import ResetPassword from "@/components/ResetPassword";
+import ForgotPassword from "@/components/ForgotPassword";
 
 // --- Auth Context ---
 interface AuthContextType {
@@ -111,6 +113,8 @@ const App = () => (
               <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
+			  <Route path="/forgot-password" element={<ForgotPassword />} />
+			  <Route path="/reset-password" element={<ResetPassword />} />
 
               {/* Protected User Routes + Wrapper */}
               <Route element={<ProtectedRoute role="user" />}>

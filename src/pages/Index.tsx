@@ -448,8 +448,8 @@ const categories = [
 				</div>
               </div>
               <p className="text-sm text-white/70 leading-relaxed mb-4">
-				  Security Analyst, Full-stack developer and writer passionate about creating content that helps others learn and grow.  
-				  Building tools and platforms that make development easier.
+				  Cybersecurity Researcher, Full-stack developer and writer passionate about creating content that helps others learn and grow.  
+				  Building tools and platforms that elevates security.
 			 </p>
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <div className="flex items-center gap-1">
