@@ -1,69 +1,91 @@
 import React from "react";
 import { Mail, HelpCircle, Bug } from "lucide-react";
+import { motion } from "framer-motion";
 
 const Support = () => {
   const supportItems = [
     {
       title: "FAQs",
-      description: "Frequently asked questions about the platform and writeups.",
-      icon: <HelpCircle className="h-5 w-5 text-cyan-400" />,
+      description: "Browse the most frequently asked questions about Verve Hub.",
+      icon: <HelpCircle className="h-6 w-6 text-cyan-400" />,
+      link: "/faqs",
     },
     {
       title: "Contact Support",
-      description: "Email or chat with our team for personalized help.",
-      icon: <Mail className="h-5 w-5 text-cyan-400" />,
+      description: "Email or chat with our dedicated support team.",
+      icon: <Mail className="h-6 w-6 text-cyan-400" />,
+      link: "mailto:iddychesire098@gmail.com",
     },
     {
-      title: "Bug Reports",
-      description: "Report issues or suggest improvements for the platform.",
-      icon: <Bug className="h-5 w-5 text-cyan-400" />,
+      title: "Report a Bug",
+      description: "Encountered an issue? Help us improve by reporting it.",
+      icon: <Bug className="h-6 w-6 text-cyan-400" />,
+      link: "/report-bug",
     },
   ];
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white py-10 px-4 sm:px-10 lg:px-20">
-      {/* Page Header */}
-      <div className="text-center max-w-3xl mx-auto mb-12">
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 text-white">
-          Support
-        </h1>
-        <p className="text-white/70 text-lg sm:text-xl md:text-2xl leading-relaxed">
-          Need help? Reach out to our support team or find answers to common questions.
-        </p>
-      </div>
+    <div className="min-h-screen bg-[#06070b] text-white py-14 px-6 sm:px-12 lg:px-20">
 
-      {/* Support Cards */}
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {/* HEADER */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="text-center max-w-3xl mx-auto mb-14"
+      >
+        <h1 className="text-4xl sm:text-5xl font-extrabold mb-3">Support</h1>
+        <p className="text-white/70 text-lg sm:text-xl">
+          We're here to help. Explore the sections below or contact our support team.
+        </p>
+      </motion.div>
+
+      {/* SUPPORT GRID */}
+      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
         {supportItems.map((item, index) => (
-          <div
+          <motion.a
             key={index}
-            className="flex flex-col p-6 bg-white/5 border border-cyan-500/20 rounded-xl hover:bg-cyan-500/10 transition-all duration-300 shadow-lg"
+            href={item.link}
+            target={item.link.startsWith("http") ? "_blank" : "_self"}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ type: "spring", stiffness: 250 }}
+            className="group block p-7 bg-white/10 border border-white/10 
+                       rounded-2xl backdrop-blur-lg shadow-xl hover:bg-white/20 
+                       transition-all duration-300 cursor-pointer"
           >
-            <div className="flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-cyan-500/10">
+            <div className="flex items-center justify-center w-16 h-16 rounded-full 
+                            bg-cyan-500/10 mb-5 group-hover:bg-cyan-500/20 transition">
               {item.icon}
             </div>
-            <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
-              {item.title}
-            </h2>
-            <p className="text-white/70 text-sm sm:text-base leading-relaxed">
+
+            <h2 className="text-xl font-semibold mb-2">{item.title}</h2>
+            <p className="text-white/70 text-sm leading-relaxed">
               {item.description}
             </p>
-          </div>
+          </motion.a>
         ))}
       </div>
 
-      {/* Contact CTA */}
-      <div className="mt-12 text-center">
+      {/* CONTACT BOTTOM CTA */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4, duration: 0.6 }}
+        className="mt-14 text-center"
+      >
         <p className="text-white/70 mb-4">
-          Can't find what you're looking for? Our team is here to help.
+          Still stuck? Our support team is ready to assist you.
         </p>
+
         <a
           href="mailto:iddychesire098@gmail.com"
-          className="inline-block px-6 py-3 bg-cyan-500 hover:bg-cyan-400 rounded-xl font-semibold transition-all text-white"
+          className="px-6 py-3 bg-cyan-500 hover:bg-cyan-400 rounded-xl 
+                     font-semibold transition shadow-lg"
         >
           Contact Us
         </a>
-      </div>
+      </motion.div>
     </div>
   );
 };

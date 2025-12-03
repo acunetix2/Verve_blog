@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { ChevronDown, MessageCircle } from "lucide-react";
+import { ChevronDown } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Community = () => {
   const communitySections = [
@@ -11,97 +12,122 @@ const Community = () => {
     {
       title: "Discord Server",
       content:
-        "Join our official Discord server for real-time communication and collaboration with the Verve Hub community. Participate in discussions, share resources, and stay updated.",
-      link: "https://discord.gg/vervehub", // replace with your server link
+        "Join our official Discord server for real-time community discussion, resource sharing, and announcements from the Verve Hub team.",
+      link: "https://discord.gg/vervehub",
     },
     {
       title: "Workshops",
       content:
-        "Participate in live training sessions, webinars, and Capture-The-Flag (CTF) challenges to enhance your skills and network with other professionals.",
+        "Participate in live workshops, webinars, and Capture-The-Flag (CTF) sessions to enhance your skills and connect with experts.",
     },
     {
       title: "Events & Meetups",
       content:
-        "Stay informed about upcoming events, meetups, and hackathons organized by Verve Hub for knowledge sharing and networking.",
+        "Stay informed about upcoming cybersecurity events, meetups, and hackathons organized by Verve Hub.",
     },
   ];
 
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [openIndex, setOpenIndex] = useState(null);
 
-  const toggleSection = (index: number) => {
+  const toggleSection = (index) => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white py-10 px-4 sm:px-10 lg:px-20">
-      {/* Header */}
-      <div className="text-center max-w-3xl mx-auto mb-12">
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 text-white">
-          Community
-        </h1>
-        <p className="text-white/70 text-lg sm:text-xl md:text-2xl leading-relaxed">
-          Join the Verve Hub community to share knowledge, discuss security challenges, 
-          and collaborate with like-minded enthusiasts.
-        </p>
-      </div>
+    <div className="min-h-screen bg-[#06070b] text-white py-14 px-6 sm:px-12 lg:px-20">
 
-      {/* Collapsible Sections */}
-      <div className="max-w-4xl mx-auto space-y-4">
+      {/* HEADER */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="text-center max-w-3xl mx-auto mb-16"
+      >
+        <h1 className="text-4xl sm:text-5xl font-extrabold mb-4">Community</h1>
+        <p className="text-white/70 text-lg sm:text-xl leading-relaxed">
+          Connect, collaborate, and grow with the Verve Hub cybersecurity community.
+        </p>
+      </motion.div>
+
+      {/* COLLAPSIBLE SECTIONS */}
+      <div className="max-w-4xl mx-auto space-y-5">
         {communitySections.map((section, index) => (
-          <div
+          <motion.div
             key={index}
-            className="border border-cyan-500/20 rounded-xl bg-white/5 overflow-hidden transition-all"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1, duration: 0.4 }}
+            className="bg-white/10 border border-white/10 rounded-xl backdrop-blur-xl
+                       shadow-xl hover:bg-white/15 transition-all duration-300"
           >
             <button
               onClick={() => toggleSection(index)}
-              className="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-cyan-500/10 transition-all"
+              className="w-full flex items-center justify-between px-6 py-5 
+                         text-left transition-all"
             >
               <span className="text-lg sm:text-xl font-semibold text-white">
                 {section.title}
               </span>
+
               <ChevronDown
-                className={`h-5 w-5 text-cyan-400 transition-transform duration-300 ${
+                className={`h-6 w-6 text-cyan-400 transition-transform duration-300 ${
                   openIndex === index ? "rotate-180" : ""
                 }`}
               />
             </button>
-            <div
-              className={`px-6 overflow-hidden transition-all duration-300 ${
-                openIndex === index ? "max-h-96 py-4" : "max-h-0"
-              }`}
-            >
-              <p className="text-white/70 text-sm sm:text-base leading-relaxed">
-                {section.content}
-              </p>
-              {section.link && (
-                <a
-                  href={section.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block mt-3 px-4 py-2 bg-cyan-500 hover:bg-cyan-400 rounded-lg font-medium transition-all text-white text-sm"
+
+            <AnimatePresence>
+              {openIndex === index && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="px-6 pb-5"
                 >
-                  Join Discord
-                </a>
+                  <p className="text-white/70 text-sm sm:text-base leading-relaxed">
+                    {section.content}
+                  </p>
+
+                  {section.link && (
+                    <a
+                      href={section.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block mt-4 px-5 py-2 bg-cyan-500 hover:bg-cyan-400 
+                                 rounded-lg font-medium transition-all text-white text-sm shadow-md"
+                    >
+                      Join Discord
+                    </a>
+                  )}
+                </motion.div>
               )}
-            </div>
-          </div>
+            </AnimatePresence>
+          </motion.div>
         ))}
       </div>
 
       {/* CTA */}
-      <div className="mt-12 text-center">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 0.5 }}
+        className="mt-14 text-center"
+      >
         <p className="text-white/70 mb-4">
-          Stay connected and never miss updates from the Verve Hub community!
+          Don’t miss out—connect with the community in real time!
         </p>
+
         <a
           href="https://discord.gg/vervehub"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block px-6 py-3 bg-cyan-500 hover:bg-cyan-400 rounded-xl font-semibold transition-all text-white"
+          className="px-7 py-3 bg-cyan-500 hover:bg-cyan-400 rounded-xl 
+                     font-semibold transition shadow-lg"
         >
           Join Our Discord Server
         </a>
-      </div>
+      </motion.div>
     </div>
   );
 };
