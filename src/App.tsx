@@ -31,6 +31,7 @@ import Newsletter from "./pages/Newsletter";
 import Billing from "./pages/Billing";
 import ResetPassword from "@/components/ResetPassword";
 import ForgotPassword from "@/components/ForgotPassword";
+import AIAssistant from "@/components/AIAssistant";
 
 // --- Auth Context ---
 interface AuthContextType {
@@ -108,6 +109,7 @@ const App = () => (
         <Sonner />
         <AuthProvider>
           <BrowserRouter>
+			<AIAssistant />
             <Routes>
               {/* Public */}
               <Route path="/" element={<LandingPage />} />
@@ -142,7 +144,6 @@ const App = () => (
                   <Route path="/admin/documents" element={<UploadPage />} />
                 </Route>
               </Route>
-
               {/* 404 */}
               <Route path="*" element={<NotFound />} />
             </Routes>
