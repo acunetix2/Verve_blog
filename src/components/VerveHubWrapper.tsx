@@ -36,14 +36,14 @@ export default function VerveHubWrapper() {
         <Header
           onToggleSidebar={() => {
             if (window.innerWidth < 1024) {
-              setSidebarOpen((prev) => !prev); // mobile drawer
+              setSidebarOpen((prev) => !prev); 
             } else {
-              setCollapsed((prev) => !prev); // desktop collapse
+              setCollapsed((prev) => !prev); 
             }
           }}
         />
 
-        <main className="flex-1 pt-16 px-4 sm:px-6 lg:px-8">
+        <main className="flex-1 p-0">
           <Outlet />
         </main>
       </div>
