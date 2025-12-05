@@ -2,12 +2,53 @@ import { useEffect, useState } from "react";
 import { BlogCard } from "@/components/BlogCard";
 import { BlogPost } from "@/lib/blog";
 import axios from "axios";
-import { API_BASE_URL } from "@/config";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
-import { Search, X, Tag, FileText, ArrowLeft, Layers } from "lucide-react";
+import { 
+  Search, X, FileText, ArrowLeft, Shield, Lock, 
+  Terminal, Bug, Globe, Database, Network, AlertTriangle,
+  Eye, Code, Server, Wifi
+} from "lucide-react";
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+// Category icon mapping
+const categoryIcons: Record<string, any> = {
+  "All": Globe,
+  "Web Exploitation": Globe,
+  "Binary Exploitation": Terminal,
+  "Reverse Engineering": Code,
+  "Cryptography": Lock,
+  "Forensics": Eye,
+  "Network Security": Network,
+  "Malware Analysis": Bug,
+  "Penetration Testing": Shield,
+  "CTF Writeups": FileText,
+  "Vulnerability Research": AlertTriangle,
+  "Cloud Security": Server,
+  "Wireless Security": Wifi,
+  "Database Security": Database,
+  "Uncategorized": FileText
+};
+
+const categoryColors: Record<string, string> = {
+  "All": "from-slate-600 to-slate-700",
+  "Web Exploitation": "from-blue-600 to-blue-700",
+  "Binary Exploitation": "from-purple-600 to-purple-700",
+  "Reverse Engineering": "from-indigo-600 to-indigo-700",
+  "Cryptography": "from-amber-600 to-amber-700",
+  "Forensics": "from-emerald-600 to-emerald-700",
+  "Network Security": "from-cyan-600 to-cyan-700",
+  "Malware Analysis": "from-red-600 to-red-700",
+  "Penetration Testing": "from-green-600 to-green-700",
+  "CTF Writeups": "from-orange-600 to-orange-700",
+  "Vulnerability Research": "from-rose-600 to-rose-700",
+  "Cloud Security": "from-sky-600 to-sky-700",
+  "Wireless Security": "from-violet-600 to-violet-700",
+  "Database Security": "from-teal-600 to-teal-700",
+  "Uncategorized": "from-gray-600 to-gray-700"
+};
 
 export default function BlogList() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -15,8 +56,8 @@ export default function BlogList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
-  const [allTags, setAllTags] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [categories, setCategories] = useState<{ name: string; count: number }[]>([]);
 
   // Fetch posts from backend
   useEffect(() => {
@@ -28,11 +69,22 @@ export default function BlogList() {
         setPosts(postsData);
         setFilteredPosts(postsData);
 
-        // Extract unique tags dynamically
-        const tags = Array.from(
-          new Set(postsData.flatMap((p) => p.tags || []))
-        );
-        setAllTags(tags);
+        // Extract categories with counts
+        const categoryMap = new Map<string, number>();
+        postsData.forEach((post) => {
+          const category = post.category || "Uncategorized";
+          categoryMap.set(category, (categoryMap.get(category) || 0) + 1);
+        });
+
+        const categoriesWithCounts = Array.from(categoryMap.entries())
+          .map(([name, count]) => ({ name, count }))
+          .sort((a, b) => a.name.localeCompare(b.name));
+
+        // Add "All" category at the beginning
+        setCategories([
+          { name: "All", count: postsData.length },
+          ...categoriesWithCounts,
+        ]);
       } catch (err) {
         console.error("Error fetching posts:", err);
         setError("Failed to load posts. Please try again later.");
@@ -47,6 +99,12 @@ export default function BlogList() {
   useEffect(() => {
     let updatedPosts = [...posts];
 
+    if (selectedCategory !== "All") {
+      updatedPosts = updatedPosts.filter((post) =>
+        (post.category || "Uncategorized") === selectedCategory
+      );
+    }
+
     if (searchQuery.trim()) {
       updatedPosts = updatedPosts.filter(
         (post) =>
@@ -55,29 +113,24 @@ export default function BlogList() {
       );
     }
 
-    if (selectedTag) {
-      updatedPosts = updatedPosts.filter((post) =>
-        post.tags?.includes(selectedTag)
-      );
-    }
-
     setFilteredPosts(updatedPosts);
-  }, [searchQuery, selectedTag, posts]);
+  }, [searchQuery, selectedCategory, posts]);
 
   const handleSearch = (value: string) => setSearchQuery(value);
-  const handleTagClick = (tag: string) =>
-    setSelectedTag(selectedTag === tag ? null : tag);
+  const handleCategoryClick = (category: string) => {
+    setSelectedCategory(category);
+  };
 
   // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center">
         <div className="text-center space-y-4">
           <div className="relative inline-flex items-center justify-center">
-            <div className="w-16 h-16 border-4 border-slate-200 border-t-blue-600 rounded-full animate-spin"></div>
-            <FileText className="absolute h-6 w-6 text-blue-600" />
+            <div className="w-16 h-16 border-4 border-slate-700 border-t-cyan-500 rounded-full animate-spin"></div>
+            <Shield className="absolute h-6 w-6 text-cyan-500" />
           </div>
-          <p className="text-slate-600 font-medium">Loading articles...</p>
+          <p className="text-slate-300 font-medium">Loading writeups...</p>
         </div>
       </div>
     );
@@ -86,15 +139,15 @@ export default function BlogList() {
   // Error state
   if (error) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white border border-red-200 rounded-lg p-6 shadow-sm">
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-slate-900 border border-red-900/50 rounded-xl p-6 shadow-2xl">
           <div className="flex items-start gap-3">
-            <div className="flex-shrink-0 w-10 h-10 bg-red-50 rounded-full flex items-center justify-center">
-              <X className="h-5 w-5 text-red-600" />
+            <div className="flex-shrink-0 w-10 h-10 bg-red-950/50 rounded-full flex items-center justify-center">
+              <X className="h-5 w-5 text-red-400" />
             </div>
             <div>
-              <h3 className="font-semibold text-slate-900 mb-1">Error Loading Posts</h3>
-              <p className="text-sm text-slate-600">{error}</p>
+              <h3 className="font-semibold text-slate-100 mb-1">Error Loading Writeups</h3>
+              <p className="text-sm text-slate-400">{error}</p>
             </div>
           </div>
         </div>
@@ -103,23 +156,25 @@ export default function BlogList() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
       {/* Header */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-40 backdrop-blur-sm bg-white/95">
+      <header className="bg-slate-900/80 border-b border-slate-800 sticky top-0 z-40 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center shadow-sm">
-                <Layers className="h-4 w-4 text-white" />
+              <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-cyan-500/20">
+                <Shield className="h-5 w-5 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-semibold text-slate-900">Technical Articles</h1>
-                <p className="text-xs text-slate-500 hidden sm:block">Verve Hub Knowledge Base</p>
+                <h1 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">
+                  Security Writeups
+                </h1>
+                <p className="text-xs text-slate-400 hidden sm:block">Verve Hub CTF & Vulnerability Research</p>
               </div>
             </div>
             <Link
               to="/home"
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 hover:border-slate-400 transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 bg-slate-800 border border-slate-700 rounded-lg hover:bg-slate-700 hover:border-slate-600 transition-all hover:shadow-lg"
             >
               <ArrowLeft className="h-4 w-4" />
               <span className="hidden sm:inline">Back to Home</span>
@@ -129,102 +184,142 @@ export default function BlogList() {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Search and Filter Section */}
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 mb-6">
-          {/* Search Bar */}
-          <div className="relative mb-6">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 h-5 w-5" />
+        {/* Hero Section */}
+        <div className="text-center mb-12 py-8">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl mb-4 shadow-lg shadow-cyan-500/30">
+            <Shield className="h-8 w-8 text-white" />
+          </div>
+          <h2 className="text-4xl font-bold text-white mb-3">
+            Cybersecurity Knowledge Base
+          </h2>
+          <p className="text-slate-400 text-lg max-w-2xl mx-auto">
+            Explore our collection of CTF writeups, vulnerability research, and security analysis
+          </p>
+        </div>
+
+        {/* Category Navigation */}
+        <div className="bg-slate-900/50 backdrop-blur-sm rounded-2xl border border-slate-800 shadow-2xl p-6 mb-8">
+          <div className="flex items-center gap-2 text-sm font-medium text-slate-300 mb-6">
+            <Shield className="h-5 w-5 text-cyan-400" />
+            <span className="text-lg">Browse by Category</span>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            {categories.map((category) => {
+              const Icon = categoryIcons[category.name] || FileText;
+              const gradient = categoryColors[category.name] || "from-gray-600 to-gray-700";
+              const isActive = selectedCategory === category.name;
+              
+              return (
+                <button
+                  key={category.name}
+                  onClick={() => handleCategoryClick(category.name)}
+                  className={`group relative flex flex-col items-center justify-center p-5 rounded-xl border-2 transition-all duration-300 ${
+                    isActive
+                      ? "border-cyan-500 bg-gradient-to-br from-cyan-950/50 to-blue-950/50 shadow-lg shadow-cyan-500/20 scale-105"
+                      : "border-slate-800 bg-slate-900/50 hover:border-slate-700 hover:bg-slate-800/50 hover:scale-102"
+                  }`}
+                >
+                  {/* Icon with gradient background */}
+                  <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${gradient} flex items-center justify-center mb-3 shadow-lg ${
+                    isActive ? "shadow-cyan-500/30" : "shadow-black/30"
+                  } transition-transform group-hover:scale-110`}>
+                    <Icon className="h-6 w-6 text-white" />
+                  </div>
+                  
+                  {/* Category name */}
+                  <span className={`text-sm font-semibold mb-1 text-center leading-tight ${
+                    isActive ? "text-cyan-400" : "text-slate-300 group-hover:text-slate-200"
+                  }`}>
+                    {category.name}
+                  </span>
+                  
+                  {/* Count badge */}
+                  <div className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                    isActive 
+                      ? "bg-cyan-500/20 text-cyan-300" 
+                      : "bg-slate-800 text-slate-400 group-hover:bg-slate-700"
+                  }`}>
+                    {category.count}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Search Section */}
+        <div className="bg-slate-900/50 backdrop-blur-sm rounded-2xl border border-slate-800 shadow-2xl p-6 mb-8">
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 h-5 w-5" />
             <Input
-              placeholder="Search articles by title or description..."
+              placeholder="Search writeups by title or description..."
               value={searchQuery}
               onChange={(e) => handleSearch(e.target.value)}
-              className="pl-12 pr-12 h-12 bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 rounded-lg"
+              className="pl-12 pr-12 h-14 bg-slate-950 border-slate-800 text-slate-100 placeholder:text-slate-500 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 rounded-xl text-base"
             />
             {searchQuery && (
               <Button
                 variant="ghost"
                 size="sm"
-                className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0 hover:bg-slate-100 text-slate-400 hover:text-slate-600"
+                className="absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 p-0 hover:bg-slate-800 text-slate-500 hover:text-slate-300 rounded-lg"
                 onClick={() => setSearchQuery("")}
               >
-                <X className="h-4 w-4" />
+                <X className="h-5 w-5" />
               </Button>
             )}
-          </div>
-
-          {/* Tags Filter */}
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 text-sm font-medium text-slate-700">
-              <Tag className="h-4 w-4 text-slate-400" />
-              <span>Filter by tag:</span>
-              {selectedTag && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-6 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50 px-2 ml-1"
-                  onClick={() => setSelectedTag(null)}
-                >
-                  Clear filter
-                </Button>
-              )}
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {allTags.length > 0 ? (
-                allTags.map((tag) => (
-                  <Badge
-                    key={tag}
-                    variant={selectedTag === tag ? "default" : "outline"}
-                    className={`cursor-pointer text-xs font-medium transition-all px-3 py-1.5 ${
-                      selectedTag === tag
-                        ? "bg-blue-600 text-white border-blue-600 hover:bg-blue-700 shadow-sm"
-                        : "border-slate-300 text-slate-700 bg-white hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50"
-                    }`}
-                    onClick={() => handleTagClick(tag)}
-                  >
-                    {tag}
-                  </Badge>
-                ))
-              ) : (
-                <p className="text-sm text-slate-500">No tags available.</p>
-              )}
-            </div>
           </div>
         </div>
 
         {/* Results Summary */}
-        <div className="flex items-center justify-between mb-6">
-          <p className="text-sm text-slate-600">
-            {filteredPosts.length === 0 ? (
-              "No articles found"
-            ) : (
-              <>
-                Showing <span className="font-semibold text-slate-900">{filteredPosts.length}</span> {filteredPosts.length === 1 ? "article" : "articles"}
-                {(searchQuery || selectedTag) && " (filtered)"}
-              </>
+        <div className="flex items-center justify-between mb-6 px-1">
+          <div>
+            <p className="text-lg text-slate-300">
+              {filteredPosts.length === 0 ? (
+                <span className="text-slate-500">No writeups found</span>
+              ) : (
+                <>
+                  <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">
+                    {filteredPosts.length}
+                  </span>{" "}
+                  <span className="text-slate-400">
+                    {filteredPosts.length === 1 ? "writeup" : "writeups"}
+                  </span>
+                  {selectedCategory !== "All" && (
+                    <span className="text-slate-500"> in {selectedCategory}</span>
+                  )}
+                </>
+              )}
+            </p>
+            {searchQuery && (
+              <p className="text-xs text-slate-500 mt-1">
+                Filtered by search
+              </p>
             )}
-          </p>
+          </div>
         </div>
 
         {/* Posts Grid */}
         {filteredPosts.length === 0 ? (
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-12 text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 mb-4">
-              <FileText className="h-8 w-8 text-slate-400" />
+          <div className="bg-slate-900/50 backdrop-blur-sm rounded-2xl border border-slate-800 shadow-2xl p-12 text-center">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-slate-800/50 mb-6">
+              <FileText className="h-10 w-10 text-slate-600" />
             </div>
-            <h3 className="text-lg font-semibold text-slate-900 mb-2">
-              No articles found
+            <h3 className="text-xl font-semibold text-slate-300 mb-3">
+              No writeups found
             </h3>
-            <p className="text-slate-600 text-sm max-w-sm mx-auto mb-4">
-              We couldn't find any articles matching your search criteria. Try adjusting your filters or search terms.
+            <p className="text-slate-500 text-sm max-w-md mx-auto mb-6">
+              {selectedCategory === "All"
+                ? "We couldn't find any writeups matching your search criteria."
+                : `No writeups found in the "${selectedCategory}" category with the current filters.`}
             </p>
-            {(searchQuery || selectedTag) && (
+            {(searchQuery || selectedCategory !== "All") && (
               <Button
                 variant="outline"
                 size="sm"
-                className="border-slate-300 text-slate-700 hover:bg-slate-50"
+                className="border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 hover:border-slate-600"
                 onClick={() => {
                   setSearchQuery("");
-                  setSelectedTag(null);
+                  setSelectedCategory("All");
                 }}
               >
                 Clear all filters
@@ -236,7 +331,7 @@ export default function BlogList() {
             {filteredPosts.map((post) => (
               <div
                 key={post.slug}
-                className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md hover:border-slate-300 transition-all duration-200 p-6 flex flex-col h-full"
+                className="bg-slate-900/50 backdrop-blur-sm border border-slate-800 rounded-xl shadow-xl hover:shadow-2xl hover:shadow-cyan-500/10 hover:border-slate-700 transition-all duration-300 p-6 flex flex-col h-full group hover:scale-102"
               >
                 <BlogCard post={post} />
               </div>
@@ -245,19 +340,21 @@ export default function BlogList() {
         )}
 
         {/* Footer */}
-        <footer className="mt-16 pt-8 border-t border-slate-200">
-          <div className="text-center space-y-4">
-            <div className="flex items-center justify-center gap-2">
-              <div className="w-6 h-6 bg-gradient-to-br from-blue-600 to-blue-700 rounded flex items-center justify-center">
-                <Layers className="h-3 w-3 text-white" />
+        <footer className="mt-20 pt-10 border-t border-slate-800">
+          <div className="text-center space-y-6">
+            <div className="flex items-center justify-center gap-3">
+              <div className="w-8 h-8 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
+                <Shield className="h-4 w-4 text-white" />
               </div>
-              <span className="text-sm font-semibold text-slate-900">Verve Hub</span>
+              <span className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">
+                Verve Hub Security
+              </span>
             </div>
-            <p className="text-sm text-slate-600">
-              Technical articles and security writeups
+            <p className="text-sm text-slate-400 max-w-md mx-auto">
+              Sharing knowledge through detailed writeups, vulnerability research, and security analysis
             </p>
             <div className="flex items-center justify-center gap-2 text-xs text-slate-500">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <div className="w-2 h-2 bg-cyan-500 rounded-full animate-pulse shadow-lg shadow-cyan-500/50"></div>
               <span>System operational</span>
             </div>
           </div>

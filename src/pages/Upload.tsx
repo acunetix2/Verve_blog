@@ -3,10 +3,28 @@ import axios from "axios";
 import { Upload, Loader2, CheckCircle2, ArrowLeft, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+const DOCUMENT_CATEGORIES = [
+  "Uncategorized",
+  "Web Exploitation",
+  "Binary Exploitation",
+  "Reverse Engineering",
+  "Cryptography",
+  "Forensics",
+  "Network Security",
+  "Malware Analysis",
+  "Penetration Testing",
+  "CTF Writeups",
+  "Vulnerability Research",
+  "Cloud Security",
+  "Wireless Security",
+  "Database Security",
+];
+
 const UploadPage: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("Uncategorized"); // ✅ Added category state
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error" | ""; text: string }>({
     type: "",
@@ -31,6 +49,7 @@ const UploadPage: React.FC = () => {
     formData.append("title", title);
     formData.append("description", description);
     formData.append("file", file);
+    formData.append("category", category); // ✅ Append category
 
     try {
       setUploading(true);
@@ -44,6 +63,7 @@ const UploadPage: React.FC = () => {
       setTitle("");
       setDescription("");
       setFile(null);
+      setCategory("Uncategorized");
     } catch {
       setMessage({ type: "error", text: "Upload failed. Please try again." });
     } finally {
@@ -58,49 +78,29 @@ const UploadPage: React.FC = () => {
         @import url('https://fonts.googleapis.com/css2?family=Sohne:wght@400;500;600;700&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Charter:wght@400;700&display=swap');
         
-        * {
-          font-family: sohne, "Helvetica Neue", Helvetica, Arial, sans-serif;
-        }
+        * { font-family: sohne, "Helvetica Neue", Helvetica, Arial, sans-serif; }
       `}</style>
-      
+
       <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
         {/* Top Navigation Bar */}
-        <header className="w-full bg-slate-900/50 backdrop-blur-sm border-b border-cyan-500/20 px-6 py-4 flex justify-between items-center">
-          <h1
-            onClick={() => navigate("/")}
-            className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent cursor-pointer flex items-center gap-2 hover:opacity-80 transition"
-          >
-            <Home className="w-5 h-5 text-cyan-400" /> Verve Hub Blog
-          </h1>
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg text-slate-400 hover:text-cyan-400 hover:bg-slate-800/50 transition-all duration-200"
-          >
-            <ArrowLeft className="w-4 h-4" /> Back
-          </button>
-        </header>
-
+       
         {/* Upload Form */}
         <div className="flex-1 flex items-center justify-center p-6">
           <div className="max-w-lg w-full bg-slate-900/60 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-cyan-500/20 relative overflow-hidden">
             {/* Ambient glow effect */}
             <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-blue-500/5 pointer-events-none"></div>
-            
+
             <div className="relative z-10">
               <div className="flex items-center gap-3 mb-8">
                 <div className="p-3 bg-cyan-500/10 rounded-xl border border-cyan-500/20">
                   <Upload className="w-6 h-6 text-cyan-400" />
                 </div>
-                <h2 className="text-2xl font-bold text-slate-100">
-                  Upload Learning Material
-                </h2>
+                <h2 className="text-2xl font-bold text-slate-100">Upload Learning Material</h2>
               </div>
 
               <form onSubmit={handleUpload} className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium mb-2 text-slate-300">
-                    Title
-                  </label>
+                  <label className="block text-sm font-medium mb-2 text-slate-300">Title</label>
                   <input
                     type="text"
                     value={title}
@@ -114,9 +114,7 @@ const UploadPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2 text-slate-300">
-                    Description
-                  </label>
+                  <label className="block text-sm font-medium mb-2 text-slate-300">Description</label>
                   <textarea
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
@@ -129,10 +127,27 @@ const UploadPage: React.FC = () => {
                   ></textarea>
                 </div>
 
+                {/* Category dropdown */}
                 <div>
-                  <label className="block text-sm font-medium mb-2 text-slate-300">
-                    Select File
-                  </label>
+                  <label className="block text-sm font-medium mb-2 text-slate-300">Category</label>
+                  <select
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl bg-slate-800/50 border border-slate-700/50 
+                               text-slate-100 placeholder-slate-500
+                               focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 
+                               outline-none transition-all duration-200"
+                  >
+                    {DOCUMENT_CATEGORIES.map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-slate-300">Select File</label>
                   <div className="relative">
                     <input
                       type="file"
@@ -163,7 +178,7 @@ const UploadPage: React.FC = () => {
                     <span className="text-sm font-medium">Uploading your document...</span>
                   </div>
                 )}
-                
+
                 {message.text && !uploading && (
                   <div
                     className={`flex items-center gap-2 px-4 py-3 rounded-lg border ${

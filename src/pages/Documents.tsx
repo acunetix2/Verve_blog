@@ -5,9 +5,6 @@ import {
   Download,
   Eye,
   Loader2,
-  ArrowLeft,
-  Home,
-  Upload,
   XCircle,
   CheckCircle2,
   AlertCircle,
@@ -21,7 +18,26 @@ interface Document {
   description?: string;
   fileName: string;
   uploadedAt: string;
+  category: string; // Added category
 }
+
+const DOCUMENT_CATEGORIES = [
+  "All",
+  "Uncategorized",
+  "Web Exploitation",
+  "Binary Exploitation",
+  "Reverse Engineering",
+  "Cryptography",
+  "Forensics",
+  "Network Security",
+  "Malware Analysis",
+  "Penetration Testing",
+  "CTF Writeups",
+  "Vulnerability Research",
+  "Cloud Security",
+  "Wireless Security",
+  "Database Security",
+];
 
 const Documents: React.FC = () => {
   const [documents, setDocuments] = useState<Document[]>([]);
@@ -29,13 +45,8 @@ const Documents: React.FC = () => {
   const [error, setError] = useState("");
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [previewDoc, setPreviewDoc] = useState<string | null>(null);
-
-  // 🔹 FIX: searchTerm must be at top-level, not inside handleDownload
   const [searchTerm, setSearchTerm] = useState("");
-  const filteredDocuments = documents.filter((doc) =>
-    doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    doc.description?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   const navigate = useNavigate();
 
@@ -44,7 +55,7 @@ const Documents: React.FC = () => {
       try {
         const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/documents`);
         setDocuments(res.data);
-      } catch (err) {
+      } catch {
         setError("Failed to load documents. Try again later.");
         setMessage({ type: "error", text: "Failed to load documents!" });
       } finally {
@@ -61,12 +72,11 @@ const Documents: React.FC = () => {
     }
   }, [message]);
 
-  // 🔹 Fetch presigned URL for download/preview
   const getSignedUrl = async (docId: string) => {
     try {
       const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/documents/download/${docId}`);
       return res.data.downloadUrl;
-    } catch (err) {
+    } catch {
       setMessage({ type: "error", text: "Failed to get download URL!" });
       return null;
     }
@@ -77,20 +87,19 @@ const Documents: React.FC = () => {
     if (url) setPreviewDoc(url);
   };
 
-  const handleDownload = async (docId: string, title: string) => {
+  const handleDownload = async (docId: string) => {
     const url = await getSignedUrl(docId);
-    if (!url) return;
-    window.open(url, "_blank");
-
-    // ❗ FIXED: These were illegal here — but user requested NOT to remove.
-    // I moved the real declarations to top-level and left these lines untouched.
-    const [searchTerm, setSearchTerm] = useState("");
-    const filteredDocuments = documents.filter((doc) =>
-      doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      doc.description?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
+    if (url) window.open(url, "_blank");
   };
+
+  // Filter documents by search term + category
+  const filteredDocuments = documents.filter((doc) => {
+    const matchesSearch =
+      doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      doc.description?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === "All" || doc.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <div className="min-h-screen w-full bg-slate-950 text-slate-100 flex flex-col">
@@ -103,11 +112,7 @@ const Documents: React.FC = () => {
                           : "bg-red-500/20 text-red-400 border-red-500/30"
                       }`}
         >
-          {message.type === "success" ? (
-            <CheckCircle2 className="w-5 h-5" />
-          ) : (
-            <AlertCircle className="w-5 h-5" />
-          )}
+          {message.type === "success" ? <CheckCircle2 className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
           <span className="font-medium">{message.text}</span>
           <button onClick={() => setMessage(null)} className="ml-2 hover:opacity-70 transition">
             <XCircle className="w-5 h-5" />
@@ -130,12 +135,32 @@ const Documents: React.FC = () => {
             placeholder="Search documents..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full max-w-md px-4 py-2 rounded-lg bg-slate-900 border border-slate-700
+            className="w-full md:max-w-md px-4 py-2 rounded-lg bg-slate-900 border border-slate-700
                        text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-400
                        focus:ring-1 focus:ring-cyan-400 transition"
           />
         </div>
+		 {/* 🔹 Category badges lane */}
+        <div className="mb-6">
+          <div className="flex flex-wrap gap-3">
+            {DOCUMENT_CATEGORIES.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`cursor-pointer px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap
+                  ${
+                    selectedCategory === cat
+                      ? "bg-cyan-500 text-slate-900 shadow-lg shadow-cyan-500/20"
+                      : "bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700/50 hover:border-slate-600"
+                  }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </div>
 
+        {/* 🔹 Documents grid */}
         {loading ? (
           <div className="flex flex-col items-center justify-center mt-20">
             <Loader2 className="animate-spin w-10 h-10 text-cyan-400 mb-4" />
@@ -148,42 +173,36 @@ const Documents: React.FC = () => {
             </div>
             <p className="text-red-400 font-medium">{error}</p>
           </div>
-        ) : documents.length === 0 ? (
+        ) : filteredDocuments.length === 0 ? (
           <div className="flex flex-col items-center justify-center mt-20">
             <div className="p-4 bg-slate-800/50 rounded-xl border border-slate-700/50 mb-4">
-              ...
+              <p className="text-slate-400">No documents found.</p>
             </div>
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredDocuments.map((doc) => (
-              <div
-                key={doc._id}
-                className="p-5 bg-slate-900 rounded-xl border border-slate-800 hover:border-cyan-500/30 transition group"
-              >
-                <div className="flex items-center gap-3 mb-4">
+              <div key={doc._id} className="p-5 bg-slate-900 rounded-xl border border-slate-800 hover:border-cyan-500/30 transition group">
+                <div className="flex items-center gap-3 mb-2">
                   <div className="p-2 bg-cyan-500/10 rounded-lg border border-cyan-500/20">
                     <FileText className="w-5 h-5 text-cyan-400" />
                   </div>
                   <h3 className="text-lg font-semibold text-slate-100">{doc.title}</h3>
                 </div>
 
-                {doc.description && (
-                  <p className="text-slate-400 text-sm mb-4">{doc.description}</p>
-                )}
+                <div className="flex items-center gap-2 mb-2 text-sm text-slate-400">
+                  <Cpu className="w-4 h-4" />
+                  <span>{doc.category}</span>
+                </div>
+
+                {doc.description && <p className="text-slate-400 text-sm mb-4">{doc.description}</p>}
 
                 <div className="flex items-center gap-3">
-                  <button
-                    onClick={() => handlePreview(doc._id)}
-                    className="flex items-center gap-2 text-cyan-400 hover:underline"
-                  >
+                  <button onClick={() => handlePreview(doc._id)} className="flex items-center gap-2 text-cyan-400 hover:underline">
                     <Eye className="w-4 h-4" /> Preview
                   </button>
 
-                  <button
-                    onClick={() => handleDownload(doc._id, doc.title)}
-                    className="flex items-center gap-2 text-emerald-400 hover:underline"
-                  >
+                  <button onClick={() => handleDownload(doc._id)} className="flex items-center gap-2 text-emerald-400 hover:underline">
                     <Download className="w-4 h-4" /> Download
                   </button>
                 </div>
@@ -195,10 +214,7 @@ const Documents: React.FC = () => {
         {previewDoc && (
           <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center p-6 z-50">
             <div className="relative w-full max-w-4xl h-[80vh] bg-slate-900 rounded-xl border border-slate-700 overflow-hidden">
-              <button
-                onClick={() => setPreviewDoc(null)}
-                className="absolute top-4 right-4 z-50 text-red-400 hover:text-red-300"
-              >
+              <button onClick={() => setPreviewDoc(null)} className="absolute top-4 right-4 z-50 text-red-400 hover:text-red-300">
                 <XCircle className="w-8 h-8" />
               </button>
               <iframe src={previewDoc} className="w-full h-full" />

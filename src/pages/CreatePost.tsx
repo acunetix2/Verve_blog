@@ -1,6 +1,5 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import axios from "axios";
-import { API_BASE_URL } from "@/config.ts";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import {
@@ -14,7 +13,6 @@ import {
   Send,
   AlertCircle,
   XCircle,
-  CircleAlert,
 } from "lucide-react";
 
 interface PostFormData {
@@ -26,6 +24,7 @@ interface PostFormData {
   tags: string;
   content: string;
   featured: boolean;
+  category: string; // ✅ Added category
 }
 
 const CreatePost: React.FC = () => {
@@ -40,12 +39,13 @@ const CreatePost: React.FC = () => {
     tags: "",
     content: "",
     featured: false,
+    category: "Uncategorized", // default
   });
 
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
 
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value, type } = e.target;
     const checked =
@@ -58,19 +58,19 @@ const CreatePost: React.FC = () => {
       [name]: type === "checkbox" ? checked : value,
     }));
 
-    // Clear error on change
     setErrors((prev) => ({ ...prev, [name]: false }));
   };
 
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const validateFields = () => {
     const newErrors: { [key: string]: boolean } = {};
     if (!formData.title.trim()) newErrors.title = true;
     if (!formData.slug.trim()) newErrors.slug = true;
     if (!formData.content.trim()) newErrors.content = true;
+    if (!formData.category.trim()) newErrors.category = true; // validate category
     return newErrors;
   };
 
-  // ✅ Submit new post
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -93,15 +93,18 @@ const CreatePost: React.FC = () => {
       await axios.post(`${API_BASE_URL}/posts/create`, payload);
       toast.success("Post published successfully!");
       navigate("/admin");
-    } catch (error) {
-      console.error("Post creation failed:", error);
-      toast.error("Something went wrong while publishing the post.");
+    } catch (error: any) {
+      console.error(
+        "Post creation failed:",
+        error.response?.status,
+        error.response?.data
+      );
+      toast.error(`Error: ${error.response?.data?.message || error.message}`);
     }
   };
 
   const handleExit = () => navigate("/admin");
-  
-  // Added clear form logic (no existing code removed)
+
   const handleClear = () => {
     setFormData({
       title: "",
@@ -112,6 +115,7 @@ const CreatePost: React.FC = () => {
       tags: "",
       content: "",
       featured: false,
+      category: "Uncategorized",
     });
     setErrors({});
     toast.info("Cleared.");
@@ -136,7 +140,6 @@ const CreatePost: React.FC = () => {
         }
       `}</style>
 
-      {/* Main Container */}
       <div className="relative z-10 max-w-3xl mx-auto px-6 py-12">
         {/* Header */}
         <div className="flex items-center justify-between mb-12 pb-8 border-b border-gray-200">
@@ -144,11 +147,8 @@ const CreatePost: React.FC = () => {
             <h1 className="text-4xl font-bold text-gray-900 mb-2">
               Create New Post
             </h1>
-            <p className="text-base text-gray-600">
-              Share your story with the world
-            </p>
+            <p className="text-base text-gray-600">Share your story with the world</p>
           </div>
-
           <button
             onClick={handleExit}
             className="group flex items-center gap-2 px-5 py-2.5 rounded-full border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all text-sm font-medium"
@@ -263,6 +263,44 @@ const CreatePost: React.FC = () => {
             </div>
           </div>
 
+          {/* Category */}
+          <div className="space-y-2">
+            <label
+              className={`flex items-center gap-2 text-sm font-medium ${
+                errors.category ? "text-red-600" : "text-gray-700"
+              }`}
+            >
+              <Shield className="h-4 w-4" />
+              Category *
+              {errors.category && (
+                <span className="flex items-center text-red-600 text-xs ml-2">
+                  <AlertCircle size={12} className="mr-1" /> Required
+                </span>
+              )}
+            </label>
+            <select
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              className="w-full p-4 border border-gray-300 rounded-md bg-white text-gray-900 placeholder:text-gray-400 transition-all focus:border-gray-900 focus:ring-2 focus:ring-gray-900/10 outline-none text-lg"
+            >
+              <option value="Uncategorized">Uncategorized</option>
+              <option value="Web Exploitation">Web Exploitation</option>
+              <option value="Binary Exploitation">Binary Exploitation</option>
+              <option value="Reverse Engineering">Reverse Engineering</option>
+              <option value="Cryptography">Cryptography</option>
+              <option value="Forensics">Forensics</option>
+              <option value="Network Security">Network Security</option>
+              <option value="Malware Analysis">Malware Analysis</option>
+              <option value="Penetration Testing">Penetration Testing</option>
+              <option value="CTF Writeups">CTF Writeups</option>
+              <option value="Vulnerability Research">Vulnerability Research</option>
+              <option value="Cloud Security">Cloud Security</option>
+              <option value="Wireless Security">Wireless Security</option>
+              <option value="Database Security">Database Security</option>
+            </select>
+          </div>
+
           {/* Tags */}
           <div className="space-y-2">
             <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
@@ -335,7 +373,6 @@ const CreatePost: React.FC = () => {
               <Send className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
               Publish
             </button>
-			 {/* ✅ Added Clear Form button */}
             <button
               type="button"
               onClick={handleClear}
