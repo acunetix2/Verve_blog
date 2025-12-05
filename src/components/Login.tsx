@@ -193,30 +193,30 @@ export default function Login() {
   // While processing OAuth token or existing session
   if (processingAuth) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-blue-950 to-cyan-950">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-blue-700 to-blue-500" style={{ fontFamily: "'Product Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
         <div className="text-center space-y-6">
           {/* Animated logo/icon */}
           <div className="relative w-20 h-20 mx-auto">
-            <div className="absolute inset-0 border-4 border-red-600 rounded-full" style={{ animationDirection: "normal", animationDuration: "1.5s" }}></div>
-            <div className="absolute inset-0 border-4 border-green-500 border-t-transparent rounded-full animate-spin" style={{ animationDirection: "normal", animationDuration: "1.5s" }}></div>
-            <div className="absolute inset-2 border-4 border-blue-600 border-b-transparent rounded-full animate-spin" style={{ animationDirection: "normal", animationDuration: "1.5s" }}></div>
+            <div className="absolute inset-0 border-4 border-white rounded-full animate-pulse"></div>
+            <div className="absolute inset-0 border-4 border-blue-200 border-t-transparent rounded-full animate-spin" style={{ animationDuration: "1.5s" }}></div>
+            <div className="absolute inset-2 border-4 border-white border-b-transparent rounded-full animate-spin" style={{ animationDuration: "1s" }}></div>
           </div>
           
           {/* Loading message */}
           <div className="space-y-2">
-            <p className="text-green-400 text-sm animate-pulse">
+            <p className="text-white text-xs font-medium animate-pulse">
               {loadingMessage}
             </p>
-            <p className="text-cyan-300/60 text-sm">
+            <p className="text-blue-100 text-xs">
               Please wait a moment...
             </p>
           </div>
 
           {/* Loading dots animation */}
           <div className="flex justify-center gap-2">
-            <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
-            <div className="w-2 h-2 bg-red-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></div>
-            <div className="w-2 h-2 bg-green-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></div>
+            <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
+            <div className="w-2 h-2 bg-blue-200 rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></div>
+            <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></div>
           </div>
         </div>
       </div>
@@ -226,13 +226,13 @@ export default function Login() {
   // Success Transition Screen
   if (showSuccessTransition) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-blue-950 to-cyan-950 relative overflow-hidden">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-blue-700 to-blue-500 relative overflow-hidden" style={{ fontFamily: "'Product Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
         {/* Animated background particles */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           {[...Array(20)].map((_, i) => (
             <div
               key={i}
-              className="absolute bg-cyan-400/20 rounded-full animate-float"
+              className="absolute bg-white/10 rounded-full animate-float"
               style={{
                 width: Math.random() * 60 + 20 + "px",
                 height: Math.random() * 60 + 20 + "px",
@@ -248,34 +248,34 @@ export default function Login() {
         <div className="text-center space-y-8 z-10 animate-scale-in">
           {/* Success Icon with pulse animation */}
           <div className="relative w-28 h-28 mx-auto">
-            <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full animate-ping opacity-20"></div>
-            <div className="absolute inset-0 bg-gradient-to-r from-white to-white rounded-full flex items-center justify-center shadow-2xl shadow-cyan-500/50">
-              <BarChart3 className="text-green-500" size={56} strokeWidth={2.5} />
+            <div className="absolute inset-0 bg-white rounded-full animate-ping opacity-20"></div>
+            <div className="absolute inset-0 bg-white rounded-full flex items-center justify-center shadow-2xl shadow-blue-900/50">
+              <BarChart3 className="text-blue-600" size={56} strokeWidth={2.5} />
             </div>
           </div>
 
           {/* Success Message */}
           <div className="space-y-3 animate-fade-in-up">
-            <h2 className="text-2xl text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-500 animate-gradient">
+            <h2 className="text-2xl font-bold text-white">
               {successMessage}
             </h2>
-            <p className="text-green-700 text-lg font-medium flex items-center justify-center gap-2">
-              <Eye size={20} className="animate-pulse text-blue-700" />
+            <p className="text-blue-100 text-base font-medium flex items-center justify-center gap-2">
+              <Eye size={16} className="animate-pulse" />
               Taking you to your dashboard
-              <Eye size={20} className="animate-pulse text-blue-700" />
+              <Eye size={16} className="animate-pulse" />
             </p>
           </div>
 
           {/* Animated progress bar */}
           <div className="w-64 mx-auto">
-            <div className="h-1.5 bg-slate-800/60 rounded-full overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-cyan-400 via-blue-500 to-cyan-400 rounded-full animate-progress shadow-lg shadow-cyan-500/50"></div>
+            <div className="h-1.5 bg-blue-800/60 rounded-full overflow-hidden">
+              <div className="h-full bg-white rounded-full animate-progress shadow-lg shadow-white/50"></div>
             </div>
           </div>
 
           {/* Loading spinner */}
           <div className="flex justify-center gap-2 pt-4">
-            <Loader2 className="text-cyan-400 animate-spin" size={24} />
+            <Loader2 className="text-white animate-spin" size={24} />
           </div>
         </div>
       </div>
@@ -283,23 +283,23 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-cyan-950">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-blue-900 via-blue-700 to-blue-500" style={{ fontFamily: "'Product Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
       {/* BACKGROUND ORBS */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }}></div>
-        <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "2s" }}></div>
+        <div className="absolute top-20 left-10 w-72 h-72 bg-white/5 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-white/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }}></div>
+        <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-white/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "2s" }}></div>
       </div>
 
       {/* AUTH CARD */}
       <div className="relative z-10 flex items-center justify-center min-h-screen px-4 py-12">
-        <div className="w-full max-w-md transform transition-all duration-700 ease-out bg-slate-900/85 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-cyan-900/30">
+        <div className="w-full max-w-md transform transition-all duration-700 ease-out bg-white backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-blue-100">
           {/* HEADER */}
-          <div className="text-center mb-8 space-y-2">
-            <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-500 mb-2 tracking-tight animate-gradient">
+          <div className="text-center mb-6 space-y-1">
+            <h1 className="text-2xl font-bold text-blue-600 mb-1 tracking-tight">
               Verve Hub WriteUps
             </h1>
-            <p className="text-sm text-cyan-200/70">
+            <p className="text-xs text-gray-600">
               👋 Welcome back
             </p>
           </div>
@@ -307,26 +307,26 @@ export default function Login() {
           {/* ERROR / SUCCESS ALERT  */}
           {message && (
             <div
-              className={`p-4 mb-6 rounded-xl flex items-center gap-3 text-sm font-medium transition-all duration-500 transform ${
+              className={`p-3 mb-4 rounded-xl flex items-center gap-2 text-xs font-medium transition-all duration-500 transform ${
                 message.type === "error"
-                  ? "bg-red-900/40 text-red-300 border border-red-700/40 shadow-lg shadow-red-900/20"
-                  : "bg-green-900/40 text-green-300 border border-green-700/40 shadow-lg shadow-green-900/20"
+                  ? "bg-red-50 text-red-700 border border-red-200 shadow-lg"
+                  : "bg-green-50 text-green-700 border border-green-200 shadow-lg"
               } animate-in slide-in-from-top-2`}
             >
               {message.type === "error" ? (
-                <AlertCircle className="flex-shrink-0" size={18} />
+                <AlertCircle className="flex-shrink-0" size={14} />
               ) : (
-                <CheckCircle className="flex-shrink-0" size={18} />
+                <CheckCircle className="flex-shrink-0" size={14} />
               )}
               <span>{message.text}</span>
             </div>
           )}
 
           {/* FORM */}
-          <form className="space-y-6" onSubmit={handleSubmit}>
+          <form className="space-y-4" onSubmit={handleSubmit}>
             {/* Email */}
-            <div className="space-y-2">
-              <label htmlFor="email" className="block text-cyan-100 text-sm font-medium">
+            <div className="space-y-1">
+              <label htmlFor="email" className="block text-gray-700 text-xs font-medium">
                 Email Address
               </label>
               <input
@@ -336,21 +336,21 @@ export default function Login() {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="Enter your email"
-                className={`w-full px-4 py-3 rounded-xl bg-slate-800/60 border-2 ${
-                  errors.email ? "border-red-500/60" : "border-cyan-900/40 focus:border-cyan-500/60"
-                } text-cyan-50 placeholder-cyan-300/30 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all duration-300`}
+                className={`w-full px-3 py-2 text-sm rounded-xl bg-gray-50 border-2 ${
+                  errors.email ? "border-red-300" : "border-gray-200 focus:border-blue-500"
+                } text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-300`}
               />
 
               {errors.email && (
-                <p className="text-red-400 text-xs mt-2 flex items-center gap-1.5 animate-in slide-in-from-left-1">
-                  <AlertCircle size={13} /> {errors.email}
+                <p className="text-red-500 text-xs mt-1 flex items-center gap-1 animate-in slide-in-from-left-1">
+                  <AlertCircle size={11} /> {errors.email}
                 </p>
               )}
             </div>
 
             {/* Password */}
-            <div className="space-y-2">
-              <label htmlFor="password" className="block text-cyan-100 text-sm font-medium">
+            <div className="space-y-1">
+              <label htmlFor="password" className="block text-gray-700 text-xs font-medium">
                 Password
               </label>
               <div className="relative">
@@ -361,30 +361,30 @@ export default function Login() {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="Enter your password"
-                  className={`w-full px-4 py-3 rounded-xl bg-slate-800/60 border-2 ${
-                    errors.password ? "border-red-500/60" : "border-cyan-900/40 focus:border-cyan-500/60"
-                  } text-cyan-50 placeholder-cyan-300/30 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all duration-300 pr-12`}
+                  className={`w-full px-3 py-2 text-sm rounded-xl bg-gray-50 border-2 ${
+                    errors.password ? "border-red-300" : "border-gray-200 focus:border-blue-500"
+                  } text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-300 pr-10`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-3 flex items-center text-cyan-400 hover:text-cyan-300 transition-all duration-200 hover:scale-110"
+                  className="absolute inset-y-0 right-2 flex items-center text-blue-600 hover:text-blue-700 transition-all duration-200 hover:scale-110"
                 >
-                  {showPassword ? <EyeOff size={19} /> : <Eye size={19} />}
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
 
               {errors.password && (
-                <p className="text-red-400 text-xs mt-2 flex items-center gap-1.5 animate-in slide-in-from-left-1">
-                  <AlertCircle size={13} /> {errors.password}
+                <p className="text-red-500 text-xs mt-1 flex items-center gap-1 animate-in slide-in-from-left-1">
+                  <AlertCircle size={11} /> {errors.password}
                 </p>
               )}
             </div>
 
-            <div className="flex items-center justify-end text-sm pt-1">
+            <div className="flex items-center justify-end text-xs pt-1">
 			  <Link
 				to="/forgot-password"
-				className="text-cyan-400 hover:text-cyan-300 transition-all duration-200 font-medium hover:underline"
+				className="text-blue-600 hover:text-blue-700 transition-all duration-200 font-medium hover:underline"
 			  >
 				Forgot password?
 			  </Link>
@@ -393,45 +393,45 @@ export default function Login() {
             <button
               type="submit"
               disabled={isLoading || redirecting}
-              className="w-full bg-gradient-to-r from-cyan-500 via-blue-500 to-blue-600 hover:from-cyan-600 hover:via-blue-600 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all duration-300 shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50 hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all duration-300 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:scale-[1.02] active:scale-[0.98]"
             >
               {isLoading || redirecting ? (
                 <>
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   <span>{redirecting ? "Redirecting..." : "Signing in..."}</span>
                 </>
               ) : (
                 <>
-                  <LogIn size={19} />
+                  <LogIn size={16} />
                   <span>Sign In</span>
                 </>
               )}
             </button>
 
             {/* Divider */}
-            <div className="relative flex items-center my-6">
-              <div className="flex-grow border-t border-cyan-800/40"></div>
-              <span className="mx-4 text-cyan-300/50 text-xs font-medium">OR</span>
-              <div className="flex-grow border-t border-cyan-800/40"></div>
+            <div className="relative flex items-center my-4">
+              <div className="flex-grow border-t border-gray-200"></div>
+              <span className="mx-3 text-gray-400 text-xs font-medium">OR</span>
+              <div className="flex-grow border-t border-gray-200"></div>
             </div>
 
             {/* Google */}
             <button
               type="button"
               onClick={handleGoogleLogin}
-              className="w-full bg-slate-800/60 border-2 border-cyan-700/40 hover:bg-slate-800/80 hover:border-cyan-600/60 text-white font-semibold py-3.5 rounded-xl flex items-center justify-center gap-3 transition-all duration-300 shadow-lg shadow-cyan-500/10 hover:shadow-cyan-500/20 hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full bg-white border-2 border-gray-200 hover:bg-gray-50 hover:border-blue-300 text-gray-700 text-sm font-semibold py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
             >
-              <FcGoogle size={22} />
+              <FcGoogle size={18} />
               <span>Continue with Google</span>
             </button>
 
             {/* Sign up */}
-            <p className="text-sm text-cyan-200/70 text-center mt-6">
+            <p className="text-xs text-gray-600 text-center mt-4">
               Don't have an account?{" "}
               <button
                 type="button"
                 onClick={() => navigate("/signup")}
-                className="text-cyan-400 hover:text-cyan-300 transition-all duration-200 font-semibold hover:underline"
+                className="text-blue-600 hover:text-blue-700 transition-all duration-200 font-semibold hover:underline"
               >
                 Sign up
               </button>
@@ -442,16 +442,8 @@ export default function Login() {
 
       {/* Animations */}
       <style>{`
-        @keyframes gradient {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-        }
-
-        .animate-gradient {
-          background-size: 200% 200%;
-          animation: gradient 3s ease infinite;
-        }
-
+        @import url('https://fonts.googleapis.com/css2?family=Product+Sans:wght@400;500;700&display=swap');
+        
         @keyframes slide-in-from-top-2 {
           from { transform: translateY(-0.5rem); opacity: 0; }
           to { transform: translateY(0); opacity: 1; }

@@ -10,7 +10,7 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-950 via-black to-blue-950 text-white relative overflow-hidden px-4">
+     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-950 via-white to-blue-900 text-gray-900 relative overflow-hidden px-4">
       {/* Animated grid background */}
       <div className="fixed inset-0 opacity-5 pointer-events-none">
         <div className="absolute inset-0" style={{

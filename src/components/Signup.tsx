@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Eye, EyeOff, UserPlus, AlertCircle, Check } from "lucide-react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import Navbar from "@/components/Navbar";
 import { FcGoogle } from "react-icons/fc";
 
 export default function Signup() {
@@ -33,9 +32,9 @@ export default function Signup() {
   };
   const getStrengthColor = (strength: number) => {
     if (strength <= 1) return "bg-red-500";
-    if (strength <= 2) return "bg-cyan-500";
-    if (strength <= 3) return "bg-cyan-400";
-    return "bg-emerald-500";
+    if (strength <= 2) return "bg-yellow-500";
+    if (strength <= 3) return "bg-blue-400";
+    return "bg-green-500";
   };
 
   const getStrengthLabel = (strength: number) => {
@@ -110,34 +109,33 @@ export default function Signup() {
   }, [message]);
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-cyan-950 pt-20">
-	  <Navbar />
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-blue-900 via-blue-700 to-blue-500" style={{ fontFamily: "'Product Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
 	  {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }}></div>
-        <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "2s" }}></div>
+        <div className="absolute top-20 left-10 w-72 h-72 bg-white/5 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-white/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }}></div>
+        <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-white/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "2s" }}></div>
       </div>
 
       <div className="relative z-10 flex items-center justify-center min-h-screen px-4 py-8">
-        <div className="w-full max-w-md bg-slate-900/80 backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-cyan-900/50">
-          <div className="text-center mb-6">
-            <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-2 tracking-tight">
+        <div className="w-full max-w-md bg-white backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-blue-100">
+          <div className="text-center mb-4">
+            <h1 className="text-2xl font-bold text-blue-600 mb-1 tracking-tight">
               Join Verve Hub
             </h1>
-            <p className="text-cyan-200/70">Create your free account 🚀</p>
+            <p className="text-gray-600 text-xs">Create your free account 🚀</p>
           </div>
 
           {message && (
-            <div className={`p-3 mb-4 rounded-lg flex items-center gap-2 text-sm transition-opacity duration-500 ${message.type === "error" ? "bg-red-900/40 text-red-400 border border-red-700/30" : "bg-green-900/40 text-green-400 border border-green-700/30"}`}>
-              {message.type === "error" ? <AlertCircle size={16} /> : <Check size={16} />}
+            <div className={`p-2 mb-3 rounded-lg flex items-center gap-2 text-xs transition-opacity duration-500 ${message.type === "error" ? "bg-red-50 text-red-700 border border-red-200" : "bg-green-50 text-green-700 border border-green-200"}`}>
+              {message.type === "error" ? <AlertCircle size={14} /> : <Check size={14} />}
               {message.text}
             </div>
           )}
 
-          <form className="space-y-5" onSubmit={handleSubmit}>
+          <form className="space-y-3" onSubmit={handleSubmit}>
             <div>
-              <label htmlFor="fullName" className="block text-cyan-100 text-sm mb-2">Full Name</label>
+              <label htmlFor="fullName" className="block text-gray-700 text-xs mb-1 font-medium">Full Name</label>
               <input
                 id="fullName"
                 name="fullName"
@@ -145,29 +143,29 @@ export default function Signup() {
                 value={formData.fullName}
                 onChange={handleChange}
                 placeholder="John Doe"
-                className={`w-full p-3 rounded-lg bg-slate-800/50 border ${errors.fullName ? "border-red-500" : "border-cyan-900/50"} text-cyan-50 placeholder-cyan-300/30 focus:ring-2 focus:ring-cyan-500 outline-none transition`}
+                className={`w-full px-3 py-2 text-sm rounded-lg bg-gray-50 border-2 ${errors.fullName ? "border-red-300" : "border-gray-200 focus:border-blue-500"} text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-200 outline-none transition`}
               />
-              {errors.fullName && <p className="text-red-400 text-xs mt-1 flex items-center gap-1"><AlertCircle size={12} /> {errors.fullName}</p>}
+              {errors.fullName && <p className="text-red-500 text-xs mt-1 flex items-center gap-1"><AlertCircle size={11} /> {errors.fullName}</p>}
             </div>
 
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-cyan-100 text-sm mb-2">Email</label>
+              <label htmlFor="email" className="block text-gray-700 text-xs mb-1 font-medium">Email</label>
               <input
                 id="email"
                 name="email"
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="Valid email"
-                className={`w-full p-3 rounded-lg bg-slate-800/50 border ${errors.email ? "border-red-500" : "border-cyan-900/50"} text-cyan-50 placeholder-cyan-300/30 focus:ring-2 focus:ring-cyan-500 outline-none transition`}
+                placeholder="your.email@example.com"
+                className={`w-full px-3 py-2 text-sm rounded-lg bg-gray-50 border-2 ${errors.email ? "border-red-300" : "border-gray-200 focus:border-blue-500"} text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-200 outline-none transition`}
               />
-              {errors.email && <p className="text-red-400 text-xs mt-1 flex items-center gap-1"><AlertCircle size={12} /> {errors.email}</p>}
+              {errors.email && <p className="text-red-500 text-xs mt-1 flex items-center gap-1"><AlertCircle size={11} /> {errors.email}</p>}
             </div>
 
             {/* Password */}
             <div>
-              <label htmlFor="password" className="block text-cyan-100 text-sm mb-2">Password</label>
+              <label htmlFor="password" className="block text-gray-700 text-xs mb-1 font-medium">Password</label>
               <div className="relative">
                 <input
                   id="password"
@@ -176,30 +174,30 @@ export default function Signup() {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="••••••••"
-                  className={`w-full p-3 rounded-lg bg-slate-800/50 border ${errors.password ? "border-red-500" : "border-cyan-900/50"} text-cyan-50 placeholder-cyan-300/30 focus:ring-2 focus:ring-cyan-500 outline-none transition pr-10`}
+                  className={`w-full px-3 py-2 text-sm rounded-lg bg-gray-50 border-2 ${errors.password ? "border-red-300" : "border-gray-200 focus:border-blue-500"} text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-200 outline-none transition pr-10`}
                 />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-3 flex items-center text-cyan-400 hover:text-cyan-300 transition">
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-2 flex items-center text-blue-600 hover:text-blue-700 transition">
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
               {formData.password && (
-                <div className="mt-2">
+                <div className="mt-1">
                   <div className="flex gap-1 mb-1">
                     {[...Array(5)].map((_, i) => (
-                      <div key={i} className={`h-1 flex-1 rounded ${i < passwordStrength ? getStrengthColor(passwordStrength) : "bg-slate-700"} transition-all`} />
+                      <div key={i} className={`h-1 flex-1 rounded ${i < passwordStrength ? getStrengthColor(passwordStrength) : "bg-gray-200"} transition-all`} />
                     ))}
                   </div>
-                  <p className="text-xs text-cyan-200/70">
-                    Password strength: <span className={passwordStrength >= 4 ? "text-emerald-400" : passwordStrength >= 3 ? "text-cyan-400" : "text-cyan-500"}>{getStrengthLabel(passwordStrength)}</span>
+                  <p className="text-xs text-gray-600">
+                    Password strength: <span className={passwordStrength >= 4 ? "text-green-600" : passwordStrength >= 3 ? "text-blue-600" : "text-yellow-600"}>{getStrengthLabel(passwordStrength)}</span>
                   </p>
                 </div>
               )}
-              {errors.password && <p className="text-red-400 text-xs mt-1 flex items-center gap-1"><AlertCircle size={12} /> {errors.password}</p>}
+              {errors.password && <p className="text-red-500 text-xs mt-1 flex items-center gap-1"><AlertCircle size={11} /> {errors.password}</p>}
             </div>
 
             {/* Confirm Password */}
             <div>
-              <label htmlFor="confirmPassword" className="block text-cyan-100 text-sm mb-2">Confirm Password</label>
+              <label htmlFor="confirmPassword" className="block text-gray-700 text-xs mb-1 font-medium">Confirm Password</label>
               <div className="relative">
                 <input
                   id="confirmPassword"
@@ -208,54 +206,58 @@ export default function Signup() {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   placeholder="••••••••"
-                  className={`w-full p-3 rounded-lg bg-slate-800/50 border ${errors.confirmPassword ? "border-red-500" : "border-cyan-900/50"} text-cyan-50 placeholder-cyan-300/30 focus:ring-2 focus:ring-cyan-500 outline-none transition pr-10`}
+                  className={`w-full px-3 py-2 text-sm rounded-lg bg-gray-50 border-2 ${errors.confirmPassword ? "border-red-300" : "border-gray-200 focus:border-blue-500"} text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-200 outline-none transition pr-10`}
                 />
-                <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute inset-y-0 right-3 flex items-center text-cyan-400 hover:text-cyan-300 transition">
-                  {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute inset-y-0 right-2 flex items-center text-blue-600 hover:text-blue-700 transition">
+                  {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
               {formData.confirmPassword && formData.password === formData.confirmPassword && (
-                <p className="text-emerald-400 text-xs mt-1 flex items-center gap-1"><Check size={12} /> Passwords match</p>
+                <p className="text-green-600 text-xs mt-1 flex items-center gap-1"><Check size={11} /> Passwords match</p>
               )}
-              {errors.confirmPassword && <p className="text-red-400 text-xs mt-1 flex items-center gap-1"><AlertCircle size={12} /> {errors.confirmPassword}</p>}
+              {errors.confirmPassword && <p className="text-red-500 text-xs mt-1 flex items-center gap-1"><AlertCircle size={11} /> {errors.confirmPassword}</p>}
             </div>
 
             {/* Terms */}
             <div>
-              <label className="flex items-start text-cyan-200/70 cursor-pointer text-sm">
-                <input type="checkbox" name="agreeToTerms" checked={formData.agreeToTerms} onChange={handleChange} className="mt-1 mr-2 rounded bg-slate-800/50 border-cyan-900/50" />
+              <label className="flex items-start text-gray-600 cursor-pointer text-xs">
+                <input type="checkbox" name="agreeToTerms" checked={formData.agreeToTerms} onChange={handleChange} className="mt-1 mr-2 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
                 <span>
                   I agree to the{" "}
-                  <button type="button" className="text-cyan-400 hover:text-cyan-300 transition">Terms of Service</button>{" "}
+                  <button type="button" className="text-blue-600 hover:text-blue-700 transition font-medium">Terms of Service</button>{" "}
                   and{" "}
-                  <button type="button" className="text-cyan-400 hover:text-cyan-300 transition">Privacy Policy</button>
+                  <button type="button" className="text-blue-600 hover:text-blue-700 transition font-medium">Privacy Policy</button>
                 </span>
               </label>
-              {errors.agreeToTerms && <p className="text-red-400 text-xs mt-1 flex items-center gap-1"><AlertCircle size={12} /> {errors.agreeToTerms}</p>}
+              {errors.agreeToTerms && <p className="text-red-500 text-xs mt-1 flex items-center gap-1"><AlertCircle size={11} /> {errors.agreeToTerms}</p>}
             </div>
 
             {/* Submit Button */}
-            <button type="submit" disabled={isLoading || redirecting} className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 disabled:from-cyan-500/50 disabled:to-blue-600/50 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-2 transition-all shadow-lg shadow-cyan-500/30">
+            <button type="submit" disabled={isLoading || redirecting} className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold py-2.5 rounded-lg flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:scale-[1.02] active:scale-[0.98]">
               {isLoading ? (
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
               ) : redirecting ? (
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
               ) : (
                 <>
-                  <UserPlus size={18} /> Sign Up
+                  <UserPlus size={16} /> Sign Up
                 </>
               )}
             </button>
 
-            <p className="text-sm text-cyan-200/70 text-center mt-6">
+            <p className="text-xs text-gray-600 text-center mt-4">
               Already have an account?{" "}
-              <button type="button" onClick={() => navigate("/login")} className="text-cyan-400 hover:text-cyan-300 transition font-medium">
+              <button type="button" onClick={() => navigate("/login")} className="text-blue-600 hover:text-blue-700 transition font-semibold hover:underline">
                 Log in
               </button>
             </p>
           </form>
         </div>
       </div>
+      
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Product+Sans:wght@400;500;700&display=swap');
+      `}</style>
     </div>
   );
 }
