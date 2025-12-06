@@ -3,6 +3,7 @@ import { Menu, Cpu, ChevronDown, ExternalLink, Github, CheckCircle2, Bell, Setti
 import { useState, useEffect, useCallback, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import axios from "axios";
+import CompanyLogo from "@/assets/logo.png";
 import { useLiveNotifications } from "@/hooks/useLiveNotifications";
 
 interface User {
@@ -132,17 +133,23 @@ export const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) =>
                 className="flex items-center gap-3 group"
                 aria-label="Go to homepage"
               >
-                <div className="w-10 h-10 bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg flex items-center justify-center shadow-md shadow-red-500/40 group-hover:shadow-cyan-400/60 transition-shadow">
-                  <Cpu className="h-5 w-8 text-red-700 group-hover:text-green-700" strokeWidth={2.5} />
-                </div>
-                <div className="hidden sm:flex flex-col">
-                  <span className="text-sm md:text-base font-semibold text-cyan-600 dark:text-white tracking-tight">
-                    Verve Hub WriteUps
-                  </span>
-                  <span className="text-[10px] md:text-xs font-bold font-medium text-green-700 dark:text-gray-500 tracking-wider">
-                    Security Research and Learning
-                  </span>
-                </div>
+                <div className="flex items-center gap-2">
+				  <div className="w-10 h-10 flex items-center justify-center rounded-lg">
+					  <img 
+						src={CompanyLogo} 
+						alt="Company Logo" 
+						className="h-10 w-10 object-contain" 
+					  />
+					</div>
+				  <div className="hidden sm:flex flex-col">
+					<span className="text-sm md:text-base font-semibold text-cyan-600 dark:text-white tracking-tight">
+					  Verve Hub WriteUps
+					</span>
+					<span className="text-[10px] md:text-xs font-bold font-medium text-green-700 dark:text-gray-500 tracking-wider">
+					  Security Research and Learning
+					</span>
+				  </div>
+				</div>
               </Link>
             </div>
 

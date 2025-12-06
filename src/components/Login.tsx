@@ -4,6 +4,7 @@ import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { Link } from "react-router-dom";
+import CompanyLogo from "@/assets/logo.png";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -295,14 +296,28 @@ export default function Login() {
       <div className="relative z-10 flex items-center justify-center min-h-screen px-4 py-12">
         <div className="w-full max-w-md transform transition-all duration-700 ease-out bg-white backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-blue-100">
           {/* HEADER */}
-          <div className="text-center mb-6 space-y-1">
-            <h1 className="text-2xl font-bold text-blue-600 mb-1 tracking-tight">
-              Verve Hub WriteUps
-            </h1>
-            <p className="text-xs text-gray-600">
-              👋 Welcome back
-            </p>
-          </div>
+			<div className="flex flex-col items-center mb-6 space-y-2">
+			  {/* Logo */}
+			  <Link to="/">
+				<div className="flex items-center justify-center cursor-pointer">
+				  <img 
+					src={CompanyLogo} 
+					alt="Company Logo" 
+					className="h-10 w-10 object-contain" 
+				  />
+				</div>
+			  </Link>
+
+			  {/* Text */}
+			  <div className="text-center space-y-1">
+				<h1 className="text-2xl font-bold text-blue-600 mb-1 tracking-tight">
+				  Verve Hub WriteUps
+				</h1>
+				<p className="text-xs text-gray-600">
+				  👋 Welcome back
+				</p>
+			  </div>
+			</div>
 
           {/* ERROR / SUCCESS ALERT  */}
           {message && (
@@ -436,6 +451,9 @@ export default function Login() {
                 Sign up
               </button>
             </p>
+			<p className="text-[10px] text-gray-400 mt-6 text-center select-none">
+			  &copy; {new Date().getFullYear()} Verve Hub WriteUps. All rights reserved.
+			</p>
           </form>
         </div>
       </div>

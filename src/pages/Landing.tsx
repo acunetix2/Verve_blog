@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { LogIn, Mail, Cpu, Github, Linkedin, Twitter, BookOpen, Shield, TrendingUp, Users, Zap, Star, ArrowRight, Menu, X, ChevronDown, Award, Target, FileText, Lock, Code, Terminal } from "lucide-react";
+import CompanyLogo from "@/assets/logo.png";
+import { Link } from "react-router-dom";
 
 export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -36,6 +38,12 @@ export default function LandingPage() {
     { number: "40+", label: "Learning Docs" }
   ];
 
+const scrollToSection = (id) => {
+	  const section = document.getElementById(id);
+	  if (section) {
+		section.scrollIntoView({ behavior: "smooth" });
+	  }
+	};
   const testimonials = [
     { name: "James Martinez", role: "Penetration Tester", text: "The CTF writeups here helped me pass my OSCP. The methodology breakdowns are incredibly detailed and practical." },
     { name: "Priya Sharma", role: "Security Analyst", text: "Best TryHackMe walkthroughs I've found. Clear explanations and the learning documents are gold for interview prep." },
@@ -90,21 +98,55 @@ export default function LandingPage() {
       <header className={`w-full py-3 px-6 md:px-8 flex justify-between items-center fixed top-0 z-50 transition-all duration-300 ${
         scrollY > 50 ? "backdrop-blur-xl bg-gray-100/95 shadow-xl border-b border-blue-200" : "backdrop-blur-md bg-gray-100/80"
       }`}>
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-500 rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/30">
-            <Cpu size={16} className="text-white" />
-          </div>
-          <h1 className="text-1xl font-bold text-blue-600">
-            Verve Hub WriteUps
-          </h1>
-        </div>
-        
-        <nav className="hidden md:flex space-x-6 text-xs tracking-wide">
-          <a href="#content" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">Content</a>
-          <a href="#categories" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">Categories</a>
-          <a href="#stats" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">Stats</a>
-          <a href="#testimonials" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">Reviews</a>
-        </nav>
+        <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.location.href='/'}>
+		  <div className="w-10 h-10 flex items-center justify-center">
+			<img 
+			  src={CompanyLogo} 
+			  alt="Company Logo" 
+			  className="h-10 w-10 object-contain" 
+			/>
+		  </div>
+		  <h1 className="text-lg font-bold text-blue-600">
+			Verve Hub WriteUps
+		  </h1>
+		</div>
+        <nav className="hidden md:flex items-center space-x-6 text-xs tracking-wide">
+		  <button
+			onClick={() => scrollToSection("content")}
+			className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
+		  >
+			Content
+		  </button>
+
+		  <button
+			onClick={() => scrollToSection("categories")}
+			className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
+		  >
+			Categories
+		  </button>
+
+		  <button
+			onClick={() => scrollToSection("stats")}
+			className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
+		  >
+			Stats
+		  </button>
+
+		  <button
+			onClick={() => scrollToSection("testimonials")}
+			className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
+		  >
+			Reviews
+		  </button>
+
+		  {/* Sign In Button */}
+		  <Link
+			to="/login"
+			className="ml-4 px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-xs font-semibold transition-colors"
+		  >
+			Sign In
+		  </Link>
+		</nav>
         <button 
           className="md:hidden text-blue-600 hover:text-blue-700 transition-colors"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
