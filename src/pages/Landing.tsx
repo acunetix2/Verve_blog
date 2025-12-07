@@ -156,16 +156,24 @@ const scrollToSection = (id) => {
       </header>
 
       {isMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-gray-100/98 backdrop-blur-2xl md:hidden pt-24 px-8 animate-in fade-in slide-in-from-top">
-          <nav className="flex flex-col space-y-6 text-base">
-            <a href="#content" onClick={() => setIsMenuOpen(false)} className="text-gray-700 hover:text-blue-600 transition-colors font-medium border-b border-gray-200 pb-4">Content</a>
-            <a href="#categories" onClick={() => setIsMenuOpen(false)} className="text-gray-700 hover:text-blue-600 transition-colors font-medium border-b border-gray-200 pb-4">Categories</a>
-            <a href="#stats" onClick={() => setIsMenuOpen(false)} className="text-gray-700 hover:text-blue-600 transition-colors font-medium border-b border-gray-200 pb-4">Stats</a>
-            <a href="#testimonials" onClick={() => setIsMenuOpen(false)} className="text-gray-700 hover:text-blue-600 transition-colors font-medium border-b border-gray-200 pb-4">Reviews</a>
-          </nav>
-        </div>
-      )}
+		  <div className="fixed inset-0 z-40 bg-gray-100/98 backdrop-blur-2xl md:hidden pt-24 px-8 animate-in fade-in slide-in-from-top">
+			<nav className="flex flex-col space-y-6 text-base">
+			  <a href="#content" onClick={() => setIsMenuOpen(false)} className="text-gray-700 hover:text-blue-600 font-medium border-b border-gray-200 pb-4">Content</a>
+			  <a href="#categories" onClick={() => setIsMenuOpen(false)} className="text-gray-700 hover:text-blue-600 font-medium border-b border-gray-200 pb-4">Categories</a>
+			  <a href="#stats" onClick={() => setIsMenuOpen(false)} className="text-gray-700 hover:text-blue-600 font-medium border-b border-gray-200 pb-4">Stats</a>
+			  <a href="#testimonials" onClick={() => setIsMenuOpen(false)} className="text-gray-700 hover:text-blue-600 font-medium border-b border-gray-200 pb-4">Reviews</a>
 
+			  {/* Mobile Sign In */}
+			  <Link
+				to="/login"
+				onClick={() => setIsMenuOpen(false)}
+				className="mt-4 px-6 py-3 bg-blue-600 text-white rounded-lg text-center font-semibold hover:bg-blue-700 transition-colors"
+			  >
+				Sign In
+			  </Link>
+			</nav>
+		  </div>
+		)}
       <section className="relative flex flex-col items-center justify-center text-center min-h-screen px-6 pt-32 pb-20">
         <div className="absolute inset-0 -z-10 overflow-hidden">
           <div className="absolute top-20 left-10 w-72 h-72 bg-blue-200/30 rounded-full blur-3xl animate-pulse"></div>
