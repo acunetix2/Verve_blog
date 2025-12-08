@@ -34,6 +34,10 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import CompanyLogo from "@/assets/logo.png";
 import { Link } from "react-router-dom";
+import AnalyticsCard from "@/components/AnalyticsCard";
+import PostAnalyticsCard from "@/components/PostAnalyticsCard";
+import DashboardAnalytics from "@/components/DashboardAnalytics";
+
 
 interface Post {
   _id?: string;
@@ -55,6 +59,7 @@ const AdminPage: React.FC = () => {
   const [editing, setEditing] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [showAnalytics, setShowAnalytics] = useState(false);
 
   const handleCreate = () => {
     navigate("/admin/create");
@@ -111,6 +116,22 @@ const AdminPage: React.FC = () => {
       });
     }
   };
+  // Fetch documents
+	const fetchDocuments = async () => {
+	  try {
+		const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/documents`);
+		setDocuments(res.data);
+		toast.success("Documents synchronized", {
+		  icon: <CheckCircle2 className="text-green-500" />,
+		  duration: 3000,
+		});
+	  } catch {
+		toast.error("Connection failed - check server status", {
+		  icon: <AlertTriangle className="text-amber-500" />,
+		  duration: 3000,
+		});
+	  }
+	};
 
   useEffect(() => {
     if (isLoggedIn) fetchPosts();
@@ -246,7 +267,6 @@ const AdminPage: React.FC = () => {
   };
 
   const analytics = getAnalytics();
-
   // Filter posts by search
   const filteredPosts = posts.filter(post => 
     post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -320,83 +340,49 @@ const AdminPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-700 to-slate-500" style={{ fontFamily: "'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
       {showLogoutModal && <LogoutModal />}
-		<div className="w-full px-4 sm:px-6 py-4 sm:py-6">
-		  {/* Analytics Cards */}
-		  <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-6">
-			<div className="relative group">
-			  <div className="absolute inset-0 bg-white/10 rounded-lg blur-lg group-hover:blur-xl transition-all" />
-			  <div className="relative bg-white/90 backdrop-blur-sm border border-blue-100 rounded-lg p-2.5 sm:p-3 hover:border-blue-300 transition-all shadow-lg">
-				<div className="flex items-start justify-between mb-1.5 sm:mb-2">
-				  <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-md flex items-center justify-center shadow-md shadow-blue-500/30">
-					<FileText className="text-white w-3.5 h-3.5 sm:w-4 sm:h-4" />
-				  </div>
-				  <span className="text-green-600 text-[9px] sm:text-[10px] font-bold flex items-center gap-0.5 bg-green-50 px-1.5 py-0.5 rounded-md border border-green-200">
-					<TrendingUp size={8} className="sm:w-2.5 sm:h-2.5" />
-					<span className="hidden xs:inline">Active</span>
-				  </span>
-				</div>
-				<div>
-				  <p className="text-gray-600 text-[9px] sm:text-[10px] mb-0.5 font-semibold uppercase tracking-wide">Total Posts</p>
-				  <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-0.5">{posts.length}</p>
-				  <p className="text-[8px] sm:text-[9px] text-gray-500 hidden xs:block">All time content</p>
-				</div>
-			  </div>
-			</div>
-			
-			<div className="relative group">
-			  <div className="absolute inset-0 bg-white/10 rounded-lg blur-lg group-hover:blur-xl transition-all" />
-			  <div className="relative bg-white/90 backdrop-blur-sm border border-blue-100 rounded-lg p-2.5 sm:p-3 hover:border-purple-300 transition-all shadow-lg">
-				<div className="flex items-start justify-between mb-1.5 sm:mb-2">
-				  <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-md flex items-center justify-center shadow-md shadow-purple-500/30">
-					<Calendar className="text-white w-3.5 h-3.5 sm:w-4 sm:h-4" />
-				  </div>
-				  <span className="text-purple-600 text-[9px] sm:text-[10px] font-bold bg-purple-50 px-1.5 py-0.5 rounded-md border border-purple-200">
-					<span className="hidden xs:inline">7 days</span><span className="xs:hidden">7d</span>
-				  </span>
-				</div>
-				<div>
-				  <p className="text-gray-600 text-[9px] sm:text-[10px] mb-0.5 font-semibold uppercase tracking-wide">Recent<span className="hidden xs:inline"> Activity</span></p>
-				  <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-0.5">{analytics.recentPosts}</p>
-				  <p className="text-[8px] sm:text-[9px] text-gray-500 hidden xs:block">Posts this week</p>
-				</div>
-			  </div>
-			</div>
-			
-			<div className="relative group">
-			  <div className="absolute inset-0 bg-white/10 rounded-lg blur-lg group-hover:blur-xl transition-all" />
-			  <div className="relative bg-white/90 backdrop-blur-sm border border-blue-100 rounded-lg p-2.5 sm:p-3 hover:border-amber-300 transition-all shadow-lg">
-				<div className="flex items-start justify-between mb-1.5 sm:mb-2">
-				  <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br from-amber-500 to-amber-600 rounded-md flex items-center justify-center shadow-md shadow-amber-500/30">
-					<TrendingUp className="text-white w-3.5 h-3.5 sm:w-4 sm:h-4" />
-				  </div>
-				  <span className="text-amber-600 text-[9px] sm:text-[10px] font-bold bg-amber-50 px-1.5 py-0.5 rounded-md border border-amber-200 hidden xs:inline">Growth</span>
-				</div>
-				<div>
-				  <p className="text-gray-600 text-[9px] sm:text-[10px] mb-0.5 font-semibold uppercase tracking-wide">Growth<span className="hidden xs:inline"> Rate</span></p>
-				  <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-0.5">{analytics.growthRate}%</p>
-				  <p className="text-[8px] sm:text-[9px] text-gray-500 hidden xs:block">Weekly performance</p>
-				</div>
-			  </div>
-			</div>
-			
-			<div className="relative group">
-			  <div className="absolute inset-0 bg-white/10 rounded-lg blur-lg group-hover:blur-xl transition-all" />
-			  <div className="relative bg-white/90 backdrop-blur-sm border border-blue-100 rounded-lg p-2.5 sm:p-3 hover:border-green-300 transition-all shadow-lg">
-				<div className="flex items-start justify-between mb-1.5 sm:mb-2">
-				  <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br from-green-500 to-green-600 rounded-md flex items-center justify-center shadow-md shadow-green-500/30">
-					<Zap className="text-white w-3.5 h-3.5 sm:w-4 sm:h-4 animate-pulse" />
-				  </div>
-				  <span className="text-green-600 text-[9px] sm:text-[10px] font-bold bg-green-50 px-1.5 py-0.5 rounded-md border border-green-200 hidden xs:inline">Status</span>
-				</div>
-				<div>
-				  <p className="text-gray-600 text-[9px] sm:text-[10px] mb-0.5 font-semibold uppercase tracking-wide">System<span className="hidden xs:inline"> Health</span></p>
-				  <p className="text-sm sm:text-base font-bold text-gray-900 mb-0.5">Optimal</p>
-				  <p className="text-[8px] sm:text-[9px] text-gray-500 hidden xs:block">{editing ? "Edit mode" : "Ready to create"}</p>
-				</div>
-			  </div>
-			</div>
-		  </div>
+		<div className="w-full px-4 sm:px-6 py-4 sm:py-6">	
+		<div className="flex items-center gap-3 mb-6">
+		  <BarChart3 
+			className="text-white text-3xl sm:text-4xl drop-shadow-lg"
+		  />
+		  <h2
+			className="text-3xl sm:text-4xl font-extrabold bg-clip-text text-transparent 
+					   bg-gradient-to-r from-indigo-400 via-pink-500 to-red-500 
+					   drop-shadow-lg"
+			style={{ fontFamily: "'Google Sans', 'Product Sans', sans-serif" }}
+		  >
+			Performance Analysis
+		  </h2>
+		</div>
+		<PostAnalyticsCard
+		  endpoint={`${import.meta.env.VITE_API_BASE_URL}/posts`} 
+		  editing={false} 
+		/>
+		<AnalyticsCard
+        endpoint={`${import.meta.env.VITE_API_BASE_URL}/documents`}
+       />
+		   <div>
+		  <button
+			onClick={() => setShowAnalytics((prev) => !prev)}
+			className="px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+		  >
+			View Analytics
+		  </button>
 
+		  {showAnalytics && (
+			<div className="mt-4">
+			  <DashboardAnalytics
+				endpoints={{
+				  posts: `${import.meta.env.VITE_API_BASE_URL}/posts`,
+				  comments: `${import.meta.env.VITE_API_BASE_URL}/posts/comments`,
+				  likes: `${import.meta.env.VITE_API_BASE_URL}/posts/likes`,
+				  documents: `${import.meta.env.VITE_API_BASE_URL}/documents`,
+				  users: `${import.meta.env.VITE_API_BASE_URL}/users`,
+				}}
+			  />
+			</div>
+		  )}
+		</div>
        {/* Create/Edit Section */}
 		<div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-sm border border-slate-700/50 rounded-lg p-3 sm:p-4 mb-4 sm:mb-6 shadow-lg">
 		  <div className="flex items-center gap-2 mb-3">
