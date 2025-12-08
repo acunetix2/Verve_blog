@@ -41,7 +41,7 @@ const AnalyticsCard: React.FC<AnalyticsCardProps> = ({
     const lastMonth = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
 
     const recentDocs = documents.filter(
-      (d) => new Date(d.createdAt || "") > lastWeek
+      (d) => new Date(d.uploadedAt || "") > lastWeek
     ).length;
 
     const monthlyDocs = documents.filter(
