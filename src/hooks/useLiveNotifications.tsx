@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { io, Socket } from "socket.io-client";
 import axios from "axios";
 
@@ -18,7 +18,7 @@ export const useLiveNotifications = () => {
   const READ_KEY = "read_notifications_ids";
 
   // -----------------------------
-  // Helpers for localStorage
+  // LocalStorage helpers
   // -----------------------------
   const getReadIds = () => {
     try {
@@ -33,9 +33,9 @@ export const useLiveNotifications = () => {
   };
 
   // -----------------------------
-  // Fetch notifications
+  // Fetch all notifications
   // -----------------------------
-  const fetchNotifications = useCallback(async () => {
+  const fetchNotifications = async () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) return;
@@ -65,7 +65,64 @@ export const useLiveNotifications = () => {
     } catch (err) {
       console.error("Failed to fetch notifications:", err);
     }
-  }, []);
+  };
+
+  // -----------------------------
+  // Handle new socket notification
+  // -----------------------------
+  const handleNewNotification = (data: any, type: "document" | "post") => {
+    const readIds = getReadIds();
+
+    const newNotification: Notification = {
+      id: data._id,
+      type,
+      title:
+        type === "document"
+          ? "New Resource Uploaded"
+          : "New WriteUp Post",
+      message: data.title,
+      time: data.createdAt || new Date().toISOString(),
+      read: readIds.includes(data._id),
+    };
+
+    setNotifications((prev) => {
+      if (prev.some((n) => n.id === newNotification.id)) return prev;
+      return [newNotification, ...prev];
+    });
+  };
+
+  // -----------------------------
+  // Initialize socket (ONLY ONCE)
+  // -----------------------------
+  useEffect(() => {
+    fetchNotifications();
+
+    const token = localStorage.getItem("token") || "";
+
+    if (!socketRef.current) {
+      const socket = io(import.meta.env.VITE_API_BASE_URL2, {
+        auth: { token },
+      });
+
+      socketRef.current = socket;
+
+      socket.on("new-document", (doc) =>
+        handleNewNotification(doc, "document")
+      );
+      socket.on("new-post", (post) =>
+        handleNewNotification(post, "post")
+      );
+    }
+
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.off("new-document");
+        socketRef.current.off("new-post");
+        socketRef.current.disconnect();
+        socketRef.current = null;
+      }
+    };
+  }, []); // IMPORTANT: Only run ONCE
 
   // -----------------------------
   // Mark one as read
@@ -90,57 +147,6 @@ export const useLiveNotifications = () => {
   };
 
   // -----------------------------
-  // Handle new Socket.IO notification
-  // -----------------------------
-  const handleNewNotification = useCallback(
-    (data: any, type: "document" | "post") => {
-      const readIds = getReadIds();
-
-      const newNotification: Notification = {
-        id: data._id,
-        type,
-        title: type === "document" ? "New Resource Uploaded" : "New WriteUp Post",
-        message: data.title,
-        time: data.createdAt || new Date().toISOString(),
-        read: readIds.includes(data._id),
-      };
-
-      setNotifications((prev) => {
-        // Prevent duplicates
-        if (prev.find((n) => n.id === newNotification.id)) return prev;
-        return [newNotification, ...prev];
-      });
-    },
-    []
-  );
-
-  // -----------------------------
-  // Initialize Socket.IO
-  // -----------------------------
-  useEffect(() => {
-    fetchNotifications();
-
-    // Only create socket if it doesn't exist
-    if (!socketRef.current) {
-      const token = localStorage.getItem("token") || "";
-      const socket = io(import.meta.env.VITE_API_BASE_URL2, { auth: { token } });
-      socketRef.current = socket;
-
-      socket.on("new-document", (doc: any) => handleNewNotification(doc, "document"));
-      socket.on("new-post", (post: any) => handleNewNotification(post, "post"));
-    }
-
-    return () => {
-      if (socketRef.current) {
-        socketRef.current.off("new-document");
-        socketRef.current.off("new-post");
-        socketRef.current.disconnect();
-        socketRef.current = null;
-      }
-    };
-  }, [fetchNotifications, handleNewNotification]);
-
-  // -----------------------------
   // Unread count
   // -----------------------------
   const unreadCount = useMemo(
@@ -148,5 +154,11 @@ export const useLiveNotifications = () => {
     [notifications]
   );
 
-  return { notifications, markAsRead, markAllAsRead, fetchNotifications, unreadCount };
+  return {
+    notifications,
+    markAsRead,
+    markAllAsRead,
+    fetchNotifications,
+    unreadCount,
+  };
 };
