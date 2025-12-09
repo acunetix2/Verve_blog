@@ -32,6 +32,8 @@ import Billing from "./pages/Billing";
 import ResetPassword from "@/components/ResetPassword";
 import ForgotPassword from "@/components/ForgotPassword";
 import AIAssistant from "@/components/AIAssistant";
+import UploadSimulation from "@/components/UploadSimulation";
+import SimulationList from "@/pages/SimulationList";
 
 // --- Auth Context ---
 interface AuthContextType {
@@ -126,6 +128,7 @@ const App = () => (
                   <Route path="/me/account" element={<Account />} />
                   <Route path="/me/blog" element={<BlogList />} />
                   <Route path="/me/resources" element={<Documents />} />
+				  <Route path="/me/simulations" element={<SimulationList />} />
                   <Route path="/post/:slug" element={<BlogPost />} />
 				  <Route path="/resource" element={<Resources />} />
 				  <Route path="/documentation" element={<Documentation />} />
@@ -142,6 +145,7 @@ const App = () => (
                   <Route path="/admin" element={<AdminPage />} />
                   <Route path="/admin/create" element={<CreatePost />} />
                   <Route path="/admin/documents" element={<UploadPage />} />
+				  <Route path="/admin/simulations" element={<UploadSimulation />} />
                 </Route>
               </Route>
               {/* 404 */}

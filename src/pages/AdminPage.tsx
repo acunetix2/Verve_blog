@@ -28,6 +28,7 @@ import {
   Filter,
   MoreVertical,
   Cpu,
+  Zap,
 } from "lucide-react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -506,6 +507,14 @@ const AdminPage: React.FC = () => {
 				>
 				  <FilePlus2 className="w-5 h-5" />
 				  <span>Upload</span>
+				</button>
+				{/* View Simulations Button */}
+				<button
+				  onClick={() => navigate("/admin/simulations")}
+				  className="bg-gradient-to-r from-purple-500 to-purple-400 hover:from-purple-600 hover:to-purple-500 text-white px-4 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-md shadow-purple-400/30 font-medium hover:scale-[1.03] active:scale-[0.97] text-sm"
+				>
+				  <Zap className="w-5 h-5" />
+				  <span>Attack Sim</span>
 				</button>
 			</div>
 		  </div>

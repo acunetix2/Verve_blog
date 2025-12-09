@@ -12,6 +12,8 @@ import {
   Layers,
   Github,
   Wallet,
+  Zap,
+  Activity,
 } from "lucide-react";
 
 type NavItem = {
@@ -27,6 +29,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "WriteUps", path: "/me/blog", icon: <Archive size={20} /> },
   { label: "Resources", path: "/me/resources", icon: <Layers size={16} /> },
   { label: "Billing", path: "/me/billing", icon: <Wallet size={16} /> },
+  { label: "Simulations", path: "/me/simulations", icon: <Activity size={16} /> },
   { label: "Learn", path: "https://tryhackme.com", external: true, icon: <GraduationCap size={20} /> },
 ];
 
