@@ -60,6 +60,7 @@ const CreatePost: React.FC = () => {
 
     setErrors((prev) => ({ ...prev, [name]: false }));
   };
+  const token = localStorage.getItem("token");
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const validateFields = () => {
@@ -82,26 +83,38 @@ const CreatePost: React.FC = () => {
     }
 
     try {
-      const payload = {
-        ...formData,
-        tags: formData.tags
-          .split(",")
-          .map((tag) => tag.trim())
-          .filter(Boolean),
-      };
+	  const token = localStorage.getItem("token");
+	  if (!token) {
+		toast.error("You must be logged in to create a post.");
+		return;
+	  }
 
-      await axios.post(`${API_BASE_URL}/posts/create`, payload);
-      toast.success("Post published successfully!");
-      navigate("/admin");
-    } catch (error: any) {
-      console.error(
-        "Post creation failed:",
-        error.response?.status,
-        error.response?.data
-      );
-      toast.error(`Error: ${error.response?.data?.message || error.message}`);
-    }
-  };
+	  const payload = {
+		...formData,
+		tags: formData.tags
+		  .split(",")
+		  .map((tag) => tag.trim())
+		  .filter(Boolean),
+	  };
+
+	  await axios.post(`${API_BASE_URL}/posts/create`, payload, {
+		headers: {
+		  Authorization: `Bearer ${token}`,
+		  "Content-Type": "application/json",
+		},
+	  });
+
+	  toast.success("Post published successfully!");
+	  navigate("/admin");
+	} catch (error: any) {
+	  console.error(
+		"Post creation failed:",
+		error.response?.status,
+		error.response?.data
+	  );
+	  toast.error(`Error: ${error.response?.data?.message || error.message}`);
+	}
+
 
   const handleExit = () => navigate("/admin");
 
