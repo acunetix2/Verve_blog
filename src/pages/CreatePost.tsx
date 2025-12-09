@@ -114,6 +114,7 @@ const CreatePost: React.FC = () => {
 	  );
 	  toast.error(`Error: ${error.response?.data?.message || error.message}`);
 	}
+};
 
 
   const handleExit = () => navigate("/admin");
