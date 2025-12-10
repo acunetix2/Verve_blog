@@ -229,7 +229,7 @@ const BlogPost = () => {
           }
         `}</style>
         <Header />
-        <article className="container py-8 sm:py-12 max-w-3xl relative z-10 px-4 sm:px-6">
+        <article className="w-full py-8 sm:py-12 relative z-10 px-4 sm:px-6">
           {/* Header */}
           <header className="mb-8 sm:mb-12 space-y-4 sm:space-y-6">
             {post.featured && (
@@ -273,7 +273,7 @@ const BlogPost = () => {
           </header>
 
           {/* Content */}
-          <div className="prose prose-sm sm:prose lg:prose-lg prose-gray max-w-none bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-10 leading-relaxed">
+         <div className="prose prose-sm sm:prose lg:prose-lg prose-gray w-full bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-10 leading-relaxed max-w-full">
             <style>{`
               .prose {
                 color: #374151;
