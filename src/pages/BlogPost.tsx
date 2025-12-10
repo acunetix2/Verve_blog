@@ -273,7 +273,7 @@ const BlogPost = () => {
           </header>
 
           {/* Content */}
-         <div className="prose prose-sm sm:prose lg:prose-lg prose-gray w-full bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-10 leading-relaxed max-w-full">
+          <div className="prose prose-sm sm:prose lg:prose-lg prose-gray max-w-none bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-10 leading-relaxed">
             <style>{`
               .prose {
                 color: #374151;
