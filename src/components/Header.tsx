@@ -9,7 +9,7 @@ import { useLiveNotifications } from "@/hooks/useLiveNotifications";
 interface User {
   name: string;
   email: string;
-  avatar?: string;
+  profileImage: string;
 }
 
 interface NavItem {
@@ -356,10 +356,10 @@ const UserDropdown = ({
         aria-label="User menu"
         aria-expanded={open}
       >
-        {user?.avatar ? (
+        {user?.profileImage ? (
           <img
-            src={user.avatar}
-            alt={`${user.name}'s avatar`}
+            src={user.profileImage}
+            alt={`${user.name}'s profileImage`}
             className="w-8 h-8 rounded-full object-cover ring-2 ring-gray-200 dark:ring-gray-700"
           />
         ) : (
