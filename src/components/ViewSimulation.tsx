@@ -15,6 +15,19 @@ export default function ViewSimulation({ simulationId }: ViewSimulationProps) {
   const [simulation, setSimulation] = useState<Simulation | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  const toggleFullscreen = () => {
+    const element = document.getElementById("simulation-frame");
+
+    if (!document.fullscreenElement) {
+      element?.requestFullscreen();
+      setIsFullscreen(true);
+    } else {
+      document.exitFullscreen();
+      setIsFullscreen(false);
+    }
+  };
 
   useEffect(() => {
     const fetchSimulation = async () => {
@@ -107,11 +120,20 @@ export default function ViewSimulation({ simulationId }: ViewSimulationProps) {
               <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
               <div className="w-3 h-3 rounded-full bg-green-400"></div>
             </div>
-            <span className="text-xs text-gray-500" style={{ fontFamily: 'Google Sans, sans-serif' }}>
-              Interactive Simulation
-            </span>
+
+            <button
+              onClick={toggleFullscreen}
+              className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+              style={{ fontFamily: 'Google Sans, sans-serif' }}
+            >
+              {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+            </button>
           </div>
-          <div className="relative bg-white" style={{ height: '600px' }}>
+          <div
+            id="simulation-frame"
+            className="relative bg-white"
+            style={{ height: '600px' }}
+          >
             <iframe
               src={`${import.meta.env.VITE_API_BASE_URL}/simulations/${simulation._id}/file`}
               title={simulation.title}
