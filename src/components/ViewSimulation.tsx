@@ -29,6 +29,13 @@ export default function ViewSimulation({ simulationId }: ViewSimulationProps) {
     }
   };
 
+  const openInNewTab = () => {
+    if (simulation) {
+      const url = `${import.meta.env.VITE_API_BASE_URL}/simulations/${simulation._id}/file`;
+      window.open(url, '_blank');
+    }
+  };
+
   useEffect(() => {
     const fetchSimulation = async () => {
       try {
@@ -121,13 +128,22 @@ export default function ViewSimulation({ simulationId }: ViewSimulationProps) {
               <div className="w-3 h-3 rounded-full bg-green-400"></div>
             </div>
 
-            <button
-              onClick={toggleFullscreen}
-              className="text-xs text-blue-600 hover:text-blue-800 font-medium"
-              style={{ fontFamily: 'Google Sans, sans-serif' }}
-            >
-              {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
-            </button>
+            <div className="flex items-center space-x-3">
+              <button
+                onClick={openInNewTab}
+                className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+                style={{ fontFamily: 'Google Sans, sans-serif' }}
+              >
+                Open in New Tab
+              </button>
+              <button
+                onClick={toggleFullscreen}
+                className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+                style={{ fontFamily: 'Google Sans, sans-serif' }}
+              >
+                {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+              </button>
+            </div>
           </div>
           <div
             id="simulation-frame"
