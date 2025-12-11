@@ -8,7 +8,7 @@ interface User {
   email: string;
   role: string;
   createdAt: string;
-  avatar?: string;
+  profileImage: string;
 }
 
 type TabType = 'profile' | 'security' | 'danger';
@@ -40,7 +40,7 @@ export default function Account() {
         });
         setUser(res.data);
         setFormData({ name: res.data.name, email: res.data.email });
-        setAvatarPreview(res.data.avatar || null);
+        setAvatarPreview(res.data.profileImage || null);
       } catch (err) {
         navigate("/login");
       }
@@ -92,7 +92,7 @@ export default function Account() {
       const data = new FormData();
       data.append("name", formData.name);
       data.append("email", formData.email);
-      if (avatarFile) data.append("avatar", avatarFile);
+      if (avatarFile) data.append("profileImage", avatarFile);
 
       const res = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/users/me`, data, {
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" },
@@ -173,7 +173,7 @@ export default function Account() {
   const handleCancel = () => {
     if (user) {
       setFormData({ name: user.name, email: user.email });
-      setAvatarPreview(user.avatar || null);
+      setAvatarPreview(user.profileImage || null);
       setAvatarFile(null);
       setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
       setIsDirty(false);
