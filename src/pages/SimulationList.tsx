@@ -169,27 +169,27 @@ export default function SimulationList() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredSimulations.map((simulation) => (
               <div
                 key={simulation.id}
-                className="bg-white rounded-2xl shadow-lg border border-blue-100 overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                className="bg-white rounded-xl shadow-md border border-blue-100 overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
               >
-                <div className="bg-gradient-to-r from-blue-600 to-blue-700 h-32 flex items-center justify-center">
-                  <svg className="w-12 h-12 text-white opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="bg-gradient-to-r from-green-500 to-green-600 h-20 flex items-center justify-center">
+                  <svg className="w-10 h-10 text-white opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                   </svg>
                 </div>
-                <div className="p-6">
-                  <h3 className="text-base font-medium text-gray-900 mb-2 line-clamp-2" style={{ fontFamily: 'Google Sans, sans-serif' }}>
+                <div className="p-4">
+                  <h3 className="text-sm font-medium text-gray-900 mb-1.5 line-clamp-2" style={{ fontFamily: 'Google Sans, sans-serif' }}>
                     {simulation.title}
                   </h3>
-                  <p className="text-sm text-gray-600 mb-4 line-clamp-3" style={{ fontFamily: 'Google Sans, sans-serif' }}>
+                  <p className="text-xs text-gray-600 mb-3 line-clamp-2" style={{ fontFamily: 'Google Sans, sans-serif' }}>
                     {simulation.description}
                   </p>
                   <button
                     onClick={() => handleViewSimulation(simulation._id)}
-                    className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium py-2.5 px-4 rounded-lg transition-all duration-200 text-sm"
+                    className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 text-xs"
                     style={{ fontFamily: 'Google Sans, sans-serif' }}
                   >
                     View Simulation
