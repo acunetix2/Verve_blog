@@ -28,7 +28,7 @@ export const BlogSearch = ({ onSearch, onTagFilter, selectedTag }: BlogSearchPro
   useEffect(() => {
     const loadTags = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/tags");
+        const response = await fetch("import.meta.env.VITE_API_BASE_URL}/tags");
         if (response.ok) {
           const data = await response.json();
           setAllTags(data);
