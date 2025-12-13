@@ -120,7 +120,7 @@ export default function Account() {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       if (file.size > 5 * 1024 * 1024) {
-        setMessage({ type: "error", text: t("imageSizeError") });
+        setMessage({ type: "error", text: t("Image Size Error") });
         return;
       }
       setAvatarFile(file);
@@ -128,6 +128,19 @@ export default function Account() {
       setIsDirty(true);
     }
   };
+
+	const formatLastActive = (dateString: string) => {
+	  const date = new Date(dateString);
+	  if (isNaN(date.getTime())) return "N/A";
+
+	  const day = String(date.getDate()).padStart(2, "0");
+	  const monthShort = date.toLocaleString("en-GB", { month: "short" }); // "Dec"
+	  const year = String(date.getFullYear()).slice(-2); // last 2 digits
+	  const hours = String(date.getHours()).padStart(2, "0");
+	  const minutes = String(date.getMinutes()).padStart(2, "0");
+
+	  return `${day}-${monthShort}-${year} ${hours}:${minutes}`;
+	};
 
   const handleProfileUpdate = async () => {
     const token = localStorage.getItem("token");
@@ -148,10 +161,10 @@ export default function Account() {
       setUser(res.data);
       setIsDirty(false);
       setAvatarFile(null);
-      setMessage({ type: "success", text: t("profileUpdateSuccess") });
+      setMessage({ type: "success", text: t("Profile Update Success") });
       setTimeout(() => setMessage(null), 5000);
     } catch (err: any) {
-      setMessage({ type: "error", text: err.response?.data?.message || t("profileUpdateError") });
+      setMessage({ type: "error", text: err.response?.data?.message || t("Profile Update Error") });
     } finally {
       setIsLoading(false);
     }
@@ -159,15 +172,15 @@ export default function Account() {
 
   const handlePasswordUpdate = async () => {
     if (!passwordData.currentPassword || !passwordData.newPassword || !passwordData.confirmPassword) {
-      setMessage({ type: "error", text: t("allPasswordFieldsRequired") });
+      setMessage({ type: "error", text: t("All Password Fields Required") });
       return;
     }
     if (passwordData.newPassword.length < 8) {
-      setMessage({ type: "error", text: t("passwordMinLength") });
+      setMessage({ type: "error", text: t("Password Min Length") });
       return;
     }
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      setMessage({ type: "error", text: t("passwordsDoNotMatch") });
+      setMessage({ type: "error", text: t("Passwords Do Not Match") });
       return;
     }
 
@@ -191,11 +204,11 @@ export default function Account() {
         }
       );
       setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
-      setMessage({ type: "success", text: t("passwordUpdateSuccess") });
+      setMessage({ type: "success", text: t("Password Update Success") });
       setTimeout(() => setMessage(null), 5000);
     } catch (err: any) {
       console.error("Password update error:", err.response?.data);
-      const errorMsg = err.response?.data?.message || t("passwordUpdateError");
+      const errorMsg = err.response?.data?.message || t("Password Update Error");
       setMessage({ type: "error", text: errorMsg });
     } finally {
       setIsLoading(false);
@@ -215,7 +228,7 @@ export default function Account() {
     }
 
     if (deleteStep === 2) {
-      if (deleteConfirmText.toLowerCase() !== "delete my account") {
+      if (deleteConfirmText.toLowerCase() !== "delete") {
         setMessage({ type: "error", text: "Please type the exact phrase to confirm deletion" });
         return;
       }
@@ -357,7 +370,7 @@ export default function Account() {
 
   const handleExit = () => {
     if (isDirty) {
-      const confirm = window.confirm(t("unsavedChangesWarning"));
+      const confirm = window.confirm(t("Unsaved Changes Warning"));
       if (!confirm) return;
     }
     navigate("/me");
@@ -371,11 +384,11 @@ export default function Account() {
     try {
       const date = new Date(dateString);
       if (isNaN(date.getTime())) {
-        return t("dateNotAvailable");
+        return t("Date Not Available");
       }
       return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
     } catch {
-      return t("dateNotAvailable");
+      return t("Date Not Available");
     }
   };
 
@@ -412,8 +425,8 @@ export default function Account() {
                   <AlertCircle size={22} className="hidden sm:block text-white" />
                 </div>
                 <div>
-                  <h3 className="text-base sm:text-lg font-semibold text-white">{t("deleteAccount")}</h3>
-                  <p className="text-xs text-red-100">{t("cannotBeUndone")}</p>
+                  <h3 className="text-base sm:text-lg font-semibold text-white">{t("Delete Account")}</h3>
+                  <p className="text-xs text-red-100">{t("Cannot Be Undone")}</p>
                 </div>
               </div>
             </div>
@@ -424,25 +437,25 @@ export default function Account() {
                 <>
                   <div className="mb-5">
                     <p className="text-sm text-gray-700 mb-4">
-                      {t("deleteAccountConfirmation")}
+                      {t("Delete Account Confirmation")}
                     </p>
                     <div className="bg-red-50 border border-red-200 rounded-lg p-4">
                       <ul className="text-xs text-gray-700 space-y-2">
                         <li className="flex items-start gap-2">
                           <span className="text-red-600 font-bold mt-0.5">•</span>
-                          <span>{t("deleteConsequence1")}</span>
+                          <span>{t("Permanently delete all your personal data")}</span>
                         </li>
                         <li className="flex items-start gap-2">
                           <span className="text-red-600 font-bold mt-0.5">•</span>
-                          <span>{t("deleteConsequence2")}</span>
+                          <span>{t("Remove all your content and activity history")}</span>
                         </li>
                         <li className="flex items-start gap-2">
                           <span className="text-red-600 font-bold mt-0.5">•</span>
-                          <span>{t("deleteConsequence3")}</span>
+                          <span>{t("Revoke your access to all services immediately")}</span>
                         </li>
                         <li className="flex items-start gap-2">
                           <span className="text-red-600 font-bold mt-0.5">•</span>
-                          <span>{t("deleteConsequence4")}</span>
+                          <span>{t("Cannot be undone or recovered by anyone")}</span>
                         </li>
                       </ul>
                     </div>
@@ -452,7 +465,7 @@ export default function Account() {
                     <div className="flex items-start gap-2">
                       <AlertCircle size={16} className="text-amber-600 flex-shrink-0 mt-0.5" />
                       <p className="text-xs text-amber-900">
-                        {t("backupDataWarning")}
+                        {t("Backup Data Warning")}
                       </p>
                     </div>
                   </div>
@@ -462,13 +475,13 @@ export default function Account() {
                   <div className="mb-5">
                     <p className="text-sm font-semibold text-gray-900 mb-2">{t("finalConfirmation")}</p>
                     <p className="text-xs text-gray-600 mb-4">
-                      {t("typeToConfirm")} <span className="font-semibold text-gray-900">"{t("deleteMyAccount")}"</span>:
+                      {t("Type To Confirm")} <span className="font-semibold text-gray-900">"{t("Delete My Account")}"</span>:
                     </p>
                     <input
                       type="text"
                       value={deleteConfirmText}
                       onChange={(e) => setDeleteConfirmText(e.target.value)}
-                      placeholder={t("deleteMyAccountPlaceholder")}
+                      placeholder={t("Delete My Account")}
                       className="w-full px-3 py-2 text-sm rounded-md bg-white border-2 border-red-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all"
                     />
                   </div>
@@ -477,7 +490,7 @@ export default function Account() {
                     <div className="flex items-start gap-2">
                       <AlertCircle size={16} className="text-red-700 flex-shrink-0 mt-0.5" />
                       <p className="text-xs text-red-900 font-medium">
-                        {t("lastWarning")}
+                        {t("Last Warning")}
                       </p>
                     </div>
                   </div>
@@ -988,7 +1001,7 @@ export default function Account() {
                                   <p className="text-xs text-gray-500 mt-0.5">
                                     {session.device} • {session.browser} • {session.location}
                                   </p>
-                                  <p className="text-xs text-gray-400 mt-1">Last active: {session.lastActive}</p>
+                                  <p className="text-xs text-gray-400 mt-1">Last Active: {formatLastActive(session.lastActive)}</p>
                                 </div>
                                 {session.isCurrent ? (
                                   <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded self-start">Active</span>
