@@ -133,14 +133,16 @@ export default function Account() {
 	  const date = new Date(dateString);
 	  if (isNaN(date.getTime())) return "N/A";
 
-	  const day = String(date.getDate()).padStart(2, "0");
-	  const monthShort = date.toLocaleString("en-GB", { month: "short" }); // "Dec"
-	  const year = String(date.getFullYear()).slice(-2); // last 2 digits
-	  const hours = String(date.getHours()).padStart(2, "0");
-	  const minutes = String(date.getMinutes()).padStart(2, "0");
+	  const diff = Date.now() - date.getTime();
+	  const minutes = Math.floor(diff / 60000);
+	  if (minutes < 1) return "Just now";
+	  if (minutes < 60) return `${minutes} min ago`;
+	  const hours = Math.floor(minutes / 60);
+	  if (hours < 24) return `${hours} hr${hours > 1 ? 's' : ''} ago`;
+	  const days = Math.floor(hours / 24);
+  return `${days} day${days > 1 ? 's' : ''} ago`;
+};
 
-	  return `${day}-${monthShort}-${year} ${hours}:${minutes}`;
-	};
 
   const handleProfileUpdate = async () => {
     const token = localStorage.getItem("token");
