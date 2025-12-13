@@ -1,3 +1,8 @@
+/**
+ * Author / Copyright: Iddy
+ * All rights reserved.
+ */
+
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Header } from "@/components/Header";
@@ -5,6 +10,7 @@ import { BlogCard } from "@/components/BlogCard";
 import { BlogSearch } from "@/components/BlogSearch";
 import Banner from "@/components/Banner";
 import author from "@/assets/author.png";
+import CommandStatusBadge from "@/components/CommandStatusBadge";
 import CompanyLogo from "@/assets/logo.png";
 import {
   Terminal,
@@ -187,36 +193,80 @@ const Index = () => {
 
       <div className="container relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <header className="py-16 sm:py-20 lg:py-24 border-b border-slate-200/60">
-          <div className="max-w-4xl mx-auto text-center space-y-6">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-full text-xs font-semibold shadow-sm">
-              <Activity className="h-3.5 w-3.5 text-emerald-500 animate-pulse" />
-              <span className="text-slate-700">All Systems Operational</span>
-            </div>
+         <header className="w-full bg-gradient-to-r from-slate-50 via-slate-100 to-slate-50 border-b border-slate-200/50">
+		  <div className="max-w-7xl mx-auto px-6 py-20 text-center space-y-8">
 
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700 bg-clip-text text-transparent">
-              Verve Hub Writeups
-            </h1>
+			{/* Status Badge */}
+			<CommandStatusBadge
+			  speed={100}        
+			  pause={1000}      
+			  darkMode={true}  
+			  context="admin"   
+			/>
+			{/* Main Heading */}
+			<h1
+			  className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900"
+			  style={{ fontFamily: "'Google Sans', sans-serif" }}
+			>
+			  Verve Hub Writeups
+			</h1>
 
-            <p className="text-lg sm:text-xl text-gray-900 max-w-2xl mx-auto leading-relaxed font-light">
-			  Verve Hub is a dedicated cybersecurity learning platform offering detailed CTF writeups, TryHackMe room walkthroughs, curated reference materials, and downloadable resources crafted to enhance hands-on learning, deepen understanding, and guide you toward practical mastery in cybersecurity.
+			{/* Subheading / Description */}
+			<p
+			  className="text-lg sm:text-xl text-slate-800 max-w-4xl mx-auto leading-relaxed font-light"
+			  style={{ fontFamily: "'Google Sans', sans-serif" }}
+			>
+			  Verve Hub is a cybersecurity learning platform providing detailed CTF writeups, TryHackMe walkthroughs, curated reference materials, and downloadable resources. 
+			  We aim to empower learners, enhance practical skills, and guide you toward mastery in cybersecurity.
 			</p>
-			<div className="flex items-center justify-center gap-3 pt-4">
+
+			{/* Key Features */}
+			<div className="flex flex-col md:flex-row items-center justify-center gap-6 pt-8">
+			  <div className="flex flex-col items-center gap-2 text-center max-w-xs">
+				<Shield className="h-8 w-8 text-cyan-500" />
+				<h3 className="text-lg font-semibold text-slate-900" style={{ fontFamily: "'Google Sans', sans-serif" }}>Practical Security</h3>
+				<p className="text-sm text-slate-700 font-light">
+				  Interactive CTF walkthroughs, TryHackMe room writeups, and real-world security exercises.
+				</p>
+			  </div>
+			  <div className="flex flex-col items-center gap-2 text-center max-w-xs">
+				<BookOpen className="h-8 w-8 text-indigo-500" />
+				<h3 className="text-lg font-semibold text-slate-900" style={{ fontFamily: "'Google Sans', sans-serif" }}>Curated Resources</h3>
+				<p className="text-sm text-slate-700 font-light">
+				   Curated reference guides and tutorials designed to support systematic learning.
+				</p>
+			  </div>
+			  <div className="flex flex-col items-center gap-2 text-center max-w-xs">
+				<Cpu className="h-8 w-8 text-violet-500" />
+				<h3 className="text-lg font-semibold text-slate-900" style={{ fontFamily: "'Google Sans', sans-serif" }}>Skill Development</h3>
+				<p className="text-sm text-slate-700 font-light">
+				  Gain guidance and deepen your cybersecurity knowledge.
+				</p>
+			  </div>
+			</div>
+
+			{/* Call-to-Action Buttons */}
+			<div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-10">
 			  <Link to="/me/about">
-				<button className="px-6 py-2.5 bg-white hover:bg-slate-50 border border-slate-300 hover:border-slate-400 rounded-lg text-sm font-semibold transition-all shadow-sm hover:shadow text-slate-900">
-				  About
+				<button className="px-6 py-3 bg-white hover:bg-slate-50 border border-slate-300 hover:border-slate-400 rounded-lg text-sm font-semibold transition-all shadow-sm hover:shadow text-slate-900">
+				  About Us
 				</button>
 			  </Link>
 			  <Link to="/me/blog">
-				<button className="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white rounded-lg text-sm font-semibold transition-all shadow-md hover:shadow-lg flex items-center gap-2">
-				  <span>Explore All</span>
+				<button className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white rounded-lg text-sm font-semibold transition-all shadow-md hover:shadow-lg flex items-center gap-2">
+				  Explore Writeups
 				  <ArrowRight className="h-4 w-4" />
 				</button>
 			  </Link>
 			</div>
-          </div>
-        </header>
 
+			{/* Highlight / Tagline */}
+			<p className="mt-12 text-sm text-slate-500 font-medium tracking-wide uppercase" style={{ fontFamily: "'Google Sans', sans-serif" }}>
+			  Learn • Understand • Secure • Excel
+			</p>
+
+		  </div>
+		</header>
         {/* Stats Banner */}
         <div className="py-12 sm:py-16">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
