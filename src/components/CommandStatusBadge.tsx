@@ -41,20 +41,6 @@ const contextCommands: Record<string, string[]> = {
     "msfconsole -q -x 'use auxiliary/scanner/http/http_version; set RHOSTS target.local; run; exit'",
   ],
 };
-const contextCommands: Record<string, string[]> = {
-  account: [
-    "curl -X GET /api/account/status --header 'Authorization: Bearer TOKEN'",
-    "grep 'login' /var/log/auth.log | tail -n 20",
-  ],
-  admin: [
-    "systemctl status apache2 && systemctl status mysql",
-    "htop --sort-key CPU",
-  ],
-  blog: [
-    "git pull origin main && npm run build",
-    "tail -f /var/log/nginx/access.log",
-  ],
-};
 
 export default function CommandStatusBadge({
   speed = 500,
