@@ -22,6 +22,7 @@ interface Session {
   id: string;
   device: string;
   browser: string;
+  ipAddress: string;
   location: string;
   lastActive: string;
   isCurrent: boolean;
@@ -997,12 +998,13 @@ export default function Account() {
                             <div className="flex-1 min-w-0">
                               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
                                 <div className="min-w-0 flex-1">
-                                  <p className="text-sm font-medium text-gray-900 truncate">
+                                  <p className="text-sm font-medium text-blue-900 truncate">
                                     {session.isCurrent ? 'Current Session' : session.device}
                                   </p>
-                                  <p className="text-xs text-gray-500 mt-0.5">
+                                  <p className="text-xs text-gray-400 mt-0.5">
                                     {session.device} • {session.browser} • {session.location}
                                   </p>
+								  <p className="text-xs text-gray-400 mt-1"> IP Address: {session.ipAddress}</p>
                                   <p className="text-xs text-gray-400 mt-1">Last Active: {formatLastActive(session.lastActive)}</p>
                                 </div>
                                 {session.isCurrent ? (
