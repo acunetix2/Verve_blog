@@ -34,6 +34,7 @@ import ForgotPassword from "@/components/ForgotPassword";
 import AIAssistant from "@/components/AIAssistant";
 import UploadSimulation from "@/components/UploadSimulation";
 import SimulationList from "@/pages/SimulationList";
+import VerifyEmail from "./pages/VerifyEmail";
 
 // --- Auth Context ---
 interface AuthContextType {
@@ -119,6 +120,7 @@ const App = () => (
               <Route path="/signup" element={<Signup />} />
 			  <Route path="/forgot-password" element={<ForgotPassword />} />
 			  <Route path="/reset-password" element={<ResetPassword />} />
+			  <Route path="/verify-email/:token" element={<VerifyEmail />} />
 
               {/* Protected User Routes + Wrapper */}
               <Route element={<ProtectedRoute role="user" />}>

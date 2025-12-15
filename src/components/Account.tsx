@@ -231,7 +231,7 @@ export default function Account() {
     }
 
     if (deleteStep === 2) {
-      if (deleteConfirmText.toLowerCase() !== "delete") {
+      if (deleteConfirmText.toLowerCase() !== "deletemyaccount") {
         setMessage({ type: "error", text: "Please type the exact phrase to confirm deletion" });
         return;
       }
