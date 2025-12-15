@@ -24,7 +24,7 @@ const VerifyEmail: React.FC = () => {
     const verifyEmail = async () => {
       try {
         const res = await axios.get<VerifyResponse>(
-          `${import.meta.env.VITE_API_BASE_URL}/verify-email/${token}`
+          `${import.meta.env.VITE_API_BASE_URL}/users/verify-email/${token}`
         );
 
         setStatus("success");
