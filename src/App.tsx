@@ -34,7 +34,7 @@ import ForgotPassword from "@/components/ForgotPassword";
 import AIAssistant from "@/components/AIAssistant";
 import UploadSimulation from "@/components/UploadSimulation";
 import SimulationList from "@/pages/SimulationList";
-import VerifyEmail from "./pages/VerifyEmail";
+import VerifyEmail from "@/pages/VerifyEmail";
 
 // --- Auth Context ---
 interface AuthContextType {
