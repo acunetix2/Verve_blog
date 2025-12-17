@@ -220,15 +220,6 @@ const scrollToSection = (id) => {
             <p className="text-sm text-gray-600">Regularly updated content covering the latest vulnerabilities, tools, and techniques</p>
           </div>
         </div>
-
-        <div className="flex flex-wrap gap-4 justify-center" style={{ fontFamily: "'Google Sans', sans-serif" }}>
-          <button className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition-all hover:scale-105 shadow-lg">
-            Browse WriteUps
-          </button>
-          <button className="px-6 py-3 bg-white text-blue-600 font-semibold rounded-full border-2 border-blue-600 hover:bg-blue-50 transition-all hover:scale-105">
-            Latest Challenges
-          </button>
-        </div>
         <div className="flex flex-col sm:flex-row gap-5 mb-16">
           <a
             href="/login"
