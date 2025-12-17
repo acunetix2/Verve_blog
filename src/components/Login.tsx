@@ -1,3 +1,7 @@
+/**
+ * Author / Copyright: Iddy
+ * All rights reserved.
+ */
 import React, { useState, useEffect } from "react";
 import { Eye, EyeOff, LogIn, AlertCircle, CheckCircle, Cpu, Loader2, BarChart3 } from "lucide-react";
 import axios from "axios";

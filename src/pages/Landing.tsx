@@ -186,7 +186,7 @@ const scrollToSection = (id) => {
           <span className="text-sm text-green-700 font-medium">Live: New Writeups coming up</span>
         </div>
 
-        <h2 className="text-3xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold mb-8 leading-tight">
+        <h2 className="text-3xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold mb-8 leading-tight" style={{ fontFamily: "'Google Sans', sans-serif" }}>
           <span className="text-blue-600">
             Verve Hub WriteUps
           </span>
@@ -196,11 +196,39 @@ const scrollToSection = (id) => {
           </span>
         </h2>
         
-        <p className="max-w-3xl text-gray-600 text-lg sm:text-xl mb-12 leading-relaxed">
+        <p className="max-w-3xl text-gray-600 text-base sm:text-lg mb-8 leading-relaxed" style={{ fontFamily: "'Google Sans', sans-serif" }}>
           Deep-dive CTF writeups, TryHackMe walkthroughs, and comprehensive learning resources. 
-          <span className="block mt-3 text-gray-800 font-semibold text-xl">From reconnaissance to privilege escalation everything documented.</span>
+          <span className="block mt-3 text-gray-800 font-semibold text-lg">From reconnaissance to privilege escalation—everything documented.</span>
         </p>
 
+        <div className="max-w-4xl mb-12 grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div className="bg-white/60 backdrop-blur-sm border border-blue-200 rounded-2xl p-6 hover:shadow-xl transition-all hover:scale-105" style={{ fontFamily: "'Google Sans', sans-serif" }}>
+            <div className="text-3xl mb-3">🎯</div>
+            <h3 className="text-lg font-bold text-gray-800 mb-2">Step-by-Step Guides</h3>
+            <p className="text-sm text-gray-600">Detailed walkthroughs with screenshots, commands, and explanations for every phase of attack</p>
+          </div>
+          
+          <div className="bg-white/60 backdrop-blur-sm border border-blue-200 rounded-2xl p-6 hover:shadow-xl transition-all hover:scale-105" style={{ fontFamily: "'Google Sans', sans-serif" }}>
+            <div className="text-3xl mb-3">🔐</div>
+            <h3 className="text-lg font-bold text-gray-800 mb-2">Real-World Scenarios</h3>
+            <p className="text-sm text-gray-600">Learn from CTF challenges and vulnerable machines that simulate actual penetration testing</p>
+          </div>
+          
+          <div className="bg-white/60 backdrop-blur-sm border border-blue-200 rounded-2xl p-6 hover:shadow-xl transition-all hover:scale-105" style={{ fontFamily: "'Google Sans', sans-serif" }}>
+            <div className="text-3xl mb-3">📚</div>
+            <h3 className="text-lg font-bold text-gray-800 mb-2">Continuous Learning</h3>
+            <p className="text-sm text-gray-600">Regularly updated content covering the latest vulnerabilities, tools, and techniques</p>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap gap-4 justify-center" style={{ fontFamily: "'Google Sans', sans-serif" }}>
+          <button className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition-all hover:scale-105 shadow-lg">
+            Browse WriteUps
+          </button>
+          <button className="px-6 py-3 bg-white text-blue-600 font-semibold rounded-full border-2 border-blue-600 hover:bg-blue-50 transition-all hover:scale-105">
+            Latest Challenges
+          </button>
+        </div>
         <div className="flex flex-col sm:flex-row gap-5 mb-16">
           <a
             href="/login"
