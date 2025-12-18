@@ -80,14 +80,14 @@ export default function HackerBanner() {
           />
 
           {/* Content */}
-          <div className="relative z-10 space-y-4 sm:space-y-6 text-center">
+          <div className="relative z-10 space-y-4 sm:space-y-6 text-center break-words">
             {lines.map((_, idx) => (
               <div
                 key={idx}
-                className="flex justify-center items-center gap-2 sm:gap-3 font-mono text-sm sm:text-base md:text-lg font-semibold text-[#b7ffe3]"
+                className="flex justify-center items-center flex-wrap gap-2 sm:gap-3 font-mono text-sm sm:text-base md:text-lg font-semibold text-[#b7ffe3]"
               >
-                <Terminal className="h-4 w-4 sm:h-5 sm:w-5 text-[#00ff9c] opacity-70" />
-                <span>
+                <Terminal className="h-4 w-4 sm:h-5 sm:w-5 text-[#00ff9c] opacity-70 flex-shrink-0" />
+                <span className="break-words max-w-full">
                   {displayedLines[idx]}
                   {idx === currentLineIndex && (
                     <span className="inline-block w-[0.5ch] h-[1em] bg-[#00ff9c] ml-1 animate-caret" />
@@ -100,7 +100,7 @@ export default function HackerBanner() {
             <div className="mt-6 sm:mt-10 flex justify-center">
               <button
                 className="
-                  flex items-center gap-2
+                  flex items-center flex-wrap gap-2
                   px-4 sm:px-6 py-2.5
                   rounded-full
                   border border-red-400/40
@@ -113,7 +113,7 @@ export default function HackerBanner() {
                   transition-all duration-300
                 "
               >
-                <AlertTriangle className="h-3 w-3 sm:h-4 sm:w-4" />
+                <AlertTriangle className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
                 rm -rf is a bad idea
               </button>
             </div>
