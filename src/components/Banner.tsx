@@ -8,10 +8,10 @@ import { Terminal, AlertTriangle } from "lucide-react";
 
 export default function HackerBanner() {
   const lines = [
-  "Empowering Knowledge & Innovation...",
-  "Verve Hub Research & Insights",
-  "Security Research and Learning",
-];
+    "Empowering Knowledge & Innovation...",
+    "Verve Hub Research & Insights",
+    "Security Research and Learning",
+  ];
 
   const typingSpeed = 40;
   const pauseBetweenLines = 800;
@@ -59,10 +59,10 @@ export default function HackerBanner() {
   }, [charIndex, isDeleting, currentLineIndex]);
 
   return (
-    <div className="w-full flex justify-center mt-14">
-      <div className="max-w-4xl w-full px-4">
+    <div className="w-full flex justify-center mt-14 px-2 sm:px-4">
+      <div className="w-full max-w-full sm:max-w-4xl">
         <div
-          className="relative rounded-2xl p-10 overflow-hidden"
+          className="relative rounded-2xl p-6 sm:p-10 overflow-hidden"
           style={{
             background: "linear-gradient(145deg, #0b0f14, #10151f)",
             fontFamily: "'Google Sans', system-ui, sans-serif",
@@ -80,13 +80,13 @@ export default function HackerBanner() {
           />
 
           {/* Content */}
-          <div className="relative z-10 space-y-6 text-center">
+          <div className="relative z-10 space-y-4 sm:space-y-6 text-center">
             {lines.map((_, idx) => (
               <div
                 key={idx}
-                className="flex justify-center items-center gap-3 font-mono text-base sm:text-lg md:text-xl font-semibold text-[#b7ffe3]"
+                className="flex justify-center items-center gap-2 sm:gap-3 font-mono text-sm sm:text-base md:text-lg font-semibold text-[#b7ffe3]"
               >
-                <Terminal className="h-5 w-5 text-[#00ff9c] opacity-70" />
+                <Terminal className="h-4 w-4 sm:h-5 sm:w-5 text-[#00ff9c] opacity-70" />
                 <span>
                   {displayedLines[idx]}
                   {idx === currentLineIndex && (
@@ -97,23 +97,23 @@ export default function HackerBanner() {
             ))}
 
             {/* Single hacker button */}
-            <div className="mt-10 flex justify-center">
+            <div className="mt-6 sm:mt-10 flex justify-center">
               <button
                 className="
                   flex items-center gap-2
-                  px-6 py-2.5
+                  px-4 sm:px-6 py-2.5
                   rounded-full
                   border border-red-400/40
                   bg-red-500/10
                   text-red-300
-                  font-mono text-sm
+                  font-mono text-xs sm:text-sm
                   shadow-[0_0_20px_rgba(239,68,68,0.35)]
                   hover:bg-red-500/20
                   hover:shadow-[0_0_30px_rgba(239,68,68,0.6)]
                   transition-all duration-300
                 "
               >
-                <AlertTriangle className="h-4 w-4" />
+                <AlertTriangle className="h-3 w-3 sm:h-4 sm:w-4" />
                 rm -rf is a bad idea
               </button>
             </div>
