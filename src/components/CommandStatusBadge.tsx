@@ -8,7 +8,7 @@
  */
 
 import { useEffect, useState } from "react";
-import { Activity, Terminal } from "lucide-react";
+import { Terminal } from "lucide-react";
 
 interface CommandStatusBadgeProps {
   speed?: number; 
@@ -30,12 +30,10 @@ const contextCommands: Record<string, string[]> = {
     "nmap --script auth,target -p 80,443 target.local",
     "msfconsole -q -x 'use auxiliary/scanner/http/http_login; show options; exit'",
   ],
-
   admin: [
     "nmap -sU --top-ports 20 target.local",
     "msfconsole -q -x 'use auxiliary/scanner/portscan/tcp; set RHOSTS target.local; run; exit'",
   ],
-
   blog: [
     "nmap --script http-enum -p 80,443 target.local",
     "msfconsole -q -x 'use auxiliary/scanner/http/http_version; set RHOSTS target.local; run; exit'",
@@ -54,7 +52,6 @@ export default function CommandStatusBadge({
   const [displayed, setDisplayed] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // Load context commands
   useEffect(() => {
     if (context && contextCommands[context]) {
       setCommands([...baseCommands, ...contextCommands[context]]);
@@ -66,22 +63,18 @@ export default function CommandStatusBadge({
     const currentCommand = commands[index];
 
     if (!isDeleting && charIndex <= currentCommand.length) {
-      // Typing
       timer = window.setTimeout(() => {
         setDisplayed(currentCommand.slice(0, charIndex));
         setCharIndex((c) => c + 1);
       }, speed);
     } else if (!isDeleting && charIndex > currentCommand.length) {
-      // Pause before deleting
       timer = window.setTimeout(() => setIsDeleting(true), pause);
     } else if (isDeleting && charIndex > 0) {
-      // Deleting
       timer = window.setTimeout(() => {
         setDisplayed(currentCommand.slice(0, charIndex));
         setCharIndex((c) => c - 1);
       }, speed / 1);
     } else if (isDeleting && charIndex === 0) {
-      // Next command
       timer = window.setTimeout(() => {
         setIsDeleting(false);
         setIndex((i) => (i + 1) % commands.length);
@@ -93,7 +86,7 @@ export default function CommandStatusBadge({
 
   return (
     <div
-      className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold shadow-sm border ${
+      className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold shadow-sm border max-w-full break-words ${
         darkMode
           ? "bg-gray-900 text-green-400 border-green-700"
           : "bg-white text-slate-700 border-slate-200"
@@ -101,11 +94,11 @@ export default function CommandStatusBadge({
       style={{ fontFamily: "'Roboto Mono', monospace" }}
     >
       <Terminal
-        className={`h-4 w-4 animate-pulse ${
+        className={`h-4 w-4 animate-pulse flex-shrink-0 ${
           darkMode ? "text-green-500" : "text-emerald-500"
         }`}
       />
-      <span className="whitespace-nowrap">{displayed}</span>
+      <span className="break-words max-w-full">{displayed}</span>
       <span
         className={`ml-1 inline-block w-0.5 h-4 bg-current animate-blink`}
         style={{ animation: "blink 1s steps(1) infinite" }}
