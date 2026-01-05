@@ -137,7 +137,7 @@ export default function Sidebar({ collapsed = false, onCollapse, sidebarOpen, on
 			  </div>
 			  <div className="flex items-center justify-center gap-2 mb-2">
 				<Link
-				  to="/me/account"
+				  to="/v/account"
 				  className="p-2 rounded-lg hover:bg-white border border-transparent hover:border-slate-200 transition-all duration-200 text-slate-600 hover:text-slate-900"
 				  title="Settings"
 				>
