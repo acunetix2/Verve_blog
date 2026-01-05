@@ -96,7 +96,7 @@ const NotFound = () => {
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3 justify-center items-stretch sm:items-center pt-3 sm:pt-4">
-          <Link to="/me" className="w-full sm:w-auto">
+          <Link to="/" className="w-full sm:w-auto">
             <button className="group w-full px-5 sm:px-6 py-2.5 sm:py-3 bg-white text-blue-600 font-medium text-sm rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center justify-center gap-2">
               <Home className="h-4 w-4 group-hover:scale-110 transition-transform" />
               Return to Home
@@ -115,7 +115,7 @@ const NotFound = () => {
         {/* Helper Text */}
         <div className="pt-6 sm:pt-8 border-t border-white/10 mt-6 sm:mt-8">
           <p className="text-xs text-slate-200">
-            <span className="text-slate-50 font-medium">404_NOT_FOUND</span>
+            <span className="text-slate-50 font-medium">404 PAGE NOT FOUND</span>
           </p>
         </div>
       </div>

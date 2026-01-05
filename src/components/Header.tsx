@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import axios from "axios";
 import CompanyLogo from "@/assets/logo.png";
 import { useLiveNotifications } from "@/hooks/useLiveNotifications";
+import ThemeSwitcherIcon from "./ThemeSwitcherIcon";
 
 interface User {
   name: string;
@@ -129,7 +130,7 @@ export const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) =>
 
               {/* Logo */}
               <Link
-                to="/me"
+                to="/v"
                 className="flex items-center gap-3 group"
                 aria-label="Go to homepage"
               >
@@ -155,6 +156,12 @@ export const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) =>
 
             {/* Right side: Navigation */}
             <nav className="flex items-center gap-1">
+
+              {/* Divider */}
+              <div className="hidden md:block w-px h-6 bg-gray-200 dark:bg-gray-800 mx-2" />
+
+              {/* Theme Switcher */}
+              <ThemeSwitcherIcon />
 
               {/* Divider */}
               <div className="hidden md:block w-px h-6 bg-gray-200 dark:bg-gray-800 mx-2" />

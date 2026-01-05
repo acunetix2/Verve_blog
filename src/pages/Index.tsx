@@ -12,6 +12,10 @@ import Banner from "@/components/Banner";
 import author from "@/assets/author.png";
 import CommandStatusBadge from "@/components/CommandStatusBadge";
 import CompanyLogo from "@/assets/logo.png";
+import PostSeriesComponent from "@/components/PostSeriesComponent";
+import PostSchedulingComponent from "@/components/PostSchedulingComponent";
+import EmailDigestComponent from "@/components/EmailDigestComponent";
+import EnhancedThemeSwitcher from "@/components/EnhancedThemeSwitcher";
 import {
   Terminal,
   Sparkles,
@@ -55,8 +59,33 @@ const Index = () => {
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [monthCount, setMonthCount] = useState<number>(0);
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [activeSection, setActiveSection] = useState<"feed" | "series" | "scheduling" | "digest">("feed");
 
   useEffect(() => {
+    // Fetch current user info
+    const fetchCurrentUser = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (token) {
+          const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/auth/me`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          setCurrentUser(res.data.user || { name: localStorage.getItem("userName") || "User" });
+        } else {
+          const storedName = localStorage.getItem("userName");
+          if (storedName) {
+            setCurrentUser({ name: storedName });
+          }
+        }
+      } catch (err) {
+        const storedName = localStorage.getItem("userName");
+        if (storedName) {
+          setCurrentUser({ name: storedName });
+        }
+      }
+    };
+
     const fetchPosts = async () => {
       try {
         const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/posts`);
@@ -78,6 +107,7 @@ const Index = () => {
       }
     };
 
+    fetchCurrentUser();
     fetchPosts();
     fetchMonthCount();
   }, []);

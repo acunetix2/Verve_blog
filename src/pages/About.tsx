@@ -164,7 +164,7 @@ const navigate = useNavigate();
 			</button>
 
 			<button
-			  onClick={() => navigate("/me")} // redirect to home page
+			  onClick={() => navigate("/v")} // redirect to home page
 			  className="w-full sm:w-auto px-8 py-6 bg-white text-blue-600 font-bold text-base border-2 border-blue-300 hover:bg-blue-50 hover:border-blue-500 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg"
 			>
 			  <Shield className="h-5 w-5 mr-2 inline" />

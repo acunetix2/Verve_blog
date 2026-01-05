@@ -24,12 +24,12 @@ type NavItem = {
 };
 
 const NAV_ITEMS: NavItem[] = [
-  { label: "Dashboard", path: "/me", icon: <Home size={20} /> },
-  { label: "About", path: "/me/about", icon: <BookOpen size={20} /> },
-  { label: "WriteUps", path: "/me/blog", icon: <Archive size={20} /> },
-  { label: "Resources", path: "/me/resources", icon: <Layers size={16} /> },
-  { label: "Billing", path: "/me/billing", icon: <Wallet size={16} /> },
-  { label: "Simulations", path: "/me/simulations", icon: <Activity size={16} /> },
+  { label: "Dashboard", path: "/v", icon: <Home size={20} /> },
+  { label: "About", path: "/v/about", icon: <BookOpen size={20} /> },
+  { label: "WriteUps", path: "/v/blog", icon: <Archive size={20} /> },
+  { label: "Resources", path: "/v/resources", icon: <Layers size={16} /> },
+  { label: "Billing", path: "/v/billing", icon: <Wallet size={16} /> },
+  { label: "Simulations", path: "/v/simulations", icon: <Activity size={16} /> },
   { label: "Learn", path: "https://tryhackme.com", external: true, icon: <GraduationCap size={20} /> },
 ];
 

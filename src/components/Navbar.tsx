@@ -9,7 +9,7 @@ export default function Navbar() {
   const handleLogoClick = () => {
     const token = localStorage.getItem("token");
     if (token) {
-      navigate("/me");
+      navigate("/v");
     } else {
       navigate("/");
     }

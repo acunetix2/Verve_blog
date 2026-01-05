@@ -39,6 +39,7 @@ import AIAssistant from "@/components/AIAssistant";
 import UploadSimulation from "@/components/UploadSimulation";
 import SimulationList from "@/pages/SimulationList";
 import VerifyEmail from "@/pages/VerifyEmail";
+import SeriesViewPage from "@/pages/SeriesViewPage";
 
 // --- Auth Context ---
 interface AuthContextType {
@@ -129,19 +130,20 @@ const App = () => (
               {/* Protected User Routes + Wrapper */}
               <Route element={<ProtectedRoute role="user" />}>
                 <Route element={<VerveHubWrapper />}>
-                  <Route path="/me" element={<Index />} />
-                  <Route path="/me/about" element={<About />} />
-                  <Route path="/me/account" element={<Account />} />
-                  <Route path="/me/blog" element={<BlogList />} />
-                  <Route path="/me/resources" element={<Documents />} />
-				  <Route path="/me/simulations" element={<SimulationList />} />
+                  <Route path="/v" element={<Index />} />
+                  <Route path="/v/about" element={<About />} />
+                  <Route path="/v/account" element={<Account />} />
+                  <Route path="/v/blog" element={<BlogList />} />
+                  <Route path="/v/resources" element={<Documents />} />
+				  <Route path="/v/simulations" element={<SimulationList />} />
                   <Route path="/post/:slug" element={<BlogPost />} />
+				  <Route path="/series/:slug" element={<SeriesViewPage />} />
 				  <Route path="/resource" element={<Resources />} />
 				  <Route path="/documentation" element={<Documentation />} />
 				  <Route path="/support" element={<Support />} />
 				  <Route path="/community" element={<Community />} />
 				  <Route path="/newsletter" element={<Newsletter />} />
-				  <Route path="/me/billing" element={<Billing />} />
+				  <Route path="/v/billing" element={<Billing />} />
                 </Route>
               </Route>
 

@@ -381,7 +381,7 @@ export default function Account() {
       const confirm = window.confirm(t("Unsaved Changes Warning"));
       if (!confirm) return;
     }
-    navigate("/me");
+    navigate("/v");
   };
 
   const getRoleDisplay = (role: string) => {
