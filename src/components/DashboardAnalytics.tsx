@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTheme } from "@/components/ThemeContext";
 import { Bar, Line, Doughnut } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -44,6 +45,7 @@ const DashboardAnalytics: React.FC<DashboardAnalyticsProps> = ({ endpoints }) =>
     users: 0,
   });
   const [loading, setLoading] = useState(true);
+  const { actualTheme } = useTheme();
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -207,7 +209,9 @@ const DashboardAnalytics: React.FC<DashboardAnalyticsProps> = ({ endpoints }) =>
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4 sm:p-6 flex items-center justify-center">
+      <div className={`min-h-screen p-4 sm:p-6 flex items-center justify-center transition-colors duration-300 ${
+        actualTheme === 'dark' ? 'bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900' : 'bg-gradient-to-br from-blue-50 via-white to-purple-50'
+      }`}>
         <div className="text-center">
           <div className="inline-block relative">
             <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-200"></div>
@@ -220,6 +224,27 @@ const DashboardAnalytics: React.FC<DashboardAnalyticsProps> = ({ endpoints }) =>
       </div>
     );
   }
+
+  const { actualTheme } = useTheme();
+
+  // adapt chart options to theme
+  const dynamicChartOptions = {
+    ...chartOptions,
+    plugins: {
+      ...chartOptions.plugins,
+      legend: {
+        ...chartOptions.plugins.legend,
+        labels: {
+          ...chartOptions.plugins.legend.labels,
+          color: actualTheme === 'dark' ? '#E5E7EB' : '#0F172A',
+        },
+      },
+      tooltip: {
+        ...chartOptions.plugins.tooltip,
+        backgroundColor: actualTheme === 'dark' ? 'rgba(2,6,23,0.9)' : 'rgba(0,0,0,0.8)'
+      }
+    }
+  };
 
   return (
     <>
@@ -236,7 +261,9 @@ const DashboardAnalytics: React.FC<DashboardAnalyticsProps> = ({ endpoints }) =>
         }
       `}</style>
       
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4 sm:p-6 lg:p-8">
+      <div className={`min-h-screen p-4 sm:p-6 lg:p-8 transition-colors duration-300 ${
+        actualTheme === 'dark' ? 'bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900' : 'bg-gradient-to-br from-blue-50 via-white to-purple-50'
+      }`}>
         <div className="max-w-6xl mx-auto">
           {/* Header Section */}
           <div className="mb-6 sm:mb-8">
@@ -252,7 +279,7 @@ const DashboardAnalytics: React.FC<DashboardAnalyticsProps> = ({ endpoints }) =>
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 mb-5 sm:mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 mb-5 sm:mb-6">
             <StatCard title="Posts" value={dataCounts.posts} color={colors.posts} icon={icons.posts} />
             <StatCard title="Comments" value={dataCounts.comments} color={colors.comments} icon={icons.comments} />
             <StatCard title="Likes" value={dataCounts.likes} color={colors.likes} icon={icons.likes} />
@@ -263,15 +290,15 @@ const DashboardAnalytics: React.FC<DashboardAnalyticsProps> = ({ endpoints }) =>
           {/* Charts Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 mb-5 sm:mb-6">
             {/* Doughnut Chart */}
-            <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+            <div className={`${actualTheme === 'dark' ? 'bg-slate-800 border-slate-700 text-slate-200' : 'bg-white border-gray-100 text-slate-900'} rounded-xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow`}>
               <div className="flex items-center gap-2 mb-4">
                 <div className="w-1 h-5 bg-gradient-to-b from-blue-600 to-purple-600 rounded-full"></div>
                 <h3 className="text-base sm:text-lg font-bold text-gray-900" style={{ fontFamily: "'Google Sans', sans-serif" }}>
                   Data Distribution
                 </h3>
               </div>
-              <div className="h-52 sm:h-60 flex items-center justify-center mb-4">
-                <Doughnut data={doughnutData} options={{ ...chartOptions, cutout: '80%' }} />
+                <div className="h-52 sm:h-60 flex items-center justify-center mb-4">
+                <Doughnut data={doughnutData} options={{ ...dynamicChartOptions, cutout: '80%' }} />
               </div>
               <div className="text-center pt-3 border-t border-gray-100">
                 <p className="text-xs font-medium text-gray-500 mb-1" style={{ fontFamily: "'Google Sans', sans-serif" }}>Total Items</p>
@@ -282,40 +309,41 @@ const DashboardAnalytics: React.FC<DashboardAnalyticsProps> = ({ endpoints }) =>
             </div>
 
             {/* Line Chart */}
-            <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+            <div className={`${actualTheme === 'dark' ? 'bg-slate-800 border-slate-700 text-slate-200' : 'bg-white border-gray-100 text-slate-900'} rounded-xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow`}>
               <div className="flex items-center gap-2 mb-4">
                 <div className="w-1 h-5 bg-gradient-to-b from-blue-600 to-purple-600 rounded-full"></div>
                 <h3 className="text-base sm:text-lg font-bold text-gray-900" style={{ fontFamily: "'Google Sans', sans-serif" }}>
                   Activity Trend
                 </h3>
               </div>
-              <div className="h-52 sm:h-60">
-                <Line data={lineData} options={chartOptions} />
+                <div className="h-52 sm:h-60">
+                <Line data={lineData} options={dynamicChartOptions} />
               </div>
             </div>
           </div>
 
           {/* Bar Chart */}
-          <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+          <div className={`${actualTheme === 'dark' ? 'bg-slate-800 border-slate-700 text-slate-200' : 'bg-white border-gray-100 text-slate-900'} rounded-xl p-4 sm:p-6 shadow-sm border hover:shadow-md transition-shadow`}>
             <div className="flex items-center gap-2 mb-4">
               <div className="w-1 h-5 bg-gradient-to-b from-blue-600 to-purple-600 rounded-full"></div>
               <h3 className="text-base sm:text-lg font-bold text-gray-900" style={{ fontFamily: "'Google Sans', sans-serif" }}>
                 Category Comparison
               </h3>
             </div>
-            <div className="h-64 sm:h-80">
+              <div className="h-64 sm:h-80">
               <Bar 
                 data={barData} 
                 options={{
-                  ...chartOptions,
+                  ...dynamicChartOptions,
                   scales: {
                     y: {
                       beginAtZero: true,
                       grid: {
-                        color: 'rgba(0, 0, 0, 0.05)',
+                        color: actualTheme === 'dark' ? 'rgba(148,163,184,0.06)' : 'rgba(0,0,0,0.05)',
                         drawTicks: true,
                       },
                       ticks: {
+                        color: actualTheme === 'dark' ? '#E5E7EB' : '#0F172A',
                         font: {
                           family: "'Google Sans', sans-serif",
                         },
@@ -324,10 +352,11 @@ const DashboardAnalytics: React.FC<DashboardAnalyticsProps> = ({ endpoints }) =>
                     x: {
                       grid: {
                         display: true,
-                        color: 'rgba(0, 0, 0, 0.05)',
+                        color: actualTheme === 'dark' ? 'rgba(148,163,184,0.03)' : 'rgba(0,0,0,0.05)',
                         drawTicks: true,
                       },
                       ticks: {
+                        color: actualTheme === 'dark' ? '#E5E7EB' : '#0F172A',
                         font: {
                           family: "'Google Sans', sans-serif",
                         },

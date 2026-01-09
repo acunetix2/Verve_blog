@@ -132,20 +132,11 @@ const EnhancedAdminDashboard: React.FC = () => {
 
       // Fetch all data in parallel
       const [statsRes, postsRes, usersRes, logsRes] = await Promise.all([
-        axios.get("/api/admin/stats", { headers }),
-        axios.get("/api/admin/posts", { headers }),
-        axios.get("/api/admin/users", { headers }),
-        axios.get("/api/admin/activity-logs", { headers }),
-      ]).catch((err) => {
-        // Fallback to mock data for development
-        console.warn("Using mock data:", err);
-        return [
-          { data: mockStats },
-          { data: mockPosts },
-          { data: mockUsers },
-          { data: mockActivityLogs },
-        ];
-      });
+        axios.get(`${import.meta.env.VITE_API_BASE_URL}/admin/stats`, { headers }),
+        axios.get(`${import.meta.env.VITE_API_BASE_URL}/posts`, { headers }),
+        axios.get(`${import.meta.env.VITE_API_BASE_URL}/users`, { headers }),
+        axios.get(`${import.meta.env.VITE_API_BASE_URL}/admin/activity-logs`, { headers }),
+      ]);
 
       setStats(statsRes.data);
       setPosts(postsRes.data);
@@ -705,92 +696,7 @@ const EnhancedAdminDashboard: React.FC = () => {
 
         {/* Settings Tab */}
         {activeTab === "settings" && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Security Settings */}
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Shield className="text-blue-600" />
-                <h3 className="text-lg font-semibold">Security</h3>
-              </div>
-              <div className="space-y-3">
-                <Button className="w-full" variant="outline">
-                  Change Password
-                </Button>
-                <Button className="w-full" variant="outline">
-                  Manage Sessions
-                </Button>
-                <Button className="w-full" variant="outline">
-                  Two-Factor Authentication
-                </Button>
-              </div>
-            </div>
-
-            {/* Email Settings */}
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Mail className="text-green-600" />
-                <h3 className="text-lg font-semibold">Email Notifications</h3>
-              </div>
-              <div className="space-y-3">
-                <label className="flex items-center gap-3 cursor-pointer">
-                  <input type="checkbox" defaultChecked className="w-4 h-4" />
-                  <span className="text-sm text-gray-700">
-                    New user registrations
-                  </span>
-                </label>
-                <label className="flex items-center gap-3 cursor-pointer">
-                  <input type="checkbox" defaultChecked className="w-4 h-4" />
-                  <span className="text-sm text-gray-700">
-                    Comment moderation alerts
-                  </span>
-                </label>
-                <label className="flex items-center gap-3 cursor-pointer">
-                  <input type="checkbox" defaultChecked className="w-4 h-4" />
-                  <span className="text-sm text-gray-700">
-                    System alerts
-                  </span>
-                </label>
-              </div>
-            </div>
-
-            {/* Database Settings */}
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Database className="text-purple-600" />
-                <h3 className="text-lg font-semibold">Database</h3>
-              </div>
-              <div className="space-y-3">
-                <Button className="w-full" variant="outline">
-                  Backup Database
-                </Button>
-                <Button className="w-full" variant="outline">
-                  Optimize Database
-                </Button>
-                <Button className="w-full" variant="outline">
-                  View Logs
-                </Button>
-              </div>
-            </div>
-
-            {/* Server Settings */}
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Server className="text-orange-600" />
-                <h3 className="text-lg font-semibold">Server</h3>
-              </div>
-              <div className="space-y-3">
-                <Button className="w-full" variant="outline">
-                  View System Status
-                </Button>
-                <Button className="w-full" variant="outline">
-                  Cache Management
-                </Button>
-                <Button className="w-full" variant="outline">
-                  Performance Metrics
-                </Button>
-              </div>
-            </div>
-          </div>
+          <SettingsTab />
         )}
       </div>
     </div>

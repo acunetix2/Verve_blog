@@ -40,6 +40,7 @@ import UploadSimulation from "@/components/UploadSimulation";
 import SimulationList from "@/pages/SimulationList";
 import VerifyEmail from "@/pages/VerifyEmail";
 import SeriesViewPage from "@/pages/SeriesViewPage";
+import FloatingActionButton from "@/components/FloatingActionButton";
 
 // --- Auth Context ---
 interface AuthContextType {

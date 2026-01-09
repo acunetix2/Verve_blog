@@ -1,5 +1,6 @@
 
 import React, { useEffect, useState } from "react";
+import { useTheme } from "@/components/ThemeContext";
 import axios from "axios";
 import {
   FileText,
@@ -70,6 +71,7 @@ const categoryIcons: Record<string, any> = {
 };
 
 const Documents: React.FC = () => {
+  const { actualTheme } = useTheme();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -131,7 +133,9 @@ const Documents: React.FC = () => {
   });
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-blue-50 via-white to-blue-50" style={{ fontFamily: "'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
+    <div className={`min-h-screen w-full transition-colors duration-300 ${
+      actualTheme === 'dark' ? 'bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-200' : 'bg-gradient-to-br from-blue-50 via-white to-blue-50 text-slate-900'
+    }`} style={{ fontFamily: "'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
       {message && (
         <div
           className={`fixed top-6 right-6 px-5 py-3 rounded-xl shadow-lg flex items-center gap-3 z-50 
@@ -155,24 +159,24 @@ const Documents: React.FC = () => {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl mb-4 shadow-lg">
             <FileText className="h-8 w-8 text-white" />
           </div>
-          <h2 className="text-4xl font-bold text-gray-900 mb-3">
+          <h2 className={`${actualTheme === 'dark' ? 'text-white' : 'text-gray-900'} text-4xl font-bold mb-3`}>
             Learning Resources
           </h2>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+          <p className={`${actualTheme === 'dark' ? 'text-slate-300' : 'text-gray-600'} text-lg max-w-2xl mx-auto`}>
             Access cybersecurity documents, guides, and educational materials
           </p>
         </div>
 
         {/* Search Bar */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-6 mb-8">
+        <div className={`rounded-2xl border shadow-lg p-6 mb-8 transition-colors ${actualTheme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'}`}>
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <Search className={`absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 ${actualTheme === 'dark' ? 'text-slate-500' : 'text-gray-400'}`} />
             <input
               type="text"
               placeholder="Search documents by title or description..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-12 pr-4 h-14 bg-gray-50 border border-gray-300 text-gray-900 placeholder:text-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 rounded-xl text-base focus:outline-none transition"
+              className={`w-full pl-12 pr-4 h-14 rounded-xl text-base transition-colors ${actualTheme === 'dark' ? 'bg-slate-700 border-slate-600 text-white placeholder:text-slate-500 focus:border-blue-500 focus:ring-blue-500/20' : 'bg-gray-50 border border-gray-300 text-gray-900 placeholder:text-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'}`}
             />
           </div>
         </div>

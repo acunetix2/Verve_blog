@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTheme } from "@/components/ThemeContext";
 import ViewSimulation from "@/components/ViewSimulation";
 
 interface Simulation {
@@ -13,6 +14,7 @@ interface Simulation {
 }
 
 export default function SimulationList() {
+  const { actualTheme } = useTheme();
   const [simulations, setSimulations] = useState<Simulation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -104,11 +106,11 @@ export default function SimulationList() {
   if (selectedSimulationId) {
     return (
       <div>
-        <div className="bg-gradient-to-br from-blue-50 to-white py-4 px-4 border-b border-blue-100">
+        <div className={`py-4 px-4 border-b transition-colors ${actualTheme === 'dark' ? 'bg-gradient-to-br from-slate-800 to-slate-900 border-slate-700' : 'bg-gradient-to-br from-blue-50 to-white border-blue-100'}`}>
           <div className="max-w-6xl mx-auto">
             <button
               onClick={handleBackToList}
-              className="flex items-center text-sm text-blue-600 hover:text-blue-700 transition-colors"
+              className={`flex items-center text-sm transition-colors ${actualTheme === 'dark' ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-700'}`}
               style={{ fontFamily: 'Google Sans, sans-serif' }}
             >
               <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -125,10 +127,10 @@ export default function SimulationList() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center">
+      <div className={`min-h-screen flex items-center justify-center transition-colors ${actualTheme === 'dark' ? 'bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900' : 'bg-gradient-to-br from-blue-50 to-white'}`}>
         <div className="text-center">
-          <div className="inline-block w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-4"></div>
-          <p className="text-sm text-gray-600" style={{ fontFamily: 'Google Sans, sans-serif' }}>
+          <div className={`inline-block w-12 h-12 border-4 rounded-full animate-spin mb-4 ${actualTheme === 'dark' ? 'border-slate-700 border-t-blue-500' : 'border-blue-200 border-t-blue-600'}`}></div>
+          <p className={`text-sm ${actualTheme === 'dark' ? 'text-slate-400' : 'text-gray-600'}`} style={{ fontFamily: 'Google Sans, sans-serif' }}>
             Loading simulations...
           </p>
         </div>
@@ -138,17 +140,17 @@ export default function SimulationList() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-lg border border-red-100 p-8 max-w-md text-center">
-          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+      <div className={`min-h-screen flex items-center justify-center p-4 transition-colors ${actualTheme === 'dark' ? 'bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900' : 'bg-gradient-to-br from-blue-50 to-white'}`}>
+        <div className={`rounded-2xl shadow-lg border p-8 max-w-md text-center transition-colors ${actualTheme === 'dark' ? 'bg-slate-800 border-red-900/50' : 'bg-white border-red-100'}`}>
+          <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${actualTheme === 'dark' ? 'bg-red-900/30' : 'bg-red-100'}`}>
             <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
           </div>
-          <h2 className="text-lg font-medium text-gray-900 mb-2" style={{ fontFamily: 'Google Sans, sans-serif' }}>
+          <h2 className={`text-lg font-medium mb-2 ${actualTheme === 'dark' ? 'text-white' : 'text-gray-900'}`} style={{ fontFamily: 'Google Sans, sans-serif' }}>
             Failed to Load Simulations
           </h2>
-          <p className="text-sm text-gray-600 mb-4" style={{ fontFamily: 'Google Sans, sans-serif' }}>
+          <p className={`text-sm mb-4 ${actualTheme === 'dark' ? 'text-slate-400' : 'text-gray-600'}`} style={{ fontFamily: 'Google Sans, sans-serif' }}>
             There was an error loading the simulations. Please try again later.
           </p>
           <button

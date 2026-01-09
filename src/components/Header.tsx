@@ -1,11 +1,12 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, Cpu, ChevronDown, ExternalLink, Github, CheckCircle2, Bell, Settings, LogOut } from "lucide-react";
+import { Menu, Cpu, ChevronDown, BookOpen, HelpCircle, Home, ExternalLink, Github, CheckCircle2, Bell, Settings, LogOut } from "lucide-react";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import axios from "axios";
 import CompanyLogo from "@/assets/logo.png";
 import { useLiveNotifications } from "@/hooks/useLiveNotifications";
 import ThemeSwitcherIcon from "./ThemeSwitcherIcon";
+import GlobalSearch from "./GlobalSearch";
 
 interface User {
   name: string;
@@ -21,13 +22,14 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: "About", path: "/v/about" },
-  { label: "Posts", path: "/blog" },
-  { label: "Resources", path: "/resources" },
+  { label: "Dashboard", path: "/v", icon: <Home size={16} /> },
+  { label: "Posts", path: "/v/blog", icon: <BookOpen size={16} /> },
+  { label: "Resources", path: "/v/resources" },
   {
     label: "Learn",
     path: "https://tryhackme.com",
     external: true,
+    icon: <HelpCircle size={16} />
   },
 ];
 
@@ -108,21 +110,20 @@ export const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) =>
 
   return (
     <>
-      <header 
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled 
-            ? "bg-white/80 dark:bg-gray-950/90 backdrop-blur-md shadow-sm border-b border-gray-200/50 dark:border-gray-800/50" 
-            : "bg-white dark:bg-gray-950 border-b border-gray-100 dark:border-gray-900"
+      <header
+        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
+          scrolled ? "bg-white/95 dark:bg-gray-950/95 backdrop-blur-lg shadow-md border-b border-gray-200/60 dark:border-gray-800/60" 
+            : "bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800"
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Left side: Hamburger + Logo */}
-            <div className="flex items-center gap-3">
-              {/* Hamburger Menu Button */}
+            <div className="flex items-center gap-3 ml-2">
+              {/* Hamburger Menu Button (always visible, fixed before logo) */}
               <button
                 onClick={onToggleSidebar}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-300"
+                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-300 mr-2"
                 aria-label="Toggle sidebar"
               >
                 <Menu size={20} />
@@ -135,29 +136,60 @@ export const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) =>
                 aria-label="Go to homepage"
               >
                 <div className="flex items-center gap-2">
-				  <div className="w-10 h-10 flex items-center justify-center rounded-lg">
+				  <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-gradient-to-br from-cyan-600 to-blue-600 shadow-md">
 					  <img 
 						src={CompanyLogo} 
 						alt="Company Logo" 
-						className="h-10 w-10 object-contain" 
+						className="h-6 w-6 object-contain" 
 					  />
 					</div>
-				  <div className="hidden sm:flex flex-col">
-					<span className="text-sm md:text-base font-semibold text-cyan-600 dark:text-white tracking-tight">
-					  Verve Hub WriteUps
+				  <div className="hidden sm:flex flex-col leading-tight">
+					<span className="text-sm font-bold text-gray-900 dark:text-white tracking-tight">
+					  Verve Hub
 					</span>
-					<span className="text-[10px] md:text-xs font-bold font-medium text-green-700 dark:text-gray-500 tracking-wider">
-					  Security Research and Learning
+					<span className="text-[10px] font-semibold text-gray-500 dark:text-gray-400 tracking-wider">
+					  Security Hub
 					</span>
 				  </div>
 				</div>
               </Link>
             </div>
 
-            {/* Right side: Navigation */}
-            <nav className="flex items-center gap-1">
+            {/* Center: Navigation Links (hidden on mobile, shown on lg) */}
+            <nav className="hidden lg:flex items-center gap-1">
+              {NAV_ITEMS.map((item) => (
+                item.external ? (
+                  <a
+                    key={item.path}
+                    href={item.path}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  >
+                    {item.icon}
+                    {item.label}
+                    <ExternalLink size={12} />
+                  </a>
+                ) : (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  >
+                    {item.icon}
+                    {item.label}
+                  </Link>
+                )
+              ))}
+            </nav>
+
+            {/* Right side: Actions */}
+            <nav className="flex items-center gap-2">
+              {/* Global Search */}
+              <GlobalSearch />
 
               {/* Divider */}
+              <div className="hidden sm:block w-px h-6 bg-gray-200 dark:bg-gray-800 mx-1" />
               <div className="hidden md:block w-px h-6 bg-gray-200 dark:bg-gray-800 mx-2" />
 
               {/* Theme Switcher */}
@@ -317,7 +349,7 @@ export const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) =>
       </header>
 
       {/* Spacer to prevent content jump */}
-      <div className="h-16" />
+      {/* Removed - WelcomeBanner sits directly below header */}
 
       {logoutModalOpen && (
         <LogoutModal
@@ -402,7 +434,7 @@ const UserDropdown = ({
           <div className="py-1">
             <button
               onClick={() => {
-                navigate("/me/account");
+                navigate("/v/account");
                 setOpen(false);
               }}
               className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"

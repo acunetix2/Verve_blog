@@ -156,7 +156,7 @@ const navigate = useNavigate();
 
 		  <div className="flex flex-col sm:flex-row gap-4 justify-center items-stretch sm:items-center">
 			<button
-			  onClick={() => navigate("/me/blog")} // redirect to posts page
+			  onClick={() => navigate("/v/blog")} // redirect to posts page
 			  className="w-full sm:w-auto group px-8 py-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold text-base hover:from-blue-700 hover:to-blue-800 rounded-xl shadow-lg shadow-blue-500/40 hover:shadow-xl hover:shadow-blue-500/50 transition-all duration-300 border-2 border-blue-500"
 			>
 			  <PenTool className="h-5 w-5 mr-2 inline group-hover:rotate-12 transition-transform" />

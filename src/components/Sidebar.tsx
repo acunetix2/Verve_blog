@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   Home,
@@ -7,13 +7,15 @@ import {
   GraduationCap,
   ExternalLink,
   Settings,
-  LogOut,
+  ChevronLeft,
+  ChevronRight,
   Sparkles,
   Layers,
   Github,
   Wallet,
-  Zap,
   Activity,
+  Menu,
+  X,
 } from "lucide-react";
 
 type NavItem = {
@@ -25,7 +27,6 @@ type NavItem = {
 
 const NAV_ITEMS: NavItem[] = [
   { label: "Dashboard", path: "/v", icon: <Home size={20} /> },
-  { label: "About", path: "/v/about", icon: <BookOpen size={20} /> },
   { label: "WriteUps", path: "/v/blog", icon: <Archive size={20} /> },
   { label: "Resources", path: "/v/resources", icon: <Layers size={16} /> },
   { label: "Billing", path: "/v/billing", icon: <Wallet size={16} /> },
@@ -44,20 +45,34 @@ export default function Sidebar({ collapsed = false, onCollapse, sidebarOpen, on
   const location = useLocation();
   const activeRef = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const [isCollapsed, setIsCollapsed] = useState(collapsed);
+
+  useEffect(() => {
+    setIsCollapsed(collapsed);
+  }, [collapsed]);
 
   useEffect(() => {
     if (!containerRef.current) return;
     const active = containerRef.current.querySelector(".verve-nav-item-active") as HTMLElement | null;
     if (!active) return;
-    const rect = active.getBoundingClientRect();
     const top = active.offsetTop;
-    const height = rect.height;
+    const height = active.offsetHeight;
     if (activeRef.current) {
       activeRef.current.style.transform = `translateY(${top}px)`;
       activeRef.current.style.height = `${height}px`;
       activeRef.current.style.opacity = "1";
     }
-  }, [location.pathname, collapsed]);
+  }, [location.pathname, isCollapsed]);
+
+  const handleCollapse = () => {
+    setIsCollapsed(!isCollapsed);
+    onCollapse?.();
+  };
+
+  // Hide sidebar completely if collapsed on desktop
+  if (isCollapsed && window.innerWidth >= 1024) {
+    return null;
+  }
 
   return (
     <>
@@ -72,98 +87,108 @@ export default function Sidebar({ collapsed = false, onCollapse, sidebarOpen, on
       {/* Sidebar */}
       <aside
         ref={containerRef}
-        className={`fixed left-0 z-50 transition-transform duration-300 ease-in-out w-60
-          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
-          ${collapsed ? "-translate-x-full" : "lg:translate-x-0"}
-          ${collapsed ? "w-14" : "w-60"}
-        `}
-        style={{ 
-          top: "4rem", 
-          height: "calc(100% - 4rem)", 
-          fontFamily: '"Product Sans", "Google Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' 
+        className={`fixed left-0 top-0 z-40 transition-all duration-300 ease-in-out h-screen flex flex-col overflow-y-auto
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+          w-64
+          bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 shadow-lg`}
+        style={{
+          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+          paddingTop: '4rem',
         }}
       >
-        <div className="relative h-full flex flex-col bg-white border-r border-slate-200 shadow-lg lg:shadow-none">
-          {/* Navigation */}
-          <nav className="relative flex-1 px-6 py-8 overflow-y-auto">
-            <div
-              ref={activeRef}
-              aria-hidden
-              className="absolute left-0 top-0 w-1 rounded-r-full bg-gradient-to-b from-indigo-600 to-violet-600 transform transition-all duration-200 opacity-0"
-            />
+        {/* Close Button (Mobile Only) */}
+        {sidebarOpen && onCloseSidebar && (
+          <button
+            onClick={onCloseSidebar}
+            className="absolute top-4 right-4 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 lg:hidden text-gray-600 dark:text-gray-400"
+            aria-label="Close sidebar"
+          >
+            <X size={20} />
+          </button>
+        )}
 
-            <ul className="flex flex-col gap-1.5">
-              {NAV_ITEMS.map((item) => {
-                const isActive = !item.external && location.pathname.startsWith(item.path);
-                const baseClasses = `verve-nav-item flex items-center gap-3 w-full px-3 py-2.5 rounded-xl cursor-pointer select-none transition-all duration-200`;
-                const activeClasses = "verve-nav-item-active text-slate-900 font-semibold bg-gradient-to-r from-indigo-50 to-violet-50 shadow-sm";
-                const inactiveClasses = "text-slate-600 hover:text-slate-900 hover:bg-slate-50";
+        {/* Navigation */}
+        <nav className="flex-1 px-3 py-6 overflow-y-auto">
+          <div
+            ref={activeRef}
+            aria-hidden
+            className="absolute left-0 top-0 w-1 rounded-r-full bg-gradient-to-b from-blue-600 to-cyan-600 transform transition-all duration-300 opacity-0"
+          />
 
-                return (
-                  <li key={item.label} className="relative">
-                    {item.external ? (
-                      <a
-                        href={item.path}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`${baseClasses} ${isActive ? activeClasses : inactiveClasses}`}
-                      >
-                        <div className="flex items-center justify-center min-w-[20px]">{item.icon}</div>
-                        <span className="truncate text-sm">{item.label}</span>
-                        <ExternalLink size={14} className="ml-auto opacity-40" />
-                      </a>
-                    ) : (
-                      <Link
-                        to={item.path}
-                        className={`${baseClasses} ${isActive ? activeClasses : inactiveClasses}`}
-                      >
-                        <div className="flex items-center justify-center min-w-[20px]">{item.icon}</div>
-                        <span className="truncate text-sm">{item.label}</span>
-                      </Link>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
-          </nav>
+          <ul className="flex flex-col gap-2">
+            {NAV_ITEMS.map((item) => {
+              const isActive = !item.external && location.pathname.startsWith(item.path);
+              const baseClasses = `verve-nav-item group relative flex items-center gap-3 w-full px-3 py-2.5 rounded-lg cursor-pointer select-none transition-all duration-200`;
+              const activeClasses = "verve-nav-item-active text-white bg-gradient-to-r from-blue-600 to-cyan-600 shadow-md";
+              const inactiveClasses = "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800";
 
-          {/* Footer */}
-			<div className="relative px-6 py-4 border-t border-slate-200 bg-slate-50/50 flex flex-col items-center">
-			  <div className="flex items-center justify-center mb-3 w-full">
-				<button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 transition-all duration-200 text-xs font-semibold text-white shadow-md hover:shadow-lg group w-full justify-center">
-				  <Sparkles size={14} className="group-hover:rotate-12 transition-transform" />
-				  <span>Upgrade</span>
-				</button>
-			  </div>
-			  <div className="flex items-center justify-center gap-2 mb-2">
-				<Link
-				  to="/v/account"
-				  className="p-2 rounded-lg hover:bg-white border border-transparent hover:border-slate-200 transition-all duration-200 text-slate-600 hover:text-slate-900"
-				  title="Settings"
-				>
-				  <Settings size={18} />
-				</Link>
-				<a
-				  href="https://github.com/acunetix2/verve_blog.git"
-				  target="_blank"
-				  rel="noopener noreferrer"
-				  className="p-2 rounded-lg hover:bg-white border border-transparent hover:border-slate-200 transition-all duration-200 text-slate-600 hover:text-slate-900"
-				  title="GitHub"
-				>
-				  <Github size={18} />
-				</a>
-			  </div>
+              return (
+                <li key={item.label} className="relative" title={isCollapsed ? item.label : ""}>
+                  {item.external ? (
+                    <a
+                      href={item.path}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`${baseClasses} ${isActive ? activeClasses : inactiveClasses}`}
+                    >
+                      <div className="flex items-center justify-center min-w-[20px] flex-shrink-0">
+                        {item.icon}
+                      </div>
+                      <span className="flex-1 truncate text-sm font-medium">{item.label}</span>
+                      <ExternalLink size={14} className="opacity-60 group-hover:opacity-100 transition-opacity" />
+                    </a>
+                  ) : (
+                    <Link
+                      to={item.path}
+                      onClick={onCloseSidebar}
+                      className={`${baseClasses} ${isActive ? activeClasses : inactiveClasses}`}
+                    >
+                      <div className="flex items-center justify-center min-w-[20px] flex-shrink-0">
+                        {item.icon}
+                      </div>
+                      <span className="flex-1 truncate text-sm font-medium">{item.label}</span>
+                    </Link>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
 
-			  {/* Copyright */}
-			  <p className="text-[10px] text-slate-800 text-bold mt-2 text-center">
-				&copy; {new Date().getFullYear()} Verve Hub WriteUps.
-			  </p>
-			</div>
+        {/* Divider */}
+        <div className="px-3 mb-3">
+          <div className="h-px bg-gray-200 dark:bg-gray-700" />
+        </div>
 
+        {/* Footer Actions */}
+        <div className="px-3 py-4 space-y-2 border-t border-gray-200 dark:border-gray-800">
+          {/* Action Buttons */}
+          <div className="flex gap-2 justify-center">
+            <Link
+              to="/v/account"
+              onClick={onCloseSidebar}
+              className="p-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors"
+              title="Settings"
+            >
+              <Settings size={18} />
+            </Link>
+            <a
+              href="https://github.com/acunetix2/verve_blog.git"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors"
+              title="GitHub Repository"
+            >
+              <Github size={18} />
+            </a>
+          </div>
+
+          {/* Copyright */}
+          <p className="text-[11px] text-gray-500 dark:text-gray-500 text-center mt-3 leading-tight">
+            &copy; {new Date().getFullYear()} Verve Hub
+          </p>
         </div>
       </aside>
-      {/* Spacer for desktop */}
-      <div className={`hidden lg:block transition-all duration-300 ${collapsed ? "w-0" : "w-60"}`} />
     </>
   );
 }

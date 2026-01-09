@@ -178,11 +178,11 @@ export default function Login() {
         await new Promise(resolve => setTimeout(resolve, 500));
         navigate(userRole === "admin" ? "/admin" : "/v", { replace: true });
       } else {
-        setMessage({ type: "error", text: res.data.message || "Login failed" });
+        setMessage({ type: "error", text: res.data?.message || "Login failed" });
       }
     } catch (err: any) {
-      const msg = err.response?.data?.message || "Incorrect username or password";
-      setMessage({ type: "error", text: msg });
+      const msg = err?.response?.data?.message || "Incorrect username or password";
+      setMessage({ type: "error", text: String(msg || "Login failed") });
     } finally {
       setIsLoading(false);
     }

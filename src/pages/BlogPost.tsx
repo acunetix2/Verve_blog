@@ -23,6 +23,10 @@ import {
   Share2,
 } from "lucide-react";
 import { Helmet } from "react-helmet-async";
+import CommentsSystem from "@/components/CommentsSystem";
+import ReactionsPanel from "@/components/ReactionsPanel";
+import UserReviews from "@/components/UserReviews";
+import SocialSharing from "@/components/SocialSharing";
 
 interface Post {
   _id: string;
@@ -49,8 +53,6 @@ const BlogPost = () => {
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [likes, setLikes] = useState<number>(0);
-  const [liked, setLiked] = useState<boolean>(false);
   const [views, setViews] = useState<number>(0);
   const [viewed, setViewed] = useState<boolean>(false);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -63,10 +65,9 @@ const BlogPost = () => {
     setLoading(true);
 
     try {
-      // Fetch post, likes, comments, and views in parallel
-      const [postRes, likesRes, commentsRes, viewsRes] = await Promise.all([
+      // Fetch post, comments, and views in parallel
+      const [postRes, commentsRes, viewsRes] = await Promise.all([
         fetch(`${import.meta.env.VITE_API_BASE_URL}/posts/${slug}`, { credentials: "include" }),
-        fetch(`${import.meta.env.VITE_API_BASE_URL}/posts/${slug}/likes`, { credentials: "include" }),
         fetch(`${import.meta.env.VITE_API_BASE_URL}/posts/${slug}/comments`, { credentials: "include" }),
         fetch(`${import.meta.env.VITE_API_BASE_URL}/posts/${slug}/views`, { credentials: "include" }),
       ]);
@@ -74,13 +75,10 @@ const BlogPost = () => {
       if (!postRes.ok) throw new Error("Failed to fetch post");
 
       const postData = await postRes.json();
-      const likesData = await likesRes.json();
       const commentsData: Comment[] = await commentsRes.json();
       const viewsData = await viewsRes.json();
 
       setPost(postData);
-      setLikes(likesData.likes || 0);
-      setLiked(likesData.userHasLiked || false);
       setComments(commentsData || []);
       setViews(viewsData.views || 0);
       setViewed(viewsData.userHasViewed || false);
@@ -108,26 +106,6 @@ const BlogPost = () => {
     window.scrollTo(0, 0);
     fetchPostData();
   }, [fetchPostData]);
-
-  const handleLike = async () => {
-    if (liked) return;
-
-    try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/posts/${slug}/like`, {
-        method: "POST",
-        credentials: "include",
-      });
-
-      if (!res.ok) throw new Error("You must be logged in to like this post");
-
-      const data = await res.json();
-      setLikes(data.likes);
-      setLiked(true);
-    } catch (err) {
-      console.error("Like error:", err);
-      alert((err as Error).message);
-    }
-  };
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -221,7 +199,7 @@ const BlogPost = () => {
         <meta name="description" content={post.description} />
       </Helmet>
 
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-white pt-12">
         <style>{`
           @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap');
           * {
@@ -229,7 +207,7 @@ const BlogPost = () => {
           }
         `}</style>
         <Header />
-        <article className="w-full py-8 sm:py-12 relative z-10 px-4 sm:px-6">
+        <article className="w-full py-8 sm:py-12 px-4 sm:px-6">
           {/* Header */}
           <header className="mb-8 sm:mb-12 space-y-4 sm:space-y-6">
             {post.featured && (
@@ -312,85 +290,32 @@ const BlogPost = () => {
           {/* Like & Share */}
           <div className="mt-8 sm:mt-10 bg-gray-50 rounded-2xl border border-gray-100 shadow-sm p-5 sm:p-6">
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
-              <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-2 sm:gap-4">
-                <button
-                  onClick={handleLike}
-                  disabled={liked}
-                  className={`flex items-center justify-center gap-2 border px-4 py-2.5 sm:py-2 rounded-xl transition-all text-sm font-medium ${
-                    liked ? "bg-blue-600 text-white border-blue-600 cursor-not-allowed" : "border-gray-300 text-gray-700 hover:bg-blue-50 hover:border-blue-300"
-                  }`}
-                >
-                  <Heart className={`h-4 w-4 ${liked ? "fill-current text-white" : "text-blue-600"}`} /> 
-                  <span>{likes} Likes</span>
-                </button>
+              <button
+                onClick={() => handleShare()}
+                className="flex items-center justify-center gap-2 border border-gray-300 px-4 py-2.5 sm:py-2 rounded-xl text-gray-700 hover:bg-gray-50 text-sm font-medium"
+              >
+                {copied ? <CheckCircle2 className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4 text-blue-600" />} 
+                <span>{copied ? "Copied!" : "Copy Link"}</span>
+              </button>
 
-                <button
-                  onClick={() => handleShare()}
-                  className="flex items-center justify-center gap-2 border border-gray-300 px-4 py-2.5 sm:py-2 rounded-xl text-gray-700 hover:bg-gray-50 text-sm font-medium"
-                >
-                  {copied ? <CheckCircle2 className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4 text-blue-600" />} 
-                  <span>{copied ? "Copied!" : "Copy Link"}</span>
-                </button>
-              </div>
-
-              <div className="flex gap-3 justify-center sm:justify-start">
-                <button 
-                  onClick={() => handleShare("twitter")}
-                  className="p-2.5 sm:p-2 bg-blue-50 hover:bg-blue-100 border border-blue-200 hover:border-blue-300 rounded-xl transition-all"
-                  aria-label="Share on Twitter"
-                >
-                  <Twitter className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
-                </button>
-                <button 
-                  onClick={() => handleShare("linkedin")}
-                  className="p-2.5 sm:p-2 bg-blue-50 hover:bg-blue-100 border border-blue-200 hover:border-blue-300 rounded-xl transition-all"
-                  aria-label="Share on LinkedIn"
-                >
-                  <Linkedin className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
-                </button>
-              </div>
+              <SocialSharing postId={post?._id || ""} postTitle={post?.title || ""} postSlug={slug || ""} authorName={post?.author || ""} />
             </div>
           </div>
 
+          {/* Reactions */}
+          <section className="mt-8 sm:mt-10">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">React to this post</h3>
+            <ReactionsPanel targetId={post?._id || ""} targetType="post" />
+          </section>
+
+          {/* Reviews & Ratings */}
+          <section className="mt-8 sm:mt-10">
+            <UserReviews postId={post?._id || ""} />
+          </section>
+
           {/* Comments */}
-          <section className="mt-8 sm:mt-10 bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 flex items-center gap-2">
-              <MessageSquare className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" /> 
-              <span>Comments ({comments.length})</span>
-            </h2>
-
-            <div className="space-y-4 sm:space-y-6">
-              {comments.length > 0 ? (
-                comments.map(c => (
-                  <div key={c._id} className="border border-gray-200 bg-gray-50 rounded-xl p-3 sm:p-4 hover:border-blue-200 hover:bg-blue-50/50 transition-colors">
-                    <p className="text-blue-600 text-sm sm:text-base font-semibold">{c.name}</p>
-                    <p className="text-gray-700 mt-1.5 sm:mt-2 text-sm sm:text-base leading-relaxed">{c.text}</p>
-                    <p className="text-[10px] sm:text-xs text-gray-500 mt-2">{new Date(c.date || Date.now()).toLocaleString()}</p>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-8 sm:py-12 border border-dashed border-gray-300 rounded-xl bg-gray-50">
-                  <MessageSquare className="h-8 w-8 sm:h-10 sm:w-10 text-gray-400 mx-auto mb-3" />
-                  <p className="text-gray-500 text-sm sm:text-base">No comments yet. Be the first!</p>
-                </div>
-              )}
-            </div>
-
-            <form onSubmit={handleCommentSubmit} className="mt-6 sm:mt-8 space-y-3 sm:space-y-4">
-              <textarea
-                placeholder="Write a comment..."
-                value={commentText}
-                onChange={e => setCommentText(e.target.value)}
-                className="w-full bg-white border border-gray-300 text-gray-900 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 h-24 sm:h-28 resize-none focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-sm sm:text-base transition-all"
-              />
-              <Button
-                type="submit"
-                disabled={submitting || !commentText.trim()}
-                className="w-full sm:w-auto bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base px-6 sm:px-8 py-2.5 sm:py-3"
-              >
-                {submitting ? "Posting..." : "Post Comment"}
-              </Button>
-            </form>
+          <section className="mt-8 sm:mt-10">
+            <CommentsSystem postId={post?._id || ""} />
           </section>
 
           <footer className="mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-gray-100 text-center">

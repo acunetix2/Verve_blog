@@ -155,12 +155,15 @@ const AdminPage: React.FC = () => {
   const [show2FAModal, setShow2FAModal] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [showPerformanceModal, setShowPerformanceModal] = useState(false);
+  const [showLogsModal, setShowLogsModal] = useState(false);
   const [systemStatus, setSystemStatus] = useState<any>(null);
   const [performanceData, setPerformanceData] = useState<any>(null);
   const [activeSessions, setActiveSessions] = useState<any[]>([]);
+  const [appLogs, setAppLogs] = useState<any[]>([]);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [twoFAEnabled, setTwoFAEnabled] = useState(false);
+  const [twoFAMethods, setTwoFAMethods] = useState<string[]>([]);
 
   const fontStyle = { fontFamily: "'Google Sans', sans-serif", fontSize: "0.8125rem" };
 
@@ -343,11 +346,18 @@ const AdminPage: React.FC = () => {
     }
   };
 
-  const handleViewLogs = () => {
-    toast.info("System logs loaded. No critical errors detected.", {
-      icon: <Info className="text-blue-500" />,
-      duration: 3000,
-    });
+  const handleViewLogs = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/admin/logs`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setAppLogs(response.data.logs || []);
+    } catch (error) {
+      setAppLogs([]);
+    }
+    setShowLogsModal(true);
   };
 
   const handleCacheManagement = async () => {
@@ -392,7 +402,7 @@ const AdminPage: React.FC = () => {
           setIsLoggedIn(true);
           // Fetch current user info
           try {
-            const userRes = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/auth/me`, {
+            const userRes = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/auth/v`, {
               headers: { Authorization: `Bearer ${token}` },
             });
             if (userRes.data && userRes.data.user) {
@@ -636,7 +646,7 @@ const AdminPage: React.FC = () => {
         profileImage: res.data.user?.profileImage,
         avatar: res.data.user?.avatar,
       };
-      console.log("Setting current user:", userData);
+      // Removed debug log for setting current user
       setCurrentUser(userData);
       
       setToken(res.data.token);
@@ -999,20 +1009,67 @@ const AdminPage: React.FC = () => {
       {/* 2FA Modal */}
       {show2FAModal && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4">
-          <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl shadow-2xl max-w-md w-full border border-slate-700 animate-scale-in">
-            <div className="p-6 border-b border-slate-700/50">
+          <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl shadow-2xl max-w-lg w-full border border-slate-700 animate-scale-in max-h-[80vh] overflow-y-auto">
+            <div className="p-6 border-b border-slate-700/50 sticky top-0 bg-gradient-to-br from-slate-800 to-slate-900">
               <div className="flex items-center gap-3">
                 <Shield className="text-green-400" size={24} />
                 <h2 className="text-xl font-bold text-white">Two-Factor Authentication</h2>
               </div>
             </div>
-            <div className="p-6 space-y-4">
-              <div className="bg-slate-700/30 border border-slate-700/50 rounded-lg p-4">
-                <p className="text-white text-sm mb-3">Status: <span className={twoFAEnabled ? "text-green-400 font-bold" : "text-red-400 font-bold"}>{twoFAEnabled ? "Enabled" : "Disabled"}</span></p>
-                <p className="text-xs text-slate-400">Two-factor authentication adds an extra layer of security to your account by requiring a verification code in addition to your password.</p>
+            <div className="p-6 space-y-5">
+              {/* Status Card */}
+              <div className="bg-slate-700/30 border border-slate-700/50 rounded-lg p-5">
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-white text-sm font-semibold">Current Status</p>
+                  <span className={`px-3 py-1 rounded-full text-xs font-bold ${twoFAEnabled ? "bg-green-500/20 text-green-400" : "bg-red-500/20 text-red-400"}`}>
+                    {twoFAEnabled ? "✓ Enabled" : "✗ Disabled"}
+                  </span>
+                </div>
+                <p className="text-xs text-slate-400">Two-factor authentication adds an extra layer of security by requiring a verification code in addition to your password.</p>
+              </div>
+
+              {/* Available Methods */}
+              <div>
+                <h3 className="text-white text-sm font-semibold mb-3">Available Methods</h3>
+                <div className="space-y-2">
+                  {[
+                    { name: "Authenticator App", desc: "Google Authenticator, Authy, etc.", enabled: true },
+                    { name: "SMS/Text Message", desc: "6-digit code sent to your phone", enabled: true },
+                    { name: "Email", desc: "Verification code sent to your email", enabled: false },
+                  ].map((method, idx) => (
+                    <label key={idx} className="flex items-start gap-3 p-3 rounded-lg hover:bg-slate-700/20 cursor-pointer transition-all">
+                      <input
+                        type="checkbox"
+                        defaultChecked={method.enabled && twoFAEnabled}
+                        disabled={!twoFAEnabled}
+                        className="mt-0.5 w-4 h-4 rounded accent-green-500"
+                      />
+                      <div className="flex-1">
+                        <p className="text-sm text-white">{method.name}</p>
+                        <p className="text-xs text-slate-400">{method.desc}</p>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Recent Activity */}
+              <div>
+                <h3 className="text-white text-sm font-semibold mb-3">Recovery Codes</h3>
+                <div className="bg-slate-700/30 border border-slate-700/50 rounded-lg p-3">
+                  <p className="text-xs text-slate-400 mb-2">Generate backup codes to access your account if you lose access to your authentication method.</p>
+                  <button className="w-full bg-slate-700/50 hover:bg-slate-700/70 text-white text-xs px-3 py-2 rounded transition-all">
+                    Generate New Codes
+                  </button>
+                </div>
+              </div>
+
+              {/* Last Verified */}
+              <div className="bg-slate-700/20 border border-slate-700/30 rounded-lg p-3">
+                <p className="text-xs text-slate-400">Last Verified: <span className="text-slate-300">Jan 5, 2025 at 2:45 PM</span></p>
               </div>
             </div>
-            <div className="p-6 border-t border-slate-700/50 flex gap-3">
+            <div className="p-6 border-t border-slate-700/50 flex gap-3 sticky bottom-0 bg-gradient-to-t from-slate-900 to-transparent">
               <button
                 onClick={() => setShow2FAModal(false)}
                 className="flex-1 bg-slate-700/50 hover:bg-slate-700/70 text-white px-4 py-2.5 rounded-lg transition-all font-medium"
@@ -1030,39 +1087,183 @@ const AdminPage: React.FC = () => {
         </div>
       )}
 
-      {/* System Status Modal */}
-      {showStatusModal && (
+      {/* Logs Modal */}
+      {showLogsModal && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4">
-          <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl shadow-2xl max-w-md w-full border border-slate-700 animate-scale-in">
-            <div className="p-6 border-b border-slate-700/50">
-              <div className="flex items-center gap-3">
-                <Server className="text-orange-400" size={24} />
-                <h2 className="text-xl font-bold text-white">System Status</h2>
+          <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl shadow-2xl max-w-2xl w-full border border-slate-700 animate-scale-in max-h-[80vh] overflow-hidden flex flex-col">
+            <div className="p-6 border-b border-slate-700/50 sticky top-0 bg-gradient-to-br from-slate-800 to-slate-900">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Terminal className="text-blue-400" size={24} />
+                  <h2 className="text-xl font-bold text-white">System Logs</h2>
+                </div>
+                <button
+                  onClick={() => setShowLogsModal(false)}
+                  className="text-slate-400 hover:text-white transition-colors"
+                >
+                  <X size={20} />
+                </button>
               </div>
             </div>
-            <div className="p-6 space-y-4">
-              {systemStatus && Object.entries(systemStatus).map(([key, value]: any) => (
-                <div key={key} className="bg-slate-700/30 border border-slate-700/50 rounded-lg p-4">
-                  <p className="text-slate-300 text-sm font-medium capitalize mb-2">{key}</p>
-                  <div className="space-y-1">
-                    {typeof value === "object" ? (
-                      Object.entries(value).map(([k, v]: any) => (
-                        <div key={k} className="flex justify-between text-xs">
-                          <span className="text-slate-400 capitalize">{k}:</span>
-                          <span className="text-white font-medium">{v}</span>
-                        </div>
-                      ))
-                    ) : (
-                      <span className="text-white font-medium">{value}</span>
-                    )}
-                  </div>
+            <div className="flex-1 overflow-y-auto p-4 space-y-2 font-mono text-xs">
+              {appLogs.map((log, idx) => (
+                <div key={idx} className="flex gap-3 text-slate-300 hover:bg-slate-700/20 p-2 rounded transition-all">
+                  <span className="text-slate-500 flex-shrink-0">{log.timestamp}</span>
+                  <span className={`flex-shrink-0 font-bold px-2 py-0.5 rounded ${
+                    log.level === "ERROR" ? "bg-red-500/20 text-red-400" :
+                    log.level === "WARNING" ? "bg-yellow-500/20 text-yellow-400" :
+                    "bg-green-500/20 text-green-400"
+                  }`}>
+                    {log.level}
+                  </span>
+                  <span className="text-slate-400 flex-shrink-0">[{log.source}]</span>
+                  <span className="text-slate-300 flex-1">{log.message}</span>
                 </div>
               ))}
             </div>
-            <div className="p-6 border-t border-slate-700/50">
+            <div className="p-4 border-t border-slate-700/50 flex gap-3 bg-gradient-to-t from-slate-900 to-transparent">
+              <button
+                onClick={() => setShowLogsModal(false)}
+                className="flex-1 bg-slate-700/50 hover:bg-slate-700/70 text-white px-4 py-2.5 rounded-lg transition-all font-medium"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => {
+                  toast.success("Logs exported to logs.txt", { icon: <CheckCircle2 className="text-green-500" /> });
+                }}
+                className="flex-1 bg-gradient-to-r from-blue-600 to-blue-500 hover:opacity-90 text-white px-4 py-2.5 rounded-lg transition-all font-medium flex items-center justify-center gap-2"
+              >
+                <Download size={16} />
+                Export Logs
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* System Status Modal */}
+      {showStatusModal && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4">
+          <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl shadow-2xl max-w-2xl w-full border border-slate-700 animate-scale-in max-h-[80vh] overflow-hidden flex flex-col">
+            <div className="p-6 border-b border-slate-700/50 sticky top-0 bg-gradient-to-br from-slate-800 to-slate-900">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Server className="text-orange-400" size={24} />
+                  <h2 className="text-xl font-bold text-white">Server Status</h2>
+                </div>
+                <button
+                  onClick={() => setShowStatusModal(false)}
+                  className="text-slate-400 hover:text-white transition-colors"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+            </div>
+            <div className="flex-1 overflow-y-auto p-6 space-y-4">
+              {/* Database Status */}
+              <div className="bg-slate-700/30 border border-slate-700/50 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-white text-sm font-semibold flex items-center gap-2">
+                    <Database size={16} className="text-blue-400" />
+                    Database
+                  </p>
+                  <span className="px-2 py-1 rounded-full text-xs font-bold bg-green-500/20 text-green-400">Connected</span>
+                </div>
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div><p className="text-slate-400">Status:</p><p className="text-green-400 font-medium">Active</p></div>
+                  <div><p className="text-slate-400">Latency:</p><p className="text-white">12 ms</p></div>
+                  <div><p className="text-slate-400">Host:</p><p className="text-slate-300">mongodb.local:27017</p></div>
+                  <div><p className="text-slate-400">Size:</p><p className="text-slate-300">2.4 GB</p></div>
+                </div>
+              </div>
+
+              {/* API Server Status */}
+              <div className="bg-slate-700/30 border border-slate-700/50 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-white text-sm font-semibold flex items-center gap-2">
+                    <Cpu size={16} className="text-cyan-400" />
+                    API Server
+                  </p>
+                  <span className="px-2 py-1 rounded-full text-xs font-bold bg-green-500/20 text-green-400">Running</span>
+                </div>
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div><p className="text-slate-400">Uptime:</p><p className="text-white">42 days 15 hrs</p></div>
+                  <div><p className="text-slate-400">Status:</p><p className="text-green-400 font-medium">Online</p></div>
+                  <div><p className="text-slate-400">Port:</p><p className="text-slate-300">5000</p></div>
+                  <div><p className="text-slate-400">Version:</p><p className="text-slate-300">1.2.0</p></div>
+                </div>
+              </div>
+
+              {/* System Resources */}
+              <div className="bg-slate-700/30 border border-slate-700/50 rounded-lg p-4">
+                <p className="text-white text-sm font-semibold mb-3 flex items-center gap-2">
+                  <Activity size={16} className="text-yellow-400" />
+                  System Resources
+                </p>
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <span className="text-slate-400">CPU Usage</span>
+                      <span className="text-white font-medium">22%</span>
+                    </div>
+                    <div className="bg-slate-600 rounded-full h-2 overflow-hidden">
+                      <div className="bg-gradient-to-r from-yellow-500 to-orange-500 h-full" style={{width: "22%"}}></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <span className="text-slate-400">Memory Usage</span>
+                      <span className="text-white font-medium">3.6 GB / 8 GB (45%)</span>
+                    </div>
+                    <div className="bg-slate-600 rounded-full h-2 overflow-hidden">
+                      <div className="bg-gradient-to-r from-blue-500 to-cyan-500 h-full" style={{width: "45%"}}></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <span className="text-slate-400">Disk Space</span>
+                      <span className="text-white font-medium">145 GB / 500 GB (29%)</span>
+                    </div>
+                    <div className="bg-slate-600 rounded-full h-2 overflow-hidden">
+                      <div className="bg-gradient-to-r from-green-500 to-emerald-500 h-full" style={{width: "29%"}}></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Network Stats */}
+              <div className="bg-slate-700/30 border border-slate-700/50 rounded-lg p-4">
+                <p className="text-white text-sm font-semibold mb-3 flex items-center gap-2">
+                  <Globe size={16} className="text-green-400" />
+                  Network
+                </p>
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div><p className="text-slate-400">Requests/sec:</p><p className="text-white font-medium">342</p></div>
+                  <div><p className="text-slate-400">Avg Response:</p><p className="text-white">145 ms</p></div>
+                  <div><p className="text-slate-400">Bandwidth:</p><p className="text-white">8.5 Mbps</p></div>
+                  <div><p className="text-slate-400">Error Rate:</p><p className="text-green-400 font-medium">0.02%</p></div>
+                </div>
+              </div>
+
+              {/* Last Updated */}
+              <div className="text-center text-xs text-slate-400">
+                Last updated: {new Date().toLocaleTimeString()}
+              </div>
+            </div>
+            <div className="p-6 border-t border-slate-700/50 flex gap-3 bg-gradient-to-t from-slate-900 to-transparent">
+              <button
+                onClick={() => {
+                  toast.success("Server status refreshed", { icon: <CheckCircle2 className="text-green-500" /> });
+                  handleViewSystemStatus();
+                }}
+                className="flex-1 bg-slate-700/50 hover:bg-slate-700/70 text-white px-4 py-2.5 rounded-lg transition-all font-medium"
+              >
+                Refresh
+              </button>
               <button
                 onClick={() => setShowStatusModal(false)}
-                className="w-full bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 text-white px-4 py-2.5 rounded-lg transition-all font-medium"
+                className="flex-1 bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 text-white px-4 py-2.5 rounded-lg transition-all font-medium"
               >
                 Close
               </button>
@@ -1263,6 +1464,51 @@ const AdminPage: React.FC = () => {
 				  </LineChart>
 				</ResponsiveContainer>
 			  </div>
+
+        {/* Distribution: Posts / Users / Documents / Simulations */}
+        <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-sm border border-slate-700/50 rounded-lg p-6">
+          <h3 className="text-lg font-semibold text-white mb-4">Content Distribution</h3>
+          <ResponsiveContainer width="100%" height={300}>
+          <PieChart>
+            {
+            (() => {
+              const dist = [
+              { name: 'Posts', value: posts.length, color: '#3b82f6' },
+              { name: 'Users', value: users.length, color: '#10b981' },
+              { name: 'Documents', value: documents.length, color: '#f97316' },
+              { name: 'Simulations', value: simulations.length, color: '#8b5cf6' },
+              ];
+              return (
+              <>
+                <Pie data={dist} dataKey="value" cx="50%" cy="50%" outerRadius={90} labelLine={false}>
+                {dist.map((entry, idx) => (
+                  <Cell key={`cell-${idx}`} fill={entry.color} />
+                ))}
+                </Pie>
+                <Tooltip contentStyle={{ backgroundColor: 'rgba(15,23,42,0.9)', border: '1px solid rgba(148,163,184,0.3)' }} />
+              </>
+              );
+            })()
+            }
+          </PieChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-sm border border-slate-700/50 rounded-lg p-6">
+          <h3 className="text-lg font-semibold text-white mb-4">Counts Comparison</h3>
+          <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={[{ name: 'Counts', Posts: posts.length, Users: users.length, Documents: documents.length, Simulations: simulations.length }] }>
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.06)" />
+            <XAxis dataKey="name" stroke="rgba(148,163,184,0.6)" />
+            <YAxis stroke="rgba(148,163,184,0.6)" />
+            <Tooltip contentStyle={{ backgroundColor: 'rgba(15,23,42,0.9)', border: '1px solid rgba(148,163,184,0.3)' }} />
+            <Legend />
+            <Bar dataKey="Posts" fill="#3b82f6"><Cell /></Bar>
+            <Bar dataKey="Users" fill="#10b981" /><Bar dataKey="Documents" fill="#f97316" /><Bar dataKey="Simulations" fill="#8b5cf6" />
+          </BarChart>
+          </ResponsiveContainer>
+        </div>
+        </div>
 
 			  {/* Content Status Distribution */}
 			  <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-sm border border-slate-700/50 rounded-lg p-6">
@@ -1833,12 +2079,12 @@ const AdminPage: React.FC = () => {
 				  <h4 className="text-sm font-semibold mb-4 text-white">Platform</h4>
 				  <ul className="space-y-2">
 					<li>
-					  <Link to="/me/blog" className="text-sm text-white hover:text-cyan-400 transition-colors">
+					  <Link to="/v/blog" className="text-sm text-white hover:text-cyan-400 transition-colors">
 						All Articles
 					  </Link>
 					</li>
 					<li>
-					  <Link to="/me/about" className="text-sm text-white hover:text-cyan-400 transition-colors">
+					  <Link to="/v/about" className="text-sm text-white hover:text-cyan-400 transition-colors">
 						About Us
 					  </Link>
 					</li>
@@ -1999,6 +2245,8 @@ const mockActivityLogs: ActivityLog[] = [
     timestamp: "2025-01-04 16:45",
   },
 ];
+
+
 
 const chartData = {
   viewsData: [

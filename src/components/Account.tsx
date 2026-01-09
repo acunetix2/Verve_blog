@@ -7,9 +7,13 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Eye, EyeOff, AlertCircle, CheckCircle, Trash2, User, Mail, Lock, Camera, Shield, Clock, ArrowLeft, Settings, Bell, Globe, Smartphone, Monitor } from "lucide-react";
+import { Eye, EyeOff, AlertCircle, CheckCircle, Trash2, User, Mail, Lock, Camera, Shield, Clock, ArrowLeft, Settings, Bell, Globe, Smartphone, Monitor, Bookmark, Activity } from "lucide-react";
+import ReadingProgressBookmarks from "./ReadingProgressBookmarks";
+import PreferencesPanel from "./PreferencesPanel";
+import ActivityTimeline from "./ActivityTimeline";
 
 interface User {
+  _id?: string;
   name: string;
   email: string;
   role: string;
@@ -33,7 +37,7 @@ interface Session {
   isCurrent: boolean;
 }
 
-type TabType = 'profile' | 'security' | 'preferences' | 'sessions' | 'danger';
+type TabType = 'profile' | 'security' | 'preferences' | 'sessions' | 'bookmarks' | 'activity' | 'danger';
 
 export default function Account() {
   const navigate = useNavigate();
@@ -162,7 +166,7 @@ export default function Account() {
       data.append("email", formData.email);
       if (avatarFile) data.append("profileImage", avatarFile);
 
-      const res = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/users/me`, data, {
+      const res = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/users/v`, data, {
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" },
       });
 
@@ -199,7 +203,7 @@ export default function Account() {
     setMessage(null);
     try {
       await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/users/me/password`, 
+        `${import.meta.env.VITE_API_BASE_URL}/users/v/password`, 
         {
           currentPassword: passwordData.currentPassword,
           newPassword: passwordData.newPassword
@@ -246,7 +250,7 @@ export default function Account() {
 
       setIsDeleting(true);
       try {
-        await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/users/me`, {
+        await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/users/v`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         localStorage.clear();
@@ -278,7 +282,7 @@ export default function Account() {
 
     setSessionsLoading(true);
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/users/me/sessions`, {
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/users/v/sessions`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSessions(res.data.sessions || []);
@@ -298,7 +302,7 @@ export default function Account() {
     if (!token) return;
 
     try {
-      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/users/me/sessions/${sessionId}`, {
+      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/users/v/sessions/${sessionId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setMessage({ type: "success", text: "Session revoked successfully" });
@@ -317,7 +321,7 @@ export default function Account() {
     if (!token) return;
 
     try {
-      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/users/me/sessions/all`, {
+      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/users/v/sessions/all`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setMessage({ type: "success", text: t("All Sessions Revoked Successfully") });
@@ -336,7 +340,7 @@ export default function Account() {
     setMessage(null);
     try {
       const res = await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/users/me/preferences`,
+        `${import.meta.env.VITE_API_BASE_URL}/users/v/preferences`,
         {
           emailNotifications,
           pushNotifications,
@@ -415,7 +419,9 @@ export default function Account() {
     { id: 'profile' as TabType, label: t("profile"), icon: User },
     { id: 'security' as TabType, label: t("security"), icon: Lock },
     { id: 'preferences' as TabType, label: t("preferences"), icon: Settings },
+    { id: 'bookmarks' as TabType, label: "Bookmarks", icon: Bookmark },
     { id: 'sessions' as TabType, label: t("Sessions"), icon: Monitor },
+    { id: 'activity' as TabType, label: "Activity", icon: Activity },
     { id: 'danger' as TabType, label: t("Danger Zone"), icon: Shield },
   ];
 
@@ -849,120 +855,7 @@ export default function Account() {
             {/* Preferences Tab */}
             {activeTab === 'preferences' && (
               <div className="space-y-4 sm:space-y-6">
-                <div>
-                  <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-1">Preferences</h2>
-                  <p className="text-xs text-gray-500">
-                    Customize your experience and notification settings
-                  </p>
-                </div>
-
-                <div className="bg-white border border-gray-200 rounded-lg p-3 sm:p-5">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3 sm:mb-4">Notifications</h3>
-                  
-                  <div className="space-y-3 sm:space-y-4">
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="flex items-start gap-2 flex-1 min-w-0">
-                        <Mail size={16} className="text-gray-500 mt-0.5 flex-shrink-0" />
-                        <div className="min-w-0">
-                          <p className="text-sm font-medium text-gray-900 truncate">Email Notifications</p>
-                          <p className="text-xs text-gray-500 mt-0.5">Receive updates via email</p>
-                        </div>
-                      </div>
-                      <button
-                        onClick={() => setEmailNotifications(!emailNotifications)}
-                        disabled={preferencesLoading}
-                        className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors flex-shrink-0 ${
-                          emailNotifications ? 'bg-gray-900' : 'bg-gray-200'
-                        } ${preferencesLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                      >
-                        <span
-                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                            emailNotifications ? 'translate-x-4' : 'translate-x-0.5'
-                          }`}
-                        />
-                      </button>
-                    </div>
-
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="flex items-start gap-2 flex-1 min-w-0">
-                        <Bell size={16} className="text-gray-500 mt-0.5 flex-shrink-0" />
-                        <div className="min-w-0">
-                          <p className="text-sm font-medium text-gray-900 truncate">Push Notifications</p>
-                          <p className="text-xs text-gray-500 mt-0.5">Receive browser notifications</p>
-                        </div>
-                      </div>
-                      <button
-                        onClick={() => setPushNotifications(!pushNotifications)}
-                        disabled={preferencesLoading}
-                        className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors flex-shrink-0 ${
-                          pushNotifications ? 'bg-gray-900' : 'bg-gray-200'
-                        } ${preferencesLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                      >
-                        <span
-                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                            pushNotifications ? 'translate-x-4' : 'translate-x-0.5'
-                          }`}
-                        />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-white border border-gray-200 rounded-lg p-3 sm:p-5">
-				  <h3 className="text-sm font-semibold text-gray-900 mb-3 sm:mb-4">{t("regionalSettings")}</h3>
-				  
-				  <div className="space-y-4">
-					<div>
-					  <label className="block text-xs font-semibold text-gray-700 mb-1.5">
-						<Globe size={14} className="inline mr-1" />
-						{t("language")}
-					  </label>
-					  <select
-						value={language}
-						onChange={(e) => {
-						  const newLang = e.target.value;
-						  setLanguage(newLang);         // Update local state
-						  i18n.changeLanguage(newLang); // Update i18next
-						  localStorage.setItem("i18nextLng", newLang);
-						}}
-						disabled={preferencesLoading}
-						className="w-full px-3 py-2 text-sm rounded-md bg-white border border-gray-300 text-gray-900 focus:outline-none focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
-					  >
-						<option value="en">English</option>
-						<option value="es">Spanish</option>
-						<option value="fr">French</option>
-						<option value="de">German</option>
-					  </select>
-					</div>
-
-					<div>
-					  <label className="block text-xs font-semibold text-gray-700 mb-1.5">
-						<Clock size={14} className="inline mr-1" />
-						{t("timezone")}
-					  </label>
-					  <select
-						value={timezone}
-						onChange={(e) => setTimezone(e.target.value)}
-						disabled={preferencesLoading}
-						className="w-full px-3 py-2 text-sm rounded-md bg-white border border-gray-300 text-gray-900 focus:outline-none focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
-					  >
-						<option value="UTC">UTC (GMT+0:00)</option>
-						<option value="EST">Eastern Time (GMT-5:00)</option>
-						<option value="PST">Pacific Time (GMT-8:00)</option>
-						<option value="CET">Central European (GMT+1:00)</option>
-					  </select>
-					</div>
-				  </div>
-                  <div className="pt-4 mt-4 border-t border-gray-100">
-                    <button 
-                      onClick={handlePreferencesUpdate}
-                      disabled={preferencesLoading}
-                      className="w-full px-4 py-2 bg-gray-900 hover:bg-gray-800 disabled:bg-gray-300 disabled:text-gray-500 text-white text-xs font-medium rounded-md transition-colors disabled:cursor-not-allowed"
-                    >
-                      {preferencesLoading ? "Saving..." : "Save Preferences"}
-                    </button>
-                  </div>
-                </div>
+                <PreferencesPanel />
               </div>
             )}
 
@@ -1050,6 +943,34 @@ export default function Account() {
                     </div>
                   </>
                 )}
+              </div>
+            )}
+
+            {/* Bookmarks Tab */}
+            {activeTab === 'bookmarks' && (
+              <div className="space-y-4 sm:space-y-6">
+                <div>
+                  <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-1">Reading Progress & Bookmarks</h2>
+                  <p className="text-xs text-gray-500">
+                    View and manage your saved articles and reading progress
+                  </p>
+                </div>
+                <div className="bg-white rounded-lg border border-gray-200">
+                  <ReadingProgressBookmarks />
+                </div>
+              </div>
+            )}
+
+            {/* Activity Timeline Tab */}
+            {activeTab === 'activity' && (
+              <div className="space-y-4 sm:space-y-6">
+                <div>
+                  <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-1">Activity Timeline</h2>
+                  <p className="text-xs text-gray-500">
+                    View your recent activities and contributions
+                  </p>
+                </div>
+                <ActivityTimeline userId={user?._id || localStorage.getItem("userId") || ""} />
               </div>
             )}
 

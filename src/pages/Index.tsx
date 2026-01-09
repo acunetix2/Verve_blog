@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { BlogCard } from "@/components/BlogCard";
 import { BlogSearch } from "@/components/BlogSearch";
+import WelcomeBanner from "@/components/WelcomeBanner";
 import Banner from "@/components/Banner";
 import author from "@/assets/author.png";
 import CommandStatusBadge from "@/components/CommandStatusBadge";
@@ -16,6 +17,10 @@ import PostSeriesComponent from "@/components/PostSeriesComponent";
 import PostSchedulingComponent from "@/components/PostSchedulingComponent";
 import EmailDigestComponent from "@/components/EmailDigestComponent";
 import EnhancedThemeSwitcher from "@/components/EnhancedThemeSwitcher";
+import EnhancedDashboard from "@/components/EnhancedDashboard";
+import BreadcrumbNavigation from "@/components/BreadcrumbNavigation";
+import FloatingActionButton from "@/components/FloatingActionButton";
+import { SkeletonDashboard } from "@/components/Skeletons";
 import {
   Terminal,
   Sparkles,
@@ -68,7 +73,7 @@ const Index = () => {
       try {
         const token = localStorage.getItem("token");
         if (token) {
-          const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/auth/me`, {
+          const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/auth/v`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setCurrentUser(res.data.user || { name: localStorage.getItem("userName") || "User" });
@@ -221,7 +226,10 @@ const Index = () => {
         }}></div>
       </div>
 
-      <div className="container relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        {/* Welcome Banner - At the top */}
+        <WelcomeBanner />
+
         {/* Header */}
          <header className="w-full bg-gradient-to-r from-slate-50 via-slate-100 to-slate-50 border-b border-slate-200/50">
 		  <div className="max-w-7xl mx-auto px-6 py-20 text-center space-y-8">
@@ -277,12 +285,12 @@ const Index = () => {
 
 			{/* Call-to-Action Buttons */}
 			<div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-10">
-			  <Link to="/me/about">
+			  <Link to="/v/about">
 				<button className="px-6 py-3 bg-white hover:bg-slate-50 border border-slate-300 hover:border-slate-400 rounded-lg text-sm font-semibold transition-all shadow-sm hover:shadow text-slate-900">
 				  About Us
 				</button>
 			  </Link>
-			  <Link to="/me/blog">
+			  <Link to="/v/blog">
 				<button className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white rounded-lg text-sm font-semibold transition-all shadow-md hover:shadow-lg flex items-center gap-2">
 				  Explore Writeups
 				  <ArrowRight className="h-4 w-4" />
@@ -297,6 +305,13 @@ const Index = () => {
 
 		  </div>
 		</header>
+
+        {/* Breadcrumb Navigation */}
+        <BreadcrumbNavigation />
+
+        {/* Enhanced Dashboard */}
+        <EnhancedDashboard />
+
         {/* Stats Banner */}
         <div className="py-12 sm:py-16">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
@@ -330,7 +345,7 @@ const Index = () => {
         <div className="py-8 max-w-6xl mx-auto">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-slate-900">Popular Categories</h2>
-            <Link to="/me/blog" className="text-sm text-indigo-600 hover:text-indigo-700 font-semibold">
+            <Link to="/v/blog" className="text-sm text-indigo-600 hover:text-indigo-700 font-semibold">
               View all
             </Link>
           </div>
@@ -457,7 +472,7 @@ const Index = () => {
                   {filteredPosts.length > 3 && (
                     <div className="text-center pt-6">
                       <Link
-                        to="/me/blog"
+                        to="/v/blog"
                         className="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-700 font-semibold transition-colors group"
                       >
                         <span>View All Articles</span>
@@ -560,7 +575,7 @@ const Index = () => {
               </div>
               
               <div className="space-y-2">
-                <Link to="/me/blog">
+                <Link to="/v/blog">
                   <div className="group/link flex items-center justify-between p-3 bg-slate-50 hover:bg-slate-100 border border-transparent hover:border-slate-200 rounded-xl transition-all cursor-pointer">
                     <div className="flex items-center gap-3">
                       <div className="p-1.5 bg-indigo-100 rounded-lg">
@@ -572,7 +587,7 @@ const Index = () => {
                   </div>
                 </Link>
 
-                <Link to="/me/about">
+                <Link to="/v/about">
                   <div className="group/link flex items-center justify-between p-3 bg-slate-50 hover:bg-slate-100 border border-transparent hover:border-slate-200 rounded-xl transition-all cursor-pointer">
                     <div className="flex items-center gap-3">
                       <div className="p-1.5 bg-indigo-100 rounded-lg">
@@ -793,12 +808,12 @@ const Index = () => {
 				  <h4 className="text-sm font-semibold mb-4 text-white">Platform</h4>
 				  <ul className="space-y-2">
 					<li>
-					  <Link to="/me/blog" className="text-sm text-white hover:text-cyan-400 transition-colors">
+					  <Link to="/v/blog" className="text-sm text-white hover:text-cyan-400 transition-colors">
 						All Articles
 					  </Link>
 					</li>
 					<li>
-					  <Link to="/me/about" className="text-sm text-white hover:text-cyan-400 transition-colors">
+					  <Link to="/v/about" className="text-sm text-white hover:text-cyan-400 transition-colors">
 						About Us
 					  </Link>
 					</li>
