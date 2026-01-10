@@ -166,7 +166,7 @@ export default function Account() {
       data.append("email", formData.email);
       if (avatarFile) data.append("profileImage", avatarFile);
 
-      const res = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/users/v`, data, {
+      const res = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/users/me`, data, {
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" },
       });
 
@@ -203,7 +203,7 @@ export default function Account() {
     setMessage(null);
     try {
       await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/users/v/password`, 
+        `${import.meta.env.VITE_API_BASE_URL}/users/me/password`, 
         {
           currentPassword: passwordData.currentPassword,
           newPassword: passwordData.newPassword
@@ -240,7 +240,7 @@ export default function Account() {
     }
 
     if (deleteStep === 2) {
-      if (deleteConfirmText.toLowerCase() !== "deletemyaccount") {
+      if (deleteConfirmText.toLowerCase() !== "delete") {
         setMessage({ type: "error", text: "Please type the exact phrase to confirm deletion" });
         return;
       }
@@ -250,7 +250,7 @@ export default function Account() {
 
       setIsDeleting(true);
       try {
-        await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/users/v`, {
+        await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/users/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         localStorage.clear();
@@ -282,7 +282,7 @@ export default function Account() {
 
     setSessionsLoading(true);
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/users/v/sessions`, {
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/users/me/sessions`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSessions(res.data.sessions || []);
@@ -302,7 +302,7 @@ export default function Account() {
     if (!token) return;
 
     try {
-      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/users/v/sessions/${sessionId}`, {
+      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/users/me/sessions/${sessionId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setMessage({ type: "success", text: "Session revoked successfully" });
@@ -321,7 +321,7 @@ export default function Account() {
     if (!token) return;
 
     try {
-      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/users/v/sessions/all`, {
+      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/users/me/sessions/all`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setMessage({ type: "success", text: t("All Sessions Revoked Successfully") });
@@ -339,8 +339,7 @@ export default function Account() {
     setPreferencesLoading(true);
     setMessage(null);
     try {
-      const res = await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/users/v/preferences`,
+      const res = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/users/me/preferences`,
         {
           emailNotifications,
           pushNotifications,
@@ -389,7 +388,7 @@ export default function Account() {
   };
 
   const getRoleDisplay = (role: string) => {
-    return role === "admin" ? t("Administrator") : t("Regular User");
+    return role === "admin" ? t("Administrator") : t("Normal ");
   };
 
   const formatDate = (dateString: string) => {
@@ -440,7 +439,7 @@ export default function Account() {
                 </div>
                 <div>
                   <h3 className="text-base sm:text-lg font-semibold text-white">{t("Delete Account")}</h3>
-                  <p className="text-xs text-red-100">{t("Cannot Be Undone")}</p>
+                  <p className="text-xs text-red-100">{t("Irreversible")}</p>
                 </div>
               </div>
             </div>
@@ -451,7 +450,7 @@ export default function Account() {
                 <>
                   <div className="mb-5">
                     <p className="text-sm text-gray-700 mb-4">
-                      {t("Delete Account Confirmation")}
+                      {t("Are you sure?")}
                     </p>
                     <div className="bg-red-50 border border-red-200 rounded-lg p-4">
                       <ul className="text-xs text-gray-700 space-y-2">
@@ -487,15 +486,15 @@ export default function Account() {
               ) : (
                 <>
                   <div className="mb-5">
-                    <p className="text-sm font-semibold text-gray-900 mb-2">{t("finalConfirmation")}</p>
+                    <p className="text-sm font-semibold text-gray-900 mb-2">{t("Final Warning")}</p>
                     <p className="text-xs text-gray-600 mb-4">
-                      {t("Type To Confirm")} <span className="font-semibold text-gray-900">"{t("Delete My Account")}"</span>:
+                      {t("Enter ")} <span className="font-bold text-gray-900">"{t("delete")}"</span> to confirm:
                     </p>
                     <input
                       type="text"
                       value={deleteConfirmText}
                       onChange={(e) => setDeleteConfirmText(e.target.value)}
-                      placeholder={t("Delete My Account")}
+                      placeholder={t("delete")}
                       className="w-full px-3 py-2 text-sm rounded-md bg-white border-2 border-red-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all"
                     />
                   </div>
@@ -517,14 +516,14 @@ export default function Account() {
                   onClick={handleCancelDelete}
                   className="flex-1 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors"
                 >
-                  {t("cancel")}
+                  {t("No")}
                 </button>
                 <button
                   onClick={handleConfirmDelete}
-                  disabled={deleteStep === 2 && deleteConfirmText.toLowerCase() !== t("deleteMyAccount").toLowerCase() || isDeleting}
+                  disabled={deleteStep === 2 && deleteConfirmText.toLowerCase() !== t("delete").toLowerCase() || isDeleting}
                   className="flex-1 px-4 py-2.5 bg-red-600 hover:bg-red-700 disabled:bg-red-300 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg transition-colors"
                 >
-                  {isDeleting ? t("deleting") : deleteStep === 1 ? t("continue") : t("deleteForever")}
+                  {isDeleting ? t("deleting") : deleteStep === 1 ? t("Yes") : t("Delete")}
                 </button>
               </div>
             </div>
@@ -707,12 +706,12 @@ export default function Account() {
                       <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-xs text-gray-600">
                         <div className="flex items-center gap-1.5">
                           <Shield size={13} />
-                          <span>Role: <strong className="text-gray-900">{getRoleDisplay(user.role)}</strong></span>
+                          <span>Role: <strong className="text-green-700">{getRoleDisplay(user.role)}</strong></span>
                         </div>
-                        <span className="hidden sm:inline text-gray-300">•</span>
-                        <div className="flex items-center gap-1.5">
+                        <span className="hidden sm:inline text-gray-700">•</span>
+                        <div className="flex items-center font-bold gap-1.5 text-green-800">
                           <Clock size={13} />
-                          <span>Joined {formatDate(user.createdAt)}</span>
+                          <span>Since {formatDate(user.createdAt)}</span>
                         </div>
                       </div>
                     </div>
@@ -723,14 +722,14 @@ export default function Account() {
                     <button 
                       onClick={handleProfileUpdate} 
                       disabled={isLoading || !isDirty}
-                      className="w-full sm:w-auto px-4 py-2 bg-gray-900 hover:bg-gray-800 disabled:bg-gray-300 disabled:text-gray-500 text-white text-xs font-medium rounded-md transition-colors disabled:cursor-not-allowed"
+                      className="w-full sm:w-auto px-4 py-2 bg-green-600 hover:bg-gray-800 disabled:bg-gray-300 disabled:text-gray-500 text-white text-xs font-medium rounded-md transition-colors disabled:cursor-not-allowed"
                     >
                       {isLoading ? "Saving..." : "Save Changes"}
                     </button>
                     {isDirty && (
                       <button 
                         onClick={handleCancel}
-                        className="w-full sm:w-auto px-4 py-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs font-medium rounded-md transition-colors"
+                        className="w-full sm:w-auto text-white px-4 py-2 bg-slate-700 border border-gray-300 hover:bg-red-500 text-gray-700 text-xs font-medium rounded-md transition-colors"
                       >
                         Cancel
                       </button>
@@ -843,7 +842,7 @@ export default function Account() {
                     <button 
                       onClick={handlePasswordUpdate} 
                       disabled={isLoading}
-                      className="w-full px-4 py-2 bg-gray-900 hover:bg-gray-800 disabled:bg-gray-300 disabled:text-gray-500 text-white text-xs font-medium rounded-md transition-colors disabled:cursor-not-allowed"
+                      className=" px-4 py-2 bg-green-700 hover:bg-gray-800 disabled:bg-gray-300 disabled:text-gray-500 text-white text-xs font-medium rounded-md transition-colors disabled:cursor-not-allowed"
                     >
                       {isLoading ? "Updating..." : "Update Password"}
                     </button>
@@ -902,7 +901,7 @@ export default function Account() {
                                   <p className="text-xs text-gray-400 mt-0.5">
                                     {session.device} • {session.browser} • {session.location}
                                   </p>
-								  <p className="text-xs text-gray-400 mt-1"> IP Address: {session.ipAddress}</p>
+								                  <p className="text-xs text-gray-400 mt-1"> IP Address: {session.ipAddress}</p>
                                   <p className="text-xs text-gray-400 mt-1">Last Active: {formatLastActive(session.lastActive)}</p>
                                 </div>
                                 {session.isCurrent ? (
@@ -925,9 +924,9 @@ export default function Account() {
                         <div className="pt-3 sm:pt-4 mt-3 sm:mt-4 border-t border-gray-100">
                           <button 
                             onClick={handleRevokeAllSessions}
-                            className="w-full px-4 py-2 bg-white border border-red-300 hover:bg-red-50 text-red-600 text-xs font-medium rounded-md transition-colors"
+                            className="px-4 py-2 bg-white border border-red-300 hover:bg-red-50 text-red-600 text-xs font-medium rounded-md transition-colors"
                           >
-                            Revoke All Other Sessions
+                            Revoke All
                           </button>
                         </div>
                       )}
@@ -1008,7 +1007,7 @@ export default function Account() {
                         className="w-full sm:w-auto px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-medium rounded-md transition-colors flex items-center justify-center sm:justify-start gap-2"
                       >
                         <Trash2 size={16} />
-                        Delete My Account
+                        Delete Account
                       </button>
                     </div>
                   </div>

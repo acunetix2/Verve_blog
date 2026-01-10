@@ -186,43 +186,33 @@ export default function Billing() {
       <Toaster position="top-right" />
       
       {/* Hero Section */}
-      <div className="max-w-6xl mx-auto mb-16">
-        <div className="text-center mb-4">
-          <span className={`inline-block px-4 py-1.5 rounded-full text-xs font-semibold mb-4 ${
-            actualTheme === 'dark'
-              ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
-              : 'bg-blue-100 text-blue-700 border border-blue-200'
-          }`}>
-            Transparent Pricing
-          </span>
-        </div>
-        
-        <h1 className={`text-4xl md:text-5xl font-bold mb-4 ${
+      <div className="max-w-4xl text-left mx-auto mb-16" style={{ fontFamily: "'Google Sans', sans-serif" }}>
+        <h1 className={`text-2xl md:text-3xl font-bold mb-4 ${
           actualTheme === 'dark'
             ? 'text-white'
             : 'text-slate-900'
         }`}>
-          Simple, Predictable Pricing
+          Upgrade your account
         </h1>
         
-        <p className={`text-lg max-w-2xl mx-auto mb-8 ${
+        <p className={` max-w-1xl mx-auto mb-8 ${
           actualTheme === 'dark'
             ? 'text-slate-400'
             : 'text-slate-600'
-        }`}>
+        }`} style={{ fontFamily: "'Google Sans', sans-serif" }}>
           Choose the perfect plan for your needs. Upgrade, downgrade, or cancel anytime with no hidden fees.
         </p>
 
         {/* Billing Cycle Toggle */}
-        <div className="flex justify-center mb-12">
-          <div className={`inline-flex rounded-xl p-1 ${
+        <div className="flex justify-center mb-12" style={{ fontFamily: "'Google Sans', sans-serif" }}>
+          <div className={`inline-flex rounded-full p-1 ${
             actualTheme === 'dark'
               ? 'bg-slate-800 border border-slate-700'
               : 'bg-gray-100 border border-gray-200'
           }`}>
             <button
               onClick={() => setBillingCycle("monthly")}
-              className={`px-6 py-2.5 rounded-lg font-semibold transition-all duration-300 ${
+              className={`px-6 py-2.5 rounded-full font-semibold text-1xl transition-all duration-300 ${
                 billingCycle === "monthly"
                   ? actualTheme === 'dark'
                     ? 'bg-blue-600 text-white shadow-lg'
@@ -230,13 +220,13 @@ export default function Billing() {
                   : actualTheme === 'dark'
                     ? 'text-slate-400'
                     : 'text-slate-600'
-              }`}
+              }`} style={{ fontFamily: "'Google Sans', sans-serif" }}
             >
               Monthly
             </button>
             <button
               onClick={() => setBillingCycle("yearly")}
-              className={`px-6 py-2.5 rounded-lg font-semibold transition-all duration-300 relative ${
+              className={`px-6 py-2.5 rounded-full font-semibold text-1xl transition-all duration-300 relative ${
                 billingCycle === "yearly"
                   ? actualTheme === 'dark'
                     ? 'bg-blue-600 text-white shadow-lg'
@@ -244,7 +234,7 @@ export default function Billing() {
                   : actualTheme === 'dark'
                     ? 'text-slate-400'
                     : 'text-slate-600'
-              }`}
+              }`} style={{ fontFamily: "'Google Sans', sans-serif" }}
             >
               Yearly
               <span className="absolute -top-3 -right-3 bg-amber-500 text-white text-xs px-2 py-1 rounded-full font-bold">
@@ -256,7 +246,7 @@ export default function Billing() {
       </div>
 
       {/* Pricing Cards */}
-      <div className="max-w-6xl mx-auto mb-16">
+      <div className="max-w-1xl mx-auto mb-16" style={{ fontFamily: "'Google Sans', sans-serif" }}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {plans.map((plan, index) => {
             const Icon = plan.icon;
@@ -272,7 +262,7 @@ export default function Billing() {
                       : 'scale-105 shadow-2xl'
                     : 'hover:shadow-lg'
                 }`}
-                onClick={() => setSelectedPlan(plan.id)}
+                onClick={() => setSelectedPlan(plan.id)} style={{ fontFamily: "'Google Sans', sans-serif" }}
               >
                 {/* Popular Badge */}
                 {plan.popular && (

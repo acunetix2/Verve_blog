@@ -153,30 +153,27 @@ const Documents: React.FC = () => {
         </div>
       )}
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1">
         {/* Header */}
-        <div className="text-center mb-12 py-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl mb-4 shadow-lg">
-            <FileText className="h-8 w-8 text-white" />
-          </div>
-          <h2 className={`${actualTheme === 'dark' ? 'text-white' : 'text-gray-900'} text-4xl font-bold mb-3`}>
+        <div className="text-left mb-10 py-2">
+          <h2 className={`${actualTheme === 'dark' ? 'text-white' : 'text-blue-900'} text-3xl font-bold mb-3`}>
             Learning Resources
           </h2>
-          <p className={`${actualTheme === 'dark' ? 'text-slate-300' : 'text-gray-600'} text-lg max-w-2xl mx-auto`}>
+          <p className={`${actualTheme === 'dark' ? 'text-slate-300' : 'text-gray-600'} text-lg max-w-1xl mx-auto`}>
             Access cybersecurity documents, guides, and educational materials
           </p>
         </div>
 
         {/* Search Bar */}
-        <div className={`rounded-2xl border shadow-lg p-6 mb-8 transition-colors ${actualTheme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'}`}>
+        <div className={`rounded-2xl border shadow-lg p-4 mb-8 transition-colors ${actualTheme === 'dark' ? 'bg-slate-800 border-blue-100' : 'bg-white border-blue-200'}`}>
           <div className="relative">
             <Search className={`absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 ${actualTheme === 'dark' ? 'text-slate-500' : 'text-gray-400'}`} />
             <input
               type="text"
-              placeholder="Search documents by title or description..."
+              placeholder="Search documents..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className={`w-full pl-12 pr-4 h-14 rounded-xl text-base transition-colors ${actualTheme === 'dark' ? 'bg-slate-700 border-slate-600 text-white placeholder:text-slate-500 focus:border-blue-500 focus:ring-blue-500/20' : 'bg-gray-50 border border-gray-300 text-gray-900 placeholder:text-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'}`}
+              className={`w-full pl-12 pr-4 h-10  text-base transition-colors ${actualTheme === 'dark' ? 'bg-slate-700 border-blue-100 text-white placeholder:text-slate-500 focus:border-blue-300 focus:ring-blue-300/20' : 'bg-gray-50 border border-blue-300 text-gray-900 placeholder:text-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'}`}
             />
           </div>
         </div>

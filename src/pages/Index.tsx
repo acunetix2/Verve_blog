@@ -231,52 +231,44 @@ const Index = () => {
         <WelcomeBanner />
 
         {/* Header */}
-         <header className="w-full bg-gradient-to-r from-slate-50 via-slate-100 to-slate-50 border-b border-slate-200/50">
-		  <div className="max-w-7xl mx-auto px-6 py-20 text-center space-y-8">
+    <header className="w-full bg-gradient-to-r from-slate-50 via-slate-100 to-slate-50 border-b border-slate-200/50">
+		  <div className="max-w-7xl mx-auto px-6 py-4 text-left space-y-8">
+          {/* Main Heading */}
+          <h1
+            className="text-5xl sm:text-6xl lg:text-4xl font-bold tracking-tight text-slate-900"
+            style={{ fontFamily: "'Google Sans', sans-serif" }}
+          >
+            Welcome to Verve Hub 
+          </h1>
 
-			{/* Status Badge */}
-			<CommandStatusBadge
-			  speed={100}        
-			  pause={1000}      
-			  darkMode={true}  
-			  context="admin"   
-			/>
-			{/* Main Heading */}
-			<h1
-			  className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900"
-			  style={{ fontFamily: "'Google Sans', sans-serif" }}
-			>
-			  Verve Hub Writeups
-			</h1>
-
-			{/* Subheading / Description */}
-			<p
-			  className="text-lg sm:text-xl text-slate-800 max-w-4xl mx-auto leading-relaxed font-light"
-			  style={{ fontFamily: "'Google Sans', sans-serif" }}
-			>
-			  Verve Hub is a cybersecurity learning platform providing detailed CTF writeups, TryHackMe walkthroughs, curated reference materials, and downloadable resources. 
-			  We aim to empower learners, enhance practical skills, and guide you toward mastery in cybersecurity.
-			</p>
+          {/* Subheading / Description */}
+          <p
+            className="text-left sm:text-1xl text-slate-800 max-w-2xl mx-auto leading-relaxed font-light"
+            style={{ fontFamily: "'Google Sans', sans-serif" }}
+          >
+            Verve Hub is a cybersecurity learning platform providing detailed CTF writeups, TryHackMe walkthroughs, curated reference materials, and downloadable resources. 
+            We aim to empower learners, enhance practical skills, and guide you toward mastery in cybersecurity.
+          </p>
 
 			{/* Key Features */}
 			<div className="flex flex-col md:flex-row items-center justify-center gap-6 pt-8">
 			  <div className="flex flex-col items-center gap-2 text-center max-w-xs">
 				<Shield className="h-8 w-8 text-cyan-500" />
-				<h3 className="text-lg font-semibold text-slate-900" style={{ fontFamily: "'Google Sans', sans-serif" }}>Practical Security</h3>
+				<h3 className=" font-semibold text-slate-900" style={{ fontFamily: "'Google Sans', sans-serif" }}>Practical Security</h3>
 				<p className="text-sm text-slate-700 font-light">
-				  Interactive CTF walkthroughs, TryHackMe room writeups, and real-world security exercises.
+				  CTF walkthroughs, TryHackMe room writeups, and beginner-friendly courses.
 				</p>
 			  </div>
 			  <div className="flex flex-col items-center gap-2 text-center max-w-xs">
 				<BookOpen className="h-8 w-8 text-indigo-500" />
-				<h3 className="text-lg font-semibold text-slate-900" style={{ fontFamily: "'Google Sans', sans-serif" }}>Curated Resources</h3>
+				<h3 className=" font-semibold text-slate-900" style={{ fontFamily: "'Google Sans', sans-serif" }}>Curated Resources</h3>
 				<p className="text-sm text-slate-700 font-light">
 				   Curated reference guides and tutorials designed to support systematic learning.
 				</p>
 			  </div>
 			  <div className="flex flex-col items-center gap-2 text-center max-w-xs">
 				<Cpu className="h-8 w-8 text-violet-500" />
-				<h3 className="text-lg font-semibold text-slate-900" style={{ fontFamily: "'Google Sans', sans-serif" }}>Skill Development</h3>
+				<h3 className=" font-semibold text-slate-900" style={{ fontFamily: "'Google Sans', sans-serif" }}>Skill Development</h3>
 				<p className="text-sm text-slate-700 font-light">
 				  Gain guidance and deepen your cybersecurity knowledge.
 				</p>
@@ -292,15 +284,15 @@ const Index = () => {
 			  </Link>
 			  <Link to="/v/blog">
 				<button className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white rounded-lg text-sm font-semibold transition-all shadow-md hover:shadow-lg flex items-center gap-2">
-				  Explore Writeups
+				  Explore
 				  <ArrowRight className="h-4 w-4" />
 				</button>
 			  </Link>
 			</div>
 
 			{/* Highlight / Tagline */}
-			<p className="mt-12 text-sm text-slate-500 font-medium tracking-wide uppercase" style={{ fontFamily: "'Google Sans', sans-serif" }}>
-			  Learn • Understand • Secure • Excel
+			<p className="mt-12 text-sm text-gray-800 font-medium tracking-wide " style={{ fontFamily: "'Google Sans', sans-serif" }}>
+			  Statistics
 			</p>
 
 		  </div>
@@ -369,7 +361,7 @@ const Index = () => {
         </div>
 
         {/* Banner Section */}
-        <div className="py-8">
+        <div className="py-4">
           <Banner />
         </div>
 
@@ -384,7 +376,7 @@ const Index = () => {
                   <Lightbulb className="h-6 w-6 text-indigo-600" />
                 </div>
                 <div className="flex-1">
-                  <h2 className="text-xl font-bold mb-2 text-slate-900">Welcome to Verve Hub Writeups</h2>
+                  <h2 className="text-xl font-bold mb-2 text-slate-900">Welcome to Verve Hub!</h2>
                   <p className="text-slate-600 leading-relaxed text-sm">
                     A modern publishing platform designed for developers, designers, and creators. 
                     Discover in-depth articles, tutorials, and insights on technology, design, and productivity. 
@@ -399,7 +391,6 @@ const Index = () => {
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-slate-900">Cybersecurity Content</p>
-                    <p className="text-xs text-slate-600">Industry insights</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 p-3 bg-violet-50 rounded-lg">
@@ -408,7 +399,6 @@ const Index = () => {
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-slate-900">Active Community</p>
-                    <p className="text-xs text-slate-600">100+ members</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 p-3 bg-teal-50 rounded-lg">
@@ -416,8 +406,7 @@ const Index = () => {
                     <Globe className="h-4 w-4 text-teal-600" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-slate-900">Available</p>
-                    <p className="text-xs text-slate-600">Everyone</p>
+                    <p className="text-sm font-semibold text-slate-900">Open-Source</p>
                   </div>
                 </div>
               </div>
@@ -439,7 +428,7 @@ const Index = () => {
             </div>
 
             {/* Featured Content */}
-            <div className="space-y-6">
+            <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-bold text-slate-900">Featured Articles</h2>
                 {filteredPosts.length > 0 && (
@@ -566,7 +555,7 @@ const Index = () => {
             </div>
 
             {/* Quick Navigation */}
-            <div className="bg-white border border-slate-200/60 rounded-2xl p-6 lg:sticky lg:top-24 shadow-sm">
+            <div className="bg-white border left-4 border-slate-200/60 rounded-2xl p-6  lg:top-24 shadow-sm">
               <div className="flex items-center gap-2 mb-5">
                 <div className="p-2 bg-indigo-100 rounded-xl">
                   <Zap className="h-5 w-5 text-indigo-600" />
@@ -662,114 +651,6 @@ const Index = () => {
                   >
                     <Mail className="h-4 w-4 text-slate-600 group-hover:text-slate-800 transition-colors" />
                   </a>
-                </div>
-              </div>
-            </div>
-
-            {/* Reader Achievements */}
-            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-              <div className="flex items-center gap-2 mb-5">
-                <div className="p-2 bg-yellow-500/10 rounded-xl">
-                  <Award className="h-5 w-5 text-yellow-600" />
-                </div>
-                <h3 className="text-base font-bold text-slate-800">Reader Milestones</h3>
-              </div>
-              
-              <div className="space-y-3">
-                <div className="p-4 bg-orange-50 border border-orange-200 rounded-xl">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="p-2 bg-orange-500/20 rounded-lg">
-                      <Flame className="h-5 w-5 text-orange-600" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-semibold text-slate-800">7 Day Streak</p>
-                      <p className="text-xs text-slate-600">Keep reading daily!</p>
-                    </div>
-                    <span className="text-xs font-semibold text-orange-600">Active</span>
-                  </div>
-                </div>
-                <div className="p-4 bg-gradient-to-r from-yellow-500/10 to-amber-500/10 border border-yellow-500/20 rounded-xl">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="p-2 bg-yellow-500/20 rounded-lg">
-                      <Star className="h-5 w-5 text-yellow-400" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-semibold">Top Contributor</p>
-                      <p className="text-xs text-muted-foreground">Featured reader</p>
-                    </div>
-                    <span className="text-xs font-semibold text-yellow-400">Gold</span>
-                  </div>
-                </div>
-                
-                <div className="p-4 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/20 rounded-xl">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="p-2 bg-blue-500/20 rounded-lg">
-                      <Eye className="h-5 w-5 text-blue-400" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-semibold">Article Views</p>
-                      <p className="text-xs text-muted-foreground">Total engagement</p>
-                    </div>
-                    <span className="text-xs font-semibold text-blue-400">100+</span>
-                  </div>
-                </div>
-
-                <div className="p-4 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-xl">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="p-2 bg-purple-500/20 rounded-lg">
-                      <Heart className="h-5 w-5 text-purple-400" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-semibold">Bookmarks</p>
-                      <p className="text-xs text-muted-foreground">Saved content</p>
-                    </div>
-                    <span className="text-xs font-semibold text-purple-400">24</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Community Engagement */}
-            <div className="bg-card border border-border/50 rounded-2xl p-6">
-              <div className="flex items-center gap-2 mb-5">
-                <div className="p-2 bg-cyan-500/10 rounded-xl">
-                  <MessageSquare className="h-5 w-5 text-cyan-400" />
-                </div>
-                <h3 className="text-lg font-serif font-semibold">Engagement Stats</h3>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Heart className="h-4 w-4 text-pink-400" />
-                    <span className="text-sm text-muted-foreground">Total Likes</span>
-                  </div>
-                  <span className="text-sm font-semibold">1.2K</span>
-                </div>
-                <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
-                  <div className="h-full w-3/4 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full"></div>
-                </div>
-
-                <div className="flex items-center justify-between pt-2">
-                  <div className="flex items-center gap-2">
-                    <MessageSquare className="h-4 w-4 text-blue-400" />
-                    <span className="text-sm text-muted-foreground">Comments</span>
-                  </div>
-                  <span className="text-sm font-semibold">340</span>
-                </div>
-                <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
-                  <div className="h-full w-1/2 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full"></div>
-                </div>
-
-                <div className="flex items-center justify-between pt-2">
-                  <div className="flex items-center gap-2">
-                    <Share2 className="h-4 w-4 text-purple-400" />
-                    <span className="text-sm text-muted-foreground">Shares</span>
-                  </div>
-                  <span className="text-sm font-semibold">580</span>
-                </div>
-                <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
-                  <div className="h-full w-2/3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
                 </div>
               </div>
             </div>

@@ -51,16 +51,16 @@ export const BlogSearch = ({ onSearch, onTagFilter, selectedTag }: BlogSearchPro
   };
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 mb-6">
+    <div className="bg-white rounded-xl  shadow-sm p-6 mb-6">
       {/* Search Bar */}
       <div className="relative mb-6">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 h-5 w-5" />
         <Input
           type="text"
-          placeholder="Search articles by title or description..."
+          placeholder="Search articles..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-12 pr-12 h-12 bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 rounded-lg"
+          className="pl-12 pr-12 h-10 bg-slate-50  text-slate-900 placeholder:text-slate-400 rounded-lg"
         />
         {searchQuery && (
           <Button

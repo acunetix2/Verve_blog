@@ -85,7 +85,7 @@ const PreferencesPanel: React.FC = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/users/preferences`, {
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/users/me/preferences`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setPreferences(response.data);
@@ -101,7 +101,7 @@ const PreferencesPanel: React.FC = () => {
     try {
       setSaving(true);
       const token = localStorage.getItem("token");
-      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/users/preferences`, preferences, {
+      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/users/me/preferences`, preferences, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Preferences saved successfully!");
@@ -334,9 +334,8 @@ const PreferencesPanel: React.FC = () => {
           <button
             onClick={savePreferences}
             disabled={saving}
-            className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-lg font-medium transition-colors"
+            className=" px-4 py-2 bg-green-700 hover:bg-gray-800 disabled:bg-gray-300 disabled:text-gray-500 text-white text-xs font-medium rounded-md transition-colors disabled:cursor-not-allowed"
           >
-            <Save size={18} />
             {saving ? "Saving..." : "Save Preferences"}
           </button>
           <button

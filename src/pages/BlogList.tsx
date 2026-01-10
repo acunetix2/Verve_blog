@@ -207,18 +207,15 @@ export default function BlogList() {
           font-family: 'Google Sans', 'Product Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
       `}</style>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         {/* Hero Section */}
-        <div className="text-center mb-12 py-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-orange-600 rounded-2xl mb-4 shadow-lg">
-            <FileEdit className="h-8 w-8 text-white" />
-          </div>
+        <div className="text-left mb-12 py-8">
           <h2 className={`text-4xl font-bold mb-3 ${
             actualTheme === 'dark' ? 'text-white' : 'text-gray-900'
           }`}>
             Curated Verve WriteUps
           </h2>
-          <p className={`text-base max-w-2xl mx-auto ${
+          <p className={`text-left max-w-1xl mx-auto ${
             actualTheme === 'dark' ? 'text-slate-300' : 'text-gray-800'
           }`}>
             Whether you are a beginner learning the fundamentals, or a professional staying up-to-date with the latest threats, Verve Hub offers curated resources, practical guides, and examples to enhance your cybersecurity skills.
@@ -226,7 +223,7 @@ export default function BlogList() {
         </div>
 
         {/* Category Navigation */}
-        <div className={`rounded-2xl border shadow-lg p-6 mb-8 transition-colors ${
+        <div className={`rounded-2xl border shadow-lg p-4 mb-8 transition-colors ${
           actualTheme === 'dark'
             ? 'bg-slate-800 border-slate-700'
             : 'bg-white border-gray-200'
@@ -293,10 +290,10 @@ export default function BlogList() {
               actualTheme === 'dark' ? 'text-slate-500' : 'text-gray-400'
             }`} />
             <Input
-              placeholder="Search writeups by title or description..."
+              placeholder="Search articles..."
               value={searchQuery}
               onChange={(e) => handleSearch(e.target.value)}
-              className={`pl-12 pr-12 h-14 rounded-xl text-base transition-colors ${
+              className={`pl-12 pr-12 h-10 rounded-xl  ${
                 actualTheme === 'dark'
                   ? 'bg-slate-700 border-slate-600 text-white placeholder:text-slate-500 focus:border-blue-500 focus:ring-blue-500/20'
                   : 'bg-gray-50 border-gray-300 text-gray-900 placeholder:text-gray-500 focus:border-blue-500 focus:ring-blue-500/20'

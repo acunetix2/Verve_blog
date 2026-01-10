@@ -117,13 +117,13 @@ export const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) =>
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-left justify-between h-16">
             {/* Left side: Hamburger + Logo */}
             <div className="flex items-center gap-3 ml-2">
               {/* Hamburger Menu Button (always visible, fixed before logo) */}
               <button
                 onClick={onToggleSidebar}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-300 mr-2"
+                className="p-0.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-300 mr-2"
                 aria-label="Toggle sidebar"
               >
                 <Menu size={20} />
@@ -132,15 +132,15 @@ export const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) =>
               {/* Logo */}
               <Link
                 to="/v"
-                className="flex items-center gap-3 group"
+                className="flex items-center gap-1 group"
                 aria-label="Go to homepage"
               >
                 <div className="flex items-center gap-2">
-				  <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-gradient-to-br from-cyan-600 to-blue-600 shadow-md">
+				  <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.location.href='/v'}>
 					  <img 
 						src={CompanyLogo} 
 						alt="Company Logo" 
-						className="h-6 w-6 object-contain" 
+						className="h-14 w-14 object-contain"
 					  />
 					</div>
 				  <div className="hidden sm:flex flex-col leading-tight">

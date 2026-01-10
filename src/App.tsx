@@ -154,6 +154,7 @@ const App = () => (
                   <Route path="/admin" element={<AdminPage />} />
                   <Route path="/admin/create" element={<CreatePost />} />
                   <Route path="/admin/documents" element={<UploadPage />} />
+                  <Route path="/admin/account" element={<Account />} />
 				  <Route path="/admin/simulations" element={<UploadSimulation />} />
                 </Route>
               </Route>

@@ -15,6 +15,7 @@ import {
   Wallet,
   Activity,
   Menu,
+  HelpCircle,
   X,
 } from "lucide-react";
 
@@ -31,7 +32,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Resources", path: "/v/resources", icon: <Layers size={16} /> },
   { label: "Billing", path: "/v/billing", icon: <Wallet size={16} /> },
   { label: "Simulations", path: "/v/simulations", icon: <Activity size={16} /> },
-  { label: "Learn", path: "https://tryhackme.com", external: true, icon: <GraduationCap size={20} /> },
+  { label: "Learn", path: "https://tryhackme.com", external: true, icon: <HelpCircle size={20} /> },
 ];
 
 interface SidebarProps {

@@ -65,9 +65,9 @@ export const WelcomeBanner: React.FC<WelcomeBannerProps> = ({ onLoadingChange })
                 animate={{ rotate: 360 }}
                 transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
               >
-                <Sparkles className="h-4 w-4 text-yellow-300" />
+                <Sparkles className="h-4 w-4 text-green-600" />
               </motion.div>
-              <span className="text-xs font-bold text-yellow-200 uppercase tracking-wider">
+              <span className="text-xs font-bold text-yellow-200 tracking-wider" style={{ fontFamily: "'Google Sans', sans-serif" }}>
                 {getTimeGreeting()}
               </span>
             </div>
@@ -75,16 +75,16 @@ export const WelcomeBanner: React.FC<WelcomeBannerProps> = ({ onLoadingChange })
             {!loading && isLoggedIn ? (
               <div>
                 <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white leading-tight" style={{ fontFamily: "'Google Sans', sans-serif" }}>
-                  {getTimeGreeting()}, <span className="text-yellow-300">{userName}</span> 👋
+                  {getTimeGreeting()}, <span className="text-green-500" style={{ fontFamily: "'Google Sans', sans-serif" }}>{userName}</span> 👋
                 </h2>
-                <p className="text-indigo-100 text-xs sm:text-sm mt-1 font-medium">
+                <p className="text-indigo-100 text-xs sm:text-sm mt-1 font-medium" style={{ fontFamily: "'Google Sans', sans-serif" }}>
                   Continue exploring cybersecurity challenges and level up your hacking skills.
                 </p>
               </div>
             ) : (
               <div>
                 <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white leading-tight" style={{ fontFamily: "'Google Sans', sans-serif" }}>
-                  Welcome to <span className="text-yellow-300">Verve Hub</span> 🚀
+                  Welcome! 
                 </h2>
                 <p className="text-indigo-100 text-xs sm:text-sm mt-1 font-medium">
                   Explore writeups, hacking tutorials, and security challenges.

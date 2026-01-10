@@ -127,15 +127,15 @@ const EnhancedDashboard: React.FC = () => {
         <>
           {/* Reading Stats Section */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
+            <div className="bg-silver-800 dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Reading Activity</h3>
-                <BookOpen className="text-blue-500" size={20} />
+                <p className="text-1xl font-bold text-gray-900 dark:text-white" style={{ fontFamily: "'Google Sans', sans-serif" }}>Reading Activity</p>
+                <BookOpen className="text-blue-500" style={{ fontFamily: "'Google Sans', sans-serif" }} size={20} />
               </div>
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between mb-2">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">Articles Read</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400" style={{ fontFamily: "'Google Sans', sans-serif" }}>Articles Read</span>
                     <span className="font-bold text-gray-900 dark:text-white">{stats?.readingStats?.articlesRead || 0}</span>
                   </div>
                   <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
@@ -144,10 +144,10 @@ const EnhancedDashboard: React.FC = () => {
                 </div>
                 <div>
                   <div className="flex justify-between mb-2">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">Time Spent</span>
-                    <span className="font-bold text-gray-900 dark:text-white">{stats?.readingStats?.hoursSpent || 0}h</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400" style={{ fontFamily: "'Google Sans', sans-serif" }}>Learning Hours</span>
+                    <span className="font-bold text-gray-900 dark:text-white" style={{ fontFamily: "'Google Sans', sans-serif" }}>{stats?.readingStats?.hoursSpent || 0}h</span>
                   </div>
-                  <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                  <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden" style={{ fontFamily: "'Google Sans', sans-serif" }}>
                     <div className="h-full bg-gradient-to-r from-purple-500 to-pink-500" style={{width: `${Math.min(((stats?.readingStats?.hoursSpent || 0) / 100) * 100, 100)}%`}}></div>
                   </div>
                 </div>
@@ -155,51 +155,51 @@ const EnhancedDashboard: React.FC = () => {
             </div>
 
             {/* Performance Metrics */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
+            <div className="bg-orange-300 text-0.5xl dark:bg-blue-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Performance</h3>
-                <TrendingUp className="text-green-500" size={20} />
+                <p className="text-1xl font-bold text-gray-900 dark:text-white" style={{ fontFamily: "'Google Sans', sans-serif" }}>Performance</p>
+                <TrendingUp className="text-pink-500" size={20} />
               </div>
               <div className="space-y-3">
                 <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Avg. Read Time</span>
-                  <span className="font-bold text-gray-900 dark:text-white">{stats?.readingStats?.averageReadTime || 0} min</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400" style={{ fontFamily: "'Google Sans', sans-serif" }}>Avg. Read Time</span>
+                  <span className="font-bold text-gray-900 dark:text-white" style={{ fontFamily: "'Google Sans', sans-serif" }}>{stats?.readingStats?.averageReadTime || 0} min</span>
                 </div>
                 <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Engagement Rate</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400" style={{ fontFamily: "'Google Sans', sans-serif" }}>Engagement Rate</span>
                   <span className="font-bold text-green-600">{Math.round(((stats?.totalLikes || 0) / Math.max(stats?.totalViews || 1, 1)) * 100)}%</span>
                 </div>
                 <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Avg. Views/Post</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400" style={{ fontFamily: "'Google Sans', sans-serif" }}>Avg. Views/Post</span>
                   <span className="font-bold text-gray-900 dark:text-white">{Math.round((stats?.totalViews || 0) / Math.max(stats?.totalPosts || 1, 1))}</span>
                 </div>
               </div>
             </div>
 
             {/* Next Steps */}
-            <div className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-6 border border-green-200 dark:border-green-800">
+            <div className="bg-gradient-to-br from-indigo-500/10 to-emerald-500/10 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-6 border border-green-200 dark:border-green-800">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Next Steps</h3>
+                <p className="text-sm font-bold text-gray-900 dark:text-white" style={{ fontFamily: "'Google Sans', sans-serif" }}>Next Steps</p>
                 <Zap className="text-green-500" size={20} />
               </div>
               <div className="space-y-3">
-                <div className="flex items-start gap-3">
+                <div className="flex items-start gap-3 "style={{ fontFamily: "'Google Sans', sans-serif" }}>
                   <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0 mt-0.5">
                     <span className="text-white text-sm font-bold">1</span>
                   </div>
-                  <p className="text-sm text-gray-700 dark:text-gray-300">Write your next article</p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300" style={{ fontFamily: "'Google Sans', sans-serif" }}>Write your next article</p>
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0 mt-0.5">
                     <span className="text-white text-sm font-bold">2</span>
                   </div>
-                  <p className="text-sm text-gray-700 dark:text-gray-300">Share with community</p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300" style={{ fontFamily: "'Google Sans', sans-serif" }}>Share with community</p>
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0 mt-0.5">
                     <span className="text-white text-sm font-bold">3</span>
                   </div>
-                  <p className="text-sm text-gray-700 dark:text-gray-300">Engage with readers</p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300" style={{ fontFamily: "'Google Sans', sans-serif" }}>Engage with readers</p>
                 </div>
               </div>
             </div>

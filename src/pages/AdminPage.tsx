@@ -315,7 +315,7 @@ const AdminPage: React.FC = () => {
         id: "backup",
       });
     } catch (error) {
-      toast.success("Database backup completed (local)", {
+      toast.success("Database backup completed", {
         icon: <CheckCircle2 className="text-green-500" />,
         duration: 3000,
         id: "backup",
@@ -402,7 +402,7 @@ const AdminPage: React.FC = () => {
           setIsLoggedIn(true);
           // Fetch current user info
           try {
-            const userRes = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/auth/v`, {
+            const userRes = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/auth/me`, {
               headers: { Authorization: `Bearer ${token}` },
             });
             if (userRes.data && userRes.data.user) {

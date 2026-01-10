@@ -55,15 +55,15 @@ export default function LandingPage() {
         scrollY > 20 ? "backdrop-blur-md bg-white/95 shadow-sm border-b border-gray-200" : "backdrop-blur-sm bg-white/80"
       }`}>
         <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.location.href='/'}>
-          <div className="w-8 h-8 flex items-center justify-center">
+          <div className="w-12 h-12 flex items-center justify-center">
             <img 
               src={CompanyLogo} 
               alt="Company Logo" 
-              className="h-8 w-8 object-contain" 
+              className="h-14 w-14 object-contain" 
             />
           </div>
           <h1 className="text-sm font-semibold text-gray-900">
-            Verve Hub WriteUps
+            Verve Hub 
           </h1>
         </div>
         
