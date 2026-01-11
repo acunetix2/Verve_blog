@@ -40,6 +40,11 @@ import UploadSimulation from "@/components/UploadSimulation";
 import SimulationList from "@/pages/SimulationList";
 import VerifyEmail from "@/pages/VerifyEmail";
 import SeriesViewPage from "@/pages/SeriesViewPage";
+import CoursesList from "@/pages/CoursesList";
+import CourseDetail from "@/pages/CourseDetail";
+import LessonView from "@/pages/LessonView";
+import UserProgressDashboard from "@/pages/UserProgressDashboard";
+import UserCertificates from "@/pages/UserCertificates";
 import FloatingActionButton from "@/components/FloatingActionButton";
 
 // --- Auth Context ---
@@ -145,6 +150,11 @@ const App = () => (
 				  <Route path="/community" element={<Community />} />
 				  <Route path="/newsletter" element={<Newsletter />} />
 				  <Route path="/v/billing" element={<Billing />} />
+				  <Route path="/v/courses" element={<CoursesList />} />
+				  <Route path="/v/courses/:courseId" element={<CourseDetail />} />
+				  <Route path="/v/courses/:courseId/lesson/:lessonId" element={<LessonView />} />
+				  <Route path="/v/my-progress" element={<UserProgressDashboard />} />
+				  <Route path="/v/my-certificates" element={<UserCertificates />} />
                 </Route>
               </Route>
 

@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, Cpu, ChevronDown, BookOpen, HelpCircle, Home, ExternalLink, Github, CheckCircle2, Bell, Settings, LogOut } from "lucide-react";
+import { Menu, Cpu, ChevronDown, BookOpen, HelpCircle, Home, ExternalLink, Github, CheckCircle2, Bell, Settings, LogOut, TrendingUp, Award } from "lucide-react";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import axios from "axios";
@@ -22,8 +22,9 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: "Dashboard", path: "/v", icon: <Home size={16} /> },
-  { label: "Posts", path: "/v/blog", icon: <BookOpen size={16} /> },
+  { label: "Courses", path: "/v/courses", icon: <HelpCircle size={16} /> },
+  { label: "My Progress", path: "/v/my-progress", icon: <TrendingUp size={16} /> },
+  { label: "My Certificates", path: "/v/my-certificates", icon: <Award size={16} /> },
   { label: "Resources", path: "/v/resources" },
   {
     label: "Learn",

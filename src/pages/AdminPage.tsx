@@ -35,6 +35,8 @@ import {
   Mail,
   LineChart as LineChartIcon,
   PieChart as PieChartIcon,
+  ChevronUp,
+  ChevronDown,
 } from "lucide-react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -117,6 +119,7 @@ const AdminPage: React.FC = () => {
   const [activityLogs, setActivityLogs] = useState<ActivityLog[]>([]);
   const [simulations, setSimulations] = useState<Simulation[]>([]);
   const [documents, setDocuments] = useState<Document[]>([]);
+  const [courses, setCourses] = useState<any[]>([]);
   const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
   const [loading, setLoading] = useState<boolean>(true);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -128,7 +131,7 @@ const AdminPage: React.FC = () => {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [showAnalytics, setShowAnalytics] = useState(false);
-  const [activeTab, setActiveTab] = useState<"overview" | "posts" | "users" | "activity" | "simulations" | "documents" | "settings">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "posts" | "users" | "activity" | "simulations" | "documents" | "courses" | "settings">("overview");
   const [filterStatus, setFilterStatus] = useState("all");
 
   // Current user info
@@ -156,6 +159,7 @@ const AdminPage: React.FC = () => {
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [showPerformanceModal, setShowPerformanceModal] = useState(false);
   const [showLogsModal, setShowLogsModal] = useState(false);
+  const [showCourseModal, setShowCourseModal] = useState(false);
   const [systemStatus, setSystemStatus] = useState<any>(null);
   const [performanceData, setPerformanceData] = useState<any>(null);
   const [activeSessions, setActiveSessions] = useState<any[]>([]);
@@ -164,8 +168,53 @@ const AdminPage: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [twoFAEnabled, setTwoFAEnabled] = useState(false);
   const [twoFAMethods, setTwoFAMethods] = useState<string[]>([]);
+  const [courseForm, setCourseForm] = useState({ 
+    title: "", 
+    description: "", 
+    image: "",
+    modules: [] as Array<{ title: string; description?: string; lessons: Array<{ title: string; content?: string }> }>
+  });
+  const [editingCourseId, setEditingCourseId] = useState<string | null>(null);
+  const [expandedModuleIndex, setExpandedModuleIndex] = useState<number | null>(null);
 
   const fontStyle = { fontFamily: "'Google Sans', sans-serif", fontSize: "0.8125rem" };
+
+  // Module/Lesson management helpers
+  const addModule = () => {
+    const newModules = [...courseForm.modules, { title: "", description: "", lessons: [] }];
+    setCourseForm({ ...courseForm, modules: newModules });
+    setExpandedModuleIndex(newModules.length - 1);
+  };
+
+  const removeModule = (index: number) => {
+    const newModules = courseForm.modules.filter((_, i) => i !== index);
+    setCourseForm({ ...courseForm, modules: newModules });
+    setExpandedModuleIndex(null);
+  };
+
+  const updateModule = (index: number, field: string, value: any) => {
+    const newModules = [...courseForm.modules];
+    newModules[index] = { ...newModules[index], [field]: value };
+    setCourseForm({ ...courseForm, modules: newModules });
+  };
+
+  const addLesson = (moduleIndex: number) => {
+    const newModules = [...courseForm.modules];
+    newModules[moduleIndex].lessons.push({ title: "", content: "" });
+    setCourseForm({ ...courseForm, modules: newModules });
+  };
+
+  const removeLesson = (moduleIndex: number, lessonIndex: number) => {
+    const newModules = [...courseForm.modules];
+    newModules[moduleIndex].lessons = newModules[moduleIndex].lessons.filter((_, i) => i !== lessonIndex);
+    setCourseForm({ ...courseForm, modules: newModules });
+  };
+
+  const updateLesson = (moduleIndex: number, lessonIndex: number, field: string, value: any) => {
+    const newModules = [...courseForm.modules];
+    newModules[moduleIndex].lessons[lessonIndex] = { ...newModules[moduleIndex].lessons[lessonIndex], [field]: value };
+    setCourseForm({ ...courseForm, modules: newModules });
+  };
 
   // Format date as "Nov 2, 2025"
   const formatDate = (dateString: string | undefined): string => {
@@ -387,6 +436,73 @@ const AdminPage: React.FC = () => {
     navigate("/admin/create");
   };
 
+  // Course handlers
+  const handleSaveCourse = async () => {
+    if (!courseForm.title || !courseForm.description) {
+      toast.error("Please fill in all required fields", { icon: <AlertTriangle className="text-red-500" /> });
+      return;
+    }
+    try {
+      const token = localStorage.getItem("token");
+      // Send modules as JSON (not stringified)
+      const payload = {
+        title: courseForm.title,
+        description: courseForm.description,
+        image: courseForm.image,
+        modules: courseForm.modules
+      };
+      
+      if (editingCourseId) {
+        await axios.put(
+          `${import.meta.env.VITE_API_BASE_URL}/courses/${editingCourseId}`,
+          payload,
+          { headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } }
+        );
+        toast.success("Course updated successfully", { icon: <CheckCircle2 className="text-green-500" /> });
+      } else {
+        await axios.post(
+          `${import.meta.env.VITE_API_BASE_URL}/courses`,
+          payload,
+          { headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } }
+        );
+        toast.success("Course created successfully", { icon: <CheckCircle2 className="text-green-500" /> });
+      }
+      setCourseForm({ title: "", description: "", image: "", modules: [] });
+      setEditingCourseId(null);
+      setShowCourseModal(false);
+      setExpandedModuleIndex(null);
+      await fetchCourses();
+    } catch (error) {
+      toast.error("Failed to save course", { icon: <XCircle className="text-red-500" /> });
+    }
+  };
+
+  const handleEditCourse = (course: any) => {
+    setCourseForm({ 
+      title: course.title, 
+      description: course.description, 
+      image: course.image || "",
+      modules: course.modules || []
+    });
+    setEditingCourseId(course._id);
+    setExpandedModuleIndex(null);
+    setShowCourseModal(true);
+  };
+
+  const handleDeleteCourse = async (id: string) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(
+        `${import.meta.env.VITE_API_BASE_URL}/courses/${id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success("Course deleted successfully", { icon: <CheckCircle2 className="text-green-500" /> });
+      await fetchCourses();
+    } catch (error) {
+      toast.error("Failed to delete course", { icon: <XCircle className="text-red-500" /> });
+    }
+  };
+
   // Verify token
   useEffect(() => {
     const verifyToken = async () => {
@@ -597,6 +713,20 @@ const AdminPage: React.FC = () => {
     }
   };
 
+  // Fetch courses
+  const fetchCourses = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/courses`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setCourses(res.data || []);
+    } catch (error) {
+      console.warn("Failed to fetch courses");
+      setCourses([]);
+    }
+  };
+
   useEffect(() => {
     if (isLoggedIn) {
       const loadAllData = async () => {
@@ -605,6 +735,7 @@ const AdminPage: React.FC = () => {
           fetchUsers(),
           fetchSimulations(),
           fetchDocuments(),
+          fetchCourses(),
         ]);
         // Call activity logs after all other data is fetched
         await fetchActivityLogs();
@@ -1303,6 +1434,208 @@ const AdminPage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Course Modal with Modules & Lessons */}
+      {showCourseModal && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4 overflow-y-auto">
+          <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl shadow-2xl max-w-2xl w-full border border-slate-700 animate-scale-in my-8">
+            <div className="p-6 border-b border-slate-700/50 sticky top-0 bg-gradient-to-br from-slate-800 to-slate-900">
+              <div className="flex items-center gap-3">
+                <Zap className="text-blue-400" size={24} />
+                <h2 className="text-xl font-bold text-white">{editingCourseId ? "Edit Course" : "Create New Course"}</h2>
+              </div>
+            </div>
+            <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+              {/* Basic Info Section */}
+              <div className="space-y-4 pb-6 border-b border-slate-700/50">
+                <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wide">Course Details</h3>
+                <div>
+                  <label className="text-slate-300 text-sm font-medium mb-2 block">Course Title *</label>
+                  <input
+                    type="text"
+                    value={courseForm.title}
+                    onChange={(e) => setCourseForm({ ...courseForm, title: e.target.value })}
+                    placeholder="Enter course title"
+                    className="w-full bg-slate-900/50 border border-slate-700/50 text-white placeholder-slate-500 px-4 py-2.5 rounded-lg focus:border-blue-500/50 focus:outline-none focus:ring-1 focus:ring-blue-500/30 transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="text-slate-300 text-sm font-medium mb-2 block">Description *</label>
+                  <textarea
+                    value={courseForm.description}
+                    onChange={(e) => setCourseForm({ ...courseForm, description: e.target.value })}
+                    placeholder="Enter course description"
+                    className="w-full bg-slate-900/50 border border-slate-700/50 text-white placeholder-slate-500 px-4 py-2.5 rounded-lg focus:border-blue-500/50 focus:outline-none focus:ring-1 focus:ring-blue-500/30 transition-all resize-none h-20"
+                  />
+                </div>
+                <div>
+                  <label className="text-slate-300 text-sm font-medium mb-2 block">Image URL</label>
+                  <input
+                    type="text"
+                    value={courseForm.image}
+                    onChange={(e) => setCourseForm({ ...courseForm, image: e.target.value })}
+                    placeholder="Enter image URL (optional)"
+                    className="w-full bg-slate-900/50 border border-slate-700/50 text-white placeholder-slate-500 px-4 py-2.5 rounded-lg focus:border-blue-500/50 focus:outline-none focus:ring-1 focus:ring-blue-500/30 transition-all"
+                  />
+                </div>
+              </div>
+
+              {/* Modules Section */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wide">Modules & Lessons</h3>
+                  <button
+                    onClick={addModule}
+                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg transition-all text-xs font-medium"
+                  >
+                    <Plus size={14} />
+                    Add Module
+                  </button>
+                </div>
+
+                {courseForm.modules.length === 0 ? (
+                  <div className="text-center py-6 text-slate-400 border border-dashed border-slate-700/50 rounded-lg">
+                    <p className="text-sm">No modules yet. Click "Add Module" to get started.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {courseForm.modules.map((module, moduleIdx) => (
+                      <div key={moduleIdx} className="bg-slate-900/50 border border-slate-700/50 rounded-lg overflow-hidden">
+                        <button
+                          onClick={() => setExpandedModuleIndex(expandedModuleIndex === moduleIdx ? null : moduleIdx)}
+                          className="w-full p-4 flex items-center justify-between hover:bg-slate-800/50 transition-colors"
+                        >
+                          <div className="flex items-center gap-3 flex-1 text-left">
+                            <div className="w-6 h-6 rounded-full bg-blue-500/30 flex items-center justify-center text-xs font-semibold text-blue-300">
+                              {moduleIdx + 1}
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium text-white">{module.title || "Untitled Module"}</p>
+                              <p className="text-xs text-slate-400">{module.lessons.length} lesson(s)</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {expandedModuleIndex === moduleIdx ? (
+                              <ChevronUp size={18} className="text-slate-400" />
+                            ) : (
+                              <ChevronDown size={18} className="text-slate-400" />
+                            )}
+                          </div>
+                        </button>
+
+                        {expandedModuleIndex === moduleIdx && (
+                          <div className="p-4 border-t border-slate-700/50 space-y-4 bg-slate-950/50">
+                            {/* Module Title */}
+                            <div>
+                              <label className="text-slate-300 text-xs font-medium mb-1 block">Module Title *</label>
+                              <input
+                                type="text"
+                                value={module.title}
+                                onChange={(e) => updateModule(moduleIdx, "title", e.target.value)}
+                                placeholder="e.g., Introduction to Python"
+                                className="w-full bg-slate-900/50 border border-slate-700/50 text-white placeholder-slate-500 px-3 py-2 rounded-lg focus:border-blue-500/50 focus:outline-none text-sm"
+                              />
+                            </div>
+
+                            {/* Module Description */}
+                            <div>
+                              <label className="text-slate-300 text-xs font-medium mb-1 block">Module Description</label>
+                              <input
+                                type="text"
+                                value={module.description || ""}
+                                onChange={(e) => updateModule(moduleIdx, "description", e.target.value)}
+                                placeholder="Optional description"
+                                className="w-full bg-slate-900/50 border border-slate-700/50 text-white placeholder-slate-500 px-3 py-2 rounded-lg focus:border-blue-500/50 focus:outline-none text-sm"
+                              />
+                            </div>
+
+                            {/* Lessons */}
+                            <div className="pt-2 border-t border-slate-700/30">
+                              <div className="flex items-center justify-between mb-3">
+                                <label className="text-slate-300 text-xs font-medium">Lessons</label>
+                                <button
+                                  onClick={() => addLesson(moduleIdx)}
+                                  className="flex items-center gap-1 bg-slate-700 hover:bg-slate-600 text-white px-2 py-1 rounded text-xs transition-all"
+                                >
+                                  <Plus size={12} />
+                                  Add Lesson
+                                </button>
+                              </div>
+
+                              {module.lessons.length === 0 ? (
+                                <p className="text-xs text-slate-500 py-2">No lessons yet.</p>
+                              ) : (
+                                <div className="space-y-2">
+                                  {module.lessons.map((lesson, lessonIdx) => (
+                                    <div key={lessonIdx} className="bg-slate-800/50 border border-slate-700/30 rounded p-3 space-y-2">
+                                      <div className="flex gap-2">
+                                        <input
+                                          type="text"
+                                          value={lesson.title}
+                                          onChange={(e) => updateLesson(moduleIdx, lessonIdx, "title", e.target.value)}
+                                          placeholder="Lesson title"
+                                          className="flex-1 bg-slate-900/50 border border-slate-700/50 text-white placeholder-slate-500 px-3 py-1.5 rounded text-xs"
+                                        />
+                                        <button
+                                          onClick={() => removeLesson(moduleIdx, lessonIdx)}
+                                          className="bg-red-600/20 hover:bg-red-600/40 text-red-300 px-2 py-1.5 rounded transition-all"
+                                        >
+                                          <Trash2 size={14} />
+                                        </button>
+                                      </div>
+                                      <input
+                                        type="text"
+                                        value={lesson.content || ""}
+                                        onChange={(e) => updateLesson(moduleIdx, lessonIdx, "content", e.target.value)}
+                                        placeholder="Lesson content (optional - can add files later)"
+                                        className="w-full bg-slate-900/50 border border-slate-700/50 text-white placeholder-slate-500 px-3 py-1.5 rounded text-xs"
+                                      />
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Remove Module Button */}
+                            <button
+                              onClick={() => removeModule(moduleIdx)}
+                              className="w-full bg-red-600/20 hover:bg-red-600/30 text-red-300 px-3 py-2 rounded-lg transition-all text-xs font-medium flex items-center justify-center gap-2"
+                            >
+                              <Trash2 size={14} />
+                              Remove Module
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="p-6 border-t border-slate-700/50 flex gap-3 sticky bottom-0 bg-gradient-to-br from-slate-800 to-slate-900">
+              <button
+                onClick={() => {
+                  setShowCourseModal(false);
+                  setCourseForm({ title: "", description: "", image: "", modules: [] });
+                  setEditingCourseId(null);
+                  setExpandedModuleIndex(null);
+                }}
+                className="flex-1 bg-slate-700/50 hover:bg-slate-700/70 text-white px-4 py-2.5 rounded-lg transition-all font-medium"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveCourse}
+                className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-2.5 rounded-lg transition-all font-medium"
+              >
+                {editingCourseId ? "Update Course" : "Create Course"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 		<div className="w-full px-4 sm:px-6 py-3 sm:py-4">	
 		{/* Header with Tabs */}
 		<div className="mb-6">
@@ -1340,6 +1673,7 @@ const AdminPage: React.FC = () => {
 			  { id: "overview", label: "Overview", icon: BarChart3 },
 			  { id: "posts", label: "Posts", icon: FileText },
 			  { id: "users", label: "Users", icon: Users },
+			  { id: "courses", label: "Courses", icon: Zap },
 			  { id: "simulations", label: "Simulations", icon: Zap },
 			  { id: "documents", label: "Documents", icon: Database },
 			  { id: "activity", label: "Activity", icon: Activity },
@@ -1834,6 +2168,98 @@ const AdminPage: React.FC = () => {
 				  </tbody>
 				</table>
 			  </div>
+			</div>
+		  </div>
+		)}
+
+		{/* Courses Tab */}
+		{activeTab === "courses" && (
+		  <div className="space-y-6">
+			<div className="flex gap-4 items-center flex-wrap">
+			  <button
+				onClick={() => {
+				  setCourseForm({ title: "", description: "", image: "", modules: [] });
+				  setEditingCourseId(null);
+				  setExpandedModuleIndex(null);
+				  setShowCourseModal(true);
+				}}
+				className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-2.5 rounded-lg transition-all font-medium text-sm"
+			  >
+				<Plus size={18} />
+				Add New Course
+			  </button>
+			  <div className="relative flex-1 min-w-[250px]">
+				<Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+				<input
+				  type="text"
+				  placeholder="Search courses..."
+				  value={searchTerm}
+				  onChange={(e) => setSearchTerm(e.target.value)}
+				  className="w-full bg-slate-800/50 border border-slate-700/50 text-white placeholder-slate-500 pl-10 pr-4 py-2.5 rounded-lg focus:border-blue-500/50 focus:outline-none focus:ring-1 focus:ring-blue-500/30 transition-all"
+				/>
+			  </div>
+			</div>
+
+			{/* Courses Grid */}
+			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+			  {courses.length === 0 ? (
+				<div className="col-span-full text-center py-12 text-slate-400">
+				  <Zap size={48} className="mx-auto mb-4 opacity-50" />
+				  <p>No courses found. Create your first course to get started!</p>
+				</div>
+			  ) : (
+				courses
+				  .filter(course => 
+					(course.title || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+					(course.description || "").toLowerCase().includes(searchTerm.toLowerCase())
+				  )
+				  .map((course) => (
+					<div
+					  key={course._id}
+					  className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-sm border border-slate-700/50 rounded-lg overflow-hidden hover:border-slate-600/50 transition-all hover:shadow-lg hover:shadow-blue-500/10"
+					>
+					  {course.image && (
+						<img
+						  src={course.image}
+						  alt={course.title}
+						  className="w-full h-40 object-cover"
+						/>
+					  )}
+					  <div className="p-6">
+						<h3 className="text-lg font-semibold text-white mb-2 line-clamp-2">{course.title}</h3>
+						<p className="text-sm text-slate-400 mb-4 line-clamp-3">{course.description}</p>
+						<div className="flex gap-2 mb-4">
+						  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-500/20 text-blue-300 border border-blue-500/30">
+							{course.modules?.length || 0} Modules
+						  </span>
+						  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-500/20 text-purple-300 border border-purple-500/30">
+							{(course.modules || []).reduce((sum, m) => sum + (m.lessons?.length || 0), 0)} Lessons
+						  </span>
+						</div>
+						<div className="flex gap-2">
+						  <button
+							onClick={() => handleEditCourse(course)}
+							className="flex-1 bg-slate-700/50 hover:bg-blue-600/40 text-white px-3 py-2 rounded-lg transition-all text-sm font-medium border border-slate-600/50 hover:border-blue-500/50 flex items-center justify-center gap-2"
+						  >
+							<Edit size={16} />
+							Edit
+						  </button>
+						  <button
+							onClick={() => {
+							  if (window.confirm("Delete this course?")) {
+								handleDeleteCourse(course._id);
+							  }
+							}}
+							className="flex-1 bg-slate-700/50 hover:bg-red-600/40 text-white px-3 py-2 rounded-lg transition-all text-sm font-medium border border-slate-600/50 hover:border-red-500/50 flex items-center justify-center gap-2"
+						  >
+							<Trash2 size={16} />
+							Delete
+						  </button>
+						</div>
+					  </div>
+					</div>
+				  ))
+			  )}
 			</div>
 		  </div>
 		)}

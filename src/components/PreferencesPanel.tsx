@@ -5,59 +5,37 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 
 interface UserPreferences {
-  email: {
-    marketing: boolean;
-    notifications: boolean;
-    digest: boolean;
-    digestFrequency: "daily" | "weekly" | "monthly";
-  };
-  notifications: {
-    comments: boolean;
-    likes: boolean;
-    follows: boolean;
-    mentions: boolean;
-    replies: boolean;
-  };
-  privacy: {
-    profileVisible: boolean;
-    allowMessages: boolean;
-    showActivity: boolean;
-    allowNotifications: boolean;
-  };
-  display: {
+  themeSettings: {
     theme: "light" | "dark" | "system";
-    language: string;
-    compactMode: boolean;
-    showAds: boolean;
+    contrast: "normal" | "high";
+    fontSize: number;
+    useSystemFont: boolean;
+    animationReduces: boolean;
+  };
+  notificationSettings: {
+    emailNotifications: boolean;
+    newPostNotifications: boolean;
+    likeNotifications: boolean;
+    commentNotifications: boolean;
+    shareNotifications: boolean;
   };
 }
 
 const PreferencesPanel: React.FC = () => {
   const [preferences, setPreferences] = useState<UserPreferences>({
-    email: {
-      marketing: true,
-      notifications: true,
-      digest: true,
-      digestFrequency: "weekly",
-    },
-    notifications: {
-      comments: true,
-      likes: true,
-      follows: true,
-      mentions: true,
-      replies: true,
-    },
-    privacy: {
-      profileVisible: true,
-      allowMessages: true,
-      showActivity: true,
-      allowNotifications: true,
-    },
-    display: {
+    themeSettings: {
       theme: "system",
-      language: "en",
-      compactMode: false,
-      showAds: true,
+      contrast: "normal",
+      fontSize: 100,
+      useSystemFont: false,
+      animationReduces: false,
+    },
+    notificationSettings: {
+      emailNotifications: true,
+      newPostNotifications: true,
+      likeNotifications: true,
+      commentNotifications: true,
+      shareNotifications: true,
     },
   });
 
@@ -88,10 +66,12 @@ const PreferencesPanel: React.FC = () => {
       const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/users/me/preferences`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setPreferences(response.data);
+      if (response.data.success || response.data.themeSettings) {
+        setPreferences(response.data.themeSettings ? response.data : response.data);
+      }
     } catch (error) {
       console.error("Failed to fetch preferences:", error);
-      toast.error("Failed to load preferences");
+      toast.error("Could not load your preferences. Using defaults.");
     } finally {
       setLoading(false);
     }
@@ -101,14 +81,17 @@ const PreferencesPanel: React.FC = () => {
     try {
       setSaving(true);
       const token = localStorage.getItem("token");
-      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/users/me/preferences`, preferences, {
+      const response = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/users/me/preferences`, preferences, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      toast.success("Preferences saved successfully!");
-      setHasChanges(false);
-    } catch (error) {
+      if (response.data.success || response.data.message) {
+        toast.success("Your preferences have been saved successfully!");
+        setHasChanges(false);
+      }
+    } catch (error: any) {
       console.error("Failed to save preferences:", error);
-      toast.error("Failed to save preferences");
+      const errorMsg = error.response?.data?.message || "Could not save your preferences. Please try again.";
+      toast.error(errorMsg);
     } finally {
       setSaving(false);
     }
@@ -134,61 +117,10 @@ const PreferencesPanel: React.FC = () => {
 
   return (
     <div className="space-y-6 max-w-2xl">
-      {/* Email Preferences */}
+      {/* Notifications */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white dark:bg-gray-900 rounded-xl p-6 border border-gray-200 dark:border-gray-800"
-      >
-        <div className="flex items-center gap-3 mb-4">
-          <Mail size={22} className="text-blue-600 dark:text-blue-400" />
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Email Preferences</h2>
-        </div>
-
-        <div className="space-y-4">
-          {[
-            { key: "email.notifications", label: "Post Notifications", desc: "Get notified about new posts from people you follow" },
-            { key: "email.marketing", label: "Marketing Emails", desc: "Receive updates about new features and announcements" },
-            { key: "email.digest", label: "Weekly Digest", desc: "Get a summary of activity during the week" },
-          ].map((item) => (
-            <div key={item.key} className="flex items-start justify-between">
-              <div>
-                <label className="font-medium text-gray-900 dark:text-white">{item.label}</label>
-                <p className="text-sm text-gray-600 dark:text-gray-400">{item.desc}</p>
-              </div>
-              <input
-                type="checkbox"
-                checked={getNestedValue(item.key)}
-                onChange={(e) => updatePreference(item.key, e.target.checked)}
-                className="w-5 h-5 rounded border-gray-300"
-              />
-            </div>
-          ))}
-
-          {preferences.email.digest && (
-            <div className="pl-4 border-l-2 border-blue-500 space-y-3">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Digest Frequency</label>
-              <select
-                value={preferences.email.digestFrequency}
-                onChange={(e) =>
-                  updatePreference("email.digestFrequency", e.target.value as "daily" | "weekly" | "monthly")
-                }
-                className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-              >
-                <option value="daily">Daily</option>
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
-              </select>
-            </div>
-          )}
-        </div>
-      </motion.div>
-
-      {/* Push Notifications */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
         className="bg-white dark:bg-gray-900 rounded-xl p-6 border border-gray-200 dark:border-gray-800"
       >
         <div className="flex items-center gap-3 mb-4">
@@ -198,11 +130,11 @@ const PreferencesPanel: React.FC = () => {
 
         <div className="space-y-4">
           {[
-            { key: "notifications.comments", label: "Comments", desc: "Notify me when someone comments on my posts" },
-            { key: "notifications.likes", label: "Likes", desc: "Notify me when someone likes my posts" },
-            { key: "notifications.follows", label: "New Followers", desc: "Notify me when someone follows me" },
-            { key: "notifications.mentions", label: "Mentions", desc: "Notify me when someone mentions me" },
-            { key: "notifications.replies", label: "Replies", desc: "Notify me when someone replies to my comments" },
+            { key: "notificationSettings.emailNotifications", label: "Email Notifications", desc: "Receive email notifications for activities" },
+            { key: "notificationSettings.newPostNotifications", label: "New Posts", desc: "Notify me when new posts are published" },
+            { key: "notificationSettings.likeNotifications", label: "Likes", desc: "Notify me when someone likes my content" },
+            { key: "notificationSettings.commentNotifications", label: "Comments", desc: "Notify me when someone comments on my posts" },
+            { key: "notificationSettings.shareNotifications", label: "Shares", desc: "Notify me when someone shares my content" },
           ].map((item) => (
             <div key={item.key} className="flex items-start justify-between">
               <div>
@@ -220,46 +152,13 @@ const PreferencesPanel: React.FC = () => {
         </div>
       </motion.div>
 
-      {/* Privacy Settings */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="bg-white dark:bg-gray-900 rounded-xl p-6 border border-gray-200 dark:border-gray-800"
-      >
-        <div className="flex items-center gap-3 mb-4">
-          <Lock size={22} className="text-purple-600 dark:text-purple-400" />
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Privacy</h2>
-        </div>
 
-        <div className="space-y-4">
-          {[
-            { key: "privacy.profileVisible", label: "Public Profile", desc: "Let others see your profile" },
-            { key: "privacy.allowMessages", label: "Allow Messages", desc: "Let others send you direct messages" },
-            { key: "privacy.showActivity", label: "Show Activity", desc: "Display your activity status to others" },
-            { key: "privacy.allowNotifications", label: "Allow Notifications", desc: "Receive notifications from the platform" },
-          ].map((item) => (
-            <div key={item.key} className="flex items-start justify-between">
-              <div>
-                <label className="font-medium text-gray-900 dark:text-white">{item.label}</label>
-                <p className="text-sm text-gray-600 dark:text-gray-400">{item.desc}</p>
-              </div>
-              <input
-                type="checkbox"
-                checked={getNestedValue(item.key)}
-                onChange={(e) => updatePreference(item.key, e.target.checked)}
-                className="w-5 h-5 rounded border-gray-300"
-              />
-            </div>
-          ))}
-        </div>
-      </motion.div>
 
       {/* Display Settings */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
+        transition={{ delay: 0.1 }}
         className="bg-white dark:bg-gray-900 rounded-xl p-6 border border-gray-200 dark:border-gray-800"
       >
         <div className="flex items-center gap-3 mb-4">
@@ -271,8 +170,8 @@ const PreferencesPanel: React.FC = () => {
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Theme</label>
             <select
-              value={preferences.display.theme}
-              onChange={(e) => updatePreference("display.theme", e.target.value)}
+              value={preferences.themeSettings.theme}
+              onChange={(e) => updatePreference("themeSettings.theme", e.target.value)}
               className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
             >
               <option value="light">Light</option>
@@ -282,42 +181,53 @@ const PreferencesPanel: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Language</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Contrast</label>
             <select
-              value={preferences.display.language}
-              onChange={(e) => updatePreference("display.language", e.target.value)}
+              value={preferences.themeSettings.contrast}
+              onChange={(e) => updatePreference("themeSettings.contrast", e.target.value)}
               className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
             >
-              <option value="en">English</option>
-              <option value="es">Español</option>
-              <option value="fr">Français</option>
-              <option value="de">Deutsch</option>
-              <option value="ja">日本語</option>
+              <option value="normal">Normal</option>
+              <option value="high">High</option>
             </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Font Size: {preferences.themeSettings.fontSize}%
+            </label>
+            <input
+              type="range"
+              min="80"
+              max="150"
+              value={preferences.themeSettings.fontSize}
+              onChange={(e) => updatePreference("themeSettings.fontSize", parseInt(e.target.value))}
+              className="w-full"
+            />
           </div>
 
           <div className="flex items-start justify-between">
             <div>
-              <label className="font-medium text-gray-900 dark:text-white">Compact Mode</label>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Use more condensed layouts</p>
+              <label className="font-medium text-gray-900 dark:text-white">Use System Font</label>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Use your system's default font</p>
             </div>
             <input
               type="checkbox"
-              checked={preferences.display.compactMode}
-              onChange={(e) => updatePreference("display.compactMode", e.target.checked)}
+              checked={preferences.themeSettings.useSystemFont}
+              onChange={(e) => updatePreference("themeSettings.useSystemFont", e.target.checked)}
               className="w-5 h-5 rounded border-gray-300"
             />
           </div>
 
           <div className="flex items-start justify-between">
             <div>
-              <label className="font-medium text-gray-900 dark:text-white">Show Ads</label>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Display personalized advertisements</p>
+              <label className="font-medium text-gray-900 dark:text-white">Reduce Animations</label>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Minimize motion effects</p>
             </div>
             <input
               type="checkbox"
-              checked={preferences.display.showAds}
-              onChange={(e) => updatePreference("display.showAds", e.target.checked)}
+              checked={preferences.themeSettings.animationReduces}
+              onChange={(e) => updatePreference("themeSettings.animationReduces", e.target.checked)}
               className="w-5 h-5 rounded border-gray-300"
             />
           </div>

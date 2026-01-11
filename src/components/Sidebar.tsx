@@ -17,6 +17,8 @@ import {
   Menu,
   HelpCircle,
   X,
+  Award,
+  TrendingUp,
 } from "lucide-react";
 
 type NavItem = {
@@ -29,6 +31,9 @@ type NavItem = {
 const NAV_ITEMS: NavItem[] = [
   { label: "Dashboard", path: "/v", icon: <Home size={20} /> },
   { label: "WriteUps", path: "/v/blog", icon: <Archive size={20} /> },
+  { label: "Courses", path: "/v/courses", icon: <BookOpen size={20} /> },
+  { label: "My Progress", path: "/v/my-progress", icon: <TrendingUp size={20} /> },
+  { label: "My Certificates", path: "/v/my-certificates", icon: <Award size={20} /> },
   { label: "Resources", path: "/v/resources", icon: <Layers size={16} /> },
   { label: "Billing", path: "/v/billing", icon: <Wallet size={16} /> },
   { label: "Simulations", path: "/v/simulations", icon: <Activity size={16} /> },
