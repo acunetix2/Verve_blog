@@ -4,6 +4,7 @@ import axios from 'axios';
 import { ArrowLeft, CheckCircle2, ChevronRight, Loader2, Award, Play } from 'lucide-react';
 import { toast } from 'sonner';
 import CertificateDisplay from '../components/CertificateDisplay';
+import { useTheme } from '@/components/ThemeContext';
 
 interface Quiz {
   question: string;
@@ -50,6 +51,9 @@ const LessonView: React.FC = () => {
     lessonId: string;
   }>();
   const navigate = useNavigate();
+  const { actualTheme } = useTheme();
+  const isDark = actualTheme === 'dark';
+  
   const [course, setCourse] = useState<Course | null>(null);
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [currentModuleIdx, setCurrentModuleIdx] = useState<number>(0);
@@ -267,19 +271,19 @@ const LessonView: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 flex">
+    <div className={`min-h-screen ${isDark ? 'bg-slate-900' : 'bg-slate-50'} flex transition-colors`}>
       {/* Lesson Sidebar Navigation */}
       {course && (
-        <div className="w-80 bg-slate-800 border-r border-slate-700 overflow-y-auto max-h-screen">
-          <div className="p-4 border-b border-slate-700">
+        <div className={`w-80 ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'} border-r overflow-y-auto max-h-screen transition-colors`}>
+          <div className={`p-4 border-b ${isDark ? 'border-slate-700' : 'border-slate-200'} transition-colors`}>
             <button
               onClick={() => navigate(`/v/courses/${course.slug || courseId}`)}
-              className="flex items-center gap-2 text-blue-400 hover:text-blue-300 mb-3 text-sm"
+              className={`flex items-center gap-2 ${isDark ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-700'} mb-3 text-sm transition-colors`}
             >
               <ArrowLeft size={18} />
               Back to Course
             </button>
-            <h2 className="text-white font-bold text-sm truncate">{course.title}</h2>
+            <h2 className={`${isDark ? 'text-white' : 'text-slate-900'} font-bold text-sm truncate transition-colors`}>{course.title}</h2>
           </div>
           
           {/* Modules and Lessons List */}
@@ -326,7 +330,7 @@ const LessonView: React.FC = () => {
       {/* Main Content */}
       <div className="flex-1 overflow-y-auto">
         {/* Header */}
-        <div className="bg-gradient-to-r from-slate-900 to-slate-800 border-b border-slate-700 py-6 sticky top-0 z-10">
+        <div className="bg-gradient-to-r from-slate-900 to-slate-800 border-b border-slate-700 py-6 sticky top-0 z-50">
           <div className="max-w-4xl mx-auto px-6">
             <h1 className="text-3xl font-bold text-white">{lesson.title}</h1>
           </div>
@@ -335,21 +339,87 @@ const LessonView: React.FC = () => {
         {/* Content */}
         <div className="max-w-4xl mx-auto px-6 py-12">
           {/* Lesson Content */}
-          <div className="bg-slate-800 border border-slate-700 rounded-lg p-8 mb-8">
-          {contentLoading ? (
-            <div className="flex items-center justify-center py-12">
-              <Loader2 className="animate-spin text-blue-500 mr-2" size={24} />
-              <p className="text-slate-400">Loading content...</p>
-            </div>
-          ) : lessonContent ? (
-            <div
-              className="prose prose-invert max-w-none text-slate-300"
-              dangerouslySetInnerHTML={{ __html: lessonContent }}
-            ></div>
-          ) : (
-            <p className="text-slate-400">No content available for this lesson</p>
-          )}
-        </div>
+          <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-8 mb-8 space-y-8">
+            {contentLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="animate-spin text-blue-500 mr-2" size={24} />
+                <p className="text-slate-400">Loading content...</p>
+              </div>
+            ) : lesson.contentBlocks && lesson.contentBlocks.length > 0 ? (
+              // Render structured content blocks
+              lesson.contentBlocks.map((block: any, idx: number) => {
+                const getColorClasses = (color: string) => {
+                  const colorMap: Record<string, {bg: string; text: string; border: string}> = {
+                    slate: { bg: 'bg-slate-700/30', text: 'text-slate-200', border: 'border-slate-600' },
+                    blue: { bg: 'bg-blue-700/30', text: 'text-blue-100', border: 'border-blue-600' },
+                    green: { bg: 'bg-green-700/30', text: 'text-green-100', border: 'border-green-600' },
+                    purple: { bg: 'bg-purple-700/30', text: 'text-purple-100', border: 'border-purple-600' },
+                    orange: { bg: 'bg-orange-700/30', text: 'text-orange-100', border: 'border-orange-600' },
+                    red: { bg: 'bg-red-700/30', text: 'text-red-100', border: 'border-red-600' },
+                  };
+                  return colorMap[color] || colorMap.slate;
+                };
+
+                const colors = getColorClasses(block.color);
+
+                switch (block.type) {
+                  case 'header':
+                    return (
+                      <div key={idx} className="scroll-mt-16">
+                        <h1 className={`text-4xl font-bold ${colors.text} mb-4`}>
+                          {block.content}
+                        </h1>
+                        <div className={`h-1 w-20 rounded-full ${colors.bg}`}></div>
+                      </div>
+                    );
+                  case 'subheader':
+                    return (
+                      <div key={idx} className="scroll-mt-16">
+                        <h2 className={`text-2xl font-semibold ${colors.text} mb-3`}>
+                          {block.content}
+                        </h2>
+                      </div>
+                    );
+                  case 'text':
+                    return (
+                      <p key={idx} className="text-slate-300 leading-relaxed text-lg whitespace-pre-wrap">
+                        {block.content}
+                      </p>
+                    );
+                  case 'points':
+                    return (
+                      <div key={idx} className="space-y-3">
+                        {block.content.split('\n').filter((line: string) => line.trim()).map((point: string, pIdx: number) => (
+                          <div key={pIdx} className="flex gap-4 items-start">
+                            <span className={`text-2xl font-bold ${colors.text} flex-shrink-0 mt-0.5`}>•</span>
+                            <p className="text-slate-300 leading-relaxed pt-0.5">{point}</p>
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  case 'highlight':
+                    return (
+                      <div
+                        key={idx}
+                        className={`p-5 rounded-lg border-l-4 ${colors.bg} ${colors.border} border-opacity-50`}
+                      >
+                        <p className={`${colors.text} font-medium`}>{block.content}</p>
+                      </div>
+                    );
+                  default:
+                    return null;
+                }
+              })
+            ) : lessonContent ? (
+              // Fallback to legacy HTML content
+              <div
+                className="prose prose-invert max-w-none text-slate-300"
+                dangerouslySetInnerHTML={{ __html: lessonContent }}
+              ></div>
+            ) : (
+              <p className="text-slate-400">No content available for this lesson</p>
+            )}
+          </div>
 
         {/* Mark as Complete Button - For lessons without quiz or after quiz completion */}
         {(!lesson.quiz || lesson.quiz.length === 0 || quizSubmitted) && !isLessonCompleted && (

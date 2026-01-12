@@ -41,11 +41,12 @@ import {
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import CompanyLogo from "@/assets/logo.png";
+import { VerveHubLogo } from "@/components/VerveHubLogo";
 import { Link } from "react-router-dom";
 import AnalyticsCard from "@/components/AnalyticsCard";
 import PostAnalyticsCard from "@/components/PostAnalyticsCard";
 import DashboardAnalytics from "@/components/DashboardAnalytics";
+import AdvancedCourseForm from "@/components/AdvancedCourseForm";
 import {
   LineChart,
   Line,
@@ -1435,185 +1436,55 @@ const AdminPage: React.FC = () => {
         </div>
       )}
 
-      {/* Course Modal with Modules & Lessons */}
+      {/* Course Modal with Advanced Form */}
       {showCourseModal && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4 overflow-y-auto">
-          <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl shadow-2xl max-w-2xl w-full border border-slate-700 animate-scale-in my-8">
+          <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl shadow-2xl max-w-3xl w-full border border-slate-700 animate-scale-in my-8">
             <div className="p-6 border-b border-slate-700/50 sticky top-0 bg-gradient-to-br from-slate-800 to-slate-900">
               <div className="flex items-center gap-3">
                 <Zap className="text-blue-400" size={24} />
-                <h2 className="text-xl font-bold text-white">{editingCourseId ? "Edit Course" : "Create New Course"}</h2>
+                <h2 className="text-xl font-bold text-white">{editingCourseId ? "Edit Course" : "Create Advanced Course"}</h2>
               </div>
             </div>
-            <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
-              {/* Basic Info Section */}
-              <div className="space-y-4 pb-6 border-b border-slate-700/50">
-                <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wide">Course Details</h3>
-                <div>
-                  <label className="text-slate-300 text-sm font-medium mb-2 block">Course Title *</label>
-                  <input
-                    type="text"
-                    value={courseForm.title}
-                    onChange={(e) => setCourseForm({ ...courseForm, title: e.target.value })}
-                    placeholder="Enter course title"
-                    className="w-full bg-slate-900/50 border border-slate-700/50 text-white placeholder-slate-500 px-4 py-2.5 rounded-lg focus:border-blue-500/50 focus:outline-none focus:ring-1 focus:ring-blue-500/30 transition-all"
-                  />
-                </div>
-                <div>
-                  <label className="text-slate-300 text-sm font-medium mb-2 block">Description *</label>
-                  <textarea
-                    value={courseForm.description}
-                    onChange={(e) => setCourseForm({ ...courseForm, description: e.target.value })}
-                    placeholder="Enter course description"
-                    className="w-full bg-slate-900/50 border border-slate-700/50 text-white placeholder-slate-500 px-4 py-2.5 rounded-lg focus:border-blue-500/50 focus:outline-none focus:ring-1 focus:ring-blue-500/30 transition-all resize-none h-20"
-                  />
-                </div>
-                <div>
-                  <label className="text-slate-300 text-sm font-medium mb-2 block">Image URL</label>
-                  <input
-                    type="text"
-                    value={courseForm.image}
-                    onChange={(e) => setCourseForm({ ...courseForm, image: e.target.value })}
-                    placeholder="Enter image URL (optional)"
-                    className="w-full bg-slate-900/50 border border-slate-700/50 text-white placeholder-slate-500 px-4 py-2.5 rounded-lg focus:border-blue-500/50 focus:outline-none focus:ring-1 focus:ring-blue-500/30 transition-all"
-                  />
-                </div>
-              </div>
-
-              {/* Modules Section */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wide">Modules & Lessons</h3>
-                  <button
-                    onClick={addModule}
-                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg transition-all text-xs font-medium"
-                  >
-                    <Plus size={14} />
-                    Add Module
-                  </button>
-                </div>
-
-                {courseForm.modules.length === 0 ? (
-                  <div className="text-center py-6 text-slate-400 border border-dashed border-slate-700/50 rounded-lg">
-                    <p className="text-sm">No modules yet. Click "Add Module" to get started.</p>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {courseForm.modules.map((module, moduleIdx) => (
-                      <div key={moduleIdx} className="bg-slate-900/50 border border-slate-700/50 rounded-lg overflow-hidden">
-                        <button
-                          onClick={() => setExpandedModuleIndex(expandedModuleIndex === moduleIdx ? null : moduleIdx)}
-                          className="w-full p-4 flex items-center justify-between hover:bg-slate-800/50 transition-colors"
-                        >
-                          <div className="flex items-center gap-3 flex-1 text-left">
-                            <div className="w-6 h-6 rounded-full bg-blue-500/30 flex items-center justify-center text-xs font-semibold text-blue-300">
-                              {moduleIdx + 1}
-                            </div>
-                            <div>
-                              <p className="text-sm font-medium text-white">{module.title || "Untitled Module"}</p>
-                              <p className="text-xs text-slate-400">{module.lessons.length} lesson(s)</p>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            {expandedModuleIndex === moduleIdx ? (
-                              <ChevronUp size={18} className="text-slate-400" />
-                            ) : (
-                              <ChevronDown size={18} className="text-slate-400" />
-                            )}
-                          </div>
-                        </button>
-
-                        {expandedModuleIndex === moduleIdx && (
-                          <div className="p-4 border-t border-slate-700/50 space-y-4 bg-slate-950/50">
-                            {/* Module Title */}
-                            <div>
-                              <label className="text-slate-300 text-xs font-medium mb-1 block">Module Title *</label>
-                              <input
-                                type="text"
-                                value={module.title}
-                                onChange={(e) => updateModule(moduleIdx, "title", e.target.value)}
-                                placeholder="e.g., Introduction to Python"
-                                className="w-full bg-slate-900/50 border border-slate-700/50 text-white placeholder-slate-500 px-3 py-2 rounded-lg focus:border-blue-500/50 focus:outline-none text-sm"
-                              />
-                            </div>
-
-                            {/* Module Description */}
-                            <div>
-                              <label className="text-slate-300 text-xs font-medium mb-1 block">Module Description</label>
-                              <input
-                                type="text"
-                                value={module.description || ""}
-                                onChange={(e) => updateModule(moduleIdx, "description", e.target.value)}
-                                placeholder="Optional description"
-                                className="w-full bg-slate-900/50 border border-slate-700/50 text-white placeholder-slate-500 px-3 py-2 rounded-lg focus:border-blue-500/50 focus:outline-none text-sm"
-                              />
-                            </div>
-
-                            {/* Lessons */}
-                            <div className="pt-2 border-t border-slate-700/30">
-                              <div className="flex items-center justify-between mb-3">
-                                <label className="text-slate-300 text-xs font-medium">Lessons</label>
-                                <button
-                                  onClick={() => addLesson(moduleIdx)}
-                                  className="flex items-center gap-1 bg-slate-700 hover:bg-slate-600 text-white px-2 py-1 rounded text-xs transition-all"
-                                >
-                                  <Plus size={12} />
-                                  Add Lesson
-                                </button>
-                              </div>
-
-                              {module.lessons.length === 0 ? (
-                                <p className="text-xs text-slate-500 py-2">No lessons yet.</p>
-                              ) : (
-                                <div className="space-y-2">
-                                  {module.lessons.map((lesson, lessonIdx) => (
-                                    <div key={lessonIdx} className="bg-slate-800/50 border border-slate-700/30 rounded p-3 space-y-2">
-                                      <div className="flex gap-2">
-                                        <input
-                                          type="text"
-                                          value={lesson.title}
-                                          onChange={(e) => updateLesson(moduleIdx, lessonIdx, "title", e.target.value)}
-                                          placeholder="Lesson title"
-                                          className="flex-1 bg-slate-900/50 border border-slate-700/50 text-white placeholder-slate-500 px-3 py-1.5 rounded text-xs"
-                                        />
-                                        <button
-                                          onClick={() => removeLesson(moduleIdx, lessonIdx)}
-                                          className="bg-red-600/20 hover:bg-red-600/40 text-red-300 px-2 py-1.5 rounded transition-all"
-                                        >
-                                          <Trash2 size={14} />
-                                        </button>
-                                      </div>
-                                      <input
-                                        type="text"
-                                        value={lesson.content || ""}
-                                        onChange={(e) => updateLesson(moduleIdx, lessonIdx, "content", e.target.value)}
-                                        placeholder="Lesson content (optional - can add files later)"
-                                        className="w-full bg-slate-900/50 border border-slate-700/50 text-white placeholder-slate-500 px-3 py-1.5 rounded text-xs"
-                                      />
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-
-                            {/* Remove Module Button */}
-                            <button
-                              onClick={() => removeModule(moduleIdx)}
-                              className="w-full bg-red-600/20 hover:bg-red-600/30 text-red-300 px-3 py-2 rounded-lg transition-all text-xs font-medium flex items-center justify-center gap-2"
-                            >
-                              <Trash2 size={14} />
-                              Remove Module
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Footer */}
+            <AdvancedCourseForm
+              initialData={courseForm as any}
+              onSave={async (data) => {
+                const token = localStorage.getItem("token");
+                const payload = {
+                  title: data.title,
+                  description: data.description,
+                  image: data.image,
+                  modules: data.modules,
+                  finalExam: data.finalExam
+                };
+                
+                try {
+                  if (editingCourseId) {
+                    await axios.put(
+                      `${import.meta.env.VITE_API_BASE_URL}/courses/${editingCourseId}`,
+                      payload,
+                      { headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } }
+                    );
+                    toast.success("Course updated successfully", { icon: <CheckCircle2 className="text-green-500" /> });
+                  } else {
+                    await axios.post(
+                      `${import.meta.env.VITE_API_BASE_URL}/courses`,
+                      payload,
+                      { headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } }
+                    );
+                    toast.success("Course created successfully", { icon: <CheckCircle2 className="text-green-500" /> });
+                  }
+                  setCourseForm({ title: "", description: "", image: "", modules: [] });
+                  setEditingCourseId(null);
+                  setShowCourseModal(false);
+                  setExpandedModuleIndex(null);
+                  await fetchCourses();
+                } catch (error) {
+                  toast.error("Failed to save course", { icon: <XCircle className="text-red-500" /> });
+                  throw error;
+                }
+              }}
+            />
             <div className="p-6 border-t border-slate-700/50 flex gap-3 sticky bottom-0 bg-gradient-to-br from-slate-800 to-slate-900">
               <button
                 onClick={() => {
@@ -1628,8 +1499,9 @@ const AdminPage: React.FC = () => {
               </button>
               <button
                 onClick={handleSaveCourse}
-                className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-2.5 rounded-lg transition-all font-medium"
+                className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-2.5 rounded-lg transition-all font-medium flex items-center justify-center gap-2"
               >
+                <Zap size={16} />
                 {editingCourseId ? "Update Course" : "Create Course"}
               </button>
             </div>
@@ -1668,14 +1540,14 @@ const AdminPage: React.FC = () => {
 		  </div>
 
 		  {/* Navigation Tabs */}
-		  <div className="flex gap-2 border-b border-slate-700/50 overflow-x-auto">
+		  <div className="flex gap-1 sm:gap-2 border-b border-slate-700/50 overflow-x-auto scrollbar-hide">
 			{[
 			  { id: "overview", label: "Overview", icon: BarChart3 },
 			  { id: "posts", label: "Posts", icon: FileText },
 			  { id: "users", label: "Users", icon: Users },
 			  { id: "courses", label: "Courses", icon: Zap },
-			  { id: "simulations", label: "Simulations", icon: Zap },
-			  { id: "documents", label: "Documents", icon: Database },
+			  { id: "simulations", label: "Sims", icon: Zap },
+			  { id: "documents", label: "Docs", icon: Database },
 			  { id: "activity", label: "Activity", icon: Activity },
 			  { id: "settings", label: "Settings", icon: Shield },
 			].map((tab: any) => {
@@ -1684,14 +1556,14 @@ const AdminPage: React.FC = () => {
 				<button
 				  key={tab.id}
 				  onClick={() => setActiveTab(tab.id)}
-				  className={`flex items-center gap-2 px-4 py-3 border-b-2 transition-colors font-medium whitespace-nowrap ${
+				  className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-3 border-b-2 transition-colors font-medium whitespace-nowrap text-xs sm:text-sm ${
 					activeTab === tab.id
 					  ? "border-blue-400 text-blue-400"
 					  : "border-transparent text-slate-400 hover:text-white"
 				  }`}
 				>
-				  <TabIcon size={18} />
-				  {tab.label}
+				  <TabIcon size={16} className="hidden sm:inline" />
+				  <span className="sm:block">{tab.label}</span>
 				</button>
 			  );
 			})}
@@ -1702,7 +1574,7 @@ const AdminPage: React.FC = () => {
 		{activeTab === "overview" && (
 		  <div className="space-y-6">
 			{/* Stat Cards - Updated with real data */}
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+			<div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-4">
 			  {[
 				{ icon: FileText, label: "Total Posts", value: analytics.totalPosts, color: "from-blue-500/20 to-blue-600/20", iconColor: "text-blue-400" },
 				{ icon: Users, label: "Total Users", value: analytics.totalUsers, color: "from-green-500/20 to-green-600/20", iconColor: "text-green-400" },
@@ -2483,13 +2355,9 @@ const AdminPage: React.FC = () => {
 				<div className="md:col-span-2">
 				  <div className="flex items-center gap-2 mb-4">
 					<div className="p-2 rounded-xl flex items-center justify-center">
-					  <img 
-						src={CompanyLogo} 
-						alt="Company Logo" 
-						className="h-10 w-10 object-contain" 
-					  />
+					  <VerveHubLogo size="md" />
 					</div>
-					<span className="text-lg font-serif font-semibold text-white">Verve Hub Writeups</span>
+					<span className="text-lg font-serif font-semibold text-white">Verve Hub Academy</span>
 				  </div>
 				  <p className="text-sm text-white leading-relaxed mb-4">
 					A modern publishing platform for developers and creators. 

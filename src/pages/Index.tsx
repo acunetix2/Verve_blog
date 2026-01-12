@@ -12,7 +12,7 @@ import WelcomeBanner from "@/components/WelcomeBanner";
 import Banner from "@/components/Banner";
 import author from "@/assets/author.png";
 import CommandStatusBadge from "@/components/CommandStatusBadge";
-import CompanyLogo from "@/assets/logo.png";
+import { VerveHubLogo } from "@/components/VerveHubLogo";
 import PostSeriesComponent from "@/components/PostSeriesComponent";
 import PostSchedulingComponent from "@/components/PostSchedulingComponent";
 import EmailDigestComponent from "@/components/EmailDigestComponent";
@@ -667,13 +667,9 @@ const Index = () => {
 				<div className="md:col-span-2">
 				  <div className="flex items-center gap-2 mb-4">
 					<div className="p-2 rounded-xl flex items-center justify-center">
-					  <img 
-						src={CompanyLogo} 
-						alt="Company Logo" 
-						className="h-10 w-10 object-contain" 
-					  />
+					  <VerveHubLogo size="md" />
 					</div>
-					<span className="text-lg font-serif font-semibold text-white">Verve Hub Writeups</span>
+					<span className="text-lg font-serif font-semibold text-white">Verve Hub Academy</span>
 				  </div>
 				  <p className="text-sm text-white leading-relaxed mb-4">
 					A modern publishing platform for developers and creators. 

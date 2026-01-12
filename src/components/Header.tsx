@@ -3,7 +3,7 @@ import { Menu, Cpu, ChevronDown, BookOpen, HelpCircle, Home, ExternalLink, Githu
 import { useState, useEffect, useCallback, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import axios from "axios";
-import CompanyLogo from "@/assets/logo.png";
+import { VerveHubLogo } from "./VerveHubLogo";
 import { useLiveNotifications } from "@/hooks/useLiveNotifications";
 import ThemeSwitcherIcon from "./ThemeSwitcherIcon";
 import GlobalSearch from "./GlobalSearch";
@@ -112,7 +112,7 @@ export const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) =>
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled ? "bg-white/95 dark:bg-gray-950/95 backdrop-blur-lg shadow-md border-b border-gray-200/60 dark:border-gray-800/60" 
             : "bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800"
         }`}
@@ -133,26 +133,18 @@ export const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) =>
               {/* Logo */}
               <Link
                 to="/v"
-                className="flex items-center gap-1 group"
+                className="flex items-center gap-2 group"
                 aria-label="Go to homepage"
               >
-                <div className="flex items-center gap-2">
-				  <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.location.href='/v'}>
-					  <img 
-						src={CompanyLogo} 
-						alt="Company Logo" 
-						className="h-14 w-14 object-contain"
-					  />
-					</div>
-				  <div className="hidden sm:flex flex-col leading-tight">
-					<span className="text-sm font-bold text-gray-900 dark:text-white tracking-tight">
-					  Verve Hub
-					</span>
-					<span className="text-[10px] font-semibold text-gray-500 dark:text-gray-400 tracking-wider">
-					  Security Hub
-					</span>
-				  </div>
-				</div>
+                <VerveHubLogo size="md" />
+                <div className="hidden sm:flex flex-col leading-tight">
+                  <span className="text-sm font-bold text-gray-900 dark:text-white tracking-tight">
+                    Verve Hub Academy
+                  </span>
+                  <span className="text-[10px] font-semibold text-gray-500 dark:text-gray-400 tracking-wider">
+                    Security Hub
+                  </span>
+                </div>
               </Link>
             </div>
 

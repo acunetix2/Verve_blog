@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Mail, ArrowLeft, CheckCircle, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
-import CompanyLogo from "@/assets/logo.png";
+import { VerveHubLogo } from "./VerveHubLogo";
 
 const ForgotPassword: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -47,7 +47,7 @@ const ForgotPassword: React.FC = () => {
         {/* Logo */}
         <div className="flex flex-col items-center mb-4 space-y-2">
           <Link to="/">
-            <img src={CompanyLogo} alt="Company Logo" className="h-10 w-10 object-contain" />
+            <VerveHubLogo size="lg" />
           </Link>
           <h1 className="text-2xl font-bold text-blue-900">Forgot Password?</h1>
           <p className="text-xs text-blue-700 text-center">

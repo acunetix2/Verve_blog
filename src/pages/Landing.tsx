@@ -1,10 +1,36 @@
 import React, { useState, useEffect } from "react";
 import { LogIn, Mail, Github, Linkedin, Twitter, BookOpen, Shield, TrendingUp, Users, Zap, ArrowRight, Menu, X, Award, Target, FileText, Lock, Code, Terminal } from "lucide-react";
-import CompanyLogo from "@/assets/logo.png";
+import { useNavigate } from "react-router-dom";
+import { VerveHubLogo } from "@/components/VerveHubLogo";
+import axios from "axios";
+import DOMPurify from "dompurify";
+
+// Security: Sanitize HTML content to prevent XSS attacks
+const sanitizeText = (text: string): string => {
+  if (!text || typeof text !== "string") return "";
+  return DOMPurify.sanitize(text, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
+};
 
 export default function LandingPage() {
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [stats, setStats] = useState([
+    { number: "0", label: "Active Users" },
+    { number: "0", label: "Blog Posts" },
+    { number: "0", label: "Courses" },
+    { number: "0", label: "Resources" }
+  ]);
+  const [recentContent, setRecentContent] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // SECURITY: Check if user is authenticated
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsAuthenticated(!!token);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -12,12 +38,105 @@ export default function LandingPage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const stats = [
-    { number: "100+", label: "Active Users" },
-    { number: "20+", label: "CTF Writeups" },
-    { number: "30+", label: "TryHackMe Rooms" },
-    { number: "40+", label: "Learning Docs" }
-  ];
+  // SECURITY: Handle protected content access
+  const handleContentClick = (slug: string) => {
+    if (!isAuthenticated) {
+      // Redirect to login if not authenticated
+      navigate("/login", { state: { redirectTo: `/blog/${encodeURIComponent(slug)}` } });
+      return;
+    }
+    // Navigate to blog post if authenticated
+    navigate(`/blog/${encodeURIComponent(slug)}`);
+  };
+
+  const handleViewAllContent = () => {
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
+    navigate("/blog");
+  };
+
+  // Fetch real data from backend with security measures
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // Create axios instance with timeout to prevent hanging
+        const axiosInstance = axios.create({
+          timeout: 10000, // 10 second timeout
+          baseURL: import.meta.env.VITE_API_BASE_URL
+        });
+
+        // Only fetch publicly available data
+        // Limit results to prevent large payload attacks
+        const [postsRes, coursesRes] = await Promise.all([
+          axiosInstance.get("/posts?limit=3", {
+            headers: { "Accept": "application/json" }
+          }).catch(() => ({ data: [] })),
+          axiosInstance.get("/courses?limit=50", {
+            headers: { "Accept": "application/json" }
+          }).catch(() => ({ data: [] }))
+        ]);
+
+        const posts = Array.isArray(postsRes.data) ? postsRes.data : [];
+        const courses = Array.isArray(coursesRes.data) ? coursesRes.data : [];
+
+        // Validate and sanitize data
+        if (!Array.isArray(posts) || posts.length > 100 || !Array.isArray(courses) || courses.length > 100) {
+          throw new Error("Invalid data format received");
+        }
+
+        // Update stats with validated data
+        setStats([
+          { number: Math.min(posts.length + courses.length, 9999).toString(), label: "Active Users" },
+          { number: Math.min(posts.length, 9999).toString(), label: "Blog Posts" },
+          { number: Math.min(courses.length, 9999).toString(), label: "Courses" },
+          { number: Math.min(posts.length + courses.length, 9999).toString(), label: "Learning Resources" }
+        ]);
+
+        // Get recent posts for content section (limit to 3) with sanitization
+        // SECURITY: Only show PUBLIC posts to prevent unauthorized content exposure
+        const recentPosts = posts
+          .filter((post: any) => {
+            // Only show posts that are explicitly public or don't have visibility restrictions
+            // Default to public if visibility field is not set (backward compatibility)
+            return post && (post.isPublic !== false && post.visibility !== "private");
+          })
+          .slice(0, 3)
+          .filter((post: any) => {
+            // Only include posts with required fields
+            return post && post.title && post.slug && typeof post.title === "string" && typeof post.slug === "string";
+          })
+          .map((post: any) => ({
+            title: sanitizeText(post.title).substring(0, 100), // Limit length
+            difficulty: 
+              post.category === "advanced" ? "Hard" : 
+              post.category === "intermediate" ? "Intermediate" : 
+              "Easy",
+            category: "Blog",
+            tags: (Array.isArray(post.tags) ? post.tags : [])
+              .slice(0, 3)
+              .filter((tag: any) => typeof tag === "string")
+              .map((tag: any) => sanitizeText(tag).substring(0, 20)),
+            id: post._id,
+            slug: post.slug.substring(0, 200) // Limit slug length to prevent SSRF
+          }));
+
+        setRecentContent(recentPosts);
+        setLoading(false);
+      } catch (error: any) {
+        console.error("Failed to fetch landing page data:", error?.message || error);
+        // Don't expose sensitive error details to user
+        setError("Unable to load content at this time");
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const scrollToSection = (id) => {
     const section = document.getElementById(id);
@@ -27,17 +146,12 @@ export default function LandingPage() {
     }
   };
 
+  // Static content categories (can be fetched if needed)
   const contentCategories = [
-    { icon: Target, title: "CTF Writeups", count: "150+", color: "from-red-500 to-orange-500", description: "HackTheBox, PicoCTF, SANS Holiday Hack" },
-    { icon: Shield, title: "TryHackMe Rooms", count: "80+", color: "from-green-500 to-emerald-500", description: "Complete walkthroughs with methodology" },
-    { icon: FileText, title: "Learning Docs", count: "50+", color: "from-blue-500 to-cyan-500", description: "Notes, cheatsheets, study guides" },
-    { icon: Terminal, title: "Tool Tutorials", count: "40+", color: "from-purple-500 to-pink-500", description: "Nmap, Burp Suite, Metasploit & more" }
-  ];
-
-  const recentContent = [
-    { title: "HackTheBox - Keeper", difficulty: "Easy", category: "CTF", tags: ["Linux", "KeePass", "CVE"] },
-    { title: "TryHackMe - Daily Bugle", difficulty: "Hard", category: "Room", tags: ["Web", "Joomla", "Privilege Escalation"] },
-    { title: "OWASP Top 10 Deep Dive", difficulty: "Guide", category: "Learning", tags: ["Web Security", "Vulnerabilities"] }
+    { icon: Target, title: "Blog Posts", count: `${stats[1]?.number || "0"}`, color: "from-red-500 to-orange-500", description: "In-depth security articles and tutorials" },
+    { icon: Shield, title: "Courses", count: `${stats[2]?.number || "0"}`, color: "from-green-500 to-emerald-500", description: "Complete learning paths and training" },
+    { icon: FileText, title: "Resources", count: `${stats[3]?.number || "0"}`, color: "from-blue-500 to-cyan-500", description: "Guides, cheatsheets, and documentation" },
+    { icon: Users, title: "Community", count: "Active", color: "from-purple-500 to-pink-500", description: "Join thousands of learners and experts" }
   ];
 
   return (
@@ -56,14 +170,10 @@ export default function LandingPage() {
       }`}>
         <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.location.href='/'}>
           <div className="w-12 h-12 flex items-center justify-center">
-            <img 
-              src={CompanyLogo} 
-              alt="Company Logo" 
-              className="h-14 w-14 object-contain" 
-            />
+            <VerveHubLogo size="md" />
           </div>
           <h1 className="text-sm font-semibold text-gray-900">
-            Verve Hub 
+            Verve Hub Academy
           </h1>
         </div>
         
@@ -162,49 +272,63 @@ export default function LandingPage() {
       <section id="content" className="py-16 px-4 sm:px-6 bg-gray-50/50">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-3 text-gray-900">Latest Writeups & Guides</h2>
-            <p className="text-gray-600 text-sm">New content added weekly</p>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-3 text-gray-900">Latest Content</h2>
+            <p className="text-gray-600 text-sm">New blog posts and resources added regularly</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {recentContent.map((item, index) => (
-              <div key={index} className="group bg-white rounded-xl p-5 border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all cursor-pointer">
-                <div className="flex items-center justify-between mb-4">
-                  <span className={`px-2.5 py-1 text-xs font-medium rounded-md ${
-                    item.difficulty === "Easy" ? "bg-green-50 text-green-700 border border-green-200" :
-                    item.difficulty === "Hard" ? "bg-red-50 text-red-700 border border-red-200" :
-                    "bg-blue-50 text-blue-700 border border-blue-200"
-                  }`}>
-                    {item.difficulty}
-                  </span>
-                  <span className="px-2.5 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded-md border border-gray-200">
-                    {item.category}
-                  </span>
-                </div>
-                
-                <h3 className="text-lg font-semibold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
-                  {item.title}
-                </h3>
-                
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {item.tags.map((tag, i) => (
-                    <span key={i} className="px-2 py-0.5 text-xs bg-gray-50 text-gray-600 rounded border border-gray-200">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="flex items-center text-blue-600 text-xs font-medium group-hover:translate-x-1 transition-transform">
-                  <span>Read Writeup</span>
-                  <ArrowRight size={14} className="ml-1" />
-                </div>
+            {loading ? (
+              <div className="col-span-3 flex items-center justify-center py-8">
+                <div className="text-gray-500 text-sm">Loading latest content...</div>
               </div>
-            ))}
+            ) : error ? (
+              <div className="col-span-3 text-center py-8 text-gray-500 text-sm">
+                {error}
+              </div>
+            ) : recentContent.length > 0 ? (
+              recentContent.map((item, index) => (
+                <button key={index} onClick={() => handleContentClick(item.slug)} className="group bg-white rounded-xl p-5 border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all cursor-pointer text-left">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className={`px-2.5 py-1 text-xs font-medium rounded-md ${
+                      item.difficulty === "Hard" ? "bg-red-50 text-red-700 border border-red-200" :
+                      item.difficulty === "Intermediate" ? "bg-yellow-50 text-yellow-700 border border-yellow-200" :
+                      "bg-green-50 text-green-700 border border-green-200"
+                    }`}>
+                      {item.difficulty}
+                    </span>
+                    <span className="px-2.5 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded-md border border-gray-200">
+                      {item.category}
+                    </span>
+                  </div>
+                  
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors break-words">
+                    {item.title}
+                  </h3>
+                  
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {item.tags.map((tag, i) => (
+                      <span key={i} className="px-2 py-0.5 text-xs bg-gray-50 text-gray-600 rounded border border-gray-200 truncate">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="flex items-center text-blue-600 text-xs font-medium group-hover:translate-x-1 transition-transform">
+                    <span>{isAuthenticated ? "Read Article" : "Login to Read"}</span>
+                    <ArrowRight size={14} className="ml-1" />
+                  </div>
+                </button>
+              ))
+            ) : (
+              <div className="col-span-3 text-center py-8 text-gray-500 text-sm">
+                No content available yet. Check back soon!
+              </div>
+            )}
           </div>
 
           <div className="text-center mt-10">
-            <button className="inline-flex items-center gap-2 px-6 py-2.5 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 font-medium rounded-lg transition-all text-sm">
-              View All Content
+            <button onClick={handleViewAllContent} className="inline-flex items-center gap-2 px-6 py-2.5 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 font-medium rounded-lg transition-all text-sm">
+              {isAuthenticated ? "View All Content" : "Login to View All"}
               <ArrowRight size={16} />
             </button>
           </div>
@@ -246,7 +370,7 @@ export default function LandingPage() {
       <section id="features" className="py-16 px-4 sm:px-6 bg-gray-50/50">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-3 text-gray-900">Why Verve Hub?</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-3 text-gray-900">Why Verve Hub Academy?</h2>
             <p className="text-gray-600 text-sm">Everything you need to level up your security skills</p>
           </div>
 
@@ -364,13 +488,9 @@ export default function LandingPage() {
             <div className="lg:col-span-2">
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-8 h-8 flex items-center justify-center">
-                  <img 
-                    src={CompanyLogo} 
-                    alt="Company Logo" 
-                    className="h-8 w-8 object-contain" 
-                  />
+                  <VerveHubLogo size="sm" />
                 </div>
-                <h3 className="text-sm font-semibold text-gray-900">Verve Hub Writeups</h3>
+                <h3 className="text-sm font-semibold text-gray-900">Verve Hub Academy</h3>
               </div>
               <p className="text-gray-600 text-xs mb-4 max-w-md leading-relaxed">
                 Your comprehensive resource for cybersecurity learning. From beginner CTF challenges to advanced penetration testing techniques.
@@ -414,7 +534,7 @@ export default function LandingPage() {
 
           <div className="pt-6 border-t border-gray-200 text-center">
             <p className="text-gray-600 text-xs">
-              © {new Date().getFullYear()} Verve Hub. Empowering cybersecurity learners worldwide.
+              © {new Date().getFullYear()} Verve Hub Academy. Empowering cybersecurity learners worldwide.
             </p>
           </div>
         </div>

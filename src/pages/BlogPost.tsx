@@ -39,6 +39,8 @@ interface Post {
   tags: string[];
   featured?: boolean;
   views?: number;
+  isPublic?: boolean;
+  visibility?: string;
 }
 
 interface Comment {
@@ -75,6 +77,20 @@ const BlogPost = () => {
       if (!postRes.ok) throw new Error("Failed to fetch post");
 
       const postData = await postRes.json();
+      
+      // SECURITY: Check if post is public/accessible to current user
+      const token = localStorage.getItem("token");
+      const isAuthenticated = !!token;
+      
+      // If post is private and user is not authenticated, deny access
+      if (postData.isPublic === false || postData.visibility === "private") {
+        if (!isAuthenticated) {
+          setError("This post is private. Please log in to view it.");
+          setLoading(false);
+          return;
+        }
+      }
+      
       const commentsData: Comment[] = await commentsRes.json();
       const viewsData = await viewsRes.json();
 

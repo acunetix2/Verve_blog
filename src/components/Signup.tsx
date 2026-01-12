@@ -3,7 +3,7 @@ import { Eye, EyeOff, UserPlus, AlertCircle, Check } from "lucide-react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
-import CompanyLogo from "@/assets/logo.png";
+import { VerveHubLogo } from "./VerveHubLogo";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -123,17 +123,13 @@ export default function Signup() {
           <div className="flex flex-col items-center mb-4 space-y-2">
 			  {/* Logo */}
 			  <div className="w-10 h-10 flex items-center justify-center">
-				<img 
-				  src={CompanyLogo} 
-				  alt="Company Logo" 
-				  className="h-10 w-10 object-contain" 
-				/>
+				<VerveHubLogo size="lg" />
 			  </div>
 
 			  {/* Text */}
 			  <div className="text-center space-y-1">
 				<h1 className="text-2xl font-bold text-blue-600 mb-1 tracking-tight">
-				  Join Verve Hub
+				  Join Verve Hub Academy
 				</h1>
 				<p className="text-gray-600 text-xs">
 				  Create your free account 🚀

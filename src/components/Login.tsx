@@ -8,7 +8,7 @@ import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { Link } from "react-router-dom";
-import CompanyLogo from "@/assets/logo.png";
+import { VerveHubLogo } from "./VerveHubLogo";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -304,18 +304,14 @@ export default function Login() {
 			  {/* Logo */}
 			  <Link to="/">
 				<div className="flex items-center justify-center cursor-pointer">
-				  <img 
-					src={CompanyLogo} 
-					alt="Company Logo" 
-					className="h-10 w-10 object-contain" 
-				  />
+				  <VerveHubLogo size="lg" />
 				</div>
 			  </Link>
 
 			  {/* Text */}
 			  <div className="text-center space-y-1">
 				<h1 className="text-2xl font-bold text-blue-600 mb-1 tracking-tight">
-				  Verve Hub WriteUps
+				  Verve Hub Academy
 				</h1>
 				<p className="text-xs text-gray-600">
 				  👋 Welcome back

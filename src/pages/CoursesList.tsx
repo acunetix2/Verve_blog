@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { BookOpen, Search, Filter, Star, Users, Clock, ArrowRight, Lock } from "lucide-react";
+import { BookOpen, Search, Filter, Star, Users, Clock, ArrowRight, Lock, Code, Shield } from "lucide-react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useTheme } from "@/components/ThemeContext";
 
 interface Module {
   lessons?: Array<{ _id?: string }>;
@@ -28,6 +29,8 @@ interface Course {
 
 const CoursesList: React.FC = () => {
   const navigate = useNavigate();
+  const { actualTheme } = useTheme();
+  const isDark = actualTheme === 'dark';
   const [courses, setCourses] = useState<Course[]>([]);
   const [enrolledCoursesData, setEnrolledCoursesData] = useState<Course[]>([]);
   const [filteredCourses, setFilteredCourses] = useState<Course[]>([]);
@@ -164,6 +167,46 @@ const CoursesList: React.FC = () => {
     }
   };
 
+  // Stylish Company Logo Component
+  const CompanyLogo = () => (
+    <div className="relative w-10 h-10">
+      <svg
+        viewBox="0 0 40 40"
+        className="w-full h-full"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {/* Gradient definitions */}
+        <defs>
+          <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor={isDark ? "#60A5FA" : "#2563EB"} />
+            <stop offset="100%" stopColor={isDark ? "#A78BFA" : "#7C3AED"} />
+          </linearGradient>
+        </defs>
+
+        {/* Outer circle background */}
+        <circle cx="20" cy="20" r="19" fill="url(#logoGradient)" opacity="0.1" stroke="url(#logoGradient)" strokeWidth="0.5" />
+
+        {/* Central hexagon representing network/code */}
+        <path
+          d="M20 8 L28 12 L28 20 L20 24 L12 20 L12 12 Z"
+          fill="url(#logoGradient)"
+          opacity="0.3"
+          stroke="url(#logoGradient)"
+          strokeWidth="1.5"
+        />
+
+        {/* Inner book/code lines */}
+        <line x1="16" y1="16" x2="24" y2="16" stroke="url(#logoGradient)" strokeWidth="1.5" strokeLinecap="round" />
+        <line x1="16" y1="20" x2="24" y2="20" stroke="url(#logoGradient)" strokeWidth="1.5" strokeLinecap="round" opacity="0.8" />
+        <line x1="16" y1="24" x2="24" y2="24" stroke="url(#logoGradient)" strokeWidth="1.5" strokeLinecap="round" opacity="0.6" />
+
+        {/* Top accent dot */}
+        <circle cx="20" cy="10" r="1.5" fill="url(#logoGradient)" opacity="0.8" />
+      </svg>
+    </div>
+  );
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center">
@@ -178,23 +221,23 @@ const CoursesList: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800">
+    <div className={`min-h-screen transition-colors ${isDark ? 'bg-gradient-to-br from-slate-900 to-slate-800' : 'bg-gradient-to-br from-slate-50 to-slate-100'}`}>
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 border-b border-slate-700/50 backdrop-blur-sm sticky top-0 z-50">
+      <div className={`${isDark ? 'bg-gradient-to-r from-blue-600/20 to-purple-600/20 border-slate-700/50' : 'bg-gradient-to-r from-blue-100/40 to-purple-100/40 border-slate-300/50'} border-b backdrop-blur-sm sticky top-0 z-40 transition-colors`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
           <div className="flex items-center gap-3 mb-6">
-            <BookOpen className="text-blue-400" size={32} />
-            <h1 style={fontStyle} className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+            <CompanyLogo />
+            <h1 style={fontStyle} className={`text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r ${isDark ? 'from-blue-400 to-purple-400' : 'from-blue-600 to-purple-600'}`}>
               Learning Paths
             </h1>
           </div>
-          <p style={smallFontStyle} className="text-slate-300">Master cybersecurity and hacking through interactive courses</p>
+          <p style={smallFontStyle} className={isDark ? 'text-slate-300' : 'text-slate-600'}>Master cybersecurity and hacking through interactive courses</p>
         </div>
       </div>
 
       {/* Tabs */}
       {token && (
-        <div className="border-b border-slate-700/50 bg-slate-900/30">
+        <div className={`border-b ${isDark ? 'border-slate-700/50 bg-slate-900/30' : 'border-slate-300/50 bg-slate-100/30'} transition-colors`}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <div className="flex gap-8">
               <button

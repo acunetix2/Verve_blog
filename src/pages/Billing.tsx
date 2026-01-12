@@ -7,6 +7,16 @@ import { Check, Sparkles, Zap, Building2, CreditCard, TrendingUp, BarChart3, Gif
 import toast, { Toaster } from "react-hot-toast";
 import { useTheme } from "@/components/ThemeContext";
 
+const fontStyle = {
+  fontFamily: "'Roboto', 'Segoe UI', sans-serif",
+  fontSize: "0.8125rem",
+};
+
+const smallFontStyle = {
+  fontFamily: "'Roboto', 'Segoe UI', sans-serif",
+  fontSize: "0.75rem",
+};
+
 export default function Billing() {
   const { actualTheme } = useTheme();
   const [selectedPlan, setSelectedPlan] = useState("starter");
@@ -204,7 +214,7 @@ export default function Billing() {
         </p>
 
         {/* Billing Cycle Toggle */}
-        <div className="flex justify-center mb-12" style={{ fontFamily: "'Google Sans', sans-serif" }}>
+        <div className="flex justify-center mb-12" style={smallFontStyle}>
           <div className={`inline-flex rounded-full p-1 ${
             actualTheme === 'dark'
               ? 'bg-slate-800 border border-slate-700'
@@ -212,7 +222,7 @@ export default function Billing() {
           }`}>
             <button
               onClick={() => setBillingCycle("monthly")}
-              className={`px-6 py-2.5 rounded-full font-semibold text-1xl transition-all duration-300 ${
+              className={`px-6 py-2.5 rounded-full font-semibold text-sm transition-all duration-300 ${
                 billingCycle === "monthly"
                   ? actualTheme === 'dark'
                     ? 'bg-blue-600 text-white shadow-lg'
@@ -220,13 +230,13 @@ export default function Billing() {
                   : actualTheme === 'dark'
                     ? 'text-slate-400'
                     : 'text-slate-600'
-              }`} style={{ fontFamily: "'Google Sans', sans-serif" }}
+              }`} style={smallFontStyle}
             >
               Monthly
             </button>
             <button
               onClick={() => setBillingCycle("yearly")}
-              className={`px-6 py-2.5 rounded-full font-semibold text-1xl transition-all duration-300 relative ${
+              className={`px-6 py-2.5 rounded-full font-semibold text-sm transition-all duration-300 relative ${
                 billingCycle === "yearly"
                   ? actualTheme === 'dark'
                     ? 'bg-blue-600 text-white shadow-lg'
@@ -234,7 +244,7 @@ export default function Billing() {
                   : actualTheme === 'dark'
                     ? 'text-slate-400'
                     : 'text-slate-600'
-              }`} style={{ fontFamily: "'Google Sans', sans-serif" }}
+              }`} style={smallFontStyle}
             >
               Yearly
               <span className="absolute -top-3 -right-3 bg-amber-500 text-white text-xs px-2 py-1 rounded-full font-bold">
