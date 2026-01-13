@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, Download, Share2, Award } from 'lucide-react';
-import { toast } from 'sonner';
+import { VerveHubLogo } from "@/components/VerveHubLogo";
 
 interface Certificate {
   _id: string;
@@ -32,6 +32,33 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
     try {
       setIsDownloading(true);
 
+      // Create a temporary container to render the logo
+      const logoContainer = document.createElement('div');
+      logoContainer.style.position = 'absolute';
+      logoContainer.style.left = '-9999px';
+      document.body.appendChild(logoContainer);
+
+      // Render the logo component
+      const root = (await import('react-dom/client')).createRoot(logoContainer);
+      await new Promise<void>((resolve) => {
+        root.render(
+          <div style={{ width: '80px', height: '80px' }}>
+            <VerveHubLogo />
+          </div>
+        );
+        setTimeout(resolve, 100);
+      });
+
+      // Get the SVG element
+      const svgElement = logoContainer.querySelector('svg');
+      let logoDataUrl = '';
+      
+      if (svgElement) {
+        const svgData = new XMLSerializer().serializeToString(svgElement);
+        const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+        logoDataUrl = URL.createObjectURL(svgBlob);
+      }
+
       // Create a canvas-based certificate
       const canvas = document.createElement('canvas');
       canvas.width = 1400;
@@ -39,8 +66,19 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
       const ctx = canvas.getContext('2d');
 
       if (!ctx) {
-        toast.error('Failed to generate certificate');
+        console.error('Failed to generate certificate');
+        document.body.removeChild(logoContainer);
         return;
+      }
+
+      // Load logo image if available
+      const logoImg = new Image();
+      if (logoDataUrl) {
+        logoImg.src = logoDataUrl;
+        await new Promise((resolve) => {
+          logoImg.onload = resolve;
+          logoImg.onerror = resolve;
+        });
       }
 
       // Professional gradient background (Cisco-inspired - Blue & White)
@@ -68,11 +106,16 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
       ctx.fillStyle = accentGradient;
       ctx.fillRect(60, 60, 1280, 80);
 
+      // Draw logo on the left side of the header
+      if (logoImg.complete && logoImg.naturalWidth > 0) {
+        ctx.drawImage(logoImg, 80, 75, 50, 50);
+      }
+
       // Logo and company branding at top
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 28px "Segoe UI", Arial';
       ctx.textAlign = 'left';
-      ctx.fillText('VERVE HUB ACADEMY', 120, 110);
+      ctx.fillText('VERVE HUB ACADEMY', 145, 110);
 
       // Certificate seal/badge
       ctx.fillStyle = '#d4a574';
@@ -239,70 +282,11 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
       link.download = `Verve_Hub_Academy_Certificate_${certificate.certificateNumber}.png`;
       link.click();
 
-      // Mark as downloaded
-      if (courseId) {
-        const token = localStorage.getItem('token');
-        await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/courses/${courseId}/certificate/download`,
-          {
-            method: 'POST',
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+      // Cleanup
+      document.body.removeChild(logoContainer);
+      if (logoDataUrl) {
+        URL.revokeObjectURL(logoDataUrl);
       }
-
-      toast.success('Professional certificate downloaded successfully!');
-    } catch (error) {
-      console.error('Download error:', error);
-      toast.error('Failed to download certificate');
-    } finally {
-      setIsDownloading(false);
-    }
-  };
-
-      // User Name
-      ctx.fillStyle = '#fbbf24';
-      ctx.font = 'bold 36px "Google Sans", Arial';
-      ctx.textAlign = 'center';
-      ctx.fillText(certificate.userName, 600, 450);
-
-      // Decorative line under name
-      ctx.strokeStyle = '#fbbf24';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(250, 470);
-      ctx.lineTo(950, 470);
-      ctx.stroke();
-
-      // Achievement text
-      ctx.fillStyle = '#cbd5e1';
-      ctx.font = '16px "Google Sans", Arial';
-      ctx.textAlign = 'center';
-      ctx.fillText('For successfully completing all modules and assessments', 600, 520);
-
-      // Certificate number and score
-      ctx.fillStyle = '#94a3b8';
-      ctx.font = '14px "Google Sans", Arial';
-      ctx.textAlign = 'left';
-      const completionDate2 = new Date(certificate.completionDate).toLocaleDateString();
-      ctx.fillText(`Certificate No: ${certificate.certificateNumber}`, 150, 600);
-      ctx.fillText(`Completion Date: ${completionDate2}`, 150, 640);
-
-      // Score
-      ctx.textAlign = 'right';
-      ctx.fillText(`Average Quiz Score: ${certificate.totalQuizScore}%`, 1050, 600);
-
-      // Footer
-      ctx.fillStyle = '#64748b';
-      ctx.font = 'italic 14px "Google Sans", Arial';
-      ctx.textAlign = 'center';
-      ctx.fillText('Verve Academy', 600, 740);
-
-      // Download the canvas
-      const link = document.createElement('a');
-      link.href = canvas.toDataURL('image/png');
-      link.download = `Verve_Academy_Certificate_${certificate.certificateNumber}.png`;
-      link.click();
 
       // Mark as downloaded
       if (courseId) {
@@ -316,10 +300,9 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
         );
       }
 
-      toast.success('Certificate downloaded successfully!');
+      console.log('Professional certificate downloaded successfully!');
     } catch (error) {
       console.error('Download error:', error);
-      toast.error('Failed to download certificate');
     } finally {
       setIsDownloading(false);
     }
@@ -331,13 +314,13 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
 
       if (navigator.share) {
         await navigator.share({
-          title: 'Verve Academy Certificate',
+          title: 'Verve Hub Academy Certificate',
           text: shareText,
         });
       } else {
         // Fallback: copy to clipboard
         await navigator.clipboard.writeText(shareText);
-        toast.success('Achievement copied to clipboard!');
+        console.log('Achievement copied to clipboard!');
       }
     } catch (error) {
       console.error('Share error:', error);
@@ -350,6 +333,9 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
         {/* Header - Professional Blue */}
         <div className="sticky top-0 bg-gradient-to-r from-blue-800 via-blue-600 to-blue-700 px-8 py-6 flex items-center justify-between border-b border-blue-500/30">
           <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-white rounded-lg p-1.5 flex items-center justify-center">
+              <VerveHubLogo />
+            </div>
             <Award className="text-yellow-400 animate-bounce" size={32} />
             <div>
               <h2 style={{ fontFamily: "'Segoe UI', 'Google Sans', sans-serif" }} className="text-2xl font-bold text-white">
@@ -504,7 +490,10 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
 
           {/* Branding Footer */}
           <div className="text-center pt-6 border-t-2 border-blue-200 space-y-3">
-            <div className="flex justify-center mb-2">
+            <div className="flex justify-center items-center gap-3 mb-2">
+              <div className="w-8 h-8">
+                <VerveHubLogo />
+              </div>
               <div className="text-2xl">✓</div>
             </div>
             <p style={{ fontFamily: "'Segoe UI', 'Google Sans', sans-serif", fontSize: "0.75rem" }} className="text-slate-500">
@@ -516,7 +505,7 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
             >
               VERVE HUB ACADEMY
             </p>
-            <p className="text-xs text-slate-600">Professional Learning Platform | Recognized for Excellence</p>
+            <p className="text-xs text-slate-600">CyberSecurity Learning Platform | Recognized for Excellence</p>
             <p className="text-xs font-semibold text-green-700 mt-3">🎓 Your Success is Our Priority</p>
           </div>
         </div>

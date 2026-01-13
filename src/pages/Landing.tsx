@@ -17,10 +17,10 @@ export default function LandingPage() {
   const [scrollY, setScrollY] = useState(0);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [stats, setStats] = useState([
-    { number: "0", label: "Active Users" },
-    { number: "0", label: "Blog Posts" },
-    { number: "0", label: "Courses" },
-    { number: "0", label: "Resources" }
+    { number: "50+", label: "Active Users" },
+    { number: "100+", label: "Blog Posts" },
+    { number: "10+", label: "Courses" },
+    { number: "100+", label: "Resources" }
   ]);
   const [recentContent, setRecentContent] = useState([]);
   const [loading, setLoading] = useState(true);
