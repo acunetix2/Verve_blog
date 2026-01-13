@@ -29,8 +29,7 @@ export const FinalExamBuilder: React.FC<FinalExamBuilderProps> = ({
   isEnabled = false
 }) => {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
-  const MAX_QUESTIONS = 30;
-  const requiredQuestions = 30;
+  const MAX_QUESTIONS = 50;
 
   const addQuestion = () => {
     if (questions.length >= MAX_QUESTIONS) {
@@ -92,7 +91,7 @@ export const FinalExamBuilder: React.FC<FinalExamBuilderProps> = ({
     toast.success('Question duplicated');
   };
 
-  const isValid = questions.length === MAX_QUESTIONS && questions.every(q => q.question && q.correctAnswer);
+  const isValid = questions.length > 0 && questions.every(q => q.question && q.correctAnswer);
   const progress = Math.round((questions.length / MAX_QUESTIONS) * 100);
 
   return (
@@ -102,7 +101,7 @@ export const FinalExamBuilder: React.FC<FinalExamBuilderProps> = ({
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-sm font-semibold text-slate-300">Final Course Exam</h3>
-            <p className="text-xs text-slate-400">Required: {requiredQuestions} multiple choice questions</p>
+            <p className="text-xs text-slate-400">Flexible: 1-{MAX_QUESTIONS} questions (optional)</p>
           </div>
           <label className="flex items-center gap-2 cursor-pointer">
             <input
@@ -149,20 +148,29 @@ export const FinalExamBuilder: React.FC<FinalExamBuilderProps> = ({
         </div>
 
         {/* Validation Status */}
-        {!isValid && (
+        {!isValid && questions.length > 0 && (
           <div className="bg-amber-500/20 border border-amber-500/50 rounded-lg p-3 flex gap-2">
             <AlertCircle size={16} className="text-amber-400 flex-shrink-0 mt-0.5" />
             <div className="text-xs text-amber-300">
-              <p className="font-semibold">Exam not ready</p>
-              <p>You need {MAX_QUESTIONS - questions.length} more questions with all fields filled</p>
+              <p className="font-semibold">Incomplete questions detected</p>
+              <p>All questions must have content and correct answer selected</p>
             </div>
           </div>
         )}
-        {isValid && (
+        {questions.length === 0 && isEnabled && (
+          <div className="bg-blue-500/20 border border-blue-500/50 rounded-lg p-3 flex gap-2">
+            <AlertCircle size={16} className="text-blue-400 flex-shrink-0 mt-0.5" />
+            <div className="text-xs text-blue-300">
+              <p className="font-semibold">Exam enabled but empty</p>
+              <p>Add questions to create your final exam (1-{MAX_QUESTIONS} questions)</p>
+            </div>
+          </div>
+        )}
+        {isValid && questions.length > 0 && (
           <div className="bg-green-500/20 border border-green-500/50 rounded-lg p-3 flex gap-2">
             <div className="text-xs text-green-300">
               <p className="font-semibold">✓ Exam is ready</p>
-              <p>All {MAX_QUESTIONS} questions are configured properly</p>
+              <p>{questions.length} question{questions.length !== 1 ? 's' : ''} configured properly</p>
             </div>
           </div>
         )}

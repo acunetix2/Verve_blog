@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, forwardRef, useImperativeHandle } from "react";
 import { Plus, Trash2, ChevronDown, ChevronUp, Zap } from "lucide-react";
 import { toast } from "sonner";
 import CourseContentEditor from "./CourseContentEditor";
@@ -36,15 +36,17 @@ interface CourseFormData {
 
 interface AdvancedCourseFormProps {
   initialData?: CourseFormData;
-  onSave: (data: CourseFormData) => Promise<void>;
+  onSave: (data: CourseFormData, status?: 'draft' | 'published') => Promise<void>;
   loading?: boolean;
 }
 
-export const AdvancedCourseForm: React.FC<AdvancedCourseFormProps> = ({
-  initialData,
-  onSave,
-  loading = false,
-}) => {
+export interface AdvancedCourseFormHandle {
+  submit: () => Promise<void>;
+  submitDraft: () => Promise<void>;
+}
+
+export const AdvancedCourseForm = forwardRef<AdvancedCourseFormHandle, AdvancedCourseFormProps>(
+  ({ initialData, onSave, loading = false }, ref) => {
   const [courseForm, setCourseForm] = useState<CourseFormData>(
     initialData || {
       title: "",
@@ -120,11 +122,30 @@ export const AdvancedCourseForm: React.FC<AdvancedCourseFormProps> = ({
       return;
     }
     try {
-      await onSave(courseForm);
+      await onSave(courseForm, 'published');
     } catch (error) {
       console.error("Error saving course:", error);
     }
   };
+
+  const handleSaveDraft = async () => {
+    if (!courseForm.title) {
+      toast.error("Please provide a course title at minimum");
+      return;
+    }
+    try {
+      await onSave(courseForm, 'draft');
+      toast.success("Course saved as draft. You can continue editing anytime.");
+    } catch (error) {
+      console.error("Error saving draft:", error);
+    }
+  };
+
+  // Expose both handlers via ref
+  useImperativeHandle(ref, () => ({
+    submit: handleSave,
+    submitDraft: handleSaveDraft,
+  }));
 
   return (
     <div className="space-y-6 max-h-[70vh] overflow-y-auto pr-4">
@@ -324,7 +345,7 @@ export const AdvancedCourseForm: React.FC<AdvancedCourseFormProps> = ({
                                           onChange={(questions) =>
                                             updateLesson(moduleIdx, lessonIdx, "quiz", questions)
                                           }
-                                          maxQuestions={15}
+                                          maxQuestions={10}
                                         />
                                       </div>
                                     )}
@@ -390,6 +411,8 @@ export const AdvancedCourseForm: React.FC<AdvancedCourseFormProps> = ({
       </div>
     </div>
   );
-};
+});
+
+AdvancedCourseForm.displayName = "AdvancedCourseForm";
 
 export default AdvancedCourseForm;

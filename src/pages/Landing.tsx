@@ -72,29 +72,33 @@ export default function LandingPage() {
 
         // Only fetch publicly available data
         // Limit results to prevent large payload attacks
-        const [postsRes, coursesRes] = await Promise.all([
-          axiosInstance.get("/posts?limit=3", {
+        const [postsRes, coursesRes, documentsRes] = await Promise.all([
+          axiosInstance.get("/posts?limit=100", {
             headers: { "Accept": "application/json" }
           }).catch(() => ({ data: [] })),
-          axiosInstance.get("/courses?limit=50", {
+          axiosInstance.get("/courses?limit=100", {
+            headers: { "Accept": "application/json" }
+          }).catch(() => ({ data: [] })),
+          axiosInstance.get("/documents?limit=100", {
             headers: { "Accept": "application/json" }
           }).catch(() => ({ data: [] }))
         ]);
 
         const posts = Array.isArray(postsRes.data) ? postsRes.data : [];
         const courses = Array.isArray(coursesRes.data) ? coursesRes.data : [];
+        const documents = Array.isArray(documentsRes.data) ? documentsRes.data : [];
 
         // Validate and sanitize data
-        if (!Array.isArray(posts) || posts.length > 100 || !Array.isArray(courses) || courses.length > 100) {
+        if (!Array.isArray(posts) || posts.length > 500 || !Array.isArray(courses) || courses.length > 500 || !Array.isArray(documents) || documents.length > 500) {
           throw new Error("Invalid data format received");
         }
 
-        // Update stats with validated data
+        // Update stats with validated data (excluding user count for security)
         setStats([
-          { number: Math.min(posts.length + courses.length, 9999).toString(), label: "Active Users" },
           { number: Math.min(posts.length, 9999).toString(), label: "Blog Posts" },
           { number: Math.min(courses.length, 9999).toString(), label: "Courses" },
-          { number: Math.min(posts.length + courses.length, 9999).toString(), label: "Learning Resources" }
+          { number: Math.min(documents.length, 9999).toString(), label: "Resources" },
+          { number: Math.min(posts.length + courses.length + documents.length, 9999).toString(), label: "Total Content" }
         ]);
 
         // Get recent posts for content section (limit to 3) with sanitization
@@ -190,12 +194,12 @@ export default function LandingPage() {
           <button onClick={() => scrollToSection("contact")} className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
             Contact
           </button>
-          <a 
-            href="/login"
-            className="ml-2 px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium transition-all shadow-sm hover:shadow"
+          <button
+            onClick={() => navigate("/login")}
+            className="ml-2 px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium transition-all shadow-sm hover:shadow cursor-pointer"
           >
             Sign In
-          </a>
+          </button>
         </nav>
         
         <button 
@@ -214,7 +218,7 @@ export default function LandingPage() {
             <button onClick={() => scrollToSection("categories")} className="text-gray-700 hover:text-blue-600 font-medium text-left py-3 border-b border-gray-100">Categories</button>
             <button onClick={() => scrollToSection("features")} className="text-gray-700 hover:text-blue-600 font-medium text-left py-3 border-b border-gray-100">Features</button>
             <button onClick={() => scrollToSection("contact")} className="text-gray-700 hover:text-blue-600 font-medium text-left py-3 border-b border-gray-100">Contact</button>
-            <button className="mt-4 px-6 py-3 bg-blue-600 text-white rounded-lg text-center font-medium hover:bg-blue-700 transition-colors shadow-sm">
+            <button onClick={() => { navigate("/login"); setIsMenuOpen(false); }} className="mt-4 px-6 py-3 bg-blue-600 text-white rounded-lg text-center font-medium hover:bg-blue-700 transition-colors shadow-sm">
               Sign In
             </button>
           </nav>
@@ -240,21 +244,21 @@ export default function LandingPage() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <a 
-              href="/login"
-              className="group flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md shadow-blue-500/20 transition-all hover:shadow-lg hover:shadow-blue-500/30 text-sm"
+            <button
+              onClick={() => navigate("/login")}
+              className="group flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md shadow-blue-500/20 transition-all hover:shadow-lg hover:shadow-blue-500/30 text-sm cursor-pointer"
             >
               <LogIn size={18} />
               <span>Start Learning</span>
               <ArrowRight size={18} className="group-hover:translate-x-0.5 transition-transform" />
-            </a>
-            <a 
-              href="/login"
-              className="flex items-center justify-center gap-2 px-6 py-3 border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 font-medium rounded-lg transition-all text-sm"
+            </button>
+            <button
+              onClick={() => navigate("/login")}
+              className="flex items-center justify-center gap-2 px-6 py-3 border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 font-medium rounded-lg transition-all text-sm cursor-pointer"
             >
               <BookOpen size={18} />
               <span>Browse Content</span>
-            </a>
+            </button>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto">
@@ -414,20 +418,20 @@ export default function LandingPage() {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
-            <a 
-              href="/login"
-              className="group flex items-center justify-center gap-2 px-6 py-3 bg-white hover:bg-gray-50 text-blue-600 font-medium rounded-lg shadow-lg transition-all text-sm"
+            <button
+              onClick={() => navigate("/login")}
+              className="group flex items-center justify-center gap-2 px-6 py-3 bg-white hover:bg-gray-50 text-blue-600 font-medium rounded-lg shadow-lg transition-all text-sm cursor-pointer"
             >
               <span>Get Started Free</span>
               <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
-            </a>
-            <a 
-              href="/login"
-              className="flex items-center justify-center gap-2 px-6 py-3 border border-white/30 text-white hover:bg-white/10 font-medium rounded-lg backdrop-blur-sm transition-all text-sm"
+            </button>
+            <button
+              onClick={() => navigate("/login")}
+              className="flex items-center justify-center gap-2 px-6 py-3 border border-white/30 text-white hover:bg-white/10 font-medium rounded-lg backdrop-blur-sm transition-all text-sm cursor-pointer"
             >
               <BookOpen size={16} />
               <span>Explore Content</span>
-            </a>
+            </button>
           </div>
 
           <p className="text-blue-100 text-xs">

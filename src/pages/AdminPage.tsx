@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Terminal,
   Lock,
@@ -178,6 +178,7 @@ const AdminPage: React.FC = () => {
   const [editingCourseId, setEditingCourseId] = useState<string | null>(null);
   const [expandedModuleIndex, setExpandedModuleIndex] = useState<number | null>(null);
 
+  const courseFormRef = useRef<any>(null);
   const fontStyle = { fontFamily: "'Google Sans', sans-serif", fontSize: "0.8125rem" };
 
   // Module/Lesson management helpers
@@ -1438,24 +1439,27 @@ const AdminPage: React.FC = () => {
 
       {/* Course Modal with Advanced Form */}
       {showCourseModal && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4 overflow-y-auto">
-          <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl shadow-2xl max-w-3xl w-full border border-slate-700 animate-scale-in my-8">
-            <div className="p-6 border-b border-slate-700/50 sticky top-0 bg-gradient-to-br from-slate-800 to-slate-900">
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4">
+          <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl shadow-2xl max-w-4xl w-full border border-slate-700 animate-scale-in h-[90vh] flex flex-col">
+            <div className="p-6 border-b border-slate-700/50 sticky top-0 bg-gradient-to-br from-slate-800 to-slate-900 z-10 flex-shrink-0">
               <div className="flex items-center gap-3">
                 <Zap className="text-blue-400" size={24} />
                 <h2 className="text-xl font-bold text-white">{editingCourseId ? "Edit Course" : "Create Advanced Course"}</h2>
               </div>
             </div>
-            <AdvancedCourseForm
+            <div className="flex-1 overflow-y-auto p-6">
+              <AdvancedCourseForm
+              ref={courseFormRef}
               initialData={courseForm as any}
-              onSave={async (data) => {
+              onSave={async (data, status = 'published') => {
                 const token = localStorage.getItem("token");
                 const payload = {
                   title: data.title,
                   description: data.description,
                   image: data.image,
                   modules: data.modules,
-                  finalExam: data.finalExam
+                  finalExam: data.finalExam,
+                  status: status
                 };
                 
                 try {
@@ -1484,8 +1488,9 @@ const AdminPage: React.FC = () => {
                   throw error;
                 }
               }}
-            />
-            <div className="p-6 border-t border-slate-700/50 flex gap-3 sticky bottom-0 bg-gradient-to-br from-slate-800 to-slate-900">
+              />
+            </div>
+            <div className="p-6 border-t border-slate-700/50 flex gap-3 sticky bottom-0 bg-gradient-to-br from-slate-800 to-slate-900 z-10 flex-shrink-0">
               <button
                 onClick={() => {
                   setShowCourseModal(false);
@@ -1498,7 +1503,13 @@ const AdminPage: React.FC = () => {
                 Cancel
               </button>
               <button
-                onClick={handleSaveCourse}
+                onClick={() => courseFormRef.current?.submitDraft()}
+                className="flex-1 bg-slate-600 hover:bg-slate-700 text-white px-4 py-2.5 rounded-lg transition-all font-medium"
+              >
+                Save as Draft
+              </button>
+              <button
+                onClick={() => courseFormRef.current?.submit()}
                 className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-2.5 rounded-lg transition-all font-medium flex items-center justify-center gap-2"
               >
                 <Zap size={16} />

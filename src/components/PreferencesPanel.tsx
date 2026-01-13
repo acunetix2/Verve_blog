@@ -66,8 +66,15 @@ const PreferencesPanel: React.FC = () => {
       const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/users/me/preferences`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (response.data.success || response.data.themeSettings) {
-        setPreferences(response.data.themeSettings ? response.data : response.data);
+      
+      if (response.data && response.data.themeSettings && response.data.notificationSettings) {
+        setPreferences({
+          themeSettings: response.data.themeSettings,
+          notificationSettings: response.data.notificationSettings,
+        });
+      } else if (response.data.success) {
+        // Fallback for different response format
+        setPreferences(response.data);
       }
     } catch (error) {
       console.error("Failed to fetch preferences:", error);
