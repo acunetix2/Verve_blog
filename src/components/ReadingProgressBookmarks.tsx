@@ -66,14 +66,18 @@ const ReadingProgressBookmarks: React.FC = () => {
   const fetchBookmarksData = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("/api/bookmarks", {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/bookmarks`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       setSavedArticles(response.data.savedArticles || []);
       setReadingHistory(response.data.readingHistory || []);
     } catch (error) {
       console.error("Failed to fetch bookmarks:", error);
       toast.error("Failed to load bookmarks");
+      setSavedArticles([]);
+      setReadingHistory([]);
     } finally {
       setLoading(false);
     }
@@ -81,8 +85,9 @@ const ReadingProgressBookmarks: React.FC = () => {
 
   const removeBookmark = async (articleId: string) => {
     try {
-      await axios.delete(`/api/bookmarks/${articleId}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      const token = localStorage.getItem("token");
+      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/bookmarks/${articleId}`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
       setSavedArticles((prev) =>
         prev.filter((article) => article._id !== articleId)
@@ -96,11 +101,12 @@ const ReadingProgressBookmarks: React.FC = () => {
 
   const updateReadingProgress = async (articleId: string, progress: number) => {
     try {
+      const token = localStorage.getItem("token");
       await axios.put(
-        `/api/bookmarks/${articleId}/progress`,
+        `${import.meta.env.VITE_API_BASE_URL}/bookmarks/${articleId}/progress`,
         { progress },
         {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
       setSavedArticles((prev) =>
@@ -117,8 +123,9 @@ const ReadingProgressBookmarks: React.FC = () => {
 
   const clearReadingHistory = async () => {
     try {
-      await axios.delete("/api/bookmarks/history", {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      const token = localStorage.getItem("token");
+      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/bookmarks/history`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
       setReadingHistory([]);
       toast.success("Reading history cleared");

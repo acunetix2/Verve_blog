@@ -85,7 +85,12 @@ const UserReviews: React.FC<UserReviewsProps> = ({ postId, onReviewAdded }) => {
       }
 
       setNewReview({ rating: 5, comment: "" });
-      fetchReviews();
+      
+      // Add a small delay to ensure backend has saved the data
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      // Refetch reviews with a fresh request
+      await fetchReviews();
       onReviewAdded?.();
     } catch (error) {
       console.error("Failed to submit review:", error);

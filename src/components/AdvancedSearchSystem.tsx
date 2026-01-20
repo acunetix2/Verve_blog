@@ -11,6 +11,9 @@ import {
   Clock,
   ArrowUpDown,
   Tag,
+  BookOpen,
+  FileText,
+  Zap,
 } from "lucide-react";
 import axios from "axios";
 import { Link } from "react-router-dom";
@@ -26,22 +29,27 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 
-interface SearchPost {
+interface SearchResult {
   _id: string;
   title: string;
-  slug: string;
   description: string;
-  author: string;
+  type: "post" | "course" | "lesson" | "document";
   date: string;
-  tags: string[];
-  views: number;
-  likes: number;
-  readTime: string;
+  tags?: string[];
+  views?: number;
+  likes?: number;
+  readTime?: string;
   category?: string;
+  author?: string;
+  slug?: string;
+  difficulty?: string;
+  duration?: string;
+  image?: string;
 }
 
 interface SearchFilters {
   query: string;
+  contentType: "all" | "post" | "course" | "lesson" | "document";
   category?: string;
   tags?: string[];
   sortBy: "relevance" | "date" | "views" | "likes";
@@ -52,11 +60,12 @@ interface SearchFilters {
 const AdvancedSearchSystem: React.FC = () => {
   const [filters, setFilters] = useState<SearchFilters>({
     query: "",
+    contentType: "all",
     sortBy: "relevance",
     dateRange: "all",
   });
 
-  const [results, setResults] = useState<SearchPost[]>([]);
+  const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [totalResults, setTotalResults] = useState(0);
   const [showFilters, setShowFilters] = useState(true);
@@ -100,6 +109,8 @@ const AdvancedSearchSystem: React.FC = () => {
       const params = new URLSearchParams();
       params.append("q", filters.query);
       params.append("sort", filters.sortBy);
+      params.append("contentType", filters.contentType);
+      
       if (filters.category) params.append("category", filters.category);
       if (filters.dateRange && filters.dateRange !== "all") {
         params.append("dateRange", filters.dateRange);
@@ -110,9 +121,14 @@ const AdvancedSearchSystem: React.FC = () => {
       params.append("page", currentPage.toString());
       params.append("limit", resultsPerPage.toString());
 
-      const response = await axios.get(`/api/posts/search?${params}`);
-      setResults(response.data.posts);
-      setTotalResults(response.data.total);
+      // Search across all content types
+      const endpoint = filters.contentType === "all" 
+        ? `/api/search/all?${params}` 
+        : `/api/posts/search?${params}`;
+      
+      const response = await axios.get(endpoint);
+      setResults(response.data.results || response.data.posts || []);
+      setTotalResults(response.data.total || 0);
     } catch (error) {
       console.error("Search failed:", error);
       setResults([]);
@@ -149,9 +165,33 @@ const AdvancedSearchSystem: React.FC = () => {
   return (
     <div className="w-full max-w-6xl mx-auto space-y-6">
       {/* Search Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-8 text-white">
-        <h1 className="text-3xl font-bold mb-2">Search Articles</h1>
-        <p className="text-blue-100">Find insights and knowledge from our comprehensive library</p>
+      <div className="bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg p-8 text-white">
+        <h1 className="text-3xl font-bold mb-2">Search Everything</h1>
+        <p className="text-green-100">Find posts, courses, lessons, and documents across the entire platform</p>
+      </div>
+
+      {/* Content Type Filter */}
+      <div className="flex gap-2 overflow-x-auto pb-2">
+        {(['all', 'post', 'course', 'lesson', 'document'] as const).map((type) => (
+          <button
+            key={type}
+            onClick={() => {
+              setFilters((prev) => ({ ...prev, contentType: type }));
+              setCurrentPage(1);
+            }}
+            className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap transition-colors ${
+              filters.contentType === type
+                ? "bg-green-600 text-white"
+                : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+            }`}
+          >
+            {type === 'all' && '📚 All Content'}
+            {type === 'post' && '📰 Articles'}
+            {type === 'course' && '🎓 Courses'}
+            {type === 'lesson' && '📖 Lessons'}
+            {type === 'document' && '📄 Documents'}
+          </button>
+        ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -163,6 +203,29 @@ const AdvancedSearchSystem: React.FC = () => {
               <button onClick={() => setShowFilters(false)} className="p-1 hover:bg-gray-100 rounded">
                 <X size={18} />
               </button>
+            </div>
+
+            {/* Content Type */}
+            <div className="mb-6 hidden lg:block">
+              <label className="block text-sm font-semibold text-gray-900 mb-2">Content Type</label>
+              <Select
+                value={filters.contentType}
+                onValueChange={(value: any) => {
+                  setFilters((prev) => ({ ...prev, contentType: value }));
+                  setCurrentPage(1);
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Content</SelectItem>
+                  <SelectItem value="post">Articles</SelectItem>
+                  <SelectItem value="course">Courses</SelectItem>
+                  <SelectItem value="lesson">Lessons</SelectItem>
+                  <SelectItem value="document">Documents</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Sort */}
@@ -313,61 +376,126 @@ const AdvancedSearchSystem: React.FC = () => {
           ) : results.length > 0 ? (
             <>
               <div className="space-y-4">
-                {results.map((post) => (
-                  <Link
-                    key={post._id}
-                    to={`/blog/${post.slug}`}
-                    className="block bg-white rounded-lg border border-gray-200 p-6 hover:border-blue-300 hover:shadow-md transition-all group"
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors mb-2">
-                          {post.title}
-                        </h3>
-                        <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                          {post.description}
-                        </p>
-                        <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500">
-                          <div className="flex items-center gap-1">
-                            <Eye size={14} />
-                            {post.views.toLocaleString()} views
+                {results.map((result) => {
+                  const getResultLink = () => {
+                    switch (result.type) {
+                      case 'post':
+                        return `/blog/${result.slug}`;
+                      case 'course':
+                        return `/courses/${result._id}`;
+                      case 'lesson':
+                        return `/lessons/${result._id}`;
+                      case 'document':
+                        return `/documents/${result._id}`;
+                      default:
+                        return '#';
+                    }
+                  };
+
+                  const getTypeIcon = () => {
+                    switch (result.type) {
+                      case 'post':
+                        return '📰';
+                      case 'course':
+                        return '🎓';
+                      case 'lesson':
+                        return '📖';
+                      case 'document':
+                        return '📄';
+                      default:
+                        return '📌';
+                    }
+                  };
+
+                  const getTypeColor = () => {
+                    switch (result.type) {
+                      case 'post':
+                        return 'bg-blue-50 border-blue-200';
+                      case 'course':
+                        return 'bg-green-50 border-green-200';
+                      case 'lesson':
+                        return 'bg-purple-50 border-purple-200';
+                      case 'document':
+                        return 'bg-amber-50 border-amber-200';
+                      default:
+                        return 'bg-gray-50 border-gray-200';
+                    }
+                  };
+
+                  return (
+                    <Link
+                      key={result._id}
+                      to={getResultLink()}
+                      className={`block rounded-lg border p-6 hover:shadow-md transition-all group ${getTypeColor()} hover:border-green-300`}
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-lg">{getTypeIcon()}</span>
+                            <Badge variant="outline" className="text-xs capitalize">
+                              {result.type}
+                            </Badge>
+                            {result.difficulty && (
+                              <Badge variant="outline" className="text-xs capitalize">
+                                {result.difficulty}
+                              </Badge>
+                            )}
                           </div>
-                          <div className="flex items-center gap-1">
-                            <Heart size={14} />
-                            {post.likes} likes
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <Clock size={14} />
-                            {post.readTime} read
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <Calendar size={14} />
-                            {new Date(post.date).toLocaleDateString()}
+                          <h3 className="text-lg font-semibold text-gray-900 group-hover:text-green-600 transition-colors mb-2">
+                            {result.title}
+                          </h3>
+                          <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                            {result.description}
+                          </p>
+                          <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500">
+                            {result.views !== undefined && (
+                              <div className="flex items-center gap-1">
+                                <Eye size={14} />
+                                {result.views.toLocaleString()} views
+                              </div>
+                            )}
+                            {result.likes !== undefined && (
+                              <div className="flex items-center gap-1">
+                                <Heart size={14} />
+                                {result.likes} likes
+                              </div>
+                            )}
+                            {result.readTime && (
+                              <div className="flex items-center gap-1">
+                                <Clock size={14} />
+                                {result.readTime} read
+                              </div>
+                            )}
+                            {result.duration && (
+                              <div className="flex items-center gap-1">
+                                <Clock size={14} />
+                                {result.duration}
+                              </div>
+                            )}
+                            <div className="flex items-center gap-1">
+                              <Calendar size={14} />
+                              {new Date(result.date).toLocaleDateString()}
+                            </div>
                           </div>
                         </div>
                       </div>
-                      {post.category && (
-                        <Badge className="flex-shrink-0" variant="secondary">
-                          {post.category}
-                        </Badge>
+                      {result.tags && result.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-gray-200">
+                          {result.tags.slice(0, 4).map((tag) => (
+                            <Badge key={tag} variant="outline" className="text-xs">
+                              {tag}
+                            </Badge>
+                          ))}
+                          {result.tags.length > 4 && (
+                            <Badge variant="outline" className="text-xs">
+                              +{result.tags.length - 4}
+                            </Badge>
+                          )}
+                        </div>
                       )}
-                    </div>
-                    {post.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-gray-100">
-                        {post.tags.slice(0, 4).map((tag) => (
-                          <Badge key={tag} variant="outline" className="text-xs">
-                            {tag}
-                          </Badge>
-                        ))}
-                        {post.tags.length > 4 && (
-                          <Badge variant="outline" className="text-xs">
-                            +{post.tags.length - 4}
-                          </Badge>
-                        )}
-                      </div>
-                    )}
-                  </Link>
-                ))}
+                    </Link>
+                  );
+                })}
               </div>
 
               {/* Pagination */}
@@ -387,7 +515,7 @@ const AdvancedSearchSystem: React.FC = () => {
                       onClick={() => setCurrentPage(page)}
                       className={`w-10 h-10 rounded-lg transition ${
                         currentPage === page
-                          ? "bg-blue-600 text-white"
+                          ? "bg-green-600 text-white"
                           : "border border-gray-300 hover:bg-gray-50"
                       }`}
                     >
@@ -408,7 +536,7 @@ const AdvancedSearchSystem: React.FC = () => {
           ) : filters.query.length > 0 ? (
             <div className="text-center py-12 bg-gray-50 rounded-lg">
               <p className="text-gray-600 mb-2">No results found for "{filters.query}"</p>
-              <p className="text-sm text-gray-500">Try adjusting your search terms or filters</p>
+              <p className="text-sm text-gray-500">Try adjusting your search terms, filters, or content type</p>
             </div>
           ) : (
             <div className="text-center py-12 bg-gray-50 rounded-lg">

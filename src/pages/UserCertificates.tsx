@@ -96,31 +96,34 @@ const UserCertificates: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 text-sm">Loading certificates...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-900">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <div className="bg-gradient-to-r from-slate-900 to-slate-800 border-b border-slate-700 py-8">
+      <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-b border-green-200 py-8">
         <div className="max-w-6xl mx-auto px-6">
           <button
             onClick={() => navigate('/v/my-progress')}
-            className="flex items-center gap-2 text-blue-400 hover:text-blue-300 mb-4"
+            className="flex items-center gap-2 text-green-600 hover:text-green-700 mb-4 text-xs"
           >
-            <ArrowLeft size={20} />
-            <span style={fontStyle}>Back to Progress</span>
+            <ArrowLeft size={16} />
+            <span>Back to Progress</span>
           </button>
           <div className="flex items-center gap-3 mb-2">
-            <Award className="text-yellow-500" size={40} />
-            <h1 style={fontStyle} className="text-4xl font-bold text-white">
+            <Award className="text-amber-500" size={32} />
+            <h1 style={fontStyle} className="text-3xl font-bold text-gray-900">
               My Certificates
             </h1>
           </div>
-          <p style={fontStyle} className="text-slate-400">
+          <p style={smallFontStyle} className="text-gray-700">
             View and share all your earned Verve Academy certificates
           </p>
         </div>
@@ -129,57 +132,57 @@ const UserCertificates: React.FC = () => {
       {/* Content */}
       <div className="max-w-6xl mx-auto px-6 py-12">
         {error ? (
-          <div className="text-center py-12 bg-red-500/10 border border-red-500/30 rounded-lg">
-            <div className="inline-block p-3 bg-red-500/20 rounded-full mb-4">
-              <Award className="w-8 h-8 text-red-500" />
+          <div className="text-center py-12 bg-red-100 border border-red-300 rounded-lg">
+            <div className="inline-block p-3 bg-red-200 rounded-full mb-4">
+              <Award className="w-8 h-8 text-red-600" />
             </div>
-            <h2 className="text-2xl font-bold text-white mb-2">Unable to Load Certificates</h2>
-            <p className="text-red-300 mb-4">{error}</p>
+            <h2 className="text-lg font-bold text-red-900 mb-2">Unable to Load Certificates</h2>
+            <p className="text-red-700 text-xs mb-4">{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors"
+              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors text-xs"
             >
               Try Again
             </button>
           </div>
         ) : certificates.length === 0 ? (
           <div className="text-center py-12">
-            <Award className="mx-auto text-slate-500 w-16 h-16 mb-4 opacity-50" />
-            <p style={fontStyle} className="text-slate-400 mb-4">
+            <Award className="mx-auto text-gray-400 w-16 h-16 mb-4 opacity-50" />
+            <p style={fontStyle} className="text-gray-600 mb-4">
               No certificates yet. Complete courses to earn credentials!
             </p>
             <button
               onClick={() => navigate('/v/courses')}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition"
+              className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition text-xs"
             >
-              <span style={fontStyle}>Browse Courses</span>
+              Browse Courses
             </button>
           </div>
         ) : (
           <div>
             {/* Summary Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-              <div className="bg-gradient-to-br from-blue-600/20 to-blue-700/20 border border-blue-500/30 rounded-lg p-6">
-                <div style={smallFontStyle} className="text-slate-400 mb-2">
+              <div className="bg-blue-50 border border-blue-300 rounded-lg p-6">
+                <div style={smallFontStyle} className="text-gray-700 mb-2">
                   Certificates Earned
                 </div>
-                <div style={fontStyle} className="text-3xl font-bold text-white">
+                <div style={fontStyle} className="text-3xl font-bold text-gray-900">
                   {certificates.length}
                 </div>
               </div>
-              <div className="bg-gradient-to-br from-green-600/20 to-green-700/20 border border-green-500/30 rounded-lg p-6">
-                <div style={smallFontStyle} className="text-slate-400 mb-2">
+              <div className="bg-green-50 border border-green-300 rounded-lg p-6">
+                <div style={smallFontStyle} className="text-gray-700 mb-2">
                   Latest Achievement
                 </div>
-                <div style={fontStyle} className="text-white font-semibold truncate">
+                <div style={fontStyle} className="text-gray-900 font-semibold truncate">
                   {certificates[0]?.courseTitle || 'N/A'}
                 </div>
               </div>
-              <div className="bg-gradient-to-br from-amber-600/20 to-amber-700/20 border border-amber-500/30 rounded-lg p-6">
-                <div style={smallFontStyle} className="text-slate-400 mb-2">
+              <div className="bg-amber-50 border border-amber-300 rounded-lg p-6">
+                <div style={smallFontStyle} className="text-gray-700 mb-2">
                   Average Score
                 </div>
-                <div style={fontStyle} className="text-3xl font-bold text-amber-400">
+                <div style={fontStyle} className="text-3xl font-bold text-amber-600">
                   {certificates.length > 0
                     ? Math.round(
                         certificates.reduce((sum, cert) => sum + (cert.totalQuizScore || 0), 0) /

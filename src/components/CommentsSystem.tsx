@@ -66,6 +66,10 @@ const CommentsSystem: React.FC<CommentsSystemProps> = ({ postId, onCommentAdded 
       );
       setNewComment("");
       toast.success("Comment posted!");
+      
+      // Add a small delay to ensure backend has saved the data
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
       fetchComments();
       onCommentAdded?.();
     } catch (error) {
@@ -90,6 +94,10 @@ const CommentsSystem: React.FC<CommentsSystemProps> = ({ postId, onCommentAdded 
       setReplyText("");
       setReplyingTo(null);
       toast.success("Reply posted!");
+      
+      // Add a small delay to ensure backend has saved the data
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
       fetchComments();
     } catch (error) {
       console.error("Failed to post reply:", error);

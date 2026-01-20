@@ -44,7 +44,8 @@ const UserProgressDashboard: React.FC = () => {
 
   useEffect(() => {
     if (!token) {
-      navigate('/login');
+      toast.error("Please login to access your dashboard");
+      navigate('/login', { replace: true });
       return;
     }
   }, [token, navigate]);
@@ -157,10 +158,10 @@ const UserProgressDashboard: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p style={fontStyle} className="text-slate-400">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p style={fontStyle} className="text-gray-600">
             Loading your progress...
           </p>
         </div>
@@ -169,17 +170,17 @@ const UserProgressDashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <div className="bg-gradient-to-r from-slate-900 to-slate-800 border-b border-slate-700/50 py-8">
+      <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-b border-green-200 py-8">
         <div className="max-w-6xl mx-auto px-6">
           <h1
             style={fontStyle}
-            className="text-3xl font-bold text-white mb-2"
+            className="text-3xl font-bold text-gray-900 mb-2"
           >
             My Learning Progress
           </h1>
-          <p style={smallFontStyle} className="text-slate-400">
+          <p style={smallFontStyle} className="text-gray-700">
             Track your course completion and learning journey
           </p>
         </div>
@@ -189,16 +190,16 @@ const UserProgressDashboard: React.FC = () => {
       <div className="max-w-6xl mx-auto px-6 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {/* Total Courses */}
-          <div className="bg-gradient-to-br from-blue-500/20 to-blue-600/20 border border-blue-500/30 rounded-lg p-4">
+          <div className="bg-white border border-blue-300 rounded-lg p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-500/20 rounded-lg">
-                <BookOpen size={18} className="text-blue-400" />
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <BookOpen size={18} className="text-blue-600" />
               </div>
               <div>
-                <p style={smallFontStyle} className="text-slate-400">
+                <p style={smallFontStyle} className="text-gray-700">
                   Total Courses
                 </p>
-                <p style={fontStyle} className="text-white font-semibold">
+                <p style={fontStyle} className="text-gray-900 font-semibold">
                   {stats.totalCourses}
                 </p>
               </div>
@@ -206,16 +207,16 @@ const UserProgressDashboard: React.FC = () => {
           </div>
 
           {/* Completed Courses */}
-          <div className="bg-gradient-to-br from-green-500/20 to-green-600/20 border border-green-500/30 rounded-lg p-4">
+          <div className="bg-white border border-green-300 rounded-lg p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-green-500/20 rounded-lg">
-                <CheckCircle2 size={18} className="text-green-400" />
+              <div className="p-2 bg-green-100 rounded-lg">
+                <CheckCircle2 size={18} className="text-green-600" />
               </div>
               <div>
-                <p style={smallFontStyle} className="text-slate-400">
+                <p style={smallFontStyle} className="text-gray-700">
                   Completed
                 </p>
-                <p style={fontStyle} className="text-white font-semibold">
+                <p style={fontStyle} className="text-gray-900 font-semibold">
                   {stats.completedCourses}
                 </p>
               </div>
@@ -223,16 +224,16 @@ const UserProgressDashboard: React.FC = () => {
           </div>
 
           {/* In Progress */}
-          <div className="bg-gradient-to-br from-amber-500/20 to-amber-600/20 border border-amber-500/30 rounded-lg p-4">
+          <div className="bg-white border border-amber-300 rounded-lg p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-amber-500/20 rounded-lg">
-                <Zap size={18} className="text-amber-400" />
+              <div className="p-2 bg-amber-100 rounded-lg">
+                <Zap size={18} className="text-amber-600" />
               </div>
               <div>
-                <p style={smallFontStyle} className="text-slate-400">
+                <p style={smallFontStyle} className="text-gray-700">
                   In Progress
                 </p>
-                <p style={fontStyle} className="text-white font-semibold">
+                <p style={fontStyle} className="text-gray-900 font-semibold">
                   {stats.inProgressCourses}
                 </p>
               </div>
@@ -240,16 +241,16 @@ const UserProgressDashboard: React.FC = () => {
           </div>
 
           {/* Average Progress */}
-          <div className="bg-gradient-to-br from-purple-500/20 to-purple-600/20 border border-purple-500/30 rounded-lg p-4">
+          <div className="bg-white border border-purple-300 rounded-lg p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-purple-500/20 rounded-lg">
-                <TrendingUp size={18} className="text-purple-400" />
+              <div className="p-2 bg-purple-100 rounded-lg">
+                <TrendingUp size={18} className="text-purple-600" />
               </div>
               <div>
-                <p style={smallFontStyle} className="text-slate-400">
+                <p style={smallFontStyle} className="text-gray-700">
                   Avg Progress
                 </p>
-                <p style={fontStyle} className="text-white font-semibold">
+                <p style={fontStyle} className="text-gray-900 font-semibold">
                   {stats.avgProgress}%
                 </p>
               </div>

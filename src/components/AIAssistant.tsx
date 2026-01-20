@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Terminal, Send, X, AlertCircle, Sparkles, GripVertical } from "lucide-react";
+import { Terminal, Send, X, AlertCircle, Sparkles, GripVertical, Lock } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 interface Message {
   sender: "user" | "ai";
@@ -14,7 +16,15 @@ const AIAssistant: React.FC = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+
+  // Check if user is logged in
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -111,19 +121,37 @@ const AIAssistant: React.FC = () => {
   const sendMessage = async () => {
     if (!input.trim() || loading) return;
 
+    // Check if logged in before sending
+    if (!isLoggedIn) {
+      toast.error("Please log in to use the AI Assistant");
+      navigate("/login");
+      return;
+    }
+
     const userMsg: Message = { sender: "user", text: input };
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:5000/api/ai/chat", {
+      const token = localStorage.getItem("token");
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+      
+      const res = await fetch(`${apiBaseUrl}/api/ai/chat`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
         body: JSON.stringify({ message: input }),
       });
 
       if (!res.ok) {
+        if (res.status === 401) {
+          toast.error("Session expired. Please log in again.");
+          navigate("/login");
+          return;
+        }
         throw new Error("AI server error");
       }
 
@@ -146,6 +174,15 @@ const AIAssistant: React.FC = () => {
     setLoading(false);
   };
 
+  const handleOpenChat = () => {
+    if (!isLoggedIn) {
+      toast.error("Please log in to use the AI Assistant");
+      navigate("/login");
+      return;
+    }
+    setOpen(!open);
+  };
+
   const chatStyle = position.x !== 0 || position.y !== 0
     ? {
         position: "fixed" as const,
@@ -160,12 +197,13 @@ const AIAssistant: React.FC = () => {
     <>
       {/* Floating AI Button */}
       <button
-        onClick={() => setOpen(!open)}
-        className="fixed bottom-6 right-6 bg-blue-900 text-white p-2 rounded-full shadow-2xl hover:shadow-blue-900/50 hover:scale-110 transition-all duration-300 z-50 group"
+        onClick={handleOpenChat}
+        className={`fixed bottom-6 right-6 ${isLoggedIn ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-400 cursor-not-allowed'} text-white p-3 rounded-full shadow-2xl hover:shadow-green-600/50 hover:scale-110 transition-all duration-300 z-50 group`}
         aria-label="Open AI Assistant"
+        title={isLoggedIn ? "AI Assistant" : "Log in to use AI Assistant"}
       >
         <Terminal className="w-6 h-6 group-hover:rotate-12 transition-transform" />
-        {messages.length > 0 && !open && (
+        {messages.length > 0 && !open && isLoggedIn && (
           <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center animate-pulse">
             {messages.filter((m) => m.sender === "ai").length}
           </span>
@@ -180,7 +218,7 @@ const AIAssistant: React.FC = () => {
             position.x === 0 && position.y === 0
               ? "fixed bottom-24 right-6"
               : ""
-          } w-full max-w-md h-[90vh] max-h-[32rem] bg-white shadow-2xl rounded-2xl flex flex-col border border-gray-100 z-50 ${
+          } w-full max-w-md h-[90vh] max-h-[32rem] bg-white shadow-2xl rounded-2xl flex flex-col border border-green-200 z-50 ${
             !isDragging ? "animate-in fade-in slide-in-from-bottom-4 duration-300" : ""
           }`}
         >
@@ -188,7 +226,7 @@ const AIAssistant: React.FC = () => {
           <div
             onMouseDown={handleMouseDown}
             onTouchStart={handleTouchStart}
-            className={`p-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-t-2xl flex items-center justify-between select-none touch-none ${
+            className={`p-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-t-2xl flex items-center justify-between select-none touch-none ${
               isDragging ? "cursor-grabbing" : "cursor-grab"
             }`}
           >
@@ -196,11 +234,11 @@ const AIAssistant: React.FC = () => {
               <GripVertical className="w-4 h-4 opacity-70" />
               <div className="relative">
                 <Sparkles className="w-6 h-6" />
-                <span className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white animate-pulse"></span>
+                <span className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-300 rounded-full border-2 border-white animate-pulse"></span>
               </div>
               <div>
-                <h3 className="font-semibold text-lg">Verve AI Assistant</h3>
-                <p className="text-xs text-purple-100">Always here to help</p>
+                <h3 className="font-semibold text-sm">Verve AI Assistant</h3>
+                <p className="text-xs text-green-100">Cybersecurity guidance</p>
               </div>
             </div>
             <button
@@ -216,17 +254,17 @@ const AIAssistant: React.FC = () => {
           </div>
 
           {/* Chat Body */}
-          <div className="flex-1 p-4 overflow-y-auto bg-gradient-to-b from-gray-50 to-white">
+          <div className="flex-1 p-4 overflow-y-auto bg-white">
             {messages.length === 0 && (
               <div className="h-full flex flex-col items-center justify-center text-center px-4">
-                <div className="bg-gradient-to-br from-purple-100 to-blue-100 p-4 rounded-full mb-4">
-                  <Sparkles className="w-8 h-8 text-purple-600" />
+                <div className="bg-green-100 p-4 rounded-full mb-4">
+                  <Sparkles className="w-8 h-8 text-green-600" />
                 </div>
-                <h4 className="font-semibold text-gray-800 mb-2">
-                  Hi there! 👋
+                <h4 className="font-semibold text-gray-800 mb-2 text-sm">
+                  Welcome! 👋
                 </h4>
-                <p className="text-sm text-gray-600">
-                  I'm Verve your AI assistant. How can I help you today!
+                <p className="text-xs text-gray-600 leading-relaxed">
+                  I'm your Verve AI Assistant. Ask me anything about cybersecurity, courses, or how to get started!
                 </p>
               </div>
             )}
@@ -240,13 +278,13 @@ const AIAssistant: React.FC = () => {
                   } animate-in fade-in slide-in-from-bottom-2 duration-300`}
                 >
                   <div
-                    className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm shadow-sm ${
+                    className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-xs shadow-sm ${
                       m.sender === "user"
-                        ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-br-sm"
+                        ? "bg-green-600 text-white rounded-br-sm font-medium"
                         : m.text.includes("Oops!") ||
                           m.text.includes("trouble")
                         ? "bg-red-50 text-red-800 border border-red-200 rounded-bl-sm flex items-start gap-2"
-                        : "bg-white text-gray-800 border border-gray-200 rounded-bl-sm"
+                        : "bg-gray-50 text-gray-800 border border-gray-200 rounded-bl-sm"
                     }`}
                   >
                     {m.sender === "ai" &&
@@ -261,11 +299,11 @@ const AIAssistant: React.FC = () => {
 
               {loading && (
                 <div className="flex justify-start animate-in fade-in duration-300">
-                  <div className="bg-white border border-gray-200 rounded-2xl rounded-bl-sm px-4 py-3 shadow-sm">
+                  <div className="bg-gray-50 border border-gray-200 rounded-2xl rounded-bl-sm px-4 py-3 shadow-sm">
                     <div className="flex gap-1.5">
-                      <div className="w-2 h-2 bg-purple-600 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                      <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                      <div className="w-2 h-2 bg-purple-600 rounded-full animate-bounce"></div>
+                      <div className="w-2 h-2 bg-green-600 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                      <div className="w-2 h-2 bg-green-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                      <div className="w-2 h-2 bg-green-600 rounded-full animate-bounce"></div>
                     </div>
                   </div>
                 </div>
@@ -275,21 +313,21 @@ const AIAssistant: React.FC = () => {
           </div>
 
           {/* Footer Input */}
-          <div className="p-4 border-t border-gray-100 bg-white rounded-b-2xl">
+          <div className="p-4 border-t border-green-100 bg-white rounded-b-2xl">
             <div className="flex gap-2">
               <input
                 type="text"
-                placeholder="Type your message..."
+                placeholder="Ask me anything..."
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-                disabled={loading}
-                className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all disabled:bg-gray-50 disabled:cursor-not-allowed text-sm text-gray-900 placeholder:text-gray-400"
+                disabled={loading || !isLoggedIn}
+                className="flex-1 px-3 py-2 rounded-lg border border-green-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all disabled:bg-gray-50 disabled:cursor-not-allowed text-xs text-gray-900 placeholder:text-gray-400"
               />
               <button
                 onClick={sendMessage}
-                disabled={!input.trim() || loading}
-                className="px-4 py-2.5 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center gap-2"
+                disabled={!input.trim() || loading || !isLoggedIn}
+                className="px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none flex items-center gap-1"
                 aria-label="Send message"
               >
                 <Send className="w-4 h-4" />
@@ -300,6 +338,6 @@ const AIAssistant: React.FC = () => {
       )}
     </>
   );
-};
+}
 
 export default AIAssistant;

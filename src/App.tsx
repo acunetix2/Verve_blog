@@ -43,6 +43,7 @@ import SeriesViewPage from "@/pages/SeriesViewPage";
 import CoursesList from "@/pages/CoursesList";
 import CourseDetail from "@/pages/CourseDetail";
 import LessonView from "@/pages/LessonView";
+import FinalExam from "@/pages/FinalExam";
 import UserProgressDashboard from "@/pages/UserProgressDashboard";
 import UserCertificates from "@/pages/UserCertificates";
 import FloatingActionButton from "@/components/FloatingActionButton";
@@ -153,6 +154,7 @@ const App = () => (
 				  <Route path="/v/courses" element={<CoursesList />} />
 				  <Route path="/v/courses/:courseId" element={<CourseDetail />} />
 				  <Route path="/v/courses/:courseId/lesson/:lessonId" element={<LessonView />} />
+				  <Route path="/exam/:courseId" element={<FinalExam />} />
 				  <Route path="/v/my-progress" element={<UserProgressDashboard />} />
 				  <Route path="/v/my-certificates" element={<UserCertificates />} />
                 </Route>

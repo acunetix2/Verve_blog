@@ -1,9 +1,19 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from "react";
-import { Plus, Trash2, ChevronDown, ChevronUp, Zap } from "lucide-react";
+import { Plus, Trash2, ChevronDown, ChevronUp, Zap, Film, FileDown, X } from "lucide-react";
 import { toast } from "sonner";
 import CourseContentEditor from "./CourseContentEditor";
 import QuizBuilder from "./QuizBuilder";
 import FinalExamBuilder from "./FinalExamBuilder";
+
+interface Resource {
+  id?: string;
+  title: string;
+  description?: string;
+  type: 'pdf' | 'code' | 'checklist' | 'template' | 'other';
+  url: string;
+  fileSize?: number;
+  downloadCount?: number;
+}
 
 interface Lesson {
   id?: string;
@@ -11,6 +21,11 @@ interface Lesson {
   contentBlocks?: any[];
   content?: string;
   quiz?: any[];
+  videoUrl?: string;
+  videoType?: 'youtube' | 'vimeo' | 'custom';
+  videoDuration?: number;
+  transcript?: string;
+  resources?: Resource[];
   order: number;
 }
 
@@ -63,7 +78,7 @@ export const AdvancedCourseForm = forwardRef<AdvancedCourseFormHandle, AdvancedC
 
   const [expandedModuleIndex, setExpandedModuleIndex] = useState<number | null>(null);
   const [expandedLessonIndex, setExpandedLessonIndex] = useState<{ module: number; lesson: number } | null>(null);
-  const [activeTab, setActiveTab] = useState<'content' | 'quiz' | 'finalExam'>('content');
+  const [activeTab, setActiveTab] = useState<'content' | 'quiz' | 'video' | 'resources' | 'finalExam'>('content');
 
   const addModule = () => {
     const newModules = [
@@ -94,6 +109,11 @@ export const AdvancedCourseForm = forwardRef<AdvancedCourseFormHandle, AdvancedC
       content: "",
       contentBlocks: [],
       quiz: [],
+      videoUrl: "",
+      videoType: "custom",
+      videoDuration: undefined,
+      transcript: "",
+      resources: [],
       order: newModules[moduleIndex].lessons.length,
     });
     setCourseForm({ ...courseForm, modules: newModules });
@@ -113,6 +133,38 @@ export const AdvancedCourseForm = forwardRef<AdvancedCourseFormHandle, AdvancedC
       ...newModules[moduleIndex].lessons[lessonIndex],
       [field]: value,
     };
+    setCourseForm({ ...courseForm, modules: newModules });
+  };
+
+  const addResource = (moduleIndex: number, lessonIndex: number) => {
+    const newModules = [...courseForm.modules];
+    const resources = newModules[moduleIndex].lessons[lessonIndex].resources || [];
+    resources.push({
+      id: `res-${Date.now()}`,
+      title: "",
+      description: "",
+      type: "pdf",
+      url: "",
+      fileSize: 0,
+      downloadCount: 0,
+    });
+    newModules[moduleIndex].lessons[lessonIndex].resources = resources;
+    setCourseForm({ ...courseForm, modules: newModules });
+  };
+
+  const updateResource = (moduleIndex: number, lessonIndex: number, resourceIndex: number, field: string, value: any) => {
+    const newModules = [...courseForm.modules];
+    const resources = newModules[moduleIndex].lessons[lessonIndex].resources || [];
+    resources[resourceIndex] = { ...resources[resourceIndex], [field]: value };
+    newModules[moduleIndex].lessons[lessonIndex].resources = resources;
+    setCourseForm({ ...courseForm, modules: newModules });
+  };
+
+  const removeResource = (moduleIndex: number, lessonIndex: number, resourceIndex: number) => {
+    const newModules = [...courseForm.modules];
+    const resources = newModules[moduleIndex].lessons[lessonIndex].resources || [];
+    resources.splice(resourceIndex, 1);
+    newModules[moduleIndex].lessons[lessonIndex].resources = resources;
     setCourseForm({ ...courseForm, modules: newModules });
   };
 
@@ -301,10 +353,10 @@ export const AdvancedCourseForm = forwardRef<AdvancedCourseFormHandle, AdvancedC
                                     </div>
 
                                     {/* Tabs */}
-                                    <div className="flex gap-1 border-b border-slate-700/30">
+                                    <div className="flex gap-1 border-b border-slate-700/30 overflow-x-auto">
                                       <button
                                         onClick={() => setActiveTab('content')}
-                                        className={`px-3 py-2 text-xs font-medium border-b-2 transition-colors ${
+                                        className={`px-3 py-2 text-xs font-medium border-b-2 transition-colors whitespace-nowrap ${
                                           activeTab === 'content'
                                             ? 'border-blue-500 text-blue-400'
                                             : 'border-transparent text-slate-400 hover:text-white'
@@ -313,14 +365,36 @@ export const AdvancedCourseForm = forwardRef<AdvancedCourseFormHandle, AdvancedC
                                         Content
                                       </button>
                                       <button
+                                        onClick={() => setActiveTab('video')}
+                                        className={`px-3 py-2 text-xs font-medium border-b-2 transition-colors whitespace-nowrap flex items-center gap-1 ${
+                                          activeTab === 'video'
+                                            ? 'border-blue-500 text-blue-400'
+                                            : 'border-transparent text-slate-400 hover:text-white'
+                                        }`}
+                                      >
+                                        <Film size={12} />
+                                        Video
+                                      </button>
+                                      <button
                                         onClick={() => setActiveTab('quiz')}
-                                        className={`px-3 py-2 text-xs font-medium border-b-2 transition-colors ${
+                                        className={`px-3 py-2 text-xs font-medium border-b-2 transition-colors whitespace-nowrap ${
                                           activeTab === 'quiz'
                                             ? 'border-blue-500 text-blue-400'
                                             : 'border-transparent text-slate-400 hover:text-white'
                                         }`}
                                       >
-                                        Lesson Quiz
+                                        Quiz
+                                      </button>
+                                      <button
+                                        onClick={() => setActiveTab('resources')}
+                                        className={`px-3 py-2 text-xs font-medium border-b-2 transition-colors whitespace-nowrap flex items-center gap-1 ${
+                                          activeTab === 'resources'
+                                            ? 'border-blue-500 text-blue-400'
+                                            : 'border-transparent text-slate-400 hover:text-white'
+                                        }`}
+                                      >
+                                        <FileDown size={12} />
+                                        Resources
                                       </button>
                                     </div>
 
@@ -337,6 +411,56 @@ export const AdvancedCourseForm = forwardRef<AdvancedCourseFormHandle, AdvancedC
                                       </div>
                                     )}
 
+                                    {/* Video Tab */}
+                                    {activeTab === 'video' && (
+                                      <div className="space-y-3">
+                                        <div>
+                                          <label className="text-slate-300 text-xs font-medium mb-2 block">Video URL</label>
+                                          <input
+                                            type="text"
+                                            value={lesson.videoUrl || ""}
+                                            onChange={(e) => updateLesson(moduleIdx, lessonIdx, "videoUrl", e.target.value)}
+                                            placeholder="e.g., https://youtube.com/watch?v=... or https://vimeo.com/..."
+                                            className="w-full bg-slate-900/50 border border-slate-700/50 text-white placeholder-slate-500 px-3 py-2 rounded-lg focus:border-blue-500/50 focus:outline-none text-xs"
+                                          />
+                                        </div>
+
+                                        <div>
+                                          <label className="text-slate-300 text-xs font-medium mb-2 block">Video Type</label>
+                                          <select
+                                            value={lesson.videoType || "custom"}
+                                            onChange={(e) => updateLesson(moduleIdx, lessonIdx, "videoType", e.target.value as 'youtube' | 'vimeo' | 'custom')}
+                                            className="w-full bg-slate-900/50 border border-slate-700/50 text-white px-3 py-2 rounded-lg focus:border-blue-500/50 focus:outline-none text-xs"
+                                          >
+                                            <option value="youtube">YouTube</option>
+                                            <option value="vimeo">Vimeo</option>
+                                            <option value="custom">Custom/Other</option>
+                                          </select>
+                                        </div>
+
+                                        <div>
+                                          <label className="text-slate-300 text-xs font-medium mb-2 block">Video Duration (seconds)</label>
+                                          <input
+                                            type="number"
+                                            value={lesson.videoDuration || ""}
+                                            onChange={(e) => updateLesson(moduleIdx, lessonIdx, "videoDuration", e.target.value ? parseInt(e.target.value) : undefined)}
+                                            placeholder="e.g., 600"
+                                            className="w-full bg-slate-900/50 border border-slate-700/50 text-white placeholder-slate-500 px-3 py-2 rounded-lg focus:border-blue-500/50 focus:outline-none text-xs"
+                                          />
+                                        </div>
+
+                                        <div>
+                                          <label className="text-slate-300 text-xs font-medium mb-2 block">Video Transcript</label>
+                                          <textarea
+                                            value={lesson.transcript || ""}
+                                            onChange={(e) => updateLesson(moduleIdx, lessonIdx, "transcript", e.target.value)}
+                                            placeholder="Add transcript or captions for accessibility..."
+                                            className="w-full bg-slate-900/50 border border-slate-700/50 text-white placeholder-slate-500 px-3 py-2 rounded-lg focus:border-blue-500/50 focus:outline-none text-xs resize-none h-24"
+                                          />
+                                        </div>
+                                      </div>
+                                    )}
+
                                     {/* Quiz Tab */}
                                     {activeTab === 'quiz' && (
                                       <div>
@@ -347,6 +471,92 @@ export const AdvancedCourseForm = forwardRef<AdvancedCourseFormHandle, AdvancedC
                                           }
                                           maxQuestions={10}
                                         />
+                                      </div>
+                                    )}
+
+                                    {/* Resources Tab */}
+                                    {activeTab === 'resources' && (
+                                      <div className="space-y-3">
+                                        <div className="flex items-center justify-between">
+                                          <label className="text-slate-300 text-xs font-medium">Downloadable Resources</label>
+                                          <button
+                                            onClick={() => addResource(moduleIdx, lessonIdx)}
+                                            className="flex items-center gap-1 bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded text-xs transition-all"
+                                          >
+                                            <Plus size={12} />
+                                            Add Resource
+                                          </button>
+                                        </div>
+
+                                        {(!lesson.resources || lesson.resources.length === 0) ? (
+                                          <p className="text-xs text-slate-500 py-3 text-center">No resources added yet.</p>
+                                        ) : (
+                                          <div className="space-y-2">
+                                            {lesson.resources.map((resource, resourceIdx) => (
+                                              <div key={resourceIdx} className="bg-slate-800/50 border border-slate-700/30 rounded-lg p-3 space-y-2">
+                                                <div className="flex items-start justify-between gap-2">
+                                                  <div className="flex-1 space-y-2">
+                                                    <input
+                                                      type="text"
+                                                      value={resource.title}
+                                                      onChange={(e) => updateResource(moduleIdx, lessonIdx, resourceIdx, "title", e.target.value)}
+                                                      placeholder="Resource title"
+                                                      className="w-full bg-slate-900/50 border border-slate-700/50 text-white placeholder-slate-500 px-2 py-1 rounded text-xs"
+                                                    />
+                                                  </div>
+                                                  <button
+                                                    onClick={() => removeResource(moduleIdx, lessonIdx, resourceIdx)}
+                                                    className="bg-red-600/20 hover:bg-red-600/30 text-red-400 p-1 rounded transition-all"
+                                                  >
+                                                    <Trash2 size={12} />
+                                                  </button>
+                                                </div>
+
+                                                <textarea
+                                                  value={resource.description || ""}
+                                                  onChange={(e) => updateResource(moduleIdx, lessonIdx, resourceIdx, "description", e.target.value)}
+                                                  placeholder="Resource description"
+                                                  className="w-full bg-slate-900/50 border border-slate-700/50 text-white placeholder-slate-500 px-2 py-1 rounded text-xs resize-none h-12"
+                                                />
+
+                                                <div className="grid grid-cols-2 gap-2">
+                                                  <div>
+                                                    <label className="text-slate-400 text-xs mb-1 block">Type</label>
+                                                    <select
+                                                      value={resource.type}
+                                                      onChange={(e) => updateResource(moduleIdx, lessonIdx, resourceIdx, "type", e.target.value)}
+                                                      className="w-full bg-slate-900/50 border border-slate-700/50 text-white px-2 py-1 rounded text-xs"
+                                                    >
+                                                      <option value="pdf">PDF</option>
+                                                      <option value="code">Code</option>
+                                                      <option value="checklist">Checklist</option>
+                                                      <option value="template">Template</option>
+                                                      <option value="other">Other</option>
+                                                    </select>
+                                                  </div>
+                                                  <div>
+                                                    <label className="text-slate-400 text-xs mb-1 block">File Size (bytes)</label>
+                                                    <input
+                                                      type="number"
+                                                      value={resource.fileSize || ""}
+                                                      onChange={(e) => updateResource(moduleIdx, lessonIdx, resourceIdx, "fileSize", e.target.value ? parseInt(e.target.value) : 0)}
+                                                      placeholder="0"
+                                                      className="w-full bg-slate-900/50 border border-slate-700/50 text-white placeholder-slate-500 px-2 py-1 rounded text-xs"
+                                                    />
+                                                  </div>
+                                                </div>
+
+                                                <input
+                                                  type="text"
+                                                  value={resource.url}
+                                                  onChange={(e) => updateResource(moduleIdx, lessonIdx, resourceIdx, "url", e.target.value)}
+                                                  placeholder="Resource URL (B2 or CDN link)"
+                                                  className="w-full bg-slate-900/50 border border-slate-700/50 text-white placeholder-slate-500 px-2 py-1 rounded text-xs"
+                                                />
+                                              </div>
+                                            ))}
+                                          </div>
+                                        )}
                                       </div>
                                     )}
 
