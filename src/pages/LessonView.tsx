@@ -294,23 +294,23 @@ const LessonView: React.FC = () => {
     <div className={`min-h-screen ${isDark ? 'bg-white' : 'bg-white'} flex transition-colors`}>
       {/* Lesson Sidebar Navigation - TryHackMe Style */}
       {course && (
-        <div className={`w-72 ${isDark ? 'bg-gradient-to-b from-gray-50 to-gray-100' : 'bg-gradient-to-b from-gray-50 to-gray-100'} border-r border-gray-200 overflow-y-auto max-h-screen transition-colors`}>
-          <div className={`p-4 border-b border-gray-200 transition-colors`}>
+        <div className={`w-72 ${isDark ? 'bg-gradient-to-b from-slate-800 to-slate-900' : 'bg-gradient-to-b from-slate-700 to-slate-800'} border-r ${isDark ? 'border-slate-700' : 'border-slate-600'} overflow-y-auto max-h-screen transition-colors`}>
+          <div className={`p-4 ${isDark ? 'border-b border-slate-700' : 'border-b border-slate-600'} transition-colors`}>
             <button
               onClick={() => navigate(`/v/courses/${course.slug || courseId}`)}
-              className={`flex items-center gap-2 text-green-600 hover:text-green-700 mb-3 text-xs font-semibold transition-colors`}
+              className={`flex items-center gap-2 text-green-400 hover:text-green-300 mb-3 text-xs font-semibold transition-colors`}
             >
               <ArrowLeft size={16} />
               Back to Course
             </button>
-            <h2 className={`text-gray-900 font-bold text-xs truncate transition-colors line-clamp-2`}>{course.title}</h2>
+            <h2 className={`${isDark ? 'text-white' : 'text-slate-100'} font-bold text-xs truncate transition-colors line-clamp-2`}>{course.title}</h2>
           </div>
           
           {/* Modules and Lessons List */}
           <div className="p-4 space-y-3">
             {course.modules.map((module, mIdx) => (
               <div key={mIdx} className="space-y-2">
-                <h3 className="text-xs font-bold text-gray-600 uppercase tracking-wider">
+                <h3 className={`text-xs font-bold ${isDark ? 'text-slate-400' : 'text-slate-300'} uppercase tracking-wider transition-colors`}>
                   Module {mIdx + 1}: {module.title}
                 </h3>
                 <div className="space-y-1">
@@ -328,13 +328,13 @@ const LessonView: React.FC = () => {
                         className={`w-full text-left px-3 py-2 rounded text-xs transition flex items-center gap-2 ${
                           isCurrentLesson
                             ? 'bg-green-600 text-white font-semibold'
-                            : 'text-gray-700 hover:bg-green-50'
+                            : `${isDark ? 'text-slate-300 hover:bg-slate-700' : 'text-slate-200 hover:bg-slate-600'}`
                         }`}
                       >
                         {isCompleted ? (
-                          <CheckCircle2 size={12} className="text-green-600 flex-shrink-0" />
+                          <CheckCircle2 size={12} className="text-green-400 flex-shrink-0" />
                         ) : (
-                          <Play size={12} className="text-gray-400 flex-shrink-0" />
+                          <Play size={12} className={`${isDark ? 'text-slate-500' : 'text-slate-400'} flex-shrink-0`} />
                         )}
                         <span className="truncate text-xs">{les.title}</span>
                       </button>
@@ -604,7 +604,7 @@ const LessonView: React.FC = () => {
         <div className="flex gap-4 mt-8">
           <button
             onClick={handlePreviousLesson}
-            className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-6 rounded-lg transition flex items-center justify-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-3 px-6 rounded-lg transition flex items-center justify-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={currentModuleIdx === 0 && currentLessonIdx === 0}
           >
             ← Previous Lesson
@@ -629,16 +629,16 @@ const LessonView: React.FC = () => {
               🔒 Complete Quiz First
             </button>
           )}
-        </div>  {quizSubmitted && (
-              <button
-                onClick={handleNextLesson}
-                className="mt-8 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition flex items-center justify-center gap-2 text-sm"
-              >
-                Continue to Next Lesson
-                <ChevronRight size={18} />
-              </button>
-            )}
-          </div>
+        </div>
+
+        {quizSubmitted && (
+          <button
+            onClick={handleNextLesson}
+            className="mt-8 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition flex items-center justify-center gap-2 text-sm"
+          >
+            Continue to Next Lesson
+            <ChevronRight size={18} />
+          </button>
         )}
 
         {isCourseComplete && (

@@ -262,7 +262,7 @@ export default function Signup() {
               </button>
             </p>
 			<p className="text-[10px] text-gray-400 mt-6 text-center select-none">
-			  &copy; {new Date().getFullYear()} Verve Hub WriteUps. All rights reserved.
+			  &copy; {new Date().getFullYear()} Verve Hub Academy. All rights reserved.
 			</p>
           </form>
         </div>

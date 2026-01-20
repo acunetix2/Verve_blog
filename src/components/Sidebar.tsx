@@ -191,7 +191,7 @@ export default function Sidebar({ collapsed = false, onCollapse, sidebarOpen, on
 
           {/* Copyright */}
           <p className="text-[11px] text-gray-500 dark:text-gray-500 text-center mt-3 leading-tight">
-            &copy; {new Date().getFullYear()} Verve Hub
+            &copy; {new Date().getFullYear()} Verve Hub Academy
           </p>
         </div>
       </aside>
