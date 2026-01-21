@@ -245,6 +245,27 @@ const LessonView: React.FC = () => {
     }
   };
 
+  const handlePreviousLesson = () => {
+    if (!course) return;
+    
+    const modules = course.modules;
+    let prevLessonFound = false;
+    
+    // Try to find previous lesson in current module
+    if (currentLessonIdx - 1 >= 0) {
+      const prevLesson = modules[currentModuleIdx].lessons[currentLessonIdx - 1];
+      navigate(`/v/courses/${course.slug || courseId}/lesson/${prevLesson._id || currentLessonIdx - 1}`);
+      prevLessonFound = true;
+    } else if (currentModuleIdx - 1 >= 0) {
+      // Try previous module's last lesson
+      const prevLesson = modules[currentModuleIdx - 1].lessons[modules[currentModuleIdx - 1].lessons.length - 1];
+      if (prevLesson) {
+        navigate(`/v/courses/${course.slug || courseId}/lesson/${prevLesson._id}`);
+        prevLessonFound = true;
+      }
+    }
+  };
+
   const handleNextLesson = () => {
     if (!course) return;
     
@@ -392,58 +413,8 @@ const LessonView: React.FC = () => {
                 <Loader2 className="animate-spin text-green-600 mr-2" size={24} />
                 <p className="text-gray-600 text-sm">Loading content...</p>
               </div>
-            ) : lesson.contentBlocks && lesson.contentBlocks.length > 0 ? (
-              // Render structured content blocks
-              lesson.contentBlocks.map((block: any, idx: number) => {
-                switch (block.type) {
-                  case 'header':
-                    return (
-                      <div key={idx} className="scroll-mt-16 border-b-2 border-green-600 pb-3">
-                        <h1 className={`text-2xl font-bold text-gray-900 mb-2`}>
-                          {block.content}
-                        </h1>
-                      </div>
-                    );
-                  case 'subheader':
-                    return (
-                      <div key={idx} className="scroll-mt-16 mt-6">
-                        <h2 className={`text-lg font-bold text-gray-900 mb-3 text-green-700`}>
-                          {block.content}
-                        </h2>
-                      </div>
-                    );
-                  case 'text':
-                    return (
-                      <p key={idx} className="text-gray-700 leading-relaxed text-sm whitespace-pre-wrap">
-                        {block.content}
-                      </p>
-                    );
-                  case 'points':
-                    return (
-                      <div key={idx} className="space-y-2">
-                        {block.content.split('\n').filter((line: string) => line.trim()).map((point: string, pIdx: number) => (
-                          <div key={pIdx} className="flex gap-3 items-start">
-                            <span className={`text-green-600 font-bold flex-shrink-0 mt-0.5 text-lg`}>✓</span>
-                            <p className="text-gray-700 leading-relaxed text-sm pt-0.5">{point}</p>
-                          </div>
-                        ))}
-                      </div>
-                    );
-                  case 'highlight':
-                    return (
-                      <div
-                        key={idx}
-                        className={`p-4 rounded-lg border-l-4 border-green-600 bg-green-50`}
-                      >
-                        <p className={`text-gray-800 font-medium text-sm`}>{block.content}</p>
-                      </div>
-                    );
-                  default:
-                    return null;
-                }
-              })
             ) : lessonContent ? (
-              // Fallback to legacy HTML content
+              // Render content
               <div
                 className="prose max-w-none text-gray-700 text-sm"
                 dangerouslySetInnerHTML={{ __html: lessonContent }}
@@ -453,60 +424,60 @@ const LessonView: React.FC = () => {
             )}
           </div>
 
-        {/* Quiz Not Available Message - When no quizzes */}
-        {(!lesson.quiz || lesson.quiz.length === 0) && !isLessonCompleted && (
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6 flex items-center gap-3">
-            <div className="text-amber-600 text-sm font-semibold">ℹ️ No quiz available for this lesson</div>
-          </div>
-        )}
-
-        {/* Mark as Complete Button - For lessons without quiz or after quiz completion */}
-        {(!lesson.quiz || lesson.quiz.length === 0 || quizSubmitted) && !isLessonCompleted && (
-          <div className="mb-8">
-            <button
-              onClick={handleMarkComplete}
-              className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition flex items-center justify-center gap-2 text-sm"
-            >
-              <CheckCircle2 size={18} />
-              Mark as Complete
-            </button>
-          </div>
-        )}
-
-        {/* Lesson Completed Badge */}
-        {isLessonCompleted && (
-          <div className="mb-8 bg-green-50 border border-green-300 rounded-lg p-4 flex items-center gap-3">
-            <CheckCircle2 className="text-green-600" size={20} />
-            <div>
-              <p className="text-green-700 font-semibold text-sm">Lesson Completed!</p>
-              <p className="text-xs text-gray-600">You've successfully completed this lesson</p>
+          {/* Quiz Not Available Message - When no quizzes */}
+          {(!lesson.quiz || lesson.quiz.length === 0) && !isLessonCompleted && (
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6 flex items-center gap-3">
+              <div className="text-amber-600 text-sm font-semibold">ℹ️ No quiz available for this lesson</div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Quiz Section */}
-        {lesson.quiz && lesson.quiz.length > 0 && (
-          <div className="bg-white border border-green-200 rounded-lg p-8 mb-8">
-            <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
-              <span className="text-green-600">📝</span> Knowledge Check
-            </h2>
-            {!quizSubmitted && (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 flex items-center gap-3">
-                <div className="text-blue-600 text-sm">
-                  <p className="font-semibold">⚠️ Quiz Required</p>
-                  <p className="text-xs text-blue-600">You must complete this quiz to continue to the next lesson</p>
-                </div>
-              </div>
-            )}
-
-            {quizSubmitted && (
-              <div
-                className={`p-4 rounded-lg mb-6 flex items-center gap-3 ${
-                  quizScore >= 70
-                    ? 'bg-green-50 border border-green-300'
-                    : 'bg-amber-50 border border-amber-300'
-                }`}
+          {/* Mark as Complete Button - For lessons without quiz or after quiz completion */}
+          {(!lesson.quiz || lesson.quiz.length === 0 || quizSubmitted) && !isLessonCompleted && (
+            <div className="mb-8">
+              <button
+                onClick={handleMarkComplete}
+                className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition flex items-center justify-center gap-2 text-sm"
               >
+                <CheckCircle2 size={18} />
+                Mark as Complete
+              </button>
+            </div>
+          )}
+
+          {/* Lesson Completed Badge */}
+          {isLessonCompleted && (
+            <div className="mb-8 bg-green-50 border border-green-300 rounded-lg p-4 flex items-center gap-3">
+              <CheckCircle2 className="text-green-600" size={20} />
+              <div>
+                <p className="text-green-700 font-semibold text-sm">Lesson Completed!</p>
+                <p className="text-xs text-gray-600">You've successfully completed this lesson</p>
+              </div>
+            </div>
+          )}
+
+          {/* Quiz Section */}
+          {lesson.quiz && lesson.quiz.length > 0 && (
+            <div className="bg-white border border-green-200 rounded-lg p-8 mb-8">
+              <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
+                <span className="text-green-600">📝</span> Knowledge Check
+              </h2>
+              {!quizSubmitted && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 flex items-center gap-3">
+                  <div className="text-blue-600 text-sm">
+                    <p className="font-semibold">⚠️ Quiz Required</p>
+                    <p className="text-xs text-blue-600">You must complete this quiz to continue to the next lesson</p>
+                  </div>
+                </div>
+              )}
+
+              {quizSubmitted && (
+                <div
+                  className={`p-4 rounded-lg mb-6 flex items-center gap-3 ${
+                    quizScore >= 70
+                      ? 'bg-green-50 border border-green-300'
+                      : 'bg-amber-50 border border-amber-300'
+                  }`}
+                >
                 <CheckCircle2
                   className={quizScore >= 70 ? 'text-green-600' : 'text-amber-600'}
                   size={20}
@@ -597,8 +568,8 @@ const LessonView: React.FC = () => {
                 Submit Quiz
               </button>
             )}
-
-          
+            </div>
+          )}
 
         {/* Navigation Buttons - Previous/Next at bottom */}
         <div className="flex gap-4 mt-8">
@@ -664,16 +635,16 @@ const LessonView: React.FC = () => {
           </div>
         )}
       </div>
+      </div>
 
       {/* Certificate Modal */}
-      {showCertificate && (
+      {showCertificate && certificate && (
         <CertificateDisplay
           certificate={certificate}
           onClose={() => setShowCertificate(false)}
           courseId={courseId}
         />
       )}
-      </div>
     </div>
   );
 };
