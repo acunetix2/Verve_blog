@@ -10,6 +10,8 @@ import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom
 import { HelmetProvider } from "react-helmet-async";
 import { useState, useEffect, createContext, useContext } from "react";
 import { ThemeProvider } from "@/components/ThemeContext";
+import axios from "axios";
+import '@/lib/axiosConfig'; // Initialize axios interceptors
 
 // Wrapper
 import VerveHubWrapper from "@/components/VerveHubWrapper";
@@ -47,6 +49,7 @@ import FinalExam from "@/pages/FinalExam";
 import UserProgressDashboard from "@/pages/UserProgressDashboard";
 import UserCertificates from "@/pages/UserCertificates";
 import FloatingActionButton from "@/components/FloatingActionButton";
+import VerveHubLogo  from "@/components/VerveHubLogo";
 
 // --- Auth Context ---
 interface AuthContextType {
@@ -64,7 +67,23 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 const useAuth = () => useContext(AuthContext);
+    const FullScreenLoader = () => (
+      <div className="flex flex-col justify-center items-center h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
+        {/* Logo */}
+        <div className="flex items-center gap-2 mb-6">
+          <VerveHubLogo size="lg" />
+          <span className="text-2xl font-bold tracking-tight">Verve Hub Academy</span>
+        </div>
 
+        {/* Spinner */}
+        <div className="w-12 h-12 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin mb-4"></div>
+
+        {/* Loading Text */}
+        <p className="text-cyan-500 font-medium text-lg animate-pulse">
+          Please wait...
+        </p>
+      </div>
+    );
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState<string | null>(null);
@@ -80,6 +99,26 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     refresh();
     setLoading(false);
+
+    // Listen for storage changes (e.g., login in another tab or after redirect)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "token" || e.key === "role") {
+        refresh();
+      }
+    };
+
+    // Listen for custom event when token is set
+    const handleTokenUpdate = () => {
+      refresh();
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    window.addEventListener("tokenUpdated", handleTokenUpdate);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("tokenUpdated", handleTokenUpdate);
+    };
   }, []);
 
   return (
@@ -96,11 +135,51 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute = ({ role }: ProtectedRouteProps) => {
   const { loading, token, role: userRole } = useAuth();
+  const [backendHealthy, setBackendHealthy] = useState(true);
+  const [checkingBackend, setCheckingBackend] = useState(true);
 
-  if (loading) {
+  // Check backend health on component mount
+  useEffect(() => {
+    const checkBackendHealth = async () => {
+      try {
+        setCheckingBackend(true);
+        // Try to reach the backend with a health check endpoint
+        await axios.get(`${import.meta.env.VITE_API_BASE_URL}/health`, {
+          timeout: 5000,
+        });
+        setBackendHealthy(true);
+      } catch (error) {
+        setBackendHealthy(false);
+      } finally {
+        setCheckingBackend(false);
+      }
+    };
+
+    checkBackendHealth();
+  }, []);
+
+  if (loading || checkingBackend) {
+    return <FullScreenLoader />
+  }
+
+  // If backend is not healthy, show error message
+  if (!backendHealthy) {
     return (
-      <div className="flex justify-center items-center h-screen text-cyan-400">
-        Checking authentication...
+      <div className="flex flex-col justify-center items-center h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white px-6">
+        <div className="text-6xl mb-6 animate-bounce">⚠️</div>
+        <h1 className="text-3xl sm:text-4xl font-extrabold mb-4 text-center drop-shadow-lg">
+          Service Unavailable
+        </h1>
+        <p className="text-gray-300 text-center mb-8 max-w-md">
+          Our system is currently undergoing maintenance. Please try again later.
+        </p>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-8 py-3 bg-cyan-500 hover:bg-cyan-600 text-white rounded-xl shadow-lg transform transition duration-300 hover:-translate-y-1 hover:scale-105"
+        >
+          Retry
+        </button>
+        <p className="text-gray-400 text-sm mt-6">Thank you for your patience!</p>
       </div>
     );
   }
@@ -123,7 +202,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <AuthProvider>
-          <BrowserRouter>
+          <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
 			<AIAssistant />
             <Routes>
               {/* Public */}

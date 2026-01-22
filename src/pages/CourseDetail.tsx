@@ -104,16 +104,21 @@ const CourseDetail: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+      <div className="min-h-screen bg-white dark:bg-gray-950 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin mb-4">
+            <BookOpen size={40} className="text-green-600 mx-auto" />
+          </div>
+          <p style={fontStyle} className="text-gray-600 dark:text-gray-400">Loading course...</p>
+        </div>
       </div>
     );
   }
 
   if (!course) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
-        <p className="text-slate-400">Course not found</p>
+      <div className="min-h-screen bg-white dark:bg-gray-950 flex items-center justify-center">
+        <p style={fontStyle} className="text-gray-600 dark:text-gray-400">Course not found</p>
       </div>
     );
   }
@@ -121,29 +126,29 @@ const CourseDetail: React.FC = () => {
   const progress_percent = calculateProgress();
 
   return (
-    <div className="min-h-screen bg-slate-900">
+    <div className="min-h-screen bg-white dark:bg-gray-950">
       {/* Header */}
-      <div className="bg-gradient-to-r from-slate-900 to-slate-800 border-b border-slate-700 py-8">
+      <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-gray-900 dark:to-gray-850 border-b border-green-200 dark:border-gray-800 py-8">
         <div className="max-w-6xl mx-auto px-6">
           <button
             onClick={() => navigate('/v/courses')}
-            className="flex items-center gap-2 text-blue-400 hover:text-blue-300 mb-4"
+            className="flex items-center gap-2 text-green-600 dark:text-green-500 hover:text-green-700 dark:hover:text-green-400 mb-4"
           >
             <ArrowLeft size={20} />
             <span style={fontStyle}>Back to Courses</span>
           </button>
-          <h1 style={fontStyle} className="text-4xl font-bold text-white mb-2">{course.title}</h1>
-          <p style={fontStyle} className="text-slate-400 mb-6">{course.description}</p>
+          <h1 style={fontStyle} className="text-4xl font-bold text-gray-900 dark:text-white mb-2">{course.title}</h1>
+          <p style={fontStyle} className="text-gray-700 dark:text-gray-400 mb-6">{course.description}</p>
 
           {/* Progress Bar */}
           <div className="space-y-2">
-            <div style={smallFontStyle} className="flex justify-between text-slate-400">
+            <div style={smallFontStyle} className="flex justify-between text-gray-700 dark:text-gray-400">
               <span>Progress</span>
               <span>{progress_percent}%</span>
             </div>
-            <div className="w-full bg-slate-700 rounded-full h-2">
+            <div className="w-full bg-gray-300 dark:bg-gray-700 rounded-full h-2">
               <div
-                className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                className="bg-green-600 dark:bg-green-500 h-2 rounded-full transition-all duration-300"
                 style={{ width: `${progress_percent}%` }}
               ></div>
             </div>
@@ -154,8 +159,8 @@ const CourseDetail: React.FC = () => {
       {/* Course Content */}
       <div className="max-w-6xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 gap-4 mb-8">
-          <div className="bg-slate-800 border border-slate-700 rounded-lg p-4">
-            <div style={smallFontStyle} className="flex items-center gap-2 text-slate-400">
+          <div className="bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-lg p-4">
+            <div style={smallFontStyle} className="flex items-center gap-2 text-gray-700 dark:text-gray-400">
               <BookOpen size={18} />
               <span>{course.modules.length} Modules</span>
             </div>
@@ -167,37 +172,37 @@ const CourseDetail: React.FC = () => {
           {course.modules.map((module, idx) => (
             <div
               key={module._id || idx}
-              className="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden"
+              className="bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-lg overflow-hidden"
             >
               <button
                 onClick={() => setExpandedModule(expandedModule === idx ? null : idx)}
-                className="w-full p-6 flex items-center justify-between hover:bg-slate-700/50 transition"
+                className="w-full p-6 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800 transition"
               >
                 <div className="flex items-center gap-4 text-left">
-                  <div className="text-2xl font-bold text-blue-500">
+                  <div className="text-2xl font-bold text-green-600 dark:text-green-500">
                     {String(idx + 1).padStart(2, '0')}
                   </div>
                   <div>
-                    <h3 style={fontStyle} className="text-lg font-semibold text-white">
+                    <h3 style={fontStyle} className="text-lg font-semibold text-gray-900 dark:text-white">
                       {module.title}
                     </h3>
-                    <p style={smallFontStyle} className="text-slate-400">
+                    <p style={smallFontStyle} className="text-gray-600 dark:text-gray-400">
                       {module.lessons.length} lessons
                     </p>
                   </div>
                 </div>
-                <div className="text-slate-400">
+                <div className="text-gray-700 dark:text-gray-400">
                   {expandedModule === idx ? '−' : '+'}
                 </div>
               </button>
 
               {/* Lessons */}
               {expandedModule === idx && (
-                <div className="border-t border-slate-700 divide-y divide-slate-700">
+                <div className="border-t border-gray-300 dark:border-gray-800 divide-y divide-gray-300 dark:divide-gray-800">
                   {module.lessons.map((lesson, lessonIdx) => (
                     <div
                       key={lesson._id || lessonIdx}
-                      className="p-4 hover:bg-slate-700/30 transition"
+                      className="p-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition"
                     >
                       <button
                         onClick={() =>
@@ -209,15 +214,15 @@ const CourseDetail: React.FC = () => {
                       >
                         <div className="flex items-center gap-3 flex-1">
                           {isLessonCompleted(lesson._id || `${idx}-${lessonIdx}`) ? (
-                            <CheckCircle2 className="text-green-500" size={20} />
+                            <CheckCircle2 className="text-green-600 dark:text-green-500" size={20} />
                           ) : (
-                            <Play className="text-slate-500" size={20} />
+                            <Play className="text-gray-400 dark:text-gray-600" size={20} />
                           )}
-                          <span style={fontStyle} className="text-white hover:text-blue-400 transition">
+                          <span style={fontStyle} className="text-gray-900 dark:text-white hover:text-green-600 dark:hover:text-green-500 transition">
                             {lesson.title}
                           </span>
                         </div>
-                        <span style={smallFontStyle} className="text-slate-500">
+                        <span style={smallFontStyle} className="text-gray-600 dark:text-gray-500">
                           ~5 min
                         </span>
                       </button>

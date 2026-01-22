@@ -137,7 +137,7 @@ const AIAssistant: React.FC = () => {
       const token = localStorage.getItem("token");
       const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
       
-      const res = await fetch(`${apiBaseUrl}/api/ai/chat`, {
+      const res = await fetch(`${apiBaseUrl}/ai/chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

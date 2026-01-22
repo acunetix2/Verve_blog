@@ -158,10 +158,10 @@ const UserProgressDashboard: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-white dark:bg-gray-950 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
-          <p style={fontStyle} className="text-gray-600">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 dark:border-green-500 mx-auto mb-4"></div>
+          <p style={fontStyle} className="text-gray-600 dark:text-gray-400">
             Loading your progress...
           </p>
         </div>
@@ -170,17 +170,17 @@ const UserProgressDashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-gray-950">
       {/* Header */}
-      <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-b border-green-200 py-8">
+      <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-gray-900 dark:to-gray-850 border-b border-green-200 dark:border-gray-800 py-8">
         <div className="max-w-6xl mx-auto px-6">
           <h1
             style={fontStyle}
-            className="text-3xl font-bold text-gray-900 mb-2"
+            className="text-3xl font-bold text-gray-900 dark:text-white mb-2"
           >
             My Learning Progress
           </h1>
-          <p style={smallFontStyle} className="text-gray-700">
+          <p style={smallFontStyle} className="text-gray-700 dark:text-gray-400">
             Track your course completion and learning journey
           </p>
         </div>
@@ -190,16 +190,16 @@ const UserProgressDashboard: React.FC = () => {
       <div className="max-w-6xl mx-auto px-6 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {/* Total Courses */}
-          <div className="bg-white border border-blue-300 rounded-lg p-4">
+          <div className="bg-white dark:bg-gray-900 border border-blue-300 dark:border-blue-800 rounded-lg p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <BookOpen size={18} className="text-blue-600" />
+              <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                <BookOpen size={18} className="text-blue-600 dark:text-blue-400" />
               </div>
               <div>
-                <p style={smallFontStyle} className="text-gray-700">
+                <p style={smallFontStyle} className="text-gray-700 dark:text-gray-400">
                   Total Courses
                 </p>
-                <p style={fontStyle} className="text-gray-900 font-semibold">
+                <p style={fontStyle} className="text-gray-900 dark:text-white font-semibold">
                   {stats.totalCourses}
                 </p>
               </div>
@@ -207,16 +207,16 @@ const UserProgressDashboard: React.FC = () => {
           </div>
 
           {/* Completed Courses */}
-          <div className="bg-white border border-green-300 rounded-lg p-4">
+          <div className="bg-white dark:bg-gray-900 border border-green-300 dark:border-green-800 rounded-lg p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-green-100 rounded-lg">
-                <CheckCircle2 size={18} className="text-green-600" />
+              <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                <CheckCircle2 size={18} className="text-green-600 dark:text-green-400" />
               </div>
               <div>
-                <p style={smallFontStyle} className="text-gray-700">
+                <p style={smallFontStyle} className="text-gray-700 dark:text-gray-400">
                   Completed
                 </p>
-                <p style={fontStyle} className="text-gray-900 font-semibold">
+                <p style={fontStyle} className="text-gray-900 dark:text-white font-semibold">
                   {stats.completedCourses}
                 </p>
               </div>
@@ -224,16 +224,16 @@ const UserProgressDashboard: React.FC = () => {
           </div>
 
           {/* In Progress */}
-          <div className="bg-white border border-amber-300 rounded-lg p-4">
+          <div className="bg-white dark:bg-gray-900 border border-amber-300 dark:border-amber-800 rounded-lg p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-amber-100 rounded-lg">
-                <Zap size={18} className="text-amber-600" />
+              <div className="p-2 bg-amber-100 dark:bg-amber-900/30 rounded-lg">
+                <Zap size={18} className="text-amber-600 dark:text-amber-400" />
               </div>
               <div>
-                <p style={smallFontStyle} className="text-gray-700">
+                <p style={smallFontStyle} className="text-gray-700 dark:text-gray-400">
                   In Progress
                 </p>
-                <p style={fontStyle} className="text-gray-900 font-semibold">
+                <p style={fontStyle} className="text-gray-900 dark:text-white font-semibold">
                   {stats.inProgressCourses}
                 </p>
               </div>
@@ -241,16 +241,16 @@ const UserProgressDashboard: React.FC = () => {
           </div>
 
           {/* Average Progress */}
-          <div className="bg-white border border-purple-300 rounded-lg p-4">
+          <div className="bg-white dark:bg-gray-900 border border-purple-300 dark:border-purple-800 rounded-lg p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-purple-100 rounded-lg">
-                <TrendingUp size={18} className="text-purple-600" />
+              <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+                <TrendingUp size={18} className="text-purple-600 dark:text-purple-400" />
               </div>
               <div>
-                <p style={smallFontStyle} className="text-gray-700">
+                <p style={smallFontStyle} className="text-gray-700 dark:text-gray-400">
                   Avg Progress
                 </p>
-                <p style={fontStyle} className="text-gray-900 font-semibold">
+                <p style={fontStyle} className="text-gray-900 dark:text-white font-semibold">
                   {stats.avgProgress}%
                 </p>
               </div>
@@ -260,22 +260,22 @@ const UserProgressDashboard: React.FC = () => {
 
         {/* Courses List */}
         <div className="space-y-4">
-          <h2 style={fontStyle} className="text-lg font-semibold text-white">
+          <h2 style={fontStyle} className="text-lg font-semibold text-gray-900 dark:text-white">
             Your Courses
           </h2>
 
           {progressData.length === 0 ? (
-            <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-12 text-center">
+            <div className="bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-lg p-12 text-center">
               <BookOpen
                 size={48}
-                className="mx-auto text-slate-600 mb-4 opacity-50"
+                className="mx-auto text-gray-400 dark:text-gray-600 mb-4 opacity-50"
               />
-              <p style={fontStyle} className="text-slate-400 mb-4">
+              <p style={fontStyle} className="text-gray-700 dark:text-gray-400 mb-4">
                 You haven't enrolled in any courses yet.
               </p>
               <button
                 onClick={() => navigate('/v/courses')}
-                className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition"
+                className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-700 text-white px-4 py-2 rounded-lg transition"
                 style={fontStyle}
               >
                 Browse Courses
@@ -287,7 +287,7 @@ const UserProgressDashboard: React.FC = () => {
               {progressData.map((course) => (
                 <div
                   key={course.courseId}
-                  className="bg-slate-800/50 border border-slate-700/50 rounded-lg overflow-hidden hover:border-slate-600/50 transition group"
+                  className="bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-lg overflow-hidden hover:border-green-400 dark:hover:border-green-600 transition group"
                 >
                   <div className="p-5">
                     {/* Course Header */}
@@ -295,11 +295,11 @@ const UserProgressDashboard: React.FC = () => {
                       <div className="flex-1">
                         <h3
                           style={fontStyle}
-                          className="text-white font-semibold mb-1 group-hover:text-blue-400 transition"
+                          className="text-gray-900 dark:text-white font-semibold mb-1 group-hover:text-green-600 dark:group-hover:text-green-500 transition"
                         >
                           {course.courseName}
                         </h3>
-                        <p style={smallFontStyle} className="text-slate-400">
+                        <p style={smallFontStyle} className="text-gray-600 dark:text-gray-400">
                           {course.completedLessons} of {course.totalLessons}{' '}
                           lessons completed
                         </p>
@@ -307,11 +307,11 @@ const UserProgressDashboard: React.FC = () => {
                       <div className="text-right">
                         <div
                           style={fontStyle}
-                          className="text-white font-semibold text-lg"
+                          className="text-gray-900 dark:text-white font-semibold text-lg"
                         >
                           {course.progress}%
                         </div>
-                        <p style={smallFontStyle} className="text-slate-400">
+                        <p style={smallFontStyle} className="text-gray-600 dark:text-gray-400">
                           Complete
                         </p>
                       </div>
@@ -319,9 +319,9 @@ const UserProgressDashboard: React.FC = () => {
 
                     {/* Progress Bar */}
                     <div className="mb-4">
-                      <div className="w-full bg-slate-700/50 rounded-full h-2 overflow-hidden">
+                      <div className="w-full bg-gray-300 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
                         <div
-                          className="bg-gradient-to-r from-blue-500 to-blue-600 h-full transition-all duration-300"
+                          className="bg-green-600 dark:bg-green-500 h-full transition-all duration-300"
                           style={{ width: `${course.progress}%` }}
                         ></div>
                       </div>
@@ -329,7 +329,7 @@ const UserProgressDashboard: React.FC = () => {
 
                     {/* Stats & Action */}
                     <div className="flex items-center justify-between">
-                      <div className="flex gap-4 text-slate-400">
+                      <div className="flex gap-4 text-gray-600 dark:text-gray-400">
                         <div style={smallFontStyle} className="flex items-center gap-1">
                           <Clock size={14} />
                           {formatDate(course.lastAccessed)}
@@ -337,7 +337,7 @@ const UserProgressDashboard: React.FC = () => {
                       </div>
                       <button
                         onClick={() => navigate(`/v/courses/${course.slug || course.courseId}`)}
-                        className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded transition text-sm"
+                        className="flex items-center gap-2 bg-green-600 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-700 text-white px-3 py-1.5 rounded transition text-sm"
                         style={smallFontStyle}
                       >
                         {course.progress === 100 ? (
@@ -362,17 +362,17 @@ const UserProgressDashboard: React.FC = () => {
 
         {/* Achievements Section (Future) */}
         {stats.completedCourses > 0 && (
-          <div className="mt-12 bg-gradient-to-br from-amber-500/10 to-amber-600/10 border border-amber-500/30 rounded-lg p-6">
+          <div className="mt-12 bg-gradient-to-br from-amber-50 to-amber-100/50 dark:from-gray-900 dark:to-gray-800 border border-amber-300 dark:border-amber-800 rounded-lg p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <Award size={20} className="text-amber-400" />
-                <h3 style={fontStyle} className="text-white font-semibold">
+                <Award size={20} className="text-amber-600 dark:text-amber-400" />
+                <h3 style={fontStyle} className="text-gray-900 dark:text-white font-semibold">
                   Achievements & Certificates
                 </h3>
               </div>
               <button
                 onClick={() => navigate('/v/my-certificates')}
-                className="text-amber-400 hover:text-amber-300 transition text-sm"
+                className="text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 transition text-sm"
                 style={smallFontStyle}
               >
                 View All →
@@ -382,7 +382,7 @@ const UserProgressDashboard: React.FC = () => {
               {stats.completedCourses >= 1 && (
                 <div className="text-center">
                   <div className="text-3xl mb-2">🏆</div>
-                  <p style={smallFontStyle} className="text-slate-300">
+                  <p style={smallFontStyle} className="text-gray-700 dark:text-gray-300">
                     First Course
                   </p>
                 </div>
@@ -390,7 +390,7 @@ const UserProgressDashboard: React.FC = () => {
               {stats.completedCourses >= 3 && (
                 <div className="text-center">
                   <div className="text-3xl mb-2">⭐</div>
-                  <p style={smallFontStyle} className="text-slate-300">
+                  <p style={smallFontStyle} className="text-gray-700 dark:text-gray-300">
                     Trilogy Complete
                   </p>
                 </div>
@@ -398,7 +398,7 @@ const UserProgressDashboard: React.FC = () => {
               {stats.avgProgress === 100 && (
                 <div className="text-center">
                   <div className="text-3xl mb-2">🔥</div>
-                  <p style={smallFontStyle} className="text-slate-300">
+                  <p style={smallFontStyle} className="text-gray-700 dark:text-gray-300">
                     Perfect Score
                   </p>
                 </div>
@@ -406,7 +406,7 @@ const UserProgressDashboard: React.FC = () => {
               {stats.inProgressCourses === 0 && stats.totalCourses > 0 && (
                 <div className="text-center">
                   <div className="text-3xl mb-2">✨</div>
-                  <p style={smallFontStyle} className="text-slate-300">
+                  <p style={smallFontStyle} className="text-gray-700 dark:text-gray-300">
                     All Complete
                   </p>
                 </div>

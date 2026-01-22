@@ -119,12 +119,12 @@ const CourseDetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-white dark:bg-gray-950 flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block mb-4">
-            <div className="w-12 h-12 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin"></div>
+            <div className="w-12 h-12 border-4 border-green-600/30 dark:border-green-500/30 border-t-green-600 dark:border-t-green-500 rounded-full animate-spin"></div>
           </div>
-          <p className="text-white text-lg font-semibold">Loading course...</p>
+          <p className="text-gray-900 dark:text-white text-lg font-semibold">Loading course...</p>
         </div>
       </div>
     );
@@ -132,9 +132,9 @@ const CourseDetailPage: React.FC = () => {
 
   if (!course) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-white dark:bg-gray-950 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-white text-xl font-semibold">Course not found</p>
+          <p className="text-gray-900 dark:text-white text-xl font-semibold">Course not found</p>
         </div>
       </div>
     );
@@ -148,22 +148,22 @@ const CourseDetailPage: React.FC = () => {
   const progressPercentage = Math.round((completedLessons / totalLessons) * 100);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <div className="min-h-screen bg-white dark:bg-gray-950">
       {/* Header */}
-      <div className="bg-gradient-to-b from-slate-800/50 to-transparent border-b border-slate-700/50 sticky top-0 z-40 backdrop-blur-lg">
+      <div className="bg-gradient-to-b from-green-50 to-transparent dark:from-gray-900 dark:to-gray-950 border-b border-green-200 dark:border-gray-800 sticky top-0 z-40 backdrop-blur-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <button
-            onClick={() => navigate("/courses")}
-            className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-4"
+            onClick={() => navigate("/v/courses")}
+            className="flex items-center gap-2 text-green-600 dark:text-green-500 hover:text-green-700 dark:hover:text-green-400 transition-colors mb-4"
           >
             <ChevronLeft className="w-5 h-5" />
             Back to Courses
           </button>
           <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold text-white">{course.title}</h1>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{course.title}</h1>
             <div className="text-right">
-              <p className="text-sm text-slate-400">Progress</p>
-              <p className="text-2xl font-bold text-blue-400">{progressPercentage}%</p>
+              <p className="text-sm text-gray-700 dark:text-gray-400">Progress</p>
+              <p className="text-2xl font-bold text-green-600 dark:text-green-500">{progressPercentage}%</p>
             </div>
           </div>
         </div>
@@ -174,8 +174,8 @@ const CourseDetailPage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar - Modules */}
           <div className="lg:col-span-1">
-            <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 sticky top-24 max-h-[calc(100vh-200px)] overflow-y-auto">
-              <h2 className="text-lg font-bold text-white mb-4">Modules</h2>
+            <div className="bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-2xl p-6 sticky top-24 max-h-[calc(100vh-200px)] overflow-y-auto">
+              <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Modules</h2>
               <div className="space-y-2">
                 {course.modules.map((module, idx) => {
                   const moduleCompleted = module.lessons.every(lesson =>
@@ -190,11 +190,11 @@ const CourseDetailPage: React.FC = () => {
                         }}
                         className={`w-full text-left px-4 py-2.5 rounded-lg transition-all font-medium text-sm flex items-center gap-2 ${
                           selectedModule === idx
-                            ? "bg-blue-600/50 text-white border border-blue-500/50"
-                            : "bg-slate-700/30 text-slate-300 hover:bg-slate-700/50"
+                            ? "bg-green-600 text-white border border-green-700"
+                            : "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
                         }`}
                       >
-                        {moduleCompleted ? <CheckCircle2 className="w-4 h-4 text-green-400" /> : <BookOpen className="w-4 h-4" />}
+                        {moduleCompleted ? <CheckCircle2 className="w-4 h-4 text-green-600 dark:text-green-400" /> : <BookOpen className="w-4 h-4" />}
                         {module.title}
                       </button>
                       {selectedModule === idx && (
@@ -207,11 +207,11 @@ const CourseDetailPage: React.FC = () => {
                                 onClick={() => setSelectedLesson(lessonIdx)}
                                 className={`w-full text-left px-4 py-2 rounded text-xs transition-all flex items-center gap-2 ${
                                   selectedLesson === lessonIdx
-                                    ? "bg-purple-600/50 text-white"
-                                    : "bg-slate-700/20 text-slate-400 hover:bg-slate-700/30"
+                                    ? "bg-green-600 text-white"
+                                    : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
                                 }`}
                               >
-                                {completed ? <CheckCircle2 className="w-3 h-3 text-green-400" /> : <Play className="w-3 h-3" />}
+                                {completed ? <CheckCircle2 className="w-3 h-3 text-green-600 dark:text-green-400" /> : <Play className="w-3 h-3" />}
                                 <span className="line-clamp-1">{lesson.title}</span>
                               </button>
                             );
@@ -228,40 +228,40 @@ const CourseDetailPage: React.FC = () => {
           {/* Main Content - Lesson */}
           <div className="lg:col-span-3">
             {currentLesson ? (
-              <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-8">
+              <div className="bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-2xl p-8">
                 <div className="flex items-center justify-between mb-6">
                   <div>
-                    <p className="text-sm text-slate-400 mb-2">
+                    <p className="text-sm text-gray-700 dark:text-gray-400 mb-2">
                       Module {selectedModule + 1} of {totalModules}
                     </p>
-                    <h2 className="text-3xl font-bold text-white">{currentLesson.title}</h2>
+                    <h2 className="text-3xl font-bold text-gray-900 dark:text-white">{currentLesson.title}</h2>
                   </div>
                   {isLessonCompleted(currentLesson._id || "") && (
-                    <div className="flex items-center gap-2 px-4 py-2 bg-green-500/20 rounded-lg border border-green-500/50">
-                      <CheckCircle2 className="w-5 h-5 text-green-400" />
-                      <span className="text-green-300 font-semibold">Completed</span>
+                    <div className="flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-900/20 rounded-lg border border-green-300 dark:border-green-500/50">
+                      <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400" />
+                      <span className="text-green-700 dark:text-green-300 font-semibold">Completed</span>
                     </div>
                   )}
                 </div>
 
                 {/* Lesson Content */}
-                <div className="prose prose-invert max-w-none mb-8">
-                  <div className="text-slate-300 leading-relaxed whitespace-pre-wrap">{currentLesson.content}</div>
+                <div className="prose prose-sm dark:prose-invert max-w-none mb-8">
+                  <div className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">{currentLesson.content}</div>
                 </div>
 
                 {/* Quiz Section */}
                 {currentLesson.quiz && currentLesson.quiz.length > 0 && (
-                  <div className="bg-slate-700/30 border border-slate-700/50 rounded-xl p-6 mb-8">
-                    <h3 className="text-xl font-bold text-white mb-4">Quick Quiz</h3>
+                  <div className="bg-green-50 dark:bg-gray-800/50 border border-green-300 dark:border-gray-700 rounded-xl p-6 mb-8">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Quick Quiz</h3>
                     <div className="space-y-4">
                       {currentLesson.quiz.map((q, idx) => (
-                        <div key={idx} className="bg-slate-800/50 rounded-lg p-4">
-                          <p className="text-white font-semibold mb-3">{q.question}</p>
+                        <div key={idx} className="bg-white dark:bg-gray-900 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                          <p className="text-gray-900 dark:text-white font-semibold mb-3">{q.question}</p>
                           <div className="space-y-2">
                             {q.options.map((option: string, optIdx: number) => (
                               <button
                                 key={optIdx}
-                                className="w-full text-left px-4 py-2 rounded-lg bg-slate-700/50 text-slate-300 hover:bg-blue-600/50 hover:text-white transition-all border border-slate-600/50"
+                                className="w-full text-left px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-300 hover:bg-green-600 hover:text-white transition-all border border-gray-300 dark:border-gray-700"
                               >
                                 {option}
                               </button>
@@ -277,7 +277,7 @@ const CourseDetailPage: React.FC = () => {
                 {!isLessonCompleted(currentLesson._id || "") ? (
                   <button
                     onClick={handleCompleteLesson}
-                    className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 rounded-lg transition-all font-semibold text-lg"
+                    className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-700 text-white px-6 py-3 rounded-lg transition-all font-semibold text-lg"
                   >
                     <CheckCircle2 className="w-5 h-5" />
                     Mark as Complete
@@ -293,7 +293,7 @@ const CourseDetailPage: React.FC = () => {
                         setSelectedLesson(0);
                       }
                     }}
-                    className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-6 py-3 rounded-lg transition-all font-semibold text-lg"
+                    className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-700 text-white px-6 py-3 rounded-lg transition-all font-semibold text-lg"
                   >
                     <Play className="w-5 h-5" />
                     Next Lesson
@@ -301,8 +301,8 @@ const CourseDetailPage: React.FC = () => {
                 )}
               </div>
             ) : (
-              <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-8 text-center">
-                <p className="text-white text-lg">No lessons available</p>
+              <div className="bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-2xl p-8 text-center">
+                <p className="text-gray-900 dark:text-white text-lg">No lessons available</p>
               </div>
             )}
           </div>

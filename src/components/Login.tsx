@@ -159,6 +159,9 @@ export default function Login() {
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("role", userRole);
 
+        // Dispatch event to notify auth context
+        window.dispatchEvent(new Event("tokenUpdated"));
+
         // Show success message
         setMessage({
           type: "success",
@@ -169,14 +172,14 @@ export default function Login() {
         setSuccessMessage(userRole === "admin" ? "Initializing Verve Admin Panel!" : "Welcome back to Verve Hub WriteUps!");
         setShowSuccessTransition(true);
 
-        // Wait for transition animation
-        await new Promise(resolve => setTimeout(resolve, 1800));
-
-        setRedirecting(true);
-
-        // Navigate based on backend role
-        await new Promise(resolve => setTimeout(resolve, 500));
-        navigate(userRole === "admin" ? "/admin" : "/v", { replace: true });
+        // Redirect immediately after setting state (don't wait for animation)
+        // This allows React Router to handle the navigation properly
+        const redirectPath = userRole === "admin" ? "/admin" : "/v";
+        
+        // Use small delay just to ensure localStorage is synced
+        setTimeout(() => {
+          navigate(redirectPath, { replace: true });
+        }, 800);
       } else {
         setMessage({ type: "error", text: res.data?.message || "Login failed" });
       }

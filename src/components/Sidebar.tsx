@@ -53,6 +53,11 @@ export default function Sidebar({ collapsed = false, onCollapse, sidebarOpen, on
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [isCollapsed, setIsCollapsed] = useState(collapsed);
 
+  const fontStyle = {
+    fontFamily: "'Google Sans', 'Segoe UI', sans-serif",
+    fontSize: "0.8125rem",
+  };
+
   useEffect(() => {
     setIsCollapsed(collapsed);
   }, [collapsed]);
@@ -98,7 +103,7 @@ export default function Sidebar({ collapsed = false, onCollapse, sidebarOpen, on
           w-64
           bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 shadow-lg`}
         style={{
-          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+          fontFamily: "'Google Sans', 'Segoe UI', sans-serif",
           paddingTop: '4rem',
         }}
       >
@@ -118,14 +123,14 @@ export default function Sidebar({ collapsed = false, onCollapse, sidebarOpen, on
           <div
             ref={activeRef}
             aria-hidden
-            className="absolute left-0 top-0 w-1 rounded-r-full bg-gradient-to-b from-blue-600 to-cyan-600 transform transition-all duration-300 opacity-0"
+            className="absolute left-0 top-0 w-1 rounded-r-full bg-green-600 dark:bg-green-500 transform transition-all duration-300 opacity-0"
           />
 
           <ul className="flex flex-col gap-2">
             {NAV_ITEMS.map((item) => {
               const isActive = !item.external && location.pathname.startsWith(item.path);
-              const baseClasses = `verve-nav-item group relative flex items-center gap-3 w-full px-3 py-2.5 rounded-lg cursor-pointer select-none transition-all duration-200`;
-              const activeClasses = "verve-nav-item-active text-white bg-gradient-to-r from-blue-600 to-cyan-600 shadow-md";
+              const baseClasses = `verve-nav-item group relative flex items-center gap-3 w-full px-3 py-2.5 rounded-lg cursor-pointer select-none transition-all duration-200 text-xs`;
+              const activeClasses = "verve-nav-item-active text-white bg-green-600 dark:bg-green-600 shadow-md";
               const inactiveClasses = "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800";
 
               return (
@@ -140,7 +145,7 @@ export default function Sidebar({ collapsed = false, onCollapse, sidebarOpen, on
                       <div className="flex items-center justify-center min-w-[20px] flex-shrink-0">
                         {item.icon}
                       </div>
-                      <span className="flex-1 truncate text-sm font-medium">{item.label}</span>
+                      <span className="flex-1 truncate font-medium">{item.label}</span>
                       <ExternalLink size={14} className="opacity-60 group-hover:opacity-100 transition-opacity" />
                     </a>
                   ) : (
@@ -152,7 +157,7 @@ export default function Sidebar({ collapsed = false, onCollapse, sidebarOpen, on
                       <div className="flex items-center justify-center min-w-[20px] flex-shrink-0">
                         {item.icon}
                       </div>
-                      <span className="flex-1 truncate text-sm font-medium">{item.label}</span>
+                      <span className="flex-1 truncate font-medium">{item.label}</span>
                     </Link>
                   )}
                 </li>
@@ -173,7 +178,7 @@ export default function Sidebar({ collapsed = false, onCollapse, sidebarOpen, on
             <Link
               to="/v/account"
               onClick={onCloseSidebar}
-              className="p-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors"
+              className="p-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-500 transition-colors"
               title="Settings"
             >
               <Settings size={18} />
@@ -182,7 +187,7 @@ export default function Sidebar({ collapsed = false, onCollapse, sidebarOpen, on
               href="https://github.com/acunetix2/verve_blog.git"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors"
+              className="p-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-500 transition-colors"
               title="GitHub Repository"
             >
               <Github size={18} />
@@ -190,7 +195,7 @@ export default function Sidebar({ collapsed = false, onCollapse, sidebarOpen, on
           </div>
 
           {/* Copyright */}
-          <p className="text-[11px] text-gray-500 dark:text-gray-500 text-center mt-3 leading-tight">
+          <p className="text-[10px] text-gray-500 dark:text-gray-500 text-center mt-3 leading-tight" style={{fontSize: "0.75rem"}}>
             &copy; {new Date().getFullYear()} Verve Hub Academy
           </p>
         </div>

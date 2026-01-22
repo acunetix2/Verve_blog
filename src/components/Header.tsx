@@ -23,8 +23,8 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { label: "Courses", path: "/v/courses", icon: <HelpCircle size={16} /> },
-  { label: "My Progress", path: "/v/my-progress", icon: <TrendingUp size={16} /> },
-  { label: "My Certificates", path: "/v/my-certificates", icon: <Award size={16} /> },
+  { label: "Progress", path: "/v/my-progress", icon: <TrendingUp size={16} /> },
+  { label: "Certificates", path: "/v/my-certificates", icon: <Award size={16} /> },
   { label: "Resources", path: "/v/resources" },
   {
     label: "Learn",
@@ -118,38 +118,30 @@ export const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) =>
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-left justify-between h-16">
-            {/* Left side: Hamburger + Logo */}
-            <div className="flex items-center gap-3 ml-2">
-              {/* Hamburger Menu Button (always visible, fixed before logo) */}
-              <button
-                onClick={onToggleSidebar}
-                className="p-0.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-300 mr-2"
-                aria-label="Toggle sidebar"
-              >
-                <Menu size={20} />
-              </button>
-
-              {/* Logo */}
-              <Link
-                to="/v"
-                className="flex items-center gap-2 group"
-                aria-label="Go to homepage"
-              >
-                <VerveHubLogo size="md" />
-                <div className="hidden sm:flex flex-col leading-tight">
-                  <span className="text-sm font-bold text-gray-900 dark:text-white tracking-tight">
-                    Verve Hub Academy
-                  </span>
-                  <span className="text-[10px] font-semibold text-gray-500 dark:text-gray-400 tracking-wider">
-                    Security Hub
-                  </span>
-                </div>
-              </Link>
-            </div>
+          <div className="flex items-center justify-between h-16 gap-2">
+            <button
+              onClick={onToggleSidebar}
+              className="p-0.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-300"
+              aria-label="Toggle sidebar"
+                >
+              <Menu size={20} />
+            </button>
+            {/* Left side: Logo */}
+            <Link
+              to="/v"
+              className="flex items-center gap-0 group flex-shrink-0"
+              aria-label="Go to homepage"
+            >
+              <VerveHubLogo size="md" />
+              <div className="hidden sm:flex flex-col leading-tight">
+                <span className="text-sm font-bold text-gray-900 dark:text-white tracking-tight">
+                  Verve Hub Academy
+                </span>
+              </div>
+            </Link>
 
             {/* Center: Navigation Links (hidden on mobile, shown on lg) */}
-            <nav className="hidden lg:flex items-center gap-1">
+            <nav className="hidden lg:flex items-center gap-1 flex-1 justify-center">
               {NAV_ITEMS.map((item) => (
                 item.external ? (
                   <a
@@ -177,7 +169,7 @@ export const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) =>
             </nav>
 
             {/* Right side: Actions */}
-            <nav className="flex items-center gap-2">
+            <nav className="flex items-center gap-2 flex-shrink-0">
               {/* Global Search */}
               <GlobalSearch />
 
@@ -241,7 +233,7 @@ export const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) =>
                         <div className="px-4 py-12 text-center">
                           <Bell className="w-12 h-12 mx-auto text-gray-300 dark:text-gray-700 mb-3" />
                           <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">No notifications</p>
-                          <p className="text-gray-400 dark:text-gray-500 text-xs mt-1">You're all caught up!</p>
+                          <p className="text-gray-400 dark:text-gray-500 text-xs mt-1">Marked al as read!</p>
                         </div>
                       )}
 
@@ -283,7 +275,7 @@ export const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) =>
                                   </h4>
                                   {isNew && (
                                     <span className="px-1.5 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-[10px] font-semibold rounded">
-                                      NEW
+                                      New
                                     </span>
                                   )}
                                 </div>
@@ -336,6 +328,8 @@ export const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) =>
                 onLogout={() => setLogoutModalOpen(true)}
                 dropdownRef={dropdownRef}
               />
+
+              {/* Hamburger Menu Button (always visible, pushed to the right) */}
             </nav>
           </div>
         </div>
