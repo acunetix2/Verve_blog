@@ -57,14 +57,14 @@ const Newsletter = () => {
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         {/* Background Effects */}
-        <div className="absolute inset-0 bg-gradient-to-b from-red-600/5 to-transparent pointer-events-none" />
-        <div className="absolute top-20 left-1/4 w-96 h-96 bg-red-600/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-20 right-1/4 w-96 h-96 bg-orange-600/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-green-600/5 to-transparent pointer-events-none" />
+        <div className="absolute top-20 left-1/4 w-96 h-96 bg-green-600/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-20 right-1/4 w-96 h-96 bg-green-500/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-32">
           {/* Badge */}
           <div className="flex justify-center mb-8">
-            <div className="inline-flex items-center space-x-2 px-4 py-2 bg-red-600/20 border border-red-600/30 rounded-full text-orange-500 text-sm font-medium">
+            <div className="inline-flex items-center space-x-2 px-4 py-2 bg-green-600/20 border border-green-600/30 rounded-full text-green-400 text-sm font-medium">
               <Mail className="h-4 w-4" />
               <span>Verve Hub WriteUps Newsletter</span>
             </div>
@@ -105,7 +105,7 @@ const Newsletter = () => {
                   <button
                     onClick={handleSubscribe}
                     disabled={isLoading}
-                    className="px-8 py-4 rounded-xl bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 font-semibold transition-all shadow-lg shadow-red-600/30 hover:shadow-red-600/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                    className="px-8 py-4 rounded-xl bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 font-semibold transition-all shadow-lg shadow-green-600/30 hover:shadow-green-600/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
                   >
                     {isLoading ? (
                       <>
@@ -125,7 +125,7 @@ const Newsletter = () => {
                 </p>
               </div>
             ) : (
-              <div className="bg-gradient-to-r from-green-500/10 to-red-600/10 border border-red-600/30 rounded-2xl p-8 text-center backdrop-blur-sm">
+              <div className="bg-gradient-to-r from-green-500/10 to-green-600/10 border border-green-600/30 rounded-2xl p-8 text-center backdrop-blur-sm">
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-green-500/20 rounded-full mb-4">
                   <CheckCircle className="h-8 w-8 text-green-400" />
                 </div>
@@ -156,11 +156,11 @@ const Newsletter = () => {
             return (
               <div
                 key={index}
-                className="bg-gray-800/50 border border-red-600/30 rounded-2xl p-8 hover:bg-gray-800 hover:border-red-600/50 transition-all duration-300 group"
+                className="bg-gray-800/50 border border-green-600/30 rounded-2xl p-8 hover:bg-gray-800 hover:border-green-600/50 transition-all duration-300 group"
               >
                 <div className="flex items-start space-x-4">
-                  <div className="p-3 bg-red-600/20 rounded-xl group-hover:bg-red-600/40 transition-all">
-                    <Icon className="h-6 w-6 text-orange-500" />
+                  <div className="p-3 bg-green-600/20 rounded-xl group-hover:bg-green-600/40 transition-all">
+                    <Icon className="h-6 w-6 text-green-400" />
                   </div>
                   <div className="flex-1">
                     <h3 className="text-xl font-bold mb-2 text-white">
@@ -179,7 +179,7 @@ const Newsletter = () => {
 
       {/* Features Section */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="bg-gradient-to-r from-red-600/10 to-orange-600/10 border border-red-600/30 rounded-3xl p-12">
+        <div className="bg-gradient-to-r from-green-600/10 to-green-500/10 border border-green-600/30 rounded-3xl p-12">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">
               Why Subscribe?
@@ -191,27 +191,27 @@ const Newsletter = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="flex flex-col items-center text-center">
-              <div className="p-4 bg-red-600/20 rounded-2xl mb-4">
-                <Bell className="h-8 w-8 text-orange-500" />
+              <div className="p-4 bg-green-600/20 rounded-2xl mb-4">
+                <Bell className="h-8 w-8 text-green-400" />
               </div>
               <p className="text-white/70 font-medium">New content notifications</p>
             </div>
             <div className="flex flex-col items-center text-center">
-              <div className="p-4 bg-red-600/20 rounded-2xl mb-4">
-                <Lock className="h-8 w-8 text-orange-500" />
+              <div className="p-4 bg-green-600/20 rounded-2xl mb-4">
+                <Lock className="h-8 w-8 text-green-400" />
               </div>
               <p className="text-white/70 font-medium">Privacy protected</p>
             </div>
             <div className="flex flex-col items-center text-center">
-              <div className="p-4 bg-red-600/20 rounded-2xl mb-4">
-                <Mail className="h-8 w-8 text-orange-500" />
+              <div className="p-4 bg-green-600/20 rounded-2xl mb-4">
+                <Mail className="h-8 w-8 text-green-400" />
               </div>
               <p className="text-white/70 font-medium">Unsubscribe anytime</p>
             </div>
           </div>
 
           {/* Privacy Note */}
-          <div className="mt-12 pt-8 border-t border-red-600/20 text-center">
+          <div className="mt-12 pt-8 border-t border-green-600/20 text-center">
             <p className="text-gray-400 text-sm max-w-2xl mx-auto">
               We respect your privacy. Your email will only be used for newsletter purposes and will never be shared with third parties.
             </p>
@@ -221,8 +221,8 @@ const Newsletter = () => {
 
       {/* Final CTA */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="text-center bg-gradient-to-r from-red-600/10 to-orange-600/10 border border-red-600/30 rounded-3xl p-12">
-          <Shield className="h-16 w-16 text-orange-500 mx-auto mb-6" />
+        <div className="text-center bg-gradient-to-r from-green-600/10 to-green-500/10 border border-green-600/30 rounded-3xl p-12">
+          <Shield className="h-16 w-16 text-green-400 mx-auto mb-6" />
           <h2 className="text-3xl sm:text-4xl font-bold mb-4">
             Ready to Get Started?
           </h2>
@@ -234,7 +234,7 @@ const Newsletter = () => {
               onClick={() => {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="inline-flex items-center space-x-2 px-8 py-4 bg-red-600 hover:bg-red-700 rounded-xl font-semibold transition-all shadow-lg shadow-red-600/30 hover:shadow-red-600/50"
+              className="inline-flex items-center space-x-2 px-8 py-4 bg-green-600 hover:bg-green-700 rounded-xl font-semibold transition-all shadow-lg shadow-green-600/30 hover:shadow-green-600/50"
             >
               <Mail className="h-5 w-5" />
               <span>Subscribe to Newsletter</span>
@@ -244,7 +244,7 @@ const Newsletter = () => {
       </div>
 
       {/* Footer */}
-      <footer className="border-t border-red-600/20 mt-20">
+      <footer className="border-t border-green-600/20 mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col sm:flex-row items-center justify-between text-sm text-white/40">
             <p>© 2024 Verve Hub. Cybersecurity learning platform.</p>

@@ -213,9 +213,9 @@ const Index = () => {
     <div className="flex flex-col min-h-screen bg-gray-950 text-gray-100" style={{ fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
       {/* Elegant background effects */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-red-600/10 rounded-full blur-[120px] animate-pulse"></div>
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-green-600/10 rounded-full blur-[120px] animate-pulse"></div>
         <div 
-          className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-orange-600/10 rounded-full blur-[120px] animate-pulse"
+          className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-green-500/10 rounded-full blur-[120px] animate-pulse"
           style={{ animationDelay: "1.5s" }}
         ></div>
       </div>
@@ -223,7 +223,7 @@ const Index = () => {
       {/* Refined grid texture */}
       <div className="fixed inset-0 opacity-[0.03] pointer-events-none">
         <div className="absolute inset-0" style={{
-          backgroundImage: 'linear-gradient(rgba(239, 68, 68, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(239, 68, 68, 0.1) 1px, transparent 1px)',
+          backgroundImage: 'linear-gradient(rgba(34, 197, 94, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 197, 94, 0.1) 1px, transparent 1px)',
           backgroundSize: '60px 60px'
         }}></div>
       </div>
@@ -233,7 +233,7 @@ const Index = () => {
         <WelcomeBanner />
 
         {/* Header */}
-    <header className="w-full bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border-b border-red-600/30">
+    <header className="w-full bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border-b border-green-600/30">
 		  <div className="w-full px-6 py-4 text-left space-y-8">
           {/* Main Heading */}
           <h1
@@ -255,21 +255,21 @@ const Index = () => {
 			{/* Key Features */}
 			<div className="flex flex-col md:flex-row items-center justify-center gap-6 pt-8">
 			  <div className="flex flex-col items-center gap-2 text-center max-w-xs">
-				<Shield className="h-8 w-8 text-red-500" />
+				<Shield className="h-8 w-8 text-green-500" />
 				<h3 className="font-semibold text-white" style={{ fontFamily: "'Google Sans', sans-serif" }}>Practical Security</h3>
 				<p className="text-sm text-gray-400 font-light">
 				  CTF walkthroughs, TryHackMe room writeups, and beginner-friendly courses.
 				</p>
 			  </div>
 			  <div className="flex flex-col items-center gap-2 text-center max-w-xs">
-				<BookOpen className="h-8 w-8 text-orange-500" />
+				<BookOpen className="h-8 w-8 text-green-400" />
 				<h3 className="font-semibold text-white" style={{ fontFamily: "'Google Sans', sans-serif" }}>Curated Resources</h3>
 				<p className="text-sm text-gray-400 font-light">
 				   Curated reference guides and tutorials designed to support systematic learning.
 				</p>
 			  </div>
 			  <div className="flex flex-col items-center gap-2 text-center max-w-xs">
-				<Cpu className="h-8 w-8 text-red-500" />
+				<Cpu className="h-8 w-8 text-green-500" />
 				<h3 className="font-semibold text-white" style={{ fontFamily: "'Google Sans', sans-serif" }}>Skill Development</h3>
 				<p className="text-sm text-gray-400 font-light">
 				  Gain guidance and deepen your cybersecurity knowledge.
@@ -314,13 +314,13 @@ const Index = () => {
               return (
                 <div
                   key={idx}
-                  className="group relative overflow-hidden bg-gray-800 border border-red-600/30 rounded-2xl p-6 hover:border-red-500/60 hover:shadow-xl hover:shadow-red-500/20 transition-all duration-300"
+                  className="group relative overflow-hidden bg-gray-800 border border-green-600/30 rounded-2xl p-6 hover:border-green-500/60 hover:shadow-xl hover:shadow-green-500/20 transition-all duration-300"
                   style={{ animationDelay: `${idx * 0.1}s` }}
                 >
                   <div className="relative space-y-3">
                     <div className="flex items-center justify-between">
-                      <div className={`p-2.5 bg-red-900/40 rounded-xl`}>
-                        <Icon className={`h-5 w-5 text-red-500`} />
+                      <div className={`p-2.5 bg-green-900/40 rounded-xl`}>
+                        <Icon className={`h-5 w-5 text-green-500`} />
                       </div>
                     </div>
                     <div>
@@ -339,7 +339,7 @@ const Index = () => {
         <div className="py-8 max-w-6xl mx-auto">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-white">Popular Categories</h2>
-            <Link to="/v/blog" className="text-sm text-red-500 hover:text-red-400 font-semibold">
+            <Link to="/v/blog" className="text-sm text-green-500 hover:text-green-400 font-semibold">
               View all
             </Link>
           </div>
@@ -349,10 +349,10 @@ const Index = () => {
               return (
                 <div
                   key={idx}
-                  className={`group bg-gray-800 border border-red-600/30 hover:border-red-500/60 hover:shadow-lg hover:shadow-red-500/20 rounded-xl p-5 transition-all duration-300 cursor-pointer`}
+                  className={`group bg-gray-800 border border-green-600/30 hover:border-green-500/60 hover:shadow-lg hover:shadow-green-500/20 rounded-xl p-5 transition-all duration-300 cursor-pointer`}
                 >
-                  <div className={`w-12 h-12 bg-red-900/40 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300`}>
-                    <Icon className={`h-6 w-6 text-red-500`} />
+                  <div className={`w-12 h-12 bg-green-900/40 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300`}>
+                    <Icon className={`h-6 w-6 text-green-500`} />
                   </div>
                   <h3 className="text-sm font-semibold text-white mb-1">{category.name}</h3>
                   <p className="text-xs text-gray-400">{category.count} articles</p>
@@ -372,10 +372,10 @@ const Index = () => {
           {/* Primary Column */}
           <div className="lg:col-span-8 space-y-10">
             {/* Platform Introduction */}
-            <div className="bg-gray-800 border border-red-600/30 rounded-2xl p-8 shadow-sm">
+            <div className="bg-gray-800 border border-green-600/30 rounded-2xl p-8 shadow-sm">
               <div className="flex items-start gap-4 mb-6">
-                <div className="p-3 bg-red-900/40 rounded-xl">
-                  <Lightbulb className="h-6 w-6 text-red-500" />
+                <div className="p-3 bg-green-900/40 rounded-xl">
+                  <Lightbulb className="h-6 w-6 text-green-500" />
                 </div>
                 <div className="flex-1">
                   <h2 className="text-xl font-bold mb-2 text-white">Welcome to Verve Hub!</h2>
@@ -387,25 +387,25 @@ const Index = () => {
                 </div>
               </div>
               <div className="grid sm:grid-cols-3 gap-4">
-                <div className="flex items-center gap-3 p-3 bg-red-900/20 rounded-lg border border-red-600/30">
+                <div className="flex items-center gap-3 p-3 bg-green-900/20 rounded-lg border border-green-600/30">
                   <div className="p-2 bg-gray-700 rounded-lg shadow-sm">
-                    <BookOpen className="h-4 w-4 text-red-500" />
+                    <BookOpen className="h-4 w-4 text-green-500" />
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-white">Cybersecurity Content</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 p-3 bg-orange-900/20 rounded-lg border border-orange-600/30">
+                <div className="flex items-center gap-3 p-3 bg-green-900/20 rounded-lg border border-green-600/30">
                   <div className="p-2 bg-gray-700 rounded-lg shadow-sm">
-                    <Users className="h-4 w-4 text-orange-500" />
+                    <Users className="h-4 w-4 text-green-400" />
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-white">Active Community</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 p-3 bg-red-900/20 rounded-lg border border-red-600/30">
+                <div className="flex items-center gap-3 p-3 bg-green-900/20 rounded-lg border border-green-600/30">
                   <div className="p-2 bg-gray-700 rounded-lg shadow-sm">
-                    <Globe className="h-4 w-4 text-red-500" />
+                    <Globe className="h-4 w-4 text-green-500" />
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-white">Open-Source</p>
@@ -415,10 +415,10 @@ const Index = () => {
             </div>
 
             {/* Search Section */}
-            <div className="bg-gray-800 border border-red-600/30 rounded-2xl p-6 sm:p-8 shadow-sm">
+            <div className="bg-gray-800 border border-green-600/30 rounded-2xl p-6 sm:p-8 shadow-sm">
               <div className="flex items-center gap-3 mb-6">
-                <div className="p-2.5 bg-red-900/40 rounded-xl">
-                  <Terminal className="h-5 w-5 text-red-500" />
+                <div className="p-2.5 bg-green-900/40 rounded-xl">
+                  <Terminal className="h-5 w-5 text-green-500" />
                 </div>
                 <h2 className="text-xl font-bold text-white">Discover</h2>
               </div>
@@ -441,9 +441,9 @@ const Index = () => {
               </div>
 
               {filteredPosts.length === 0 ? (
-                <div className="bg-gray-800 border border-red-600/30 rounded-2xl p-16 text-center shadow-sm">
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-900/40 border border-red-600/30 mb-4">
-                    <Sparkles className="h-8 w-8 text-red-500" />
+                <div className="bg-gray-800 border border-green-600/30 rounded-2xl p-16 text-center shadow-sm">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-900/40 border border-green-600/30 mb-4">
+                    <Sparkles className="h-8 w-8 text-green-500" />
                   </div>
                   <h3 className="text-lg font-bold mb-2 text-white">No Articles Found</h3>
                   <p className="text-gray-400 text-sm max-w-sm mx-auto">
@@ -464,7 +464,7 @@ const Index = () => {
                     <div className="text-center pt-6">
                       <Link
                         to="/v/blog"
-                        className="inline-flex items-center gap-2 text-red-500 hover:text-red-400 font-semibold transition-colors group"
+                        className="inline-flex items-center gap-2 text-green-500 hover:text-green-400 font-semibold transition-colors group"
                       >
                         <span>View All Articles</span>
                         <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -479,28 +479,28 @@ const Index = () => {
           {/* Sidebar */}
           <div className="lg:col-span-4 space-y-6">
             {/* Trending Topics */}
-            <div className="bg-gray-800 border border-red-600/30 rounded-2xl p-6 shadow-sm">
+            <div className="bg-gray-800 border border-green-600/30 rounded-2xl p-6 shadow-sm">
               <div className="flex items-center gap-2 mb-5">
-                <div className="p-2 bg-orange-900/40 rounded-xl">
-                  <TrendingUp className="h-5 w-5 text-orange-500" />
+                <div className="p-2 bg-green-900/40 rounded-xl">
+                  <TrendingUp className="h-5 w-5 text-green-500" />
                 </div>
                 <h3 className="text-base font-bold text-white">Trending Topics</h3>
               </div>
               <div className="space-y-3">
                 {trendingTopics.map((topic, idx) => (
-                  <div key={idx} className="flex items-center justify-between p-3 bg-gray-700 hover:bg-gray-600 rounded-xl transition-colors cursor-pointer group border border-transparent hover:border-red-600/30">
+                  <div key={idx} className="flex items-center justify-between p-3 bg-gray-700 hover:bg-gray-600 rounded-xl transition-colors cursor-pointer group border border-transparent hover:border-green-600/30">
                     <div className="flex-1">
                       <p className="text-sm font-medium text-white group-hover:text-white transition-colors">{topic.name}</p>
                       <p className="text-xs text-gray-400">{topic.posts} articles</p>
                     </div>
-                    <span className="text-xs font-semibold text-red-500 bg-red-900/40 px-2 py-1 rounded">{topic.trend}</span>
+                    <span className="text-xs font-semibold text-green-500 bg-green-900/40 px-2 py-1 rounded">{topic.trend}</span>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Recent Activity */}
-            <div className="bg-gray-800 border border-red-600/30 rounded-2xl p-6 shadow-sm">
+            <div className="bg-gray-800 border border-green-600/30 rounded-2xl p-6 shadow-sm">
               <div className="flex items-center gap-2 mb-5">
                 <div className="p-2 bg-blue-900/40 rounded-xl">
                   <Activity className="h-5 w-5 text-blue-500" />
@@ -528,17 +528,17 @@ const Index = () => {
             </div>
 
             {/* Author Info */}
-            <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-red-600/30 rounded-2xl p-6 shadow-sm">
+            <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-green-600/30 rounded-2xl p-6 shadow-sm">
               <div className="flex items-start gap-4 mb-4">
                 <img
                   src={author}
                   alt="Iddy Chesire"
-                  className="w-16 h-16 rounded-full object-cover shadow-md border-2 border-red-600/30 cursor-pointer hover:opacity-80 transition-opacity"
+                  className="w-16 h-16 rounded-full object-cover shadow-md border-2 border-green-600/30 cursor-pointer hover:opacity-80 transition-opacity"
                   onClick={() => setShowAuthorZoom(true)}
                 />
                 <div className="flex-1">
 				  <h3 className="text-base font-bold text-white">Iddy Chesire</h3>
-				  <p className="text-sm text-red-500 font-medium">Platform Creator</p>
+				  <p className="text-sm text-green-500 font-medium">Platform Creator</p>
 				</div>
 				</div>
 				<p className="text-sm font-medium text-gray-300 leading-relaxed mb-4">
@@ -558,20 +558,20 @@ const Index = () => {
             </div>
 
             {/* Quick Navigation */}
-            <div className="bg-gray-800 border border-red-600/30 rounded-2xl p-6  lg:top-24 shadow-sm">
+            <div className="bg-gray-800 border border-green-600/30 rounded-2xl p-6  lg:top-24 shadow-sm">
               <div className="flex items-center gap-2 mb-5">
-                <div className="p-2 bg-red-900/40 rounded-xl">
-                  <Zap className="h-5 w-5 text-red-500" />
+                <div className="p-2 bg-green-900/40 rounded-xl">
+                  <Zap className="h-5 w-5 text-green-500" />
                 </div>
                 <h3 className="text-base font-bold text-white">Quick Access</h3>
               </div>
               
               <div className="space-y-2">
                 <Link to="/v/blog">
-                  <div className="group/link flex items-center justify-between p-3 bg-gray-700 hover:bg-gray-600 border border-transparent hover:border-red-600/30 rounded-xl transition-all cursor-pointer">
+                  <div className="group/link flex items-center justify-between p-3 bg-gray-700 hover:bg-gray-600 border border-transparent hover:border-green-600/30 rounded-xl transition-all cursor-pointer">
                     <div className="flex items-center gap-3">
-                      <div className="p-1.5 bg-red-900/40 rounded-lg">
-                        <BookOpen className="h-4 w-4 text-red-500" />
+                      <div className="p-1.5 bg-green-900/40 rounded-lg">
+                        <BookOpen className="h-4 w-4 text-green-500" />
                       </div>
                       <span className="text-sm font-medium text-white">All Articles</span>
                     </div>
@@ -580,10 +580,10 @@ const Index = () => {
                 </Link>
 
                 <Link to="/v/about">
-                  <div className="group/link flex items-center justify-between p-3 bg-gray-700 hover:bg-gray-600 border border-transparent hover:border-red-600/30 rounded-xl transition-all cursor-pointer">
+                  <div className="group/link flex items-center justify-between p-3 bg-gray-700 hover:bg-gray-600 border border-transparent hover:border-green-600/30 rounded-xl transition-all cursor-pointer">
                     <div className="flex items-center gap-3">
-                      <div className="p-1.5 bg-red-900/40 rounded-lg">
-                        <Shield className="h-4 w-4 text-red-500" />
+                      <div className="p-1.5 bg-green-900/40 rounded-lg">
+                        <Shield className="h-4 w-4 text-green-500" />
                       </div>
                       <span className="text-sm font-medium text-white">About Platform</span>
                     </div>
@@ -593,11 +593,11 @@ const Index = () => {
               </div>
 
               {/* Platform Status */}
-              <div className="mt-6 p-4 bg-red-900/20 border border-red-600/30 rounded-xl">
+              <div className="mt-6 p-4 bg-green-900/20 border border-green-600/30 rounded-xl">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-sm font-semibold text-red-500">System Health</span>
+                  <span className="text-sm font-semibold text-green-500">System Health</span>
                   <div className="flex items-center gap-1.5">
-                    <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                     <span className="text-xs text-emerald-700 font-medium">Operational</span>
                   </div>
                 </div>
@@ -758,18 +758,18 @@ const Index = () => {
 			  </div>
 
 			  {/* Footer Bottom */}
-			  <div className="pt-8 border-t border-red-600/20 flex flex-col sm:flex-row items-center justify-between gap-4">
+			  <div className="pt-8 border-t border-green-600/20 flex flex-col sm:flex-row items-center justify-between gap-4">
 				<p className="text-xs text-gray-400">
 				  &copy; {new Date().getFullYear()} Verve Hub Academy. All rights reserved.
 				</p>
 				<div className="flex items-center gap-4">
-				  <a href="#" className="text-xs text-gray-400 hover:text-red-500 transition-colors">
+				  <a href="#" className="text-xs text-gray-400 hover:text-green-500 transition-colors">
 					Privacy Policy
 				  </a>
-				  <a href="#" className="text-xs text-gray-400 hover:text-red-500 transition-colors">
+				  <a href="#" className="text-xs text-gray-400 hover:text-green-500 transition-colors">
 					Terms of Service
 				  </a>
-				  <a href="#" className="text-xs text-gray-400 hover:text-red-500 transition-colors">
+				  <a href="#" className="text-xs text-gray-400 hover:text-green-500 transition-colors">
 					Cookie Policy
 				  </a>
 				</div>
@@ -801,7 +801,7 @@ const Index = () => {
                 <img
                   src={author}
                   alt="Iddy Chesire"
-                  className="w-96 h-96 rounded-2xl object-cover shadow-2xl border-4 border-red-600/30"
+                  className="w-96 h-96 rounded-2xl object-cover shadow-2xl border-4 border-green-600/30"
                 />
 
                 {/* Close Button */}
@@ -809,7 +809,7 @@ const Index = () => {
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setShowAuthorZoom(false)}
-                  className="absolute -top-4 -right-4 w-12 h-12 bg-gray-900 rounded-full shadow-lg flex items-center justify-center text-red-500 hover:bg-gray-800 transition-colors border-2 border-red-600/30"
+                  className="absolute -top-4 -right-4 w-12 h-12 bg-gray-900 rounded-full shadow-lg flex items-center justify-center text-green-500 hover:bg-gray-800 transition-colors border-2 border-green-600/30"
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
