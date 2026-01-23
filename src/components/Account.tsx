@@ -269,13 +269,6 @@ export default function Account() {
     setDeleteConfirmText("");
   };
 
-  // Fetch sessions when Sessions tab is active
-  useEffect(() => {
-    if (activeTab === 'sessions') {
-      fetchSessions();
-    }
-  }, [activeTab]);
-
   const fetchSessions = async () => {
     const token = localStorage.getItem("token");
     if (!token) return;
@@ -296,6 +289,13 @@ export default function Account() {
       setSessionsLoading(false);
     }
   };
+
+  // Fetch sessions when Sessions tab is active
+  useEffect(() => {
+    if (activeTab === 'sessions') {
+      fetchSessions();
+    }
+  }, [activeTab]);
 
   const handleRevokeSession = async (sessionId: string) => {
     const token = localStorage.getItem("token");

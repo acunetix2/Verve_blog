@@ -59,7 +59,7 @@ export default function VerveHubWrapper() {
           }}
         />
 
-        <main className="flex-1 p-0 mt-16">
+        <main className="flex-1 w-full mt-16 overflow-x-hidden">
           <Outlet />
         </main>
       </div>

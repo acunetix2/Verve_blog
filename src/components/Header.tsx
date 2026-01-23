@@ -53,6 +53,7 @@ export const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) =>
   const [logoutModalOpen, setLogoutModalOpen] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [showAvatarZoom, setShowAvatarZoom] = useState(false);
 
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -117,8 +118,8 @@ export const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) =>
             : "bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 gap-2">
+        <div className="w-full px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center h-16 gap-2">
             <button
               onClick={onToggleSidebar}
               className="p-0.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-300"
@@ -141,7 +142,7 @@ export const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) =>
             </Link>
 
             {/* Center: Navigation Links (hidden on mobile, shown on lg) */}
-            <nav className="hidden lg:flex items-center gap-1 flex-1 justify-center">
+            <nav className="hidden lg:flex items-center gap-1 flex-1 justify-center mx-4">
               {NAV_ITEMS.map((item) => (
                 item.external ? (
                   <a
@@ -168,8 +169,8 @@ export const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) =>
               ))}
             </nav>
 
-            {/* Right side: Actions */}
-            <nav className="flex items-center gap-2 flex-shrink-0">
+            {/* Right side: Actions - pushed to the end */}
+            <nav className="flex items-center gap-2 ml-auto flex-shrink-0">
               {/* Global Search */}
               <GlobalSearch />
 
@@ -286,18 +287,20 @@ export const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) =>
                                   {new Date(n.time).toLocaleString([], { dateStyle: "short", timeStyle: "short" })}
                                 </span>
                               </div>
-                              {!n.read && (
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    markAsRead(n.id);
-                                  }}
-                                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-lg leading-none flex-shrink-0 p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded transition-colors"
-                                  aria-label="Mark as read"
-                                >
-                                  ×
-                                </button>
-                              )}
+                              <div className="flex items-center gap-1 flex-shrink-0">
+                                {!n.read && (
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      markAsRead(n.id);
+                                    }}
+                                    className="p-1 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded transition-colors text-blue-600 dark:text-blue-400"
+                                    title="Mark as read"
+                                  >
+                                    <CheckCircle2 size={16} />
+                                  </button>
+                                )}
+                              </div>
                             </motion.div>
                           );
                         })}
@@ -306,14 +309,25 @@ export const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) =>
 
                     {/* Footer */}
                     {notifications.length > 0 && (
-                      <div className="px-4 py-2 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50 text-center text-xs text-gray-500 dark:text-gray-400">
-                        {unreadCount > 0 ? (
-                          <span className="font-medium text-blue-600 dark:text-blue-400">
-                            {unreadCount} unread notification{unreadCount !== 1 ? "s" : ""}
-                          </span>
-                        ) : (
-                          <span className="text-green-600 dark:text-green-400">All caught up! ✓</span>
-                        )}
+                      <div className="px-4 py-3 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50 flex items-center justify-between">
+                        <span className="text-xs text-gray-600 dark:text-gray-400">
+                          {unreadCount > 0 ? (
+                            <span className="font-medium text-blue-600 dark:text-blue-400">
+                              {unreadCount} unread
+                            </span>
+                          ) : (
+                            <span className="text-green-600 dark:text-green-400">All caught up! ✓</span>
+                          )}
+                        </span>
+                        <button
+                          onClick={() => {
+                            navigate("/v/notifications");
+                            setShowNotifications(false);
+                          }}
+                          className="text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline"
+                        >
+                          View All →
+                        </button>
                       </div>
                     )}
                   </motion.div>
@@ -327,6 +341,7 @@ export const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) =>
                 setOpen={setDropdownOpen}
                 onLogout={() => setLogoutModalOpen(true)}
                 dropdownRef={dropdownRef}
+                onAvatarClick={() => setShowAvatarZoom(true)}
               />
 
               {/* Hamburger Menu Button (always visible, pushed to the right) */}
@@ -345,6 +360,59 @@ export const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) =>
           onConfirm={handleLogout}
         />
       )}
+
+      {/* Avatar Zoom Modal */}
+      <AnimatePresence>
+        {showAvatarZoom && user?.profileImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+            onClick={() => setShowAvatarZoom(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.5, opacity: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="relative"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Profile Image */}
+              <img
+                src={user.profileImage}
+                alt={`${user.name}'s profile`}
+                className="w-96 h-96 rounded-2xl object-cover shadow-2xl border-4 border-white dark:border-gray-800"
+              />
+
+              {/* Close Button */}
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setShowAvatarZoom(false)}
+                className="absolute -top-4 -right-4 w-12 h-12 bg-white dark:bg-gray-900 rounded-full shadow-lg flex items-center justify-center text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border-2 border-gray-200 dark:border-gray-800"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </motion.button>
+
+              {/* User Info Below Image */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="mt-6 text-center"
+              >
+                <h3 className="text-2xl font-bold text-white">{user.name}</h3>
+                <p className="text-gray-300 mt-1 text-sm">{user.email}</p>
+              </motion.div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };
@@ -356,12 +424,14 @@ const UserDropdown = ({
   setOpen,
   onLogout,
   dropdownRef,
+  onAvatarClick,
 }: {
   user: User | null;
   open: boolean;
   setOpen: (val: boolean) => void;
   onLogout: () => void;
   dropdownRef: React.RefObject<HTMLDivElement>;
+  onAvatarClick?: () => void;
 }) => {
   const navigate = useNavigate();
 
@@ -386,7 +456,11 @@ const UserDropdown = ({
           <img
             src={user.profileImage}
             alt={`${user.name}'s profileImage`}
-            className="w-8 h-8 rounded-full object-cover ring-2 ring-gray-200 dark:ring-gray-700"
+            className="w-8 h-8 rounded-full object-cover ring-2 ring-gray-200 dark:ring-gray-700 cursor-pointer hover:opacity-80 transition-opacity"
+            onClick={(e) => {
+              e.stopPropagation();
+              onAvatarClick?.();
+            }}
           />
         ) : (
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-700 to-green-700 flex items-center justify-center text-white font-semibold text-xs shadow-sm">

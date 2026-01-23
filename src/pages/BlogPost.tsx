@@ -23,9 +23,6 @@ import {
   Share2,
 } from "lucide-react";
 import { Helmet } from "react-helmet-async";
-import CommentsSystem from "@/components/CommentsSystem";
-import ReactionsPanel from "@/components/ReactionsPanel";
-import UserReviews from "@/components/UserReviews";
 import SocialSharing from "@/components/SocialSharing";
 
 interface Post {
@@ -318,21 +315,21 @@ const BlogPost = () => {
             </div>
           </div>
 
-          {/* Reactions */}
-          <section className="mt-8 sm:mt-10">
+          {/* DISABLED: Reactions section - endpoint may not be available */}
+          {/* <section className="mt-8 sm:mt-10">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">React to this post</h3>
             <ReactionsPanel targetId={post?._id || ""} targetType="post" />
-          </section>
+          </section> */}
 
-          {/* Reviews & Ratings */}
-          <section className="mt-8 sm:mt-10">
+          {/* DISABLED: Reviews & Ratings section - endpoint may not be available */}
+          {/* <section className="mt-8 sm:mt-10">
             <UserReviews postId={post?._id || ""} />
-          </section>
+          </section> */}
 
-          {/* Comments */}
-          <section className="mt-8 sm:mt-10">
+          {/* DISABLED: Comments section - endpoint may not be available */}
+          {/* <section className="mt-8 sm:mt-10">
             <CommentsSystem postId={post?._id || ""} />
-          </section>
+          </section> */}
 
           <footer className="mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-gray-100 text-center">
             <div className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-50 border border-blue-200 rounded-xl">

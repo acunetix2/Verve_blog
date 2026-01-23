@@ -152,6 +152,11 @@ export const MDXContent = ({ content }: MDXContentProps) => {
           em: ({ children }) => (
             <em className="italic text-gray-700">{children}</em>
           ),
+          mark: ({ children }) => (
+            <mark className="bg-yellow-200 dark:bg-yellow-400/30 text-gray-900 dark:text-gray-100 rounded px-1 font-medium">
+              {children}
+            </mark>
+          ),
         }}
       >
         {content}

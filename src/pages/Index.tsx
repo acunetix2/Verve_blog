@@ -5,6 +5,7 @@
 
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
 import { Header } from "@/components/Header";
 import { BlogCard } from "@/components/BlogCard";
 import { BlogSearch } from "@/components/BlogSearch";
@@ -66,6 +67,7 @@ const Index = () => {
   const [monthCount, setMonthCount] = useState<number>(0);
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [activeSection, setActiveSection] = useState<"feed" | "series" | "scheduling" | "digest">("feed");
+  const [showAuthorZoom, setShowAuthorZoom] = useState(false);
 
   useEffect(() => {
     // Fetch current user info
@@ -226,13 +228,13 @@ const Index = () => {
         }}></div>
       </div>
 
-      <div className="container relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+      <div className="container relative z-10 w-full px-4 sm:px-6 lg:px-8 pt-6">
         {/* Welcome Banner - At the top */}
         <WelcomeBanner />
 
         {/* Header */}
     <header className="w-full bg-gradient-to-r from-slate-50 via-slate-100 to-slate-50 border-b border-slate-200/50">
-		  <div className="max-w-7xl mx-auto px-6 py-4 text-left space-y-8">
+		  <div className="w-full px-6 py-4 text-left space-y-8">
           {/* Main Heading */}
           <h1
             className="text-5xl sm:text-6xl lg:text-4xl font-bold tracking-tight text-slate-900"
@@ -531,7 +533,8 @@ const Index = () => {
                 <img
                   src={author}
                   alt="Iddy Chesire"
-                  className="w-16 h-16 rounded-full object-cover shadow-md border-2 border-white"
+                  className="w-16 h-16 rounded-full object-cover shadow-md border-2 border-white cursor-pointer hover:opacity-80 transition-opacity"
+                  onClick={() => setShowAuthorZoom(true)}
                 />
                 <div className="flex-1">
 				  <h3 className="text-base font-bold text-gray-900">Iddy Chesire</h3>
@@ -660,8 +663,8 @@ const Index = () => {
 
       {/* Enhanced Footer */}
 		<footer className="relative border-t bg-slate-800 border-border/50 mt-20 bg-card/30 backdrop-blur-sm">
-		  <div className="container max-w-7xl mx-auto py-12 px-4">
-			<div className="max-w-6xl mx-auto">
+		  <div className="container w-full py-12 px-4">
+			<div className="w-full">
 			  {/* Footer Content */}
 			  <div className="grid md:grid-cols-4 gap-8 mb-8">
 				<div className="md:col-span-2">
@@ -774,6 +777,59 @@ const Index = () => {
 			</div>
 		  </div>
 		</footer>
+
+        {/* Author Zoom Modal */}
+        <AnimatePresence>
+          {showAuthorZoom && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+              onClick={() => setShowAuthorZoom(false)}
+            >
+              <motion.div
+                initial={{ scale: 0.5, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.5, opacity: 0 }}
+                transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                className="relative"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Profile Image */}
+                <img
+                  src={author}
+                  alt="Iddy Chesire"
+                  className="w-96 h-96 rounded-2xl object-cover shadow-2xl border-4 border-white dark:border-gray-800"
+                />
+
+                {/* Close Button */}
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setShowAuthorZoom(false)}
+                  className="absolute -top-4 -right-4 w-12 h-12 bg-white dark:bg-gray-900 rounded-full shadow-lg flex items-center justify-center text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border-2 border-gray-200 dark:border-gray-800"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </motion.button>
+
+                {/* User Info Below Image */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                  className="mt-6 text-center"
+                >
+                  <h3 className="text-2xl font-bold text-white">Iddy Chesire</h3>
+                  <p className="text-gray-300 mt-1 text-sm">Platform Creator & Cybersecurity Researcher</p>
+                </motion.div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
     </div>
   );
 };

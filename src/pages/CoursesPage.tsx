@@ -187,7 +187,7 @@ const CoursesPage: React.FC = () => {
               return (
                 <div
                   key={course._id}
-                  className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-sm border border-slate-700/50 rounded-2xl overflow-hidden hover:border-slate-600/50 transition-all group hover:shadow-xl hover:shadow-blue-500/10"
+                  className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-sm border border-slate-700/50 rounded-3xl overflow-hidden hover:border-slate-600/50 transition-all group hover:shadow-2xl hover:shadow-blue-500/20 cursor-pointer transform hover:scale-105 active:scale-95 duration-200 ease-out"
                 >
                   {/* Course Image */}
                   <div className="relative h-48 bg-gradient-to-br from-blue-600/20 to-purple-600/20 overflow-hidden">

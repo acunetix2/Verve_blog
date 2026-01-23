@@ -343,7 +343,8 @@ export default function SimulationList() {
               {sortedSimulations.map((simulation) => (
                 <div
                   key={simulation.id}
-                  className="bg-white rounded-xl shadow-md border border-blue-100 overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+                  onClick={() => handleViewSimulation(simulation.id)}
+                  className="bg-white rounded-3xl shadow-lg border border-blue-100 overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:scale-105 active:scale-95 cursor-pointer hover:-translate-y-2"
                 >
                   <div className="bg-gradient-to-r from-green-500 to-green-600 h-20 flex items-center justify-center">
                     <svg className="w-10 h-10 text-white opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -48,6 +48,7 @@ import LessonView from "@/pages/LessonView";
 import FinalExam from "@/pages/FinalExam";
 import UserProgressDashboard from "@/pages/UserProgressDashboard";
 import UserCertificates from "@/pages/UserCertificates";
+import NotificationsPage from "@/pages/NotificationsPage";
 import FloatingActionButton from "@/components/FloatingActionButton";
 import VerveHubLogo  from "@/components/VerveHubLogo";
 
@@ -209,9 +210,9 @@ const App = () => (
               <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
-			  <Route path="/forgot-password" element={<ForgotPassword />} />
-			  <Route path="/reset-password" element={<ResetPassword />} />
-			  <Route path="/verify-email/:token" element={<VerifyEmail />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/verify-email/:token" element={<VerifyEmail />} />
 
               {/* Protected User Routes + Wrapper */}
               <Route element={<ProtectedRoute role="user" />}>
@@ -219,23 +220,24 @@ const App = () => (
                   <Route path="/v" element={<Index />} />
                   <Route path="/v/about" element={<About />} />
                   <Route path="/v/account" element={<Account />} />
+                  <Route path="/v/notifications" element={<NotificationsPage />} />
                   <Route path="/v/blog" element={<BlogList />} />
                   <Route path="/v/resources" element={<Documents />} />
-				  <Route path="/v/simulations" element={<SimulationList />} />
+				          <Route path="/v/simulations" element={<SimulationList />} />
                   <Route path="/post/:slug" element={<BlogPost />} />
-				  <Route path="/series/:slug" element={<SeriesViewPage />} />
-				  <Route path="/resource" element={<Resources />} />
-				  <Route path="/documentation" element={<Documentation />} />
-				  <Route path="/support" element={<Support />} />
-				  <Route path="/community" element={<Community />} />
-				  <Route path="/newsletter" element={<Newsletter />} />
-				  <Route path="/v/billing" element={<Billing />} />
-				  <Route path="/v/courses" element={<CoursesList />} />
-				  <Route path="/v/courses/:courseId" element={<CourseDetail />} />
-				  <Route path="/v/courses/:courseId/lesson/:lessonId" element={<LessonView />} />
-				  <Route path="/exam/:courseId" element={<FinalExam />} />
-				  <Route path="/v/my-progress" element={<UserProgressDashboard />} />
-				  <Route path="/v/my-certificates" element={<UserCertificates />} />
+                  <Route path="/series/:slug" element={<SeriesViewPage />} />
+                  <Route path="/resource" element={<Resources />} />
+                  <Route path="/documentation" element={<Documentation />} />
+                  <Route path="/support" element={<Support />} />
+                  <Route path="/community" element={<Community />} />
+                  <Route path="/newsletter" element={<Newsletter />} />
+                  <Route path="/v/billing" element={<Billing />} />
+                  <Route path="/v/courses" element={<CoursesList />} />
+                  <Route path="/v/courses/:courseId" element={<CourseDetail />} />
+                  <Route path="/v/courses/:courseId/lesson/:lessonId" element={<LessonView />} />
+                  <Route path="/exam/:courseId" element={<FinalExam />} />
+                  <Route path="/v/my-progress" element={<UserProgressDashboard />} />
+                  <Route path="/v/my-certificates" element={<UserCertificates />} />
                 </Route>
               </Route>
 
@@ -246,7 +248,7 @@ const App = () => (
                   <Route path="/admin/create" element={<CreatePost />} />
                   <Route path="/admin/documents" element={<UploadPage />} />
                   <Route path="/admin/account" element={<Account />} />
-				  <Route path="/admin/simulations" element={<UploadSimulation />} />
+				          <Route path="/admin/simulations" element={<UploadSimulation />} />
                 </Route>
               </Route>
               {/* 404 */}

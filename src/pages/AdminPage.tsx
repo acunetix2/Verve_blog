@@ -479,16 +479,33 @@ const AdminPage: React.FC = () => {
     }
   };
 
-  const handleEditCourse = (course: any) => {
-    setCourseForm({ 
-      title: course.title, 
-      description: course.description, 
-      image: course.image || "",
-      modules: course.modules || []
-    });
-    setEditingCourseId(course._id);
-    setExpandedModuleIndex(null);
-    setShowCourseModal(true);
+  const handleEditCourse = async (course: any) => {
+    try {
+      const token = localStorage.getItem("token");
+      // Fetch the full course data including all content blocks
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/courses/${course._id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      const fullCourse = res.data;
+      setCourseForm({ 
+        title: fullCourse.title, 
+        description: fullCourse.description, 
+        image: fullCourse.imageUrl || "",
+        modules: fullCourse.modules || [],
+        finalExam: fullCourse.finalExam || {
+          questions: [],
+          passingScore: 70,
+          isEnabled: false,
+        }
+      });
+      setEditingCourseId(course._id);
+      setExpandedModuleIndex(null);
+      setShowCourseModal(true);
+    } catch (error) {
+      toast.error("Failed to load course for editing", { icon: <XCircle className="text-red-500" /> });
+      console.error('Load course error:', error);
+    }
   };
 
   const handleDeleteCourse = async (id: string) => {
@@ -1720,8 +1737,8 @@ const AdminPage: React.FC = () => {
             <YAxis stroke="rgba(148,163,184,0.6)" />
             <Tooltip contentStyle={{ backgroundColor: 'rgba(15,23,42,0.9)', border: '1px solid rgba(148,163,184,0.3)' }} />
             <Legend />
-            <Bar dataKey="Posts" fill="#3b82f6"><Cell /></Bar>
-            <Bar dataKey="Users" fill="#10b981" /><Bar dataKey="Documents" fill="#f97316" /><Bar dataKey="Simulations" fill="#8b5cf6" />
+            <Bar dataKey="Posts" fill="#22c55e"><Cell /></Bar>
+            <Bar dataKey="Users" fill="#3b82f6" /><Bar dataKey="Documents" fill="#eab308" /><Bar dataKey="Simulations" fill="#ef4444" />
           </BarChart>
           </ResponsiveContainer>
         </div>

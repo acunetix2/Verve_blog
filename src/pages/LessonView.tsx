@@ -29,6 +29,12 @@ interface Lesson {
   title: string;
   content?: string;
   contentUrl?: string; // B2 URL
+  contentBlocks?: Array<{
+    type: 'text' | 'header' | 'subheader' | 'points' | 'highlight';
+    content: string;
+    color?: string;
+    order?: number;
+  }>;
   quiz?: Quiz[];
   order: number;
   videoUrl?: string;
@@ -413,10 +419,73 @@ const LessonView: React.FC = () => {
                 <Loader2 className="animate-spin text-green-600 mr-2" size={24} />
                 <p className="text-gray-600 text-sm">Loading content...</p>
               </div>
+            ) : lesson.contentBlocks && lesson.contentBlocks.length > 0 ? (
+              // Render structured content blocks
+              <div className="space-y-6">
+                {lesson.contentBlocks.map((block, idx) => {
+                  const colorClasses = {
+                    slate: 'text-gray-700',
+                    blue: 'text-blue-700',
+                    green: 'text-green-700',
+                    purple: 'text-purple-700',
+                    orange: 'text-orange-700',
+                    red: 'text-red-700',
+                  };
+                  const highlightBg = {
+                    slate: 'bg-gray-100 border-gray-300',
+                    blue: 'bg-blue-100 border-blue-300',
+                    green: 'bg-green-100 border-green-300',
+                    purple: 'bg-purple-100 border-purple-300',
+                    orange: 'bg-orange-100 border-orange-300',
+                    red: 'bg-red-100 border-red-300',
+                  };
+                  const textColor = colorClasses[block.color as keyof typeof colorClasses] || colorClasses.slate;
+                  const bgColor = highlightBg[block.color as keyof typeof highlightBg] || highlightBg.slate;
+
+                  if (block.type === 'header') {
+                    return (
+                      <h1 key={idx} className={`text-3xl font-bold ${textColor}`}>
+                        {block.content}
+                      </h1>
+                    );
+                  }
+                  if (block.type === 'subheader') {
+                    return (
+                      <h2 key={idx} className={`text-xl font-semibold ${textColor}`}>
+                        {block.content}
+                      </h2>
+                    );
+                  }
+                  if (block.type === 'points') {
+                    return (
+                      <div key={idx} className="space-y-2">
+                        {block.content.split('\n').filter(l => l.trim()).map((point, pIdx) => (
+                          <div key={pIdx} className="flex gap-3">
+                            <span className={`text-lg font-bold ${textColor}`}>•</span>
+                            <span className="text-gray-700">{point}</span>
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  }
+                  if (block.type === 'highlight') {
+                    return (
+                      <div key={idx} className={`p-4 rounded-lg border-l-4 ${bgColor} border-blue-500`}>
+                        <p className={`${textColor}`}>{block.content}</p>
+                      </div>
+                    );
+                  }
+                  return (
+                    <p key={idx} className="text-gray-700 leading-relaxed">
+                      {block.content}
+                    </p>
+                  );
+                })}
+              </div>
             ) : lessonContent ? (
-              // Render content
+              // Render content with proper markdown/HTML styling (legacy)
               <div
-                className="prose max-w-none text-gray-700 text-sm"
+                className="prose prose-sm dark:prose-invert max-w-none text-gray-700 dark:text-gray-300 leading-relaxed"
                 dangerouslySetInnerHTML={{ __html: lessonContent }}
               ></div>
             ) : (
