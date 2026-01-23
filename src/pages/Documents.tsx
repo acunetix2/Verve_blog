@@ -133,16 +133,14 @@ const Documents: React.FC = () => {
   });
 
   return (
-    <div className={`min-h-screen w-full transition-colors duration-300 ${
-      actualTheme === 'dark' ? 'bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-200' : 'bg-gradient-to-br from-blue-50 via-white to-blue-50 text-slate-900'
-    }`} style={{ fontFamily: "'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
+    <div className="min-h-screen w-full transition-colors duration-300 bg-gray-950 text-gray-100" style={{ fontFamily: "'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
       {message && (
         <div
           className={`fixed top-6 right-6 px-5 py-3 rounded-xl shadow-lg flex items-center gap-3 z-50 
                       border transition-all duration-300 animate-in slide-in-from-top-5 ${
                         message.type === "success"
-                          ? "bg-green-50 text-green-700 border-green-200"
-                          : "bg-red-50 text-red-700 border-red-200"
+                          ? "bg-green-900/40 text-green-400 border-green-600/50"
+                          : "bg-red-900/40 text-red-400 border-red-600/50"
                       }`}
         >
           {message.type === "success" ? <CheckCircle2 className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
@@ -156,32 +154,32 @@ const Documents: React.FC = () => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1">
         {/* Header */}
         <div className="text-left mb-10 py-2">
-          <h2 className={`${actualTheme === 'dark' ? 'text-white' : 'text-blue-900'} text-3xl font-bold mb-3`}>
+          <h2 className="text-white text-3xl font-bold mb-3">
             Learning Resources
           </h2>
-          <p className={`${actualTheme === 'dark' ? 'text-slate-300' : 'text-gray-600'} text-lg max-w-1xl mx-auto`}>
+          <p className="text-gray-300 text-lg max-w-1xl mx-auto">
             Access cybersecurity documents, guides, and educational materials
           </p>
         </div>
 
         {/* Search Bar */}
-        <div className={`rounded-2xl border shadow-lg p-4 mb-8 transition-colors ${actualTheme === 'dark' ? 'bg-slate-800 border-blue-100' : 'bg-white border-blue-200'}`}>
+        <div className="rounded-2xl border border-red-600/30 shadow-lg p-4 mb-8 transition-colors bg-gray-900">
           <div className="relative">
-            <Search className={`absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 ${actualTheme === 'dark' ? 'text-slate-500' : 'text-gray-400'}`} />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
             <input
               type="text"
               placeholder="Search documents..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className={`w-full pl-12 pr-4 h-10  text-base transition-colors ${actualTheme === 'dark' ? 'bg-slate-700 border-blue-100 text-white placeholder:text-slate-500 focus:border-blue-300 focus:ring-blue-300/20' : 'bg-gray-50 border border-blue-300 text-gray-900 placeholder:text-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'}`}
+              className="w-full pl-12 pr-4 h-10 text-base transition-colors bg-gray-800 border border-red-600/30 text-gray-100 placeholder:text-gray-500 focus:border-red-500 focus:ring-red-500/20 focus:ring-2 rounded-lg"
             />
           </div>
         </div>
 
         {/* Category Navigation */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-6 mb-8">
-          <div className="flex items-center gap-2 text-sm font-medium text-gray-900 mb-6">
-            <Shield className="h-5 w-5 text-blue-600" />
+        <div className="bg-gray-900 rounded-2xl border border-red-600/30 shadow-lg p-6 mb-8">
+          <div className="flex items-center gap-2 text-sm font-medium text-white mb-6">
+            <Shield className="h-5 w-5 text-red-500" />
             <span className="text-lg">Browse by Category</span>
           </div>
           <div className="flex flex-wrap gap-3">
@@ -195,8 +193,8 @@ const Documents: React.FC = () => {
                   onClick={() => setSelectedCategory(cat)}
                   className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all whitespace-nowrap ${
                     isActive
-                      ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30"
-                      : "bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 hover:border-gray-300"
+                      ? "bg-red-600 text-white shadow-lg shadow-red-600/30"
+                      : "bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700 hover:border-red-600/50"
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -209,13 +207,13 @@ const Documents: React.FC = () => {
 
         {/* Results Summary */}
         <div className="mb-6">
-          <p className="text-lg text-gray-900">
+          <p className="text-lg text-gray-300">
             {filteredDocuments.length === 0 ? (
               <span className="text-gray-500">No documents found</span>
             ) : (
               <>
-                <span className="font-bold text-blue-600">{filteredDocuments.length}</span>{" "}
-                <span className="text-gray-700">
+                <span className="font-bold text-red-500">{filteredDocuments.length}</span>{" "}
+                <span className="text-gray-300">
                   {filteredDocuments.length === 1 ? "document" : "documents"}
                 </span>
                 {selectedCategory !== "All" && (
@@ -230,26 +228,26 @@ const Documents: React.FC = () => {
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20">
             <div className="relative inline-flex items-center justify-center mb-4">
-              <div className="w-16 h-16 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin"></div>
-              <FileText className="absolute h-6 w-6 text-blue-600" />
+              <div className="w-16 h-16 border-4 border-gray-800 border-t-red-600 rounded-full animate-spin"></div>
+              <FileText className="absolute h-6 w-6 text-red-600" />
             </div>
-            <p className="text-gray-700 font-medium">Loading documents...</p>
+            <p className="text-gray-400 font-medium">Loading documents...</p>
           </div>
         ) : error ? (
-          <div className="bg-white rounded-2xl border border-red-200 shadow-lg p-12 text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-red-50 rounded-full mb-4">
-              <AlertCircle className="w-8 h-8 text-red-600" />
+          <div className="bg-gray-900 rounded-2xl border border-red-600/30 shadow-lg p-12 text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-red-900/40 rounded-full mb-4">
+              <AlertCircle className="w-8 h-8 text-red-500" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Error Loading Documents</h3>
-            <p className="text-red-600">{error}</p>
+            <h3 className="text-xl font-semibold text-white mb-2">Error Loading Documents</h3>
+            <p className="text-red-400">{error}</p>
           </div>
         ) : filteredDocuments.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-12 text-center">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-100 mb-6">
-              <FileText className="h-10 w-10 text-gray-400" />
+          <div className="bg-gray-900 rounded-2xl border border-red-600/30 shadow-lg p-12 text-center">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-800 mb-6">
+              <FileText className="h-10 w-10 text-gray-600" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-3">No documents found</h3>
-            <p className="text-gray-600 text-sm max-w-md mx-auto">
+            <h3 className="text-xl font-semibold text-white mb-3">No documents found</h3>
+            <p className="text-gray-400 text-sm max-w-md mx-auto">
               Try adjusting your search criteria or selecting a different category.
             </p>
           </div>
@@ -261,43 +259,43 @@ const Documents: React.FC = () => {
               return (
                 <div
                   key={doc._id}
-                  className="bg-white rounded-2xl shadow-sm hover:shadow-2xl border border-gray-100 hover:border-blue-200 transition-all duration-300 overflow-hidden group cursor-pointer"
+                  className="bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl border border-red-600/20 hover:border-red-600/50 transition-all duration-300 overflow-hidden group cursor-pointer"
                 >
                   {/* Card Header with gradient */}
-                  <div className="h-2 bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600"></div>
+                  <div className="h-2 bg-gradient-to-r from-red-500 via-orange-500 to-red-600"></div>
                   
                   {/* Card Content */}
                   <div className="p-6">
                     {/* Icon and Title */}
                     <div className="flex items-start gap-3 mb-4">
-                      <div className="flex-shrink-0 w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center border border-blue-100">
-                        <Icon className="w-6 h-6 text-blue-600" />
+                      <div className="flex-shrink-0 w-12 h-12 bg-red-900/30 rounded-xl flex items-center justify-center border border-red-600/30">
+                        <Icon className="w-6 h-6 text-red-500" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-1 line-clamp-2">
+                        <h3 className="text-lg font-semibold text-white mb-1 line-clamp-2">
                           {doc.title}
                         </h3>
                       </div>
                     </div>
 
                     {/* Category Badge */}
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-700 text-xs font-medium rounded-lg mb-3">
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-900/30 text-red-500 text-xs font-medium rounded-lg mb-3 border border-red-600/30">
                       <Cpu className="w-3.5 h-3.5" />
                       {doc.category}
                     </div>
 
                     {/* Description */}
                     {doc.description && (
-                      <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                      <p className="text-gray-400 text-sm mb-4 line-clamp-2">
                         {doc.description}
                       </p>
                     )}
 
                     {/* Action Buttons */}
-                    <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
+                    <div className="flex items-center gap-3 pt-4 border-t border-gray-700">
                       <button
                         onClick={() => handlePreview(doc._id)}
-                        className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium rounded-xl transition-colors"
+                        className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-900 hover:bg-gray-800 text-orange-500 font-medium rounded-xl border border-orange-500/30 hover:border-orange-500/50 transition-colors"
                       >
                         <Eye className="w-4 h-4" />
                         Preview
@@ -305,7 +303,7 @@ const Documents: React.FC = () => {
 
                       <button
                         onClick={() => handleDownload(doc._id)}
-                        className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-green-50 hover:bg-green-100 text-green-700 font-medium rounded-xl transition-colors"
+                        className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded-xl transition-colors"
                       >
                         <Download className="w-4 h-4" />
                         Download
@@ -321,16 +319,16 @@ const Documents: React.FC = () => {
         {/* Preview Modal */}
         {previewDoc && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-6 z-50">
-            <div className="relative w-full max-w-5xl h-[85vh] bg-white rounded-2xl shadow-2xl overflow-hidden">
+            <div className="relative w-full max-w-5xl h-[85vh] bg-gray-900 rounded-2xl shadow-2xl overflow-hidden border border-red-600/30">
               <div className="absolute top-4 right-4 z-50">
                 <button
                   onClick={() => setPreviewDoc(null)}
-                  className="p-2 bg-red-100 hover:bg-red-200 text-red-600 rounded-lg transition-colors"
+                  className="p-2 bg-red-900/40 hover:bg-red-900/60 text-red-500 rounded-lg transition-colors"
                 >
                   <XCircle className="w-6 h-6" />
                 </button>
               </div>
-              <iframe src={previewDoc} className="w-full h-full" />
+              <iframe src={previewDoc} className="w-full h-full bg-white" />
             </div>
           </div>
         )}

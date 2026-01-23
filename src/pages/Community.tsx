@@ -34,7 +34,7 @@ const Community = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#06070b] text-white py-14 px-6 sm:px-12 lg:px-20">
+    <div className="min-h-screen bg-gray-950 text-white py-14 px-6 sm:px-12 lg:px-20">
 
       {/* HEADER */}
       <motion.div
@@ -57,8 +57,8 @@ const Community = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1, duration: 0.4 }}
-            className="bg-white/10 border border-white/10 rounded-xl backdrop-blur-xl
-                       shadow-xl hover:bg-white/15 transition-all duration-300"
+            className="bg-red-900/20 border border-red-600/30 rounded-xl backdrop-blur-xl
+                       shadow-xl hover:bg-red-900/40 transition-all duration-300"
           >
             <button
               onClick={() => toggleSection(index)}

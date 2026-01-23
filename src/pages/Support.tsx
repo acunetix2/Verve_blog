@@ -7,25 +7,25 @@ const Support = () => {
     {
       title: "FAQs",
       description: "Browse the most frequently asked questions about Verve Hub.",
-      icon: <HelpCircle className="h-6 w-6 text-cyan-400" />,
+      icon: <HelpCircle className="h-6 w-6 text-orange-400" />,
       link: "/faqs",
     },
     {
       title: "Contact Support",
       description: "Email or chat with our dedicated support team.",
-      icon: <Mail className="h-6 w-6 text-cyan-400" />,
+      icon: <Mail className="h-6 w-6 text-orange-400" />,
       link: "mailto:iddychesire098@gmail.com",
     },
     {
       title: "Report a Bug",
       description: "Encountered an issue? Help us improve by reporting it.",
-      icon: <Bug className="h-6 w-6 text-cyan-400" />,
+      icon: <Bug className="h-6 w-6 text-orange-400" />,
       link: "/report-bug",
     },
   ];
 
   return (
-    <div className="min-h-screen bg-[#06070b] text-white py-14 px-6 sm:px-12 lg:px-20">
+    <div className="min-h-screen bg-gray-950 text-white py-14 px-6 sm:px-12 lg:px-20">
 
       {/* HEADER */}
       <motion.div
@@ -50,12 +50,12 @@ const Support = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 250 }}
-            className="group block p-7 bg-white/10 border border-white/10 
-                       rounded-2xl backdrop-blur-lg shadow-xl hover:bg-white/20 
+            className="group block p-7 bg-red-900/20 border border-red-600/30 
+                       rounded-2xl backdrop-blur-lg shadow-xl hover:bg-red-900/40 
                        transition-all duration-300 cursor-pointer"
           >
             <div className="flex items-center justify-center w-16 h-16 rounded-full 
-                            bg-cyan-500/10 mb-5 group-hover:bg-cyan-500/20 transition">
+                            bg-red-600/20 mb-5 group-hover:bg-red-600/40 transition">
               {item.icon}
             </div>
 
@@ -80,8 +80,8 @@ const Support = () => {
 
         <a
           href="mailto:iddychesire098@gmail.com"
-          className="px-6 py-3 bg-cyan-500 hover:bg-cyan-400 rounded-xl 
-                     font-semibold transition shadow-lg"
+          className="px-6 py-3 bg-red-600 hover:bg-red-700 rounded-xl 
+                     font-semibold transition shadow-lg shadow-red-600/30"
         >
           Contact Us
         </a>

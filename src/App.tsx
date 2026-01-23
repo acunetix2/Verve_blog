@@ -69,18 +69,22 @@ const AuthContext = createContext<AuthContextType>({
 
 const useAuth = () => useContext(AuthContext);
     const FullScreenLoader = () => (
-      <div className="flex flex-col justify-center items-center h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
-        {/* Logo */}
-        <div className="flex items-center gap-2 mb-6">
-          <VerveHubLogo size="lg" />
-          <span className="text-2xl font-bold tracking-tight">Verve Hub Academy</span>
+      <div className="flex flex-col justify-center items-center h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white px-4">
+        {/* Logo and Text - Stacked Vertically */}
+        <div className="flex flex-col items-center gap-4 mb-8">
+          <div className="w-16 h-16 sm:w-20 sm:h-20">
+            <VerveHubLogo size="lg" />
+          </div>
+          <span className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-center">
+            Verve Hub Academy
+          </span>
         </div>
 
         {/* Spinner */}
-        <div className="w-12 h-12 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin mb-4"></div>
+        <div className="w-12 h-12 sm:w-16 sm:h-16 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin mb-6"></div>
 
         {/* Loading Text */}
-        <p className="text-cyan-500 font-medium text-lg animate-pulse">
+        <p className="text-cyan-500 font-medium text-base sm:text-lg animate-pulse">
           Please wait...
         </p>
       </div>

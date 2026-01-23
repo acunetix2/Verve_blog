@@ -10,7 +10,8 @@ interface Notification {
   message: string;
   type: "document" | "course" | "general" | "alert";
   read: boolean;
-  time: string;
+  time?: string;
+  createdAt?: string;
   actionUrl?: string;
   actionLabel?: string;
 }
@@ -70,8 +71,10 @@ const NotificationsPage: React.FC = () => {
       setNotifications(
         notifications.map((n) => (n.id === id ? { ...n, read: true } : n))
       );
+      toast.success("Marked as read");
     } catch (error) {
       console.error("Failed to mark notification as read:", error);
+      toast.error("Failed to mark as read");
     }
   };
 
@@ -102,6 +105,7 @@ const NotificationsPage: React.FC = () => {
       toast.success("All notifications marked as read");
     } catch (error) {
       console.error("Failed to mark all as read:", error);
+      toast.error("Failed to mark all as read");
     }
   };
 
@@ -134,16 +138,20 @@ const NotificationsPage: React.FC = () => {
     }
   };
 
-  const getNotificationColor = (type: string) => {
-    switch (type) {
-      case "document":
-        return "bg-blue-50 border-blue-200";
-      case "course":
-        return "bg-purple-50 border-purple-200";
-      case "alert":
-        return "bg-red-50 border-red-200";
-      default:
-        return "bg-gray-50 border-gray-200";
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return "Just now";
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return "Just now";
+      return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } catch {
+      return "Just now";
     }
   };
 
@@ -152,61 +160,63 @@ const NotificationsPage: React.FC = () => {
   return (
     <>
       <Header />
-      <div className="w-full min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 pt-20">
+      <div className="w-full min-h-screen bg-gray-950 pt-20">
         <div className="w-full px-4 sm:px-6 lg:px-8 py-8 max-w-6xl mx-auto">
           {/* Header */}
           <div className="mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                  <Bell className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+              <div className="flex items-center gap-3 w-full sm:w-auto">
+                <div className="p-3 bg-red-900/40 rounded-lg">
+                  <Bell className="w-6 h-6 text-red-500" />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                  <h1 className="text-3xl font-bold text-white">
                     Notifications
                   </h1>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  <p className="text-sm text-gray-400 mt-1">
                     You have {unreadCount} unread notification{unreadCount !== 1 ? "s" : ""}
                   </p>
                 </div>
               </div>
               {notifications.length > 0 && (
-                <div className="flex gap-2">
+                <div className="flex gap-2 w-full sm:w-auto flex-col sm:flex-row">
                   {unreadCount > 0 && (
                     <button
                       onClick={markAllAsRead}
-                      className="flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors font-medium text-sm"
+                      className="flex items-center justify-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium text-sm"
                     >
                       <CheckCheck className="w-4 h-4" />
-                      Mark All Read
+                      <span className="hidden sm:inline">Mark All Read</span>
+                      <span className="sm:hidden">Mark Read</span>
                     </button>
                   )}
                   <button
                     onClick={deleteAllNotifications}
-                    className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors font-medium text-sm"
+                    className="flex items-center justify-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors font-medium text-sm"
                   >
                     <Trash2 className="w-4 h-4" />
-                    Clear All
+                    <span className="hidden sm:inline">Clear All</span>
+                    <span className="sm:hidden">Clear</span>
                   </button>
                 </div>
               )}
             </div>
 
             {/* Filter Tabs */}
-            <div className="flex gap-2 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex gap-2 border-b border-red-600/20 overflow-x-auto pb-2 sm:pb-0">
               {(["all", "unread", "read"] as const).map((f) => (
                 <button
                   key={f}
                   onClick={() => setFilter(f)}
-                  className={`px-4 py-3 font-medium text-sm transition-colors border-b-2 -mb-px ${
+                  className={`px-4 py-3 font-medium text-sm whitespace-nowrap transition-colors border-b-2 -mb-px ${
                     filter === f
-                      ? "border-blue-500 text-blue-600 dark:text-blue-400"
-                      : "border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-300"
+                      ? "border-red-500 text-red-500"
+                      : "border-transparent text-gray-400 hover:text-gray-300"
                   }`}
                 >
                   {f.charAt(0).toUpperCase() + f.slice(1)}
                   {f !== "all" && (
-                    <span className="ml-2 text-xs bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded-full">
+                    <span className="ml-2 text-xs bg-gray-800 text-gray-300 px-2 py-1 rounded-full">
                       {f === "unread"
                         ? unreadCount
                         : notifications.filter((n) => n.read).length}
@@ -221,17 +231,17 @@ const NotificationsPage: React.FC = () => {
           {loading ? (
             <div className="text-center py-12">
               <div className="inline-block animate-spin">
-                <Clock className="w-8 h-8 text-gray-400" />
+                <Clock className="w-8 h-8 text-red-600/50" />
               </div>
-              <p className="mt-4 text-gray-600 dark:text-gray-400">Loading notifications...</p>
+              <p className="mt-4 text-gray-400">Loading notifications...</p>
             </div>
           ) : filteredNotifications.length === 0 ? (
-            <div className="text-center py-16 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700">
-              <Bell className="w-16 h-16 mx-auto mb-4 text-gray-300 dark:text-gray-600" />
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+            <div className="text-center py-16 bg-gray-900/50 border border-red-600/20 rounded-2xl">
+              <Bell className="w-16 h-16 mx-auto mb-4 text-gray-600" />
+              <h3 className="text-lg font-semibold text-white mb-2">
                 No {filter !== "all" ? filter : ""} notifications
               </h3>
-              <p className="text-gray-600 dark:text-gray-400">
+              <p className="text-gray-400">
                 {filter === "unread" && "All caught up! You have no unread notifications."}
                 {filter === "read" && "You haven't read any notifications yet."}
                 {filter === "all" && "You don't have any notifications yet."}
@@ -242,35 +252,29 @@ const NotificationsPage: React.FC = () => {
               {filteredNotifications.map((notification) => (
                 <div
                   key={notification.id}
-                  className={`p-4 rounded-xl border-2 transition-all duration-200 transform hover:scale-102 hover:shadow-md ${
+                  className={`p-4 sm:p-5 rounded-xl border transition-all duration-200 ${
                     notification.read
-                      ? `${getNotificationColor(notification.type)} opacity-75`
-                      : `${getNotificationColor(notification.type)} border-current shadow-md`
-                  } dark:bg-gray-800/50 dark:border-gray-700`}
+                      ? "bg-gray-900/30 border-gray-800 opacity-75"
+                      : "bg-gray-900/60 border-red-600/30 shadow-lg shadow-red-600/10"
+                  } hover:border-red-600/50 hover:shadow-md hover:shadow-red-600/20`}
                 >
-                  <div className="flex items-start gap-4">
+                  <div className="flex items-start gap-3 sm:gap-4">
                     {/* Icon */}
-                    <div className="text-2xl mt-1">{getNotificationIcon(notification.type)}</div>
+                    <div className="text-2xl mt-1 flex-shrink-0">{getNotificationIcon(notification.type)}</div>
 
                     {/* Content */}
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-gray-900 dark:text-white">
+                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4">
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-white break-words">
                             {notification.title}
                           </h3>
-                          <p className="text-sm text-gray-700 dark:text-gray-300 mt-1 line-clamp-2">
+                          <p className="text-sm text-gray-300 mt-1 line-clamp-2">
                             {notification.message}
                           </p>
-                          <div className="flex items-center gap-2 mt-2 text-xs text-gray-600 dark:text-gray-400">
-                            <Clock className="w-3 h-3" />
-                            {new Date(notification.time).toLocaleDateString("en-US", {
-                              month: "short",
-                              day: "numeric",
-                              year: "numeric",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
+                          <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
+                            <Clock className="w-3 h-3 flex-shrink-0" />
+                            <span>{formatDate(notification.time || notification.createdAt)}</span>
                           </div>
                         </div>
 
@@ -279,7 +283,7 @@ const NotificationsPage: React.FC = () => {
                           {!notification.read && (
                             <button
                               onClick={() => markAsRead(notification.id)}
-                              className="p-2 hover:bg-white/50 dark:hover:bg-gray-700 rounded-lg transition-colors text-green-600 dark:text-green-400"
+                              className="p-2 hover:bg-red-600/20 rounded-lg transition-colors text-red-500 hover:text-red-400 active:scale-95"
                               title="Mark as read"
                             >
                               <Check className="w-4 h-4" />
@@ -287,7 +291,7 @@ const NotificationsPage: React.FC = () => {
                           )}
                           <button
                             onClick={() => deleteNotification(notification.id)}
-                            className="p-2 hover:bg-white/50 dark:hover:bg-gray-700 rounded-lg transition-colors text-red-600 dark:text-red-400"
+                            className="p-2 hover:bg-orange-600/20 rounded-lg transition-colors text-orange-500 hover:text-orange-400 active:scale-95"
                             title="Delete"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -299,7 +303,7 @@ const NotificationsPage: React.FC = () => {
                       {notification.actionUrl && (
                         <a
                           href={notification.actionUrl}
-                          className="inline-block mt-3 px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-medium rounded-lg transition-colors"
+                          className="inline-block mt-3 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-medium rounded-lg transition-colors"
                         >
                           {notification.actionLabel || "View"}
                         </a>
@@ -308,7 +312,7 @@ const NotificationsPage: React.FC = () => {
 
                     {/* Read Indicator */}
                     {!notification.read && (
-                      <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-2" />
+                      <div className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0 mt-2 animate-pulse" />
                     )}
                   </div>
                 </div>

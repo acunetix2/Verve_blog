@@ -161,7 +161,7 @@ const BlogPost = () => {
 
   if (loading)
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-blue-50 px-4">
+      <div className="min-h-screen flex items-center justify-center bg-gray-950 px-4">
         <style>{`
           @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap');
           * {
@@ -170,17 +170,17 @@ const BlogPost = () => {
         `}</style>
         <div className="text-center space-y-3">
           <div className="relative inline-flex items-center justify-center mb-4">
-            <div className="w-16 h-16 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin"></div>
-            <Shield className="absolute h-6 w-6 text-blue-600" />
+            <div className="w-16 h-16 border-4 border-gray-800 border-t-red-600 rounded-full animate-spin"></div>
+            <Shield className="absolute h-6 w-6 text-red-600" />
           </div>
-          <p className="text-gray-700 font-medium">Loading post...</p>
+          <p className="text-gray-400 font-medium">Loading post...</p>
         </div>
       </div>
     );
 
   if (error || !post)
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
+      <div className="min-h-screen bg-gray-950">
         <style>{`
           @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap');
           * {
@@ -189,15 +189,15 @@ const BlogPost = () => {
         `}</style>
         <Header />
         <div className="container py-12 sm:py-20 text-center px-4">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-red-50 rounded-full mb-6">
-            <Sparkles className="h-10 w-10 text-red-600" />
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-red-900/40 rounded-full mb-6">
+            <Sparkles className="h-10 w-10 text-red-500" />
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
             404: Post Not Found
           </h1>
-          <p className="text-gray-600 mb-6 text-sm sm:text-base">{error}</p>
+          <p className="text-gray-400 mb-6 text-sm sm:text-base">{error}</p>
           <Link to="/">
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white text-sm sm:text-base">
+            <Button className="bg-red-600 hover:bg-red-700 text-white text-sm sm:text-base">
               <ArrowLeft className="mr-2 h-4 w-4" /> Back to Home
             </Button>
           </Link>
@@ -212,7 +212,7 @@ const BlogPost = () => {
         <meta name="description" content={post.description} />
       </Helmet>
 
-      <div className="min-h-screen bg-white pt-12">
+      <div className="min-h-screen bg-gray-950 pt-12">
         <style>{`
           @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap');
           * {
@@ -220,42 +220,42 @@ const BlogPost = () => {
           }
         `}</style>
         <Header />
-        <article className="w-full py-8 sm:py-12 px-4 sm:px-6">
+        <article className="w-full py-6 sm:py-8 md:py-12 px-4 sm:px-6 md:px-8 max-w-4xl mx-auto">
           {/* Header */}
-          <header className="mb-8 sm:mb-12 space-y-4 sm:space-y-6">
+          <header className="mb-6 sm:mb-8 md:mb-12 space-y-3 sm:space-y-4 md:space-y-6">
             {post.featured && (
-              <Badge className="bg-blue-600 text-white text-xs sm:text-sm border-0">
+              <Badge className="bg-red-600 text-white text-xs sm:text-sm border-0 w-fit">
                 <Shield className="h-3 w-3 mr-1" /> Featured
               </Badge>
             )}
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight break-words">
               {post.title}
             </h1>
-            <p className="text-gray-700 text-base sm:text-lg leading-relaxed">{post.description}</p>
+            <p className="text-gray-300 text-sm sm:text-base md:text-lg leading-relaxed">{post.description}</p>
 
-            <div className="flex flex-wrap gap-3 sm:gap-6 text-xs sm:text-sm text-gray-600 pt-3 sm:pt-4 border-t border-gray-100">
+            <div className="flex flex-wrap gap-2 sm:gap-4 md:gap-6 text-xs sm:text-sm text-gray-400 pt-3 sm:pt-4 border-t border-red-600/20">
               <span className="flex items-center gap-1.5 sm:gap-2">
-                <Calendar className="h-3 w-3 sm:h-4 sm:w-4 text-blue-600" />
+                <Calendar className="h-3 w-3 sm:h-4 sm:w-4 text-red-500" />
                 <span className="hidden xs:inline">{new Date(post.date).toLocaleDateString()}</span>
                 <span className="xs:hidden">{new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
               </span>
               <span className="flex items-center gap-1.5 sm:gap-2">
-                <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-blue-600" />
+                <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-red-500" />
                 {post.readTime}
               </span>
               <span className="flex items-center gap-1.5 sm:gap-2">
-                <User className="h-3 w-3 sm:h-4 sm:w-4 text-blue-600" />
+                <User className="h-3 w-3 sm:h-4 sm:w-4 text-red-500" />
                 <span className="truncate max-w-[100px] sm:max-w-none">{post.author}</span>
               </span>
               <span className="flex items-center gap-1.5 sm:gap-2">
-                <Eye className="h-3 w-3 sm:h-4 sm:w-4 text-green-600" />
+                <Eye className="h-3 w-3 sm:h-4 sm:w-4 text-orange-500" />
                 {views} <span className="hidden xs:inline">views</span>
               </span>
             </div>
 
             <div className="flex flex-wrap gap-1.5 sm:gap-2">
               {post.tags.map(tag => (
-                <Badge key={tag} variant="outline" className="border-blue-200 text-blue-700 bg-blue-50 text-xs">
+                <Badge key={tag} variant="outline" className="border-red-600/30 text-red-500 bg-red-900/20 text-xs">
                   <Tag className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-1" />
                   {tag}
                 </Badge>
@@ -264,14 +264,14 @@ const BlogPost = () => {
           </header>
 
           {/* Content */}
-          <div className="prose prose-sm sm:prose lg:prose-lg prose-gray max-w-none bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-10 leading-relaxed">
+          <div className="prose prose-sm sm:prose-base md:prose-lg prose-gray max-w-none bg-gray-900 rounded-2xl border border-red-600/30 shadow-sm p-4 sm:p-6 md:p-8 lg:p-10 leading-relaxed mt-6 sm:mt-8 md:mt-10">
             <style>{`
               .prose {
-                color: #374151;
+                color: #d1d5db;
                 line-height: 1.8;
               }
               .prose h1, .prose h2, .prose h3, .prose h4 {
-                color: #1f2937;
+                color: #f3f4f6;
                 font-weight: 700;
               }
               .prose p {
@@ -279,21 +279,22 @@ const BlogPost = () => {
                 margin-bottom: 1.25em;
               }
               .prose code {
-                background-color: #f3f4f6;
+                background-color: #1f2937;
+                color: #f97316;
                 padding: 0.2em 0.4em;
                 border-radius: 0.25rem;
                 font-size: 0.9em;
               }
               .prose pre {
-                background-color: #f9fafb;
-                border: 1px solid #e5e7eb;
+                background-color: #111827;
+                border: 1px solid #dc2626;
               }
               .prose a {
-                color: #2563eb;
+                color: #f97316;
                 text-decoration: underline;
               }
               .prose strong {
-                color: #1f2937;
+                color: #f3f4f6;
                 font-weight: 600;
               }
             `}</style>
@@ -301,13 +302,13 @@ const BlogPost = () => {
           </div>
 
           {/* Like & Share */}
-          <div className="mt-8 sm:mt-10 bg-gray-50 rounded-2xl border border-gray-100 shadow-sm p-5 sm:p-6">
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+          <div className="mt-6 sm:mt-8 md:mt-10 bg-gray-900/60 border border-red-600/30 rounded-2xl shadow-sm p-4 sm:p-5 md:p-6">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
               <button
                 onClick={() => handleShare()}
-                className="flex items-center justify-center gap-2 border border-gray-300 px-4 py-2.5 sm:py-2 rounded-xl text-gray-700 hover:bg-gray-50 text-sm font-medium"
+                className="flex items-center justify-center gap-2 border border-gray-700 px-4 py-2.5 sm:py-2 rounded-xl text-gray-300 hover:bg-gray-800 hover:border-red-600/50 text-sm font-medium transition-all"
               >
-                {copied ? <CheckCircle2 className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4 text-blue-600" />} 
+                {copied ? <CheckCircle2 className="h-4 w-4 text-orange-500" /> : <Copy className="h-4 w-4 text-red-500" />} 
                 <span>{copied ? "Copied!" : "Copy Link"}</span>
               </button>
 
@@ -331,10 +332,10 @@ const BlogPost = () => {
             <CommentsSystem postId={post?._id || ""} />
           </section> */}
 
-          <footer className="mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-gray-100 text-center">
-            <div className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-50 border border-blue-200 rounded-xl">
-              <Shield className="h-3 w-3 sm:h-4 sm:w-4 text-blue-600" />
-              <span className="text-xs sm:text-sm text-gray-700">
+          <footer className="mt-6 sm:mt-8 md:mt-10 pt-6 sm:pt-8 border-t border-red-600/20 text-center">
+            <div className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-red-900/30 border border-red-600/50 rounded-xl">
+              <Shield className="h-3 w-3 sm:h-4 sm:w-4 text-red-500" />
+              <span className="text-xs sm:text-sm text-red-300">
                 Happy Hacking!
               </span>
             </div>

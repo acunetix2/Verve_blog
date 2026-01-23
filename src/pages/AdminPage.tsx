@@ -2116,16 +2116,22 @@ const AdminPage: React.FC = () => {
 				  .map((course) => (
 					<div
 					  key={course._id}
-					  className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-sm border border-slate-700/50 rounded-lg overflow-hidden hover:border-slate-600/50 transition-all hover:shadow-lg hover:shadow-blue-500/10"
+					  className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-sm border border-slate-700/50 rounded-lg overflow-hidden hover:border-slate-600/50 transition-all hover:shadow-lg hover:shadow-blue-500/10 flex flex-col"
 					>
-					  {course.image && (
-						<img
-						  src={course.image}
-						  alt={course.title}
-						  className="w-full h-40 object-cover"
-						/>
+					  {(course.image || course.imageUrl) && (
+						<div className="w-full h-40 bg-slate-700/50 overflow-hidden">
+						  <img
+							src={course.image || course.imageUrl}
+							alt={course.title}
+							className="w-full h-full object-cover"
+							onError={(e) => {
+							  const imgElement = e.target as HTMLImageElement;
+							  imgElement.style.display = 'none';
+							}}
+						  />
+						</div>
 					  )}
-					  <div className="p-6">
+					  <div className="p-6 flex-1 flex flex-col">
 						<h3 className="text-lg font-semibold text-white mb-2 line-clamp-2">{course.title}</h3>
 						<p className="text-sm text-slate-400 mb-4 line-clamp-3">{course.description}</p>
 						<div className="flex gap-2 mb-4">
@@ -2136,7 +2142,7 @@ const AdminPage: React.FC = () => {
 							{(course.modules || []).reduce((sum, m) => sum + (m.lessons?.length || 0), 0)} Lessons
 						  </span>
 						</div>
-						<div className="flex gap-2">
+						<div className="flex gap-2 mt-auto">
 						  <button
 							onClick={() => handleEditCourse(course)}
 							className="flex-1 bg-slate-700/50 hover:bg-blue-600/40 text-white px-3 py-2 rounded-lg transition-all text-sm font-medium border border-slate-600/50 hover:border-blue-500/50 flex items-center justify-center gap-2"

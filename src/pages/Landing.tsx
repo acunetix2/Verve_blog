@@ -227,19 +227,19 @@ export default function LandingPage() {
 
       {/* Hero Section */}
       <section className="relative flex flex-col items-center justify-center text-center min-h-screen px-4 sm:px-6 pt-24 pb-16">
-        <div className="max-w-4xl mx-auto w-full">
+        <div className="max-w-5xl mx-auto w-full">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-green-50 border border-green-200 rounded-full mb-6 hover:scale-105 transition-transform">
             <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
             <span className="text-xs text-green-700 font-medium">New writeups added weekly</span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-5 leading-tight tracking-tight">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold mb-5 leading-tight tracking-tight">
             Master Cybersecurity
             <br />
             <span className="text-blue-600">Through Practice</span>
           </h1>
           
-          <p className="max-w-2xl mx-auto text-gray-600 text-base sm:text-lg mb-8 leading-relaxed">
+          <p className="max-w-3xl mx-auto text-gray-600 text-sm sm:text-base lg:text-lg mb-8 leading-relaxed">
             Deep-dive CTF writeups, TryHackMe walkthroughs, and comprehensive learning resources. From reconnaissance to privilege escalation—everything documented.
           </p>
 
@@ -335,6 +335,195 @@ export default function LandingPage() {
               {isAuthenticated ? "View All Content" : "Login to View All"}
               <ArrowRight size={16} />
             </button>
+          </div>
+        </div>
+      </section>
+
+      {/* About Platform & Courses Section */}
+      <section className="py-16 px-4 sm:px-6 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 border border-blue-200 rounded-full mb-6">
+                <span className="w-2 h-2 bg-blue-600 rounded-full"></span>
+                <span className="text-xs text-blue-700 font-medium">About Our Platform</span>
+              </div>
+              
+              <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-gray-900">
+                Learn Cybersecurity by Doing
+              </h2>
+              
+              <p className="text-gray-600 text-base mb-4 leading-relaxed">
+                Verve Hub Academy is a comprehensive cybersecurity learning platform designed for passionate learners who want to master security through practical, hands-on experience. Whether you're a complete beginner or an experienced professional, we provide structured learning paths and real-world challenges to accelerate your growth.
+              </p>
+              
+              <p className="text-gray-600 text-base mb-6 leading-relaxed">
+                Our platform combines detailed writeups of capture-the-flag challenges, step-by-step TryHackMe room walkthroughs, professional courses, and curated resources to create a complete learning ecosystem. Every piece of content is crafted to help you understand not just the "how" but the "why" behind each security concept.
+              </p>
+              
+              <div className="space-y-4">
+                <div className="flex gap-4 items-start">
+                  <div className="flex-shrink-0">
+                    <div className="flex items-center justify-center h-8 w-8 rounded-md bg-blue-600">
+                      <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 text-sm">Structured Learning Paths</h3>
+                    <p className="text-gray-600 text-xs mt-1">Follow carefully designed courses from beginner to advanced levels in offensive security, defensive security, and specialized domains.</p>
+                  </div>
+                </div>
+                
+                <div className="flex gap-4 items-start">
+                  <div className="flex-shrink-0">
+                    <div className="flex items-center justify-center h-8 w-8 rounded-md bg-blue-600">
+                      <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 text-sm">Real-World Challenges</h3>
+                    <p className="text-gray-600 text-xs mt-1">Access to CTF challenges, lab environments, and practical exercises that simulate real cybersecurity scenarios.</p>
+                  </div>
+                </div>
+                
+                <div className="flex gap-4 items-start">
+                  <div className="flex-shrink-0">
+                    <div className="flex items-center justify-center h-8 w-8 rounded-md bg-blue-600">
+                      <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 text-sm">Community & Support</h3>
+                    <p className="text-gray-600 text-xs mt-1">Join a thriving community of security enthusiasts, share knowledge, and get mentorship from experienced professionals.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 border border-blue-200">
+              <h3 className="text-xl font-bold mb-6 text-gray-900">What You'll Get</h3>
+              
+              <div className="space-y-5">
+                <div className="bg-white rounded-lg p-4 border border-blue-100">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-8 h-8 rounded bg-red-100 flex items-center justify-center">
+                      <Target size={16} className="text-red-600" />
+                    </div>
+                    <h4 className="font-semibold text-gray-900 text-sm">100+ Courses</h4>
+                  </div>
+                  <p className="text-gray-600 text-xs ml-11">Comprehensive courses covering all aspects of cybersecurity</p>
+                </div>
+                
+                <div className="bg-white rounded-lg p-4 border border-blue-100">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-8 h-8 rounded bg-green-100 flex items-center justify-center">
+                      <BookOpen size={16} className="text-green-600" />
+                    </div>
+                    <h4 className="font-semibold text-gray-900 text-sm">Detailed Writeups</h4>
+                  </div>
+                  <p className="text-gray-600 text-xs ml-11">Step-by-step guides for CTF challenges and penetration testing labs</p>
+                </div>
+                
+                <div className="bg-white rounded-lg p-4 border border-blue-100">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-8 h-8 rounded bg-purple-100 flex items-center justify-center">
+                      <FileText size={16} className="text-purple-600" />
+                    </div>
+                    <h4 className="font-semibold text-gray-900 text-sm">Downloadable Resources</h4>
+                  </div>
+                  <p className="text-gray-600 text-xs ml-11">Cheatsheets, notes, and reference materials for quick learning</p>
+                </div>
+                
+                <div className="bg-white rounded-lg p-4 border border-blue-100">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-8 h-8 rounded bg-orange-100 flex items-center justify-center">
+                      <Users size={16} className="text-orange-600" />
+                    </div>
+                    <h4 className="font-semibold text-gray-900 text-sm">Active Community</h4>
+                  </div>
+                  <p className="text-gray-600 text-xs ml-11">Network with thousands of security professionals and learners</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Course Highlights */}
+          <div className="bg-gray-50 rounded-2xl p-8 border border-gray-200">
+            <h3 className="text-2xl font-bold mb-8 text-gray-900 text-center">Popular Learning Paths</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-white rounded-xl p-6 border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all">
+                <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-orange-500 rounded-lg flex items-center justify-center mb-4 shadow-sm">
+                  <Shield size={24} className="text-white" />
+                </div>
+                <h4 className="font-bold text-gray-900 mb-2 text-base">Offensive Security</h4>
+                <p className="text-gray-600 text-xs mb-4 leading-relaxed">Master ethical hacking, penetration testing, and exploit development. Learn reconnaissance, vulnerability scanning, exploitation, and post-exploitation techniques.</p>
+                <ul className="text-xs text-gray-600 space-y-2">
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-red-500 rounded-full"></span>
+                    Penetration Testing Fundamentals
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-red-500 rounded-full"></span>
+                    Web Application Hacking
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-red-500 rounded-full"></span>
+                    Network Penetration Testing
+                  </li>
+                </ul>
+              </div>
+
+              <div className="bg-white rounded-xl p-6 border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center mb-4 shadow-sm">
+                  <Code size={24} className="text-white" />
+                </div>
+                <h4 className="font-bold text-gray-900 mb-2 text-base">Defensive Security</h4>
+                <p className="text-gray-600 text-xs mb-4 leading-relaxed">Build robust security defenses, detect threats, and respond to incidents. Learn endpoint protection, network defense, and incident response strategies.</p>
+                <ul className="text-xs text-gray-600 space-y-2">
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                    Incident Response
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                    Endpoint Protection
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                    Security Monitoring
+                  </li>
+                </ul>
+              </div>
+
+              <div className="bg-white rounded-xl p-6 border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all">
+                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mb-4 shadow-sm">
+                  <Terminal size={24} className="text-white" />
+                </div>
+                <h4 className="font-bold text-gray-900 mb-2 text-base">Specialized Topics</h4>
+                <p className="text-gray-600 text-xs mb-4 leading-relaxed">Deep dive into advanced security domains including forensics, malware analysis, threat intelligence, and cloud security.</p>
+                <ul className="text-xs text-gray-600 space-y-2">
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-purple-500 rounded-full"></span>
+                    Digital Forensics
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-purple-500 rounded-full"></span>
+                    Malware Analysis
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-purple-500 rounded-full"></span>
+                    Threat Intelligence
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </section>

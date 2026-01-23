@@ -10,7 +10,7 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-blue-600 text-slate-100 relative overflow-hidden px-4">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 text-gray-100 relative overflow-hidden px-4">
       {/* Product Sans Font */}
       <style>{`
         @import url('https://fonts.cdnfonts.com/css/product-sans');
@@ -59,36 +59,36 @@ const NotFound = () => {
         {/* 404 Icon */}
         <div className="flex justify-center mb-4 sm:mb-6">
           <div className="relative">
-            <div className="absolute inset-0 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
-            <div className="relative w-16 h-16 sm:w-20 sm:h-20 bg-white/10 border-2 border-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-              <AlertTriangle className="h-8 w-8 sm:h-10 sm:w-10 text-slate-50 animate-pulse" />
+            <div className="absolute inset-0 bg-red-600/20 rounded-full blur-3xl animate-pulse"></div>
+            <div className="relative w-16 h-16 sm:w-20 sm:h-20 bg-red-900/40 border-2 border-red-600/50 rounded-full flex items-center justify-center backdrop-blur-sm">
+              <AlertTriangle className="h-8 w-8 sm:h-10 sm:w-10 text-red-500 animate-pulse" />
             </div>
           </div>
         </div>
 
         {/* 404 Text */}
-        <h1 className="text-6xl sm:text-7xl font-bold text-slate-50 mb-3 tracking-tight">
+        <h1 className="text-6xl sm:text-7xl font-bold text-white mb-3 tracking-tight">
           404
         </h1>
 
         {/* Divider */}
         <div className="flex items-center justify-center gap-3 mb-3 sm:mb-4">
-          <div className="h-px w-10 sm:w-16 bg-gradient-to-r from-transparent to-white/30"></div>
-          <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-slate-50" />
-          <div className="h-px w-10 sm:w-16 bg-gradient-to-l from-transparent to-white/30"></div>
+          <div className="h-px w-10 sm:w-16 bg-gradient-to-r from-transparent to-red-600/50"></div>
+          <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-red-500" />
+          <div className="h-px w-10 sm:w-16 bg-gradient-to-l from-transparent to-red-600/50"></div>
         </div>
 
         {/* Error Message */}
         <div className="space-y-2 sm:space-y-3">
-          <h2 className="text-xl sm:text-2xl font-bold text-slate-50">
+          <h2 className="text-xl sm:text-2xl font-bold text-white">
             Oops! Page Not Found
           </h2>
-          <p className="text-sm sm:text-base text-slate-100 max-w-sm mx-auto leading-relaxed px-4">
+          <p className="text-sm sm:text-base text-gray-300 max-w-sm mx-auto leading-relaxed px-4">
             The page you're looking for doesn't exist or has been moved.
           </p>
           
           {/* Attempted Path */}
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/10 border border-white/20 rounded-lg text-xs sm:text-sm text-slate-50 backdrop-blur-sm">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-red-900/20 border border-red-600/30 rounded-lg text-xs sm:text-sm text-gray-300 backdrop-blur-sm">
             <Search className="h-3 w-3 sm:h-4 sm:w-4" />
             <span className="truncate max-w-[180px] sm:max-w-xs">{location.pathname}</span>
           </div>
@@ -97,7 +97,7 @@ const NotFound = () => {
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3 justify-center items-stretch sm:items-center pt-3 sm:pt-4">
           <Link to="/" className="w-full sm:w-auto">
-            <button className="group w-full px-5 sm:px-6 py-2.5 sm:py-3 bg-white text-blue-600 font-medium text-sm rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center justify-center gap-2">
+            <button className="group w-full px-5 sm:px-6 py-2.5 sm:py-3 bg-red-600 hover:bg-red-700 text-white font-medium text-sm rounded-lg shadow-lg shadow-red-600/30 hover:shadow-xl hover:scale-105 transition-all flex items-center justify-center gap-2">
               <Home className="h-4 w-4 group-hover:scale-110 transition-transform" />
               Return to Home
             </button>
@@ -105,7 +105,7 @@ const NotFound = () => {
 
           <button 
             onClick={() => window.history.back()}
-            className="group w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 bg-white/10 hover:bg-white/20 text-slate-50 font-medium text-sm rounded-lg border border-white/20 hover:border-white/30 backdrop-blur-sm transition-all flex items-center justify-center gap-2"
+            className="group w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 bg-gray-800 hover:bg-gray-700 text-white font-medium text-sm rounded-lg border border-red-600/30 hover:border-red-600/50 backdrop-blur-sm transition-all flex items-center justify-center gap-2"
           >
             <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
             Go Back
@@ -113,9 +113,9 @@ const NotFound = () => {
         </div>
 
         {/* Helper Text */}
-        <div className="pt-6 sm:pt-8 border-t border-white/10 mt-6 sm:mt-8">
-          <p className="text-xs text-slate-200">
-            <span className="text-slate-50 font-medium">404 PAGE NOT FOUND</span>
+        <div className="pt-6 sm:pt-8 border-t border-red-600/20 mt-6 sm:mt-8">
+          <p className="text-xs text-gray-400">
+            <span className="text-gray-300 font-medium">404 PAGE NOT FOUND</span>
           </p>
         </div>
       </div>

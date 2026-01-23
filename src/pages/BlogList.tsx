@@ -139,16 +139,10 @@ export default function BlogList() {
         `}</style>
         <div className="text-center space-y-4">
           <div className="relative inline-flex items-center justify-center">
-            <div className={`w-16 h-16 border-4 rounded-full animate-spin ${
-              actualTheme === 'dark'
-                ? 'border-slate-700 border-t-blue-600'
-                : 'border-gray-200 border-t-blue-600'
-            }`}></div>
-            <Shield className="absolute h-6 w-6 text-blue-600" />
+            <div className="w-16 h-16 border-4 border-gray-800 border-t-red-600 rounded-full animate-spin"></div>
+            <Shield className="absolute h-6 w-6 text-red-600" />
           </div>
-          <p className={`font-medium ${
-            actualTheme === 'dark' ? 'text-slate-300' : 'text-gray-700'
-          }`}>Loading writeups...</p>
+          <p className="font-medium text-gray-400">Loading writeups...</p>
         </div>
       </div>
     );
@@ -157,37 +151,21 @@ export default function BlogList() {
   // Error state
   if (error) {
     return (
-      <div className={`min-h-screen flex items-center justify-center p-4 transition-colors duration-300 ${
-        actualTheme === 'dark'
-          ? 'bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900'
-          : 'bg-gradient-to-br from-blue-50 via-white to-blue-50'
-      }`}>
+      <div className="min-h-screen flex items-center justify-center p-4 transition-colors duration-300 bg-gray-950">
         <style>{`
           @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap');
           * {
             font-family: 'Google Sans', 'Product Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
           }
         `}</style>
-        <div className={`max-w-md w-full rounded-xl p-6 shadow-lg border ${
-          actualTheme === 'dark'
-            ? 'bg-slate-800 border-red-900/50'
-            : 'bg-white border-red-200'
-        }`}>
+        <div className="max-w-md w-full rounded-xl p-6 shadow-lg border bg-gray-900 border-red-600/30">
           <div className="flex items-start gap-3">
-            <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${
-              actualTheme === 'dark'
-                ? 'bg-red-900/30'
-                : 'bg-red-50'
-            }`}>
-              <X className={`h-5 w-5 ${actualTheme === 'dark' ? 'text-red-500' : 'text-red-600'}`} />
+            <div className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center bg-red-900/40">
+              <X className="h-5 w-5 text-red-500" />
             </div>
             <div>
-              <h3 className={`font-semibold mb-1 ${
-                actualTheme === 'dark' ? 'text-white' : 'text-gray-900'
-              }`}>Error Loading Writeups</h3>
-              <p className={`text-sm ${
-                actualTheme === 'dark' ? 'text-slate-400' : 'text-gray-600'
-              }`}>{error}</p>
+              <h3 className="font-semibold mb-1 text-white">Error Loading Writeups</h3>
+              <p className="text-sm text-gray-400">{error}</p>
             </div>
           </div>
         </div>
@@ -196,11 +174,7 @@ export default function BlogList() {
   }
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${
-      actualTheme === 'dark'
-        ? 'bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900'
-        : 'bg-gradient-to-br from-blue-50 via-white to-blue-50'
-    }`}>
+    <div className="min-h-screen transition-colors duration-300 bg-gray-950">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap');
         * {
@@ -210,34 +184,24 @@ export default function BlogList() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         {/* Hero Section */}
         <div className="text-left mb-12 py-8">
-          <h2 className={`text-4xl font-bold mb-3 ${
-            actualTheme === 'dark' ? 'text-white' : 'text-gray-900'
-          }`}>
+          <h2 className="text-4xl font-bold mb-3 text-white">
             Curated Verve WriteUps
           </h2>
-          <p className={`text-left max-w-1xl mx-auto ${
-            actualTheme === 'dark' ? 'text-slate-300' : 'text-gray-800'
-          }`}>
+          <p className="text-left max-w-1xl mx-auto text-gray-300">
             Whether you are a beginner learning the fundamentals, or a professional staying up-to-date with the latest threats, Verve Hub offers curated resources, practical guides, and examples to enhance your cybersecurity skills.
           </p>
         </div>
 
         {/* Category Navigation */}
-        <div className={`rounded-2xl border shadow-lg p-4 mb-8 transition-colors ${
-          actualTheme === 'dark'
-            ? 'bg-slate-800 border-slate-700'
-            : 'bg-white border-gray-200'
-        }`}>
-          <div className={`flex items-center gap-2 text-sm font-medium mb-6 ${
-            actualTheme === 'dark' ? 'text-slate-200' : 'text-gray-900'
-          }`}>
-            <Shield className="h-5 w-5 text-blue-600" />
+        <div className="rounded-2xl border border-red-600/30 shadow-lg p-4 mb-8 transition-colors bg-gray-900">
+          <div className="flex items-center gap-2 text-sm font-medium mb-6 text-white">
+            <Shield className="h-5 w-5 text-red-500" />
             <span className="text-lg">Browse by Category</span>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {categories.map((category) => {
               const Icon = categoryIcons[category.name] || FileText;
-              const gradient = categoryColors[category.name] || "from-gray-400 to-gray-500";
+              const gradient = categoryColors[category.name] || "from-red-400 to-orange-500";
               const isActive = selectedCategory === category.name;
               
               return (
@@ -246,12 +210,8 @@ export default function BlogList() {
                   onClick={() => handleCategoryClick(category.name)}
                   className={`group relative flex flex-col items-center justify-center p-5 rounded-xl border-2 transition-all duration-300 ${
                     isActive
-                      ? actualTheme === 'dark'
-                        ? 'border-blue-500 bg-blue-900/30 shadow-lg scale-105'
-                        : 'border-blue-600 bg-blue-50 shadow-lg scale-105'
-                      : actualTheme === 'dark'
-                        ? 'border-slate-700 bg-slate-700/30 hover:border-blue-400 hover:bg-blue-900/20 hover:scale-102'
-                        : 'border-gray-200 bg-white hover:border-blue-300 hover:bg-blue-50 hover:scale-102'
+                      ? 'border-red-500 bg-red-900/30 shadow-lg shadow-red-600/20 scale-105'
+                      : 'border-gray-700 bg-gray-800 hover:border-red-500/50 hover:bg-red-900/10 hover:scale-102'
                   }`}
                 >
                   <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${gradient} flex items-center justify-center mb-3 shadow-lg transition-transform group-hover:scale-110`}>
@@ -260,16 +220,16 @@ export default function BlogList() {
                   
                   <span className={`text-sm font-semibold mb-1 text-center leading-tight ${
                     isActive 
-                      ? actualTheme === 'dark' ? 'text-blue-400' : 'text-blue-600'
-                      : actualTheme === 'dark' ? 'text-slate-300 group-hover:text-blue-400' : 'text-gray-700 group-hover:text-blue-600'
+                      ? 'text-red-400'
+                      : 'text-gray-300 group-hover:text-red-400'
                   }`}>
                     {category.name}
                   </span>
                   
                   <div className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
                     isActive 
-                      ? actualTheme === 'dark' ? 'bg-blue-900/50 text-blue-400' : 'bg-blue-100 text-blue-700'
-                      : actualTheme === 'dark' ? 'bg-slate-700 text-slate-400 group-hover:bg-blue-900/50 group-hover:text-blue-400' : 'bg-gray-100 text-gray-600 group-hover:bg-blue-100 group-hover:text-blue-700'
+                      ? 'bg-red-900/50 text-red-400'
+                      : 'bg-gray-700 text-gray-400 group-hover:bg-red-900/50 group-hover:text-red-400'
                   }`}>
                     {category.count}
                   </div>
@@ -280,34 +240,20 @@ export default function BlogList() {
         </div>
 
         {/* Search Section */}
-        <div className={`rounded-2xl border shadow-lg p-6 mb-8 transition-colors ${
-          actualTheme === 'dark'
-            ? 'bg-slate-800 border-slate-700'
-            : 'bg-white border-gray-200'
-        }`}>
+        <div className="rounded-2xl border border-red-600/30 shadow-lg p-6 mb-8 transition-colors bg-gray-900">
           <div className="relative">
-            <Search className={`absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 ${
-              actualTheme === 'dark' ? 'text-slate-500' : 'text-gray-400'
-            }`} />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
             <Input
               placeholder="Search articles..."
               value={searchQuery}
               onChange={(e) => handleSearch(e.target.value)}
-              className={`pl-12 pr-12 h-10 rounded-xl  ${
-                actualTheme === 'dark'
-                  ? 'bg-slate-700 border-slate-600 text-white placeholder:text-slate-500 focus:border-blue-500 focus:ring-blue-500/20'
-                  : 'bg-gray-50 border-gray-300 text-gray-900 placeholder:text-gray-500 focus:border-blue-500 focus:ring-blue-500/20'
-              }`}
+              className="pl-12 pr-12 h-10 rounded-xl bg-gray-800 border-red-600/30 text-gray-100 placeholder:text-gray-500 focus:border-red-500 focus:ring-red-500/20"
             />
             {searchQuery && (
               <Button
                 variant="ghost"
                 size="sm"
-                className={`absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 p-0 rounded-lg transition-colors ${
-                  actualTheme === 'dark'
-                    ? 'hover:bg-slate-600 text-slate-500 hover:text-slate-300'
-                    : 'hover:bg-gray-100 text-gray-500 hover:text-gray-700'
-                }`}
+                className="absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 p-0 rounded-lg transition-colors hover:bg-gray-700 text-gray-500 hover:text-red-400"
                 onClick={() => setSearchQuery("")}
               >
                 <X className="h-5 w-5" />
@@ -319,29 +265,25 @@ export default function BlogList() {
         {/* Results Summary */}
         <div className="flex items-center justify-between mb-6 px-1">
           <div>
-            <p className={`text-lg ${
-              actualTheme === 'dark' ? 'text-slate-200' : 'text-gray-900'
-            }`}>
+            <p className="text-lg text-gray-200">
               {filteredPosts.length === 0 ? (
-                <span className={actualTheme === 'dark' ? 'text-slate-500' : 'text-gray-500'}>No writeups found</span>
+                <span className="text-gray-500">No writeups found</span>
               ) : (
                 <>
-                  <span className="font-bold text-blue-600">
+                  <span className="font-bold text-red-500">
                     {filteredPosts.length}
                   </span>{" "}
-                  <span className={actualTheme === 'dark' ? 'text-slate-300' : 'text-gray-700'}>
+                  <span className="text-gray-300">
                     {filteredPosts.length === 1 ? "writeup" : "writeups"}
                   </span>
                   {selectedCategory !== "All" && (
-                    <span className={actualTheme === 'dark' ? 'text-slate-500' : 'text-gray-500'}> in {selectedCategory}</span>
+                    <span className="text-gray-500"> in {selectedCategory}</span>
                   )}
                 </>
               )}
             </p>
             {searchQuery && (
-              <p className={`text-xs mt-1 ${
-                actualTheme === 'dark' ? 'text-slate-500' : 'text-gray-500'
-              }`}>
+              <p className="text-xs mt-1 text-gray-500">
                 Filtered by search
               </p>
             )}
@@ -350,26 +292,14 @@ export default function BlogList() {
 
         {/* Posts Grid */}
         {filteredPosts.length === 0 ? (
-          <div className={`rounded-2xl border shadow-lg p-12 text-center transition-colors ${
-            actualTheme === 'dark'
-              ? 'bg-slate-800 border-slate-700'
-              : 'bg-white border-gray-200'
-          }`}>
-            <div className={`inline-flex items-center justify-center w-20 h-20 rounded-full mb-6 ${
-              actualTheme === 'dark' ? 'bg-slate-700' : 'bg-gray-100'
-            }`}>
-              <FileText className={`h-10 w-10 ${
-                actualTheme === 'dark' ? 'text-slate-500' : 'text-gray-400'
-              }`} />
+          <div className="rounded-2xl border border-red-600/30 shadow-lg p-12 text-center transition-colors bg-gray-900">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-6 bg-gray-800">
+              <FileText className="h-10 w-10 text-gray-600" />
             </div>
-            <h3 className={`text-xl font-semibold mb-3 ${
-              actualTheme === 'dark' ? 'text-white' : 'text-gray-900'
-            }`}>
+            <h3 className="text-xl font-semibold mb-3 text-white">
               No writeups found
             </h3>
-            <p className={`text-sm max-w-md mx-auto mb-6 ${
-              actualTheme === 'dark' ? 'text-slate-400' : 'text-gray-600'
-            }`}>
+            <p className="text-sm max-w-md mx-auto mb-6 text-gray-400">
               {selectedCategory === "All"
                 ? "We couldn't find any writeups matching your search criteria."
                 : `No writeups found in the "${selectedCategory}" category with the current filters.`}
@@ -377,11 +307,7 @@ export default function BlogList() {
             {(searchQuery || selectedCategory !== "All") && (
               <Button
                 variant="outline"
-                className={`transition-colors ${
-                  actualTheme === 'dark'
-                    ? 'border-slate-600 bg-slate-800 text-slate-200 hover:bg-slate-700 hover:border-slate-500'
-                    : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:border-gray-400'
-                }`}
+                className="transition-colors border-red-600/30 bg-gray-800 text-gray-300 hover:bg-gray-700 hover:border-red-500/50"
                 onClick={() => {
                   setSearchQuery("");
                   setSelectedCategory("All");
@@ -410,28 +336,20 @@ export default function BlogList() {
         )}
 
         {/* Footer */}
-        <footer className={`mt-20 pt-10 border-t transition-colors ${
-          actualTheme === 'dark' ? 'border-slate-700' : 'border-gray-200'
-        }`}>
+        <footer className="mt-20 pt-10 border-t border-red-600/30">
           <div className="text-center space-y-6">
             <div className="flex items-center justify-center gap-3">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg">
+              <div className="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center shadow-lg shadow-red-600/50">
                 <Shield className="h-4 w-4 text-white" />
               </div>
-              <span className={`text-lg font-bold ${
-                actualTheme === 'dark' ? 'text-white' : 'text-gray-900'
-              }`}>
+              <span className="text-lg font-bold text-white">
                 Verve Hub Security
               </span>
             </div>
-            <p className={`text-sm max-w-md mx-auto ${
-              actualTheme === 'dark' ? 'text-slate-400' : 'text-gray-600'
-            }`}>
+            <p className="text-sm max-w-md mx-auto text-gray-400">
               Sharing knowledge through detailed writeups, vulnerability research, and security analysis
             </p>
-            <div className={`flex items-center justify-center gap-2 text-xs ${
-              actualTheme === 'dark' ? 'text-slate-500' : 'text-gray-500'
-            }`}>
+            <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-lg shadow-green-500/50"></div>
               <span>System operational</span>
             </div>

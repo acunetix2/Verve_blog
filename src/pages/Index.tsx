@@ -210,12 +210,12 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-100 text-gray-800" style={{ fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
+    <div className="flex flex-col min-h-screen bg-gray-950 text-gray-100" style={{ fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
       {/* Elegant background effects */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-indigo-200/20 rounded-full blur-[120px] animate-pulse"></div>
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-red-600/10 rounded-full blur-[120px] animate-pulse"></div>
         <div 
-          className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-violet-200/20 rounded-full blur-[120px] animate-pulse"
+          className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-orange-600/10 rounded-full blur-[120px] animate-pulse"
           style={{ animationDelay: "1.5s" }}
         ></div>
       </div>
@@ -223,7 +223,7 @@ const Index = () => {
       {/* Refined grid texture */}
       <div className="fixed inset-0 opacity-[0.03] pointer-events-none">
         <div className="absolute inset-0" style={{
-          backgroundImage: 'linear-gradient(rgba(99, 102, 241, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(99, 102, 241, 0.1) 1px, transparent 1px)',
+          backgroundImage: 'linear-gradient(rgba(239, 68, 68, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(239, 68, 68, 0.1) 1px, transparent 1px)',
           backgroundSize: '60px 60px'
         }}></div>
       </div>
@@ -233,45 +233,45 @@ const Index = () => {
         <WelcomeBanner />
 
         {/* Header */}
-    <header className="w-full bg-gradient-to-r from-slate-50 via-slate-100 to-slate-50 border-b border-slate-200/50">
+    <header className="w-full bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border-b border-red-600/30">
 		  <div className="w-full px-6 py-4 text-left space-y-8">
           {/* Main Heading */}
           <h1
-            className="text-5xl sm:text-6xl lg:text-4xl font-bold tracking-tight text-slate-900"
+            className="text-5xl sm:text-6xl lg:text-4xl font-bold tracking-tight text-white"
             style={{ fontFamily: "'Google Sans', sans-serif" }}
           >
-            Welcome to Verve Hub 
+            Welcome to Verve Hub Academy
           </h1>
 
           {/* Subheading / Description */}
           <p
-            className="text-left sm:text-1xl text-slate-800 max-w-2xl mx-auto leading-relaxed font-light"
+            className="text-left sm:text-1xl text-gray-300 max-w-2xl mx-auto leading-relaxed font-light"
             style={{ fontFamily: "'Google Sans', sans-serif" }}
           >
-            Verve Hub is a cybersecurity learning platform providing detailed CTF writeups, TryHackMe walkthroughs, curated reference materials, and downloadable resources. 
+            Verve Hub Academy is a cybersecurity learning platform providing detailed CTF writeups, TryHackMe walkthroughs, curated reference materials, and downloadable resources. 
             We aim to empower learners, enhance practical skills, and guide you toward mastery in cybersecurity.
           </p>
 
 			{/* Key Features */}
 			<div className="flex flex-col md:flex-row items-center justify-center gap-6 pt-8">
 			  <div className="flex flex-col items-center gap-2 text-center max-w-xs">
-				<Shield className="h-8 w-8 text-cyan-500" />
-				<h3 className=" font-semibold text-slate-900" style={{ fontFamily: "'Google Sans', sans-serif" }}>Practical Security</h3>
-				<p className="text-sm text-slate-700 font-light">
+				<Shield className="h-8 w-8 text-red-500" />
+				<h3 className="font-semibold text-white" style={{ fontFamily: "'Google Sans', sans-serif" }}>Practical Security</h3>
+				<p className="text-sm text-gray-400 font-light">
 				  CTF walkthroughs, TryHackMe room writeups, and beginner-friendly courses.
 				</p>
 			  </div>
 			  <div className="flex flex-col items-center gap-2 text-center max-w-xs">
-				<BookOpen className="h-8 w-8 text-indigo-500" />
-				<h3 className=" font-semibold text-slate-900" style={{ fontFamily: "'Google Sans', sans-serif" }}>Curated Resources</h3>
-				<p className="text-sm text-slate-700 font-light">
+				<BookOpen className="h-8 w-8 text-orange-500" />
+				<h3 className="font-semibold text-white" style={{ fontFamily: "'Google Sans', sans-serif" }}>Curated Resources</h3>
+				<p className="text-sm text-gray-400 font-light">
 				   Curated reference guides and tutorials designed to support systematic learning.
 				</p>
 			  </div>
 			  <div className="flex flex-col items-center gap-2 text-center max-w-xs">
-				<Cpu className="h-8 w-8 text-violet-500" />
-				<h3 className=" font-semibold text-slate-900" style={{ fontFamily: "'Google Sans', sans-serif" }}>Skill Development</h3>
-				<p className="text-sm text-slate-700 font-light">
+				<Cpu className="h-8 w-8 text-red-500" />
+				<h3 className="font-semibold text-white" style={{ fontFamily: "'Google Sans', sans-serif" }}>Skill Development</h3>
+				<p className="text-sm text-gray-400 font-light">
 				  Gain guidance and deepen your cybersecurity knowledge.
 				</p>
 			  </div>
@@ -280,12 +280,12 @@ const Index = () => {
 			{/* Call-to-Action Buttons */}
 			<div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-10">
 			  <Link to="/v/about">
-				<button className="px-6 py-3 bg-white hover:bg-slate-50 border border-slate-300 hover:border-slate-400 rounded-lg text-sm font-semibold transition-all shadow-sm hover:shadow text-slate-900">
+				<button className="px-6 py-3 bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-gray-600 rounded-lg text-sm font-semibold transition-all shadow-sm hover:shadow text-white">
 				  About Us
 				</button>
 			  </Link>
 			  <Link to="/v/blog">
-				<button className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white rounded-lg text-sm font-semibold transition-all shadow-md hover:shadow-lg flex items-center gap-2">
+				<button className="px-6 py-3 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white rounded-lg text-sm font-semibold transition-all shadow-md hover:shadow-lg flex items-center gap-2">
 				  Explore
 				  <ArrowRight className="h-4 w-4" />
 				</button>
@@ -293,7 +293,7 @@ const Index = () => {
 			</div>
 
 			{/* Highlight / Tagline */}
-			<p className="mt-12 text-sm text-gray-800 font-medium tracking-wide " style={{ fontFamily: "'Google Sans', sans-serif" }}>
+			<p className="mt-12 text-sm text-gray-400 font-medium tracking-wide " style={{ fontFamily: "'Google Sans', sans-serif" }}>
 			  Statistics
 			</p>
 
@@ -314,19 +314,19 @@ const Index = () => {
               return (
                 <div
                   key={idx}
-                  className="group relative overflow-hidden bg-white border border-slate-200/60 rounded-2xl p-6 hover:border-indigo-300 hover:shadow-xl transition-all duration-300"
+                  className="group relative overflow-hidden bg-gray-800 border border-red-600/30 rounded-2xl p-6 hover:border-red-500/60 hover:shadow-xl hover:shadow-red-500/20 transition-all duration-300"
                   style={{ animationDelay: `${idx * 0.1}s` }}
                 >
                   <div className="relative space-y-3">
                     <div className="flex items-center justify-between">
-                      <div className={`p-2.5 ${stat.bgColor} rounded-xl`}>
-                        <Icon className={`h-5 w-5 ${stat.color}`} />
+                      <div className={`p-2.5 bg-red-900/40 rounded-xl`}>
+                        <Icon className={`h-5 w-5 text-red-500`} />
                       </div>
                     </div>
                     <div>
-                      <p className="text-3xl font-bold text-slate-900">{stat.value}</p>
-                      <p className="text-sm font-medium text-slate-700 mt-1">{stat.label}</p>
-                      <p className="text-xs text-slate-500 mt-0.5">{stat.description}</p>
+                      <p className="text-3xl font-bold text-white">{stat.value}</p>
+                      <p className="text-sm font-medium text-gray-300 mt-1">{stat.label}</p>
+                      <p className="text-xs text-gray-500 mt-0.5">{stat.description}</p>
                     </div>
                   </div>
                 </div>
@@ -338,8 +338,8 @@ const Index = () => {
         {/* Categories Grid */}
         <div className="py-8 max-w-6xl mx-auto">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-slate-900">Popular Categories</h2>
-            <Link to="/v/blog" className="text-sm text-indigo-600 hover:text-indigo-700 font-semibold">
+            <h2 className="text-2xl font-bold text-white">Popular Categories</h2>
+            <Link to="/v/blog" className="text-sm text-red-500 hover:text-red-400 font-semibold">
               View all
             </Link>
           </div>
@@ -349,13 +349,13 @@ const Index = () => {
               return (
                 <div
                   key={idx}
-                  className={`group bg-white border border-slate-200/60 hover:border-slate-300 hover:shadow-lg ${category.hoverBg} rounded-xl p-5 transition-all duration-300 cursor-pointer`}
+                  className={`group bg-gray-800 border border-red-600/30 hover:border-red-500/60 hover:shadow-lg hover:shadow-red-500/20 rounded-xl p-5 transition-all duration-300 cursor-pointer`}
                 >
-                  <div className={`w-12 h-12 ${category.bg} rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300`}>
-                    <Icon className={`h-6 w-6 ${category.color}`} />
+                  <div className={`w-12 h-12 bg-red-900/40 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300`}>
+                    <Icon className={`h-6 w-6 text-red-500`} />
                   </div>
-                  <h3 className="text-sm font-semibold text-slate-900 mb-1">{category.name}</h3>
-                  <p className="text-xs text-slate-600">{category.count} articles</p>
+                  <h3 className="text-sm font-semibold text-white mb-1">{category.name}</h3>
+                  <p className="text-xs text-gray-400">{category.count} articles</p>
                 </div>
               );
             })}
@@ -372,14 +372,14 @@ const Index = () => {
           {/* Primary Column */}
           <div className="lg:col-span-8 space-y-10">
             {/* Platform Introduction */}
-            <div className="bg-white border border-slate-200/60 rounded-2xl p-8 shadow-sm">
+            <div className="bg-gray-800 border border-red-600/30 rounded-2xl p-8 shadow-sm">
               <div className="flex items-start gap-4 mb-6">
-                <div className="p-3 bg-gradient-to-br from-indigo-500/10 to-violet-500/10 rounded-xl">
-                  <Lightbulb className="h-6 w-6 text-indigo-600" />
+                <div className="p-3 bg-red-900/40 rounded-xl">
+                  <Lightbulb className="h-6 w-6 text-red-500" />
                 </div>
                 <div className="flex-1">
-                  <h2 className="text-xl font-bold mb-2 text-slate-900">Welcome to Verve Hub!</h2>
-                  <p className="text-slate-600 leading-relaxed text-sm">
+                  <h2 className="text-xl font-bold mb-2 text-white">Welcome to Verve Hub!</h2>
+                  <p className="text-gray-400 leading-relaxed text-sm">
                     A modern publishing platform designed for developers, designers, and creators. 
                     Discover in-depth articles, tutorials, and insights on technology, design, and productivity. 
                     Our community of writers shares knowledge that helps you grow professionally and personally.
@@ -387,40 +387,40 @@ const Index = () => {
                 </div>
               </div>
               <div className="grid sm:grid-cols-3 gap-4">
-                <div className="flex items-center gap-3 p-3 bg-indigo-50 rounded-lg">
-                  <div className="p-2 bg-white rounded-lg shadow-sm">
-                    <BookOpen className="h-4 w-4 text-indigo-600" />
+                <div className="flex items-center gap-3 p-3 bg-red-900/20 rounded-lg border border-red-600/30">
+                  <div className="p-2 bg-gray-700 rounded-lg shadow-sm">
+                    <BookOpen className="h-4 w-4 text-red-500" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-slate-900">Cybersecurity Content</p>
+                    <p className="text-sm font-semibold text-white">Cybersecurity Content</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 p-3 bg-violet-50 rounded-lg">
-                  <div className="p-2 bg-white rounded-lg shadow-sm">
-                    <Users className="h-4 w-4 text-violet-600" />
+                <div className="flex items-center gap-3 p-3 bg-orange-900/20 rounded-lg border border-orange-600/30">
+                  <div className="p-2 bg-gray-700 rounded-lg shadow-sm">
+                    <Users className="h-4 w-4 text-orange-500" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-slate-900">Active Community</p>
+                    <p className="text-sm font-semibold text-white">Active Community</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 p-3 bg-teal-50 rounded-lg">
-                  <div className="p-2 bg-white rounded-lg shadow-sm">
-                    <Globe className="h-4 w-4 text-teal-600" />
+                <div className="flex items-center gap-3 p-3 bg-red-900/20 rounded-lg border border-red-600/30">
+                  <div className="p-2 bg-gray-700 rounded-lg shadow-sm">
+                    <Globe className="h-4 w-4 text-red-500" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-slate-900">Open-Source</p>
+                    <p className="text-sm font-semibold text-white">Open-Source</p>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Search Section */}
-            <div className="bg-white border border-slate-200/60 rounded-2xl p-6 sm:p-8 shadow-sm">
+            <div className="bg-gray-800 border border-red-600/30 rounded-2xl p-6 sm:p-8 shadow-sm">
               <div className="flex items-center gap-3 mb-6">
-                <div className="p-2.5 bg-gradient-to-br from-indigo-500/10 to-violet-500/10 rounded-xl">
-                  <Terminal className="h-5 w-5 text-indigo-600" />
+                <div className="p-2.5 bg-red-900/40 rounded-xl">
+                  <Terminal className="h-5 w-5 text-red-500" />
                 </div>
-                <h2 className="text-xl font-bold text-slate-900">Discover</h2>
+                <h2 className="text-xl font-bold text-white">Discover</h2>
               </div>
               <BlogSearch
                 onSearch={handleSearch}
@@ -432,21 +432,21 @@ const Index = () => {
             {/* Featured Content */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-slate-900">Featured Articles</h2>
+                <h2 className="text-2xl font-bold text-white">Featured Articles</h2>
                 {filteredPosts.length > 0 && (
-                  <span className="text-sm text-slate-600 font-medium">
+                  <span className="text-sm text-gray-400 font-medium">
                     {filteredPosts.length} {filteredPosts.length === 1 ? 'article' : 'articles'}
                   </span>
                 )}
               </div>
 
               {filteredPosts.length === 0 ? (
-                <div className="bg-white border border-slate-200/60 rounded-2xl p-16 text-center shadow-sm">
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-indigo-100 border border-indigo-200 mb-4">
-                    <Sparkles className="h-8 w-8 text-indigo-600" />
+                <div className="bg-gray-800 border border-red-600/30 rounded-2xl p-16 text-center shadow-sm">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-900/40 border border-red-600/30 mb-4">
+                    <Sparkles className="h-8 w-8 text-red-500" />
                   </div>
-                  <h3 className="text-lg font-bold mb-2 text-slate-900">No Articles Found</h3>
-                  <p className="text-slate-600 text-sm max-w-sm mx-auto">
+                  <h3 className="text-lg font-bold mb-2 text-white">No Articles Found</h3>
+                  <p className="text-gray-400 text-sm max-w-sm mx-auto">
                     Try adjusting your search or filter criteria to discover more content
                   </p>
                 </div>
@@ -464,7 +464,7 @@ const Index = () => {
                     <div className="text-center pt-6">
                       <Link
                         to="/v/blog"
-                        className="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-700 font-semibold transition-colors group"
+                        className="inline-flex items-center gap-2 text-red-500 hover:text-red-400 font-semibold transition-colors group"
                       >
                         <span>View All Articles</span>
                         <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -479,48 +479,48 @@ const Index = () => {
           {/* Sidebar */}
           <div className="lg:col-span-4 space-y-6">
             {/* Trending Topics */}
-            <div className="bg-white border border-slate-200/60 rounded-2xl p-6 shadow-sm">
+            <div className="bg-gray-800 border border-red-600/30 rounded-2xl p-6 shadow-sm">
               <div className="flex items-center gap-2 mb-5">
-                <div className="p-2 bg-orange-100 rounded-xl">
-                  <TrendingUp className="h-5 w-5 text-orange-600" />
+                <div className="p-2 bg-orange-900/40 rounded-xl">
+                  <TrendingUp className="h-5 w-5 text-orange-500" />
                 </div>
-                <h3 className="text-base font-bold text-slate-900">Trending Topics</h3>
+                <h3 className="text-base font-bold text-white">Trending Topics</h3>
               </div>
               <div className="space-y-3">
                 {trendingTopics.map((topic, idx) => (
-                  <div key={idx} className="flex items-center justify-between p-3 bg-slate-50 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer group border border-transparent hover:border-slate-200">
+                  <div key={idx} className="flex items-center justify-between p-3 bg-gray-700 hover:bg-gray-600 rounded-xl transition-colors cursor-pointer group border border-transparent hover:border-red-600/30">
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-slate-900 group-hover:text-slate-900 transition-colors">{topic.name}</p>
-                      <p className="text-xs text-slate-600">{topic.posts} articles</p>
+                      <p className="text-sm font-medium text-white group-hover:text-white transition-colors">{topic.name}</p>
+                      <p className="text-xs text-gray-400">{topic.posts} articles</p>
                     </div>
-                    <span className="text-xs font-semibold text-orange-600 bg-orange-50 px-2 py-1 rounded">{topic.trend}</span>
+                    <span className="text-xs font-semibold text-red-500 bg-red-900/40 px-2 py-1 rounded">{topic.trend}</span>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Recent Activity */}
-            <div className="bg-white border border-slate-200/60 rounded-2xl p-6 shadow-sm">
+            <div className="bg-gray-800 border border-red-600/30 rounded-2xl p-6 shadow-sm">
               <div className="flex items-center gap-2 mb-5">
-                <div className="p-2 bg-blue-100 rounded-xl">
-                  <Activity className="h-5 w-5 text-blue-600" />
+                <div className="p-2 bg-blue-900/40 rounded-xl">
+                  <Activity className="h-5 w-5 text-blue-500" />
                 </div>
-                <h3 className="text-base font-bold text-slate-900">Recent Activity</h3>
+                <h3 className="text-base font-bold text-white">Recent Activity</h3>
               </div>
               <div className="space-y-4">
                 {recentActivity.map((activity, idx) => (
                   <div key={idx} className="flex gap-3">
                     <div className={`p-2 rounded-lg ${
-                      activity.type === 'published' ? 'bg-blue-100' :
-                      activity.type === 'updated' ? 'bg-violet-100' : 'bg-teal-100'
+                      activity.type === 'published' ? 'bg-blue-900/40' :
+                      activity.type === 'updated' ? 'bg-orange-900/40' : 'bg-teal-900/40'
                     } h-fit`}>
-                      {activity.type === 'published' && <Newspaper className="h-4 w-4 text-blue-600" />}
-                      {activity.type === 'updated' && <Sparkles className="h-4 w-4 text-violet-600" />}
-                      {activity.type === 'commented' && <MessageSquare className="h-4 w-4 text-teal-600" />}
+                      {activity.type === 'published' && <Newspaper className="h-4 w-4 text-blue-500" />}
+                      {activity.type === 'updated' && <Sparkles className="h-4 w-4 text-orange-500" />}
+                      {activity.type === 'commented' && <MessageSquare className="h-4 w-4 text-teal-500" />}
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-medium line-clamp-1 text-slate-900">{activity.title}</p>
-                      <p className="text-xs text-slate-600">{activity.time}</p>
+                      <p className="text-sm font-medium line-clamp-1 text-white">{activity.title}</p>
+                      <p className="text-xs text-gray-400">{activity.time}</p>
                     </div>
                   </div>
                 ))}
@@ -528,23 +528,23 @@ const Index = () => {
             </div>
 
             {/* Author Info */}
-            <div className="bg-gradient-to-br from-indigo-50 via-violet-50 to-purple-50 border border-indigo-200/60 rounded-2xl p-6 shadow-sm">
+            <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-red-600/30 rounded-2xl p-6 shadow-sm">
               <div className="flex items-start gap-4 mb-4">
                 <img
                   src={author}
                   alt="Iddy Chesire"
-                  className="w-16 h-16 rounded-full object-cover shadow-md border-2 border-white cursor-pointer hover:opacity-80 transition-opacity"
+                  className="w-16 h-16 rounded-full object-cover shadow-md border-2 border-red-600/30 cursor-pointer hover:opacity-80 transition-opacity"
                   onClick={() => setShowAuthorZoom(true)}
                 />
                 <div className="flex-1">
-				  <h3 className="text-base font-bold text-gray-900">Iddy Chesire</h3>
-				  <p className="text-sm text-indigo-600 font-medium">Platform Creator</p>
+				  <h3 className="text-base font-bold text-white">Iddy Chesire</h3>
+				  <p className="text-sm text-red-500 font-medium">Platform Creator</p>
 				</div>
 				</div>
-				<p className="text-sm font-medium text-gray-800 leading-relaxed mb-4">
+				<p className="text-sm font-medium text-gray-300 leading-relaxed mb-4">
 				  Cybersecurity Researcher, Full-stack developer, and writer passionate about creating content that helps others learn and grow. Building tools and platforms that elevate security.
 				</p>
-              <div className="flex items-center gap-2 text-xs text-slate-600">
+              <div className="flex items-center gap-2 text-xs text-gray-400">
                 <div className="flex items-center gap-1">
                   <BookOpen className="h-3 w-3" />
                   <span>{allPosts.length} articles</span>
@@ -558,46 +558,46 @@ const Index = () => {
             </div>
 
             {/* Quick Navigation */}
-            <div className="bg-white border left-4 border-slate-200/60 rounded-2xl p-6  lg:top-24 shadow-sm">
+            <div className="bg-gray-800 border border-red-600/30 rounded-2xl p-6  lg:top-24 shadow-sm">
               <div className="flex items-center gap-2 mb-5">
-                <div className="p-2 bg-indigo-100 rounded-xl">
-                  <Zap className="h-5 w-5 text-indigo-600" />
+                <div className="p-2 bg-red-900/40 rounded-xl">
+                  <Zap className="h-5 w-5 text-red-500" />
                 </div>
-                <h3 className="text-base font-bold text-slate-900">Quick Access</h3>
+                <h3 className="text-base font-bold text-white">Quick Access</h3>
               </div>
               
               <div className="space-y-2">
                 <Link to="/v/blog">
-                  <div className="group/link flex items-center justify-between p-3 bg-slate-50 hover:bg-slate-100 border border-transparent hover:border-slate-200 rounded-xl transition-all cursor-pointer">
+                  <div className="group/link flex items-center justify-between p-3 bg-gray-700 hover:bg-gray-600 border border-transparent hover:border-red-600/30 rounded-xl transition-all cursor-pointer">
                     <div className="flex items-center gap-3">
-                      <div className="p-1.5 bg-indigo-100 rounded-lg">
-                        <BookOpen className="h-4 w-4 text-indigo-600" />
+                      <div className="p-1.5 bg-red-900/40 rounded-lg">
+                        <BookOpen className="h-4 w-4 text-red-500" />
                       </div>
-                      <span className="text-sm font-medium text-slate-900">All Articles</span>
+                      <span className="text-sm font-medium text-white">All Articles</span>
                     </div>
-                    <ChevronRight className="h-4 w-4 text-slate-400 group-hover/link:text-slate-600 transition-colors" />
+                    <ChevronRight className="h-4 w-4 text-gray-500 group-hover/link:text-gray-400 transition-colors" />
                   </div>
                 </Link>
 
                 <Link to="/v/about">
-                  <div className="group/link flex items-center justify-between p-3 bg-slate-50 hover:bg-slate-100 border border-transparent hover:border-slate-200 rounded-xl transition-all cursor-pointer">
+                  <div className="group/link flex items-center justify-between p-3 bg-gray-700 hover:bg-gray-600 border border-transparent hover:border-red-600/30 rounded-xl transition-all cursor-pointer">
                     <div className="flex items-center gap-3">
-                      <div className="p-1.5 bg-indigo-100 rounded-lg">
-                        <Shield className="h-4 w-4 text-indigo-600" />
+                      <div className="p-1.5 bg-red-900/40 rounded-lg">
+                        <Shield className="h-4 w-4 text-red-500" />
                       </div>
-                      <span className="text-sm font-medium text-slate-900">About Platform</span>
+                      <span className="text-sm font-medium text-white">About Platform</span>
                     </div>
-                    <ChevronRight className="h-4 w-4 text-slate-400 group-hover/link:text-slate-600 transition-colors" />
+                    <ChevronRight className="h-4 w-4 text-gray-500 group-hover/link:text-gray-400 transition-colors" />
                   </div>
                 </Link>
               </div>
 
               {/* Platform Status */}
-              <div className="mt-6 p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
+              <div className="mt-6 p-4 bg-red-900/20 border border-red-600/30 rounded-xl">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-sm font-semibold text-emerald-800">System Health</span>
+                  <span className="text-sm font-semibold text-red-500">System Health</span>
                   <div className="flex items-center gap-1.5">
-                    <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                    <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
                     <span className="text-xs text-emerald-700 font-medium">Operational</span>
                   </div>
                 </div>
@@ -758,18 +758,18 @@ const Index = () => {
 			  </div>
 
 			  {/* Footer Bottom */}
-			  <div className="pt-8 border-t border-border/50 flex flex-col sm:flex-row items-center justify-between gap-4">
-				<p className="text-xs text-white">
-				  &copy; {new Date().getFullYear()} Verve Hub WriteUps. All rights reserved.
+			  <div className="pt-8 border-t border-red-600/20 flex flex-col sm:flex-row items-center justify-between gap-4">
+				<p className="text-xs text-gray-400">
+				  &copy; {new Date().getFullYear()} Verve Hub Academy. All rights reserved.
 				</p>
 				<div className="flex items-center gap-4">
-				  <a href="#" className="text-xs text-white hover:text-cyan-400 transition-colors">
+				  <a href="#" className="text-xs text-gray-400 hover:text-red-500 transition-colors">
 					Privacy Policy
 				  </a>
-				  <a href="#" className="text-xs text-white hover:text-cyan-400 transition-colors">
+				  <a href="#" className="text-xs text-gray-400 hover:text-red-500 transition-colors">
 					Terms of Service
 				  </a>
-				  <a href="#" className="text-xs text-white hover:text-cyan-400 transition-colors">
+				  <a href="#" className="text-xs text-gray-400 hover:text-red-500 transition-colors">
 					Cookie Policy
 				  </a>
 				</div>
@@ -786,7 +786,7 @@ const Index = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+              className="fixed inset-0 bg-black/85 backdrop-blur-sm flex items-center justify-center z-50 p-4"
               onClick={() => setShowAuthorZoom(false)}
             >
               <motion.div
@@ -801,7 +801,7 @@ const Index = () => {
                 <img
                   src={author}
                   alt="Iddy Chesire"
-                  className="w-96 h-96 rounded-2xl object-cover shadow-2xl border-4 border-white dark:border-gray-800"
+                  className="w-96 h-96 rounded-2xl object-cover shadow-2xl border-4 border-red-600/30"
                 />
 
                 {/* Close Button */}
@@ -809,7 +809,7 @@ const Index = () => {
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setShowAuthorZoom(false)}
-                  className="absolute -top-4 -right-4 w-12 h-12 bg-white dark:bg-gray-900 rounded-full shadow-lg flex items-center justify-center text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border-2 border-gray-200 dark:border-gray-800"
+                  className="absolute -top-4 -right-4 w-12 h-12 bg-gray-900 rounded-full shadow-lg flex items-center justify-center text-red-500 hover:bg-gray-800 transition-colors border-2 border-red-600/30"
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -824,7 +824,7 @@ const Index = () => {
                   className="mt-6 text-center"
                 >
                   <h3 className="text-2xl font-bold text-white">Iddy Chesire</h3>
-                  <p className="text-gray-300 mt-1 text-sm">Platform Creator & Cybersecurity Researcher</p>
+                  <p className="text-gray-400 mt-1 text-sm">Platform Creator & Cybersecurity Researcher</p>
                 </motion.div>
               </motion.div>
             </motion.div>

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Home,
   BookOpen,
@@ -19,7 +19,9 @@ import {
   X,
   Award,
   TrendingUp,
+  LogOut,
 } from "lucide-react";
+import { toast } from "sonner";
 
 type NavItem = {
   label: string;
@@ -49,9 +51,11 @@ interface SidebarProps {
 
 export default function Sidebar({ collapsed = false, onCollapse, sidebarOpen, onCloseSidebar }: SidebarProps) {
   const location = useLocation();
+  const navigate = useNavigate();
   const activeRef = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [isCollapsed, setIsCollapsed] = useState(collapsed);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const fontStyle = {
     fontFamily: "'Google Sans', 'Segoe UI', sans-serif",
@@ -80,6 +84,15 @@ export default function Sidebar({ collapsed = false, onCollapse, sidebarOpen, on
     onCollapse?.();
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    toast.success("Logged out successfully");
+    navigate("/login");
+    setShowLogoutModal(false);
+    onCloseSidebar?.();
+  };
+
   // Hide sidebar completely if collapsed on desktop
   if (isCollapsed && window.innerWidth >= 1024) {
     return null;
@@ -95,10 +108,41 @@ export default function Sidebar({ collapsed = false, onCollapse, sidebarOpen, on
         />
       )}
 
+      {/* Logout Confirmation Modal */}
+      {showLogoutModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-800 max-w-sm w-full p-6 animate-in fade-in zoom-in duration-200">
+            <div className="flex items-center justify-center w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 mx-auto mb-4">
+              <LogOut className="w-6 h-6 text-red-600 dark:text-red-400" />
+            </div>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white text-center mb-2">
+              Sign Out?
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400 text-center mb-6">
+              Are you sure you want to sign out? You'll be redirected to the login page.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowLogoutModal(false)}
+                className="flex-1 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 font-medium transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleLogout}
+                className="flex-1 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium transition-colors"
+              >
+                Sign Out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Sidebar */}
       <aside
         ref={containerRef}
-        className={`fixed left-0 top-0 z-40 transition-all duration-300 ease-in-out h-screen flex flex-col overflow-y-auto
+        className={`fixed left-0 top-0 z-40 transition-all duration-300 ease-in-out h-screen flex flex-col overflow-hidden
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
           w-64
           bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 shadow-lg`}
@@ -118,7 +162,7 @@ export default function Sidebar({ collapsed = false, onCollapse, sidebarOpen, on
           </button>
         )}
 
-        {/* Navigation */}
+        {/* Navigation - Scrollable */}
         <nav className="flex-1 px-3 py-6 overflow-y-auto">
           <div
             ref={activeRef}
@@ -192,6 +236,13 @@ export default function Sidebar({ collapsed = false, onCollapse, sidebarOpen, on
             >
               <Github size={18} />
             </a>
+            <button
+              onClick={() => setShowLogoutModal(true)}
+              className="p-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+              title="Logout"
+            >
+              <LogOut size={18} />
+            </button>
           </div>
 
           {/* Copyright */}

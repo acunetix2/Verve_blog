@@ -5,11 +5,11 @@ import { useNavigate } from "react-router-dom";
 export default function About() {
 const navigate = useNavigate();
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 text-gray-900">
+    <div className="min-h-screen bg-gray-950 text-gray-100">
       {/* Animated grid background */}
       <div className="fixed inset-0 opacity-10 pointer-events-none">
         <div className="absolute inset-0" style={{
-          backgroundImage: 'linear-gradient(rgba(37, 99, 235, 0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(37, 99, 235, 0.15) 1px, transparent 1px)',
+          backgroundImage: 'linear-gradient(rgba(239, 68, 68, 0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(239, 68, 68, 0.15) 1px, transparent 1px)',
           backgroundSize: '80px 80px'
         }}></div>
       </div>
@@ -23,7 +23,7 @@ const navigate = useNavigate();
             style={{
               width: `${4 + Math.random() * 8}px`,
               height: `${4 + Math.random() * 8}px`,
-              background: `radial-gradient(circle, rgba(37, 99, 235, ${0.3 + Math.random() * 0.3}) 0%, transparent 70%)`,
+              background: `radial-gradient(circle, rgba(239, 68, 68, ${0.3 + Math.random() * 0.3}) 0%, transparent 70%)`,
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
               animation: `float ${10 + Math.random() * 20}s ease-in-out infinite`,
@@ -49,34 +49,37 @@ const navigate = useNavigate();
           50% { box-shadow: 0 0 30px rgba(37, 99, 235, 0.3), 0 0 60px rgba(37, 99, 235, 0.15); }
         }
         .shimmer-text {
-          background: linear-gradient(90deg, #2563eb 0%, #3b82f6 25%, #60a5fa 50%, #3b82f6 75%, #2563eb 100%);
+          background: linear-gradient(90deg, #dc2626 0%, #ef4444 25%, #f87171 50%, #ef4444 75%, #dc2626 100%);
           background-size: 200% auto;
           background-clip: text;
           -webkit-background-clip: text;
           animation: shimmer 4s linear infinite;
+        }
+        .pulse-glow-red {
+          box-shadow: 0 0 20px rgba(239, 68, 68, 0.2), 0 0 40px rgba(239, 68, 68, 0.1);
         }
       `}</style>
 
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 md:py-16">
         {/* Hero Section */}
         <div className="text-center mb-12 sm:mb-16 space-y-4 sm:space-y-6">
-          <div className="inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-xl shadow-blue-500/30 mb-6" style={{ animation: 'pulse-glow 3s ease-in-out infinite' }}>
+          <div className="inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-red-600 to-orange-600 shadow-xl shadow-red-600/30 mb-6" style={{ animation: 'pulse-glow 3s ease-in-out infinite' }}>
             <Shield className="h-10 w-10 sm:h-12 sm:w-12 text-white" />
           </div>
 
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-black tracking-tight px-4">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-blue-500 to-blue-600 shimmer-text">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-orange-500 to-red-600 shimmer-text">
               About Verve Hub WriteUps
             </span>
           </h1>
 
-          <div className="flex items-center justify-center gap-3 text-blue-500">
-            <div className="h-0.5 w-12 sm:w-16 bg-gradient-to-r from-transparent via-blue-500 to-blue-500 rounded-full"></div>
+          <div className="flex items-center justify-center gap-3 text-red-500">
+            <div className="h-0.5 w-12 sm:w-16 bg-gradient-to-r from-transparent via-red-600 to-red-600 rounded-full"></div>
             <Shield className="h-5 w-5 sm:h-6 sm:w-6" />
-            <div className="h-0.5 w-12 sm:w-16 bg-gradient-to-l from-transparent via-blue-500 to-blue-500 rounded-full"></div>
+            <div className="h-0.5 w-12 sm:w-16 bg-gradient-to-l from-transparent via-red-600 to-red-600 rounded-full"></div>
           </div>
 
-          <p className="text-base sm:text-lg md:text-xl text-gray-700 leading-relaxed max-w-3xl mx-auto px-4 font-medium">
+          <p className="text-base sm:text-lg md:text-xl text-gray-400 leading-relaxed max-w-3xl mx-auto px-4 font-medium">
             A modern space dedicated to sharing insights in cybersecurity, programming, and technology. 
             Built to inspire, educate, and empower tech enthusiasts through practical knowledge and 
             write-ups that make complex concepts simple.
@@ -85,19 +88,19 @@ const navigate = useNavigate();
 
         {/* Mission Cards */}
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 mb-12 sm:mb-16 px-2">
-          <div className="bg-white border-2 border-blue-200 rounded-2xl p-6 sm:p-8 text-center hover:border-blue-400 hover:shadow-xl hover:shadow-blue-100 transition-all duration-300 group cursor-pointer">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl inline-flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-lg shadow-blue-500/30">
+          <div className="bg-gray-900 border-2 border-red-600/30 rounded-2xl p-6 sm:p-8 text-center hover:border-red-600/50 hover:shadow-xl hover:shadow-red-600/20 transition-all duration-300 group cursor-pointer">
+            <div className="w-16 h-16 bg-gradient-to-br from-red-600 to-orange-600 rounded-xl inline-flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-lg shadow-red-600/30">
               <Target className="h-8 w-8 text-white" />
             </div>
-            <h3 className="text-blue-600 font-bold mb-2 text-lg">Mission</h3>
-            <p className="text-gray-600 text-sm leading-relaxed">Simplify complex security concepts for everyone</p>
+            <h3 className="text-red-500 font-bold mb-2 text-lg">Mission</h3>
+            <p className="text-gray-400 text-sm leading-relaxed">Simplify complex security concepts for everyone</p>
           </div>
           
-          <div className="bg-white border-2 border-blue-200 rounded-2xl p-6 sm:p-8 text-center hover:border-blue-400 hover:shadow-xl hover:shadow-blue-100 transition-all duration-300 group cursor-pointer">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl inline-flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-lg shadow-blue-500/30">
+          <div className="bg-gray-900 border-2 border-red-600/30 rounded-2xl p-6 sm:p-8 text-center hover:border-red-600/50 hover:shadow-xl hover:shadow-red-600/20 transition-all duration-300 group cursor-pointer">
+            <div className="w-16 h-16 bg-gradient-to-br from-red-600 to-orange-600 rounded-xl inline-flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-lg shadow-red-600/30">
               <BookOpen className="h-8 w-8 text-white" />
             </div>
-            <h3 className="text-blue-600 font-bold mb-2 text-lg">Vision</h3>
+            <h3 className="text-red-500 font-bold mb-2 text-lg">Vision</h3>
             <p className="text-gray-600 text-sm leading-relaxed">Empower continuous learning and growth</p>
           </div>
           

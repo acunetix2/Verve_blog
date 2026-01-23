@@ -8,7 +8,7 @@ interface MDXContentProps {
 
 export const MDXContent = ({ content }: MDXContentProps) => {
   return (
-    <article className="max-w-5xl mx-auto px-8 py-8 bg-white">
+    <article className="max-w-5xl mx-auto px-0 py-0 bg-transparent">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
@@ -53,9 +53,9 @@ export const MDXContent = ({ content }: MDXContentProps) => {
                     )}
                   </button>
 
-                  <pre className="bg-gray-50 rounded p-4 overflow-x-auto border border-gray-200 text-sm">
+                  <pre className="bg-gray-900 rounded p-3 sm:p-4 overflow-x-auto border border-red-600/30 text-xs sm:text-sm max-w-full">
                     <code
-                      className="text-gray-800 font-mono leading-relaxed block"
+                      className="text-orange-400 font-mono leading-relaxed block break-words whitespace-pre-wrap"
                       {...props}
                     >
                       {children}
@@ -68,7 +68,7 @@ export const MDXContent = ({ content }: MDXContentProps) => {
             // INLINE CODE
             return (
               <code
-                className="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-sm font-mono"
+                className="bg-gray-900 text-orange-400 px-1.5 py-0.5 rounded text-sm font-mono border border-red-600/30"
                 {...props}
               >
                 {children}
@@ -79,44 +79,44 @@ export const MDXContent = ({ content }: MDXContentProps) => {
           // all your other components remain exactly the same...
 
           h1: ({ children }) => (
-            <h1 className="text-3xl font-semibold text-gray-900 mb-3 mt-8 leading-tight tracking-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-3xl font-semibold text-white mb-2 sm:mb-3 mt-6 sm:mt-8 leading-tight tracking-tight break-words">
               {children}
             </h1>
           ),
           h2: ({ children }) => (
-            <h2 className="text-2xl font-semibold text-gray-900 mb-2 mt-8 leading-snug tracking-tight">
+            <h2 className="text-xl sm:text-2xl md:text-2xl font-semibold text-white mb-2 mt-6 sm:mt-8 leading-snug tracking-tight break-words">
               {children}
             </h2>
           ),
           h3: ({ children }) => (
-            <h3 className="text-xl font-semibold text-gray-900 mb-2 mt-6 leading-snug">
+            <h3 className="text-lg sm:text-xl font-semibold text-gray-200 mb-2 mt-4 sm:mt-6 leading-snug break-words">
               {children}
             </h3>
           ),
           p: ({ children }) => (
-            <p className="text-gray-700 text-base leading-relaxed mb-4">
+            <p className="text-gray-300 text-sm sm:text-base leading-relaxed mb-3 sm:mb-4 break-words">
               {children}
             </p>
           ),
           ul: ({ children }) => (
-            <ul className="space-y-1.5 text-gray-700 mb-4 ml-6">
+            <ul className="space-y-1.5 text-gray-300 mb-3 sm:mb-4 ml-4 sm:ml-6 text-sm sm:text-base">
               {children}
             </ul>
           ),
           ol: ({ children }) => (
-            <ol className="space-y-1.5 text-gray-700 mb-4 ml-6">
+            <ol className="space-y-1.5 text-gray-300 mb-3 sm:mb-4 ml-4 sm:ml-6 text-sm sm:text-base">
               {children}
             </ol>
           ),
           li: ({ children }) => (
-            <li className="text-gray-700 text-base leading-relaxed pl-1">
+            <li className="text-gray-300 text-sm sm:text-base leading-relaxed pl-1 break-words">
               {children}
             </li>
           ),
           a: ({ href, children }) => (
             <a
               href={href}
-              className="text-blue-600 hover:text-blue-700 underline decoration-1 underline-offset-2 transition-colors"
+              className="text-orange-500 hover:text-orange-400 underline decoration-1 underline-offset-2 transition-colors"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -124,36 +124,36 @@ export const MDXContent = ({ content }: MDXContentProps) => {
             </a>
           ),
           blockquote: ({ children }) => (
-            <blockquote className="border-l-3 border-gray-300 pl-4 italic text-gray-600 my-4 text-base">
+            <blockquote className="border-l-3 sm:border-l-4 border-red-600/50 pl-3 sm:pl-4 italic text-gray-400 my-3 sm:my-4 text-sm sm:text-base bg-red-900/10 py-2 px-2">
               {children}
             </blockquote>
           ),
           table: ({ children }) => (
-            <div className="overflow-x-auto my-6">
-              <table className="min-w-full border-collapse border border-gray-300 text-gray-800 text-sm">
+            <div className="overflow-x-auto my-4 sm:my-6 -mx-4 sm:mx-0 px-4 sm:px-0">
+              <table className="min-w-full border-collapse border border-gray-700 text-gray-300 text-xs sm:text-sm">
                 {children}
               </table>
             </div>
           ),
           th: ({ children }) => (
-            <th className="border border-gray-300 bg-gray-50 px-4 py-2 text-left font-semibold text-gray-900 text-sm">
+            <th className="border border-gray-700 bg-gray-800 px-2 sm:px-4 py-2 text-left font-semibold text-white text-xs sm:text-sm whitespace-nowrap">
               {children}
             </th>
           ),
           td: ({ children }) => (
-            <td className="border border-gray-300 px-4 py-2 text-gray-700 text-sm">
+            <td className="border border-gray-700 px-2 sm:px-4 py-2 text-gray-300 text-xs sm:text-sm break-words">
               {children}
             </td>
           ),
-          hr: () => <hr className="my-8 border-t border-gray-200" />,
+          hr: () => <hr className="my-8 border-t border-gray-800" />,
           strong: ({ children }) => (
-            <strong className="font-semibold text-gray-900">{children}</strong>
+            <strong className="font-semibold text-white">{children}</strong>
           ),
           em: ({ children }) => (
-            <em className="italic text-gray-700">{children}</em>
+            <em className="italic text-gray-300">{children}</em>
           ),
           mark: ({ children }) => (
-            <mark className="bg-yellow-200 dark:bg-yellow-400/30 text-gray-900 dark:text-gray-100 rounded px-1 font-medium">
+            <mark className="bg-red-900/30 dark:bg-red-900/40 text-orange-300 rounded px-1 font-medium">
               {children}
             </mark>
           ),
