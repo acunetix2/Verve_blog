@@ -148,6 +148,5 @@ const AnalyticsCard: React.FC<AnalyticsCardProps> = ({
     </div>
   );
 };
-};
 
 export default AnalyticsCard;
