@@ -13,7 +13,9 @@ import {
   Send,
   AlertCircle,
   XCircle,
+  X,
 } from "lucide-react";
+import TECH_CATEGORIES from "../config/techCategories";
 
 interface PostFormData {
   title: string;
@@ -24,7 +26,7 @@ interface PostFormData {
   tags: string;
   content: string;
   featured: boolean;
-  category: string; // ✅ Added category
+  category: string; // legacy field, kept for backwards compatibility
 }
 
 const CreatePost: React.FC = () => {
@@ -42,7 +44,34 @@ const CreatePost: React.FC = () => {
     category: "Uncategorized", // default
   });
 
+  // ✅ New state for selected categories
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(["Uncategorized"]);
+
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
+
+  // ✅ Handle category selection/deselection
+  const handleCategoryToggle = (category: string) => {
+    setSelectedCategories((prev) => {
+      if (prev.includes(category)) {
+        // Remove if already selected
+        const filtered = prev.filter((cat) => cat !== category);
+        // Keep at least one category
+        return filtered.length === 0 ? ["Uncategorized"] : filtered;
+      } else {
+        // Add new category
+        const updated = [...prev];
+        // Remove 'Uncategorized' if adding a real category
+        if (category !== "Uncategorized" && prev.includes("Uncategorized")) {
+          return updated.filter((cat) => cat !== "Uncategorized").concat(category);
+        }
+        // If adding Uncategorized, remove others
+        if (category === "Uncategorized") {
+          return ["Uncategorized"];
+        }
+        return updated.concat(category);
+      }
+    });
+  };
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -68,7 +97,7 @@ const CreatePost: React.FC = () => {
     if (!formData.title.trim()) newErrors.title = true;
     if (!formData.slug.trim()) newErrors.slug = true;
     if (!formData.content.trim()) newErrors.content = true;
-    if (!formData.category.trim()) newErrors.category = true; // validate category
+    if (selectedCategories.length === 0) newErrors.category = true; // validate categories
     return newErrors;
   };
 
@@ -83,38 +112,40 @@ const CreatePost: React.FC = () => {
     }
 
     try {
-	  const token = localStorage.getItem("token");
-	  if (!token) {
-		toast.error("You must be logged in to create a post.");
-		return;
-	  }
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.error("You must be logged in to create a post.");
+        return;
+      }
 
-	  const payload = {
-		...formData,
-		tags: formData.tags
-		  .split(",")
-		  .map((tag) => tag.trim())
-		  .filter(Boolean),
-	  };
+      const payload = {
+        ...formData,
+        tags: formData.tags
+          .split(",")
+          .map((tag) => tag.trim())
+          .filter(Boolean),
+        // ✅ Send selectedCategories instead of single category
+        categories: selectedCategories,
+      };
 
-	  await axios.post(`${API_BASE_URL}/posts/create`, payload, {
-		headers: {
-		  Authorization: `Bearer ${token}`,
-		  "Content-Type": "application/json",
-		},
-	  });
+      await axios.post(`${API_BASE_URL}/posts/create`, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
-	  toast.success("Post published successfully!");
-	  navigate("/admin");
-	} catch (error: any) {
-	  console.error(
-		"Post creation failed:",
-		error.response?.status,
-		error.response?.data
-	  );
-	  toast.error(`Error: ${error.response?.data?.message || error.message}`);
-	}
-};
+      toast.success("Post published successfully!");
+      navigate("/admin");
+    } catch (error: any) {
+      console.error(
+        "Post creation failed:",
+        error.response?.status,
+        error.response?.data
+      );
+      toast.error(`Error: ${error.response?.data?.message || error.message}`);
+    }
+  };
 
 
   const handleExit = () => navigate("/admin");
@@ -292,27 +323,42 @@ const CreatePost: React.FC = () => {
                 </span>
               )}
             </label>
-            <select
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              className="w-full p-4 border border-gray-300 rounded-md bg-white text-gray-900 placeholder:text-gray-400 transition-all focus:border-gray-900 focus:ring-2 focus:ring-gray-900/10 outline-none text-lg"
-            >
-              <option value="Uncategorized">Uncategorized</option>
-              <option value="Web Exploitation">Web Exploitation</option>
-              <option value="Binary Exploitation">Binary Exploitation</option>
-              <option value="Reverse Engineering">Reverse Engineering</option>
-              <option value="Cryptography">Cryptography</option>
-              <option value="Forensics">Forensics</option>
-              <option value="Network Security">Network Security</option>
-              <option value="Malware Analysis">Malware Analysis</option>
-              <option value="Penetration Testing">Penetration Testing</option>
-              <option value="CTF Writeups">CTF Writeups</option>
-              <option value="Vulnerability Research">Vulnerability Research</option>
-              <option value="Cloud Security">Cloud Security</option>
-              <option value="Wireless Security">Wireless Security</option>
-              <option value="Database Security">Database Security</option>
-            </select>
+            {/* ✅ Multi-select Categories */}
+            <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto bg-gray-50 p-3 rounded-md border border-gray-300">
+              {TECH_CATEGORIES.map((cat) => (
+                <label
+                  key={cat}
+                  className="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-gray-200 transition-all"
+                >
+                  <input
+                    type="checkbox"
+                    checked={selectedCategories.includes(cat)}
+                    onChange={() => handleCategoryToggle(cat)}
+                    className="w-4 h-4 rounded accent-gray-900 cursor-pointer"
+                  />
+                  <span className="text-sm text-gray-700">{cat}</span>
+                </label>
+              ))}
+            </div>
+            {selectedCategories.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {selectedCategories.map((cat) => (
+                  <div
+                    key={cat}
+                    className="inline-flex items-center gap-2 px-3 py-1 bg-gray-200 border border-gray-400 rounded-full text-xs text-gray-700"
+                  >
+                    {cat}
+                    <button
+                      type="button"
+                      onClick={() => handleCategoryToggle(cat)}
+                      className="ml-1 hover:text-gray-900"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Tags */}

@@ -24,6 +24,7 @@ import {
   Wifi,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import TECH_CATEGORIES from "../config/techCategories";
 
 interface Document {
   _id: string;
@@ -31,42 +32,56 @@ interface Document {
   description?: string;
   fileName: string;
   uploadedAt: string;
-  category: string;
+  category?: string; // legacy single category
+  categories?: string[]; // ✅ new array of categories
 }
 
-const DOCUMENT_CATEGORIES = [
-  "All",
-  "Uncategorized",
-  "Web Exploitation",
-  "Binary Exploitation",
-  "Reverse Engineering",
-  "Cryptography",
-  "Forensics",
-  "Network Security",
-  "Malware Analysis",
-  "Penetration Testing",
-  "CTF Writeups",
-  "Vulnerability Research",
-  "Cloud Security",
-  "Wireless Security",
-  "Database Security",
-];
+// ✅ Use tech categories instead
+const DOCUMENT_CATEGORIES = ["All", ...TECH_CATEGORIES];
 
 const categoryIcons: Record<string, any> = {
   "All": Globe,
+  // Networking & Infrastructure
+  "Computer Networking": Network,
+  "Network Security": Network,
+  "Wireless Security": Wifi,
+  "Network Administration": Network,
+  
+  // Cybersecurity & Security
+  "Cyber Security": Shield,
+  "Web Security": Globe,
+  "Application Security": Terminal,
+  "Cloud Security": Server,
+  "Database Security": Database,
+  "Cryptography": Lock,
+  
+  // Exploitation & Testing
   "Web Exploitation": Globe,
   "Binary Exploitation": Terminal,
-  "Reverse Engineering": Code,
-  "Cryptography": Lock,
-  "Forensics": Eye,
-  "Network Security": Network,
-  "Malware Analysis": Bug,
   "Penetration Testing": Shield,
-  "CTF Writeups": FileText,
   "Vulnerability Research": AlertCircle,
-  "Cloud Security": Server,
-  "Wireless Security": Wifi,
-  "Database Security": Database,
+  "Vulnerability Assessment": AlertCircle,
+  
+  // System & Analysis
+  "Reverse Engineering": Code,
+  "Malware Analysis": Bug,
+  "Forensics": Eye,
+  "Incident Response": AlertCircle,
+  
+  // Other
+  "CTF Writeups": FileText,
+  "Red Teaming": Shield,
+  "Blue Teaming": Shield,
+  "Social Engineering": AlertCircle,
+  "DevSecOps": Terminal,
+  "API Security": Globe,
+  "Mobile Security": Terminal,
+  "IoT Security": Network,
+  "Blockchain Security": Lock,
+  "Infrastructure Security": Server,
+  "Linux Security": Terminal,
+  "Windows Security": Terminal,
+  "General Security": Shield,
   "Uncategorized": FileText
 };
 
@@ -128,7 +143,10 @@ const Documents: React.FC = () => {
     const matchesSearch =
       doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       doc.description?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === "All" || doc.category === selectedCategory;
+    
+    // ✅ Support both new categories array and legacy category field
+    let documentCategories = doc.categories || (doc.category ? [doc.category] : ["Uncategorized"]);
+    const matchesCategory = selectedCategory === "All" || documentCategories.includes(selectedCategory);
     return matchesSearch && matchesCategory;
   });
 
@@ -252,9 +270,12 @@ const Documents: React.FC = () => {
             </p>
           </div>
         ) : (
-          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5">
             {filteredDocuments.map((doc) => {
-              const Icon = categoryIcons[doc.category] || FileText;
+              // ✅ Support both new and legacy category fields
+              const documentCategories = doc.categories || (doc.category ? [doc.category] : ["Uncategorized"]);
+              const primaryCategory = documentCategories[0] || "Uncategorized";
+              const Icon = categoryIcons[primaryCategory] || FileText;
               
               return (
                 <div
@@ -278,10 +299,14 @@ const Documents: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Category Badge */}
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-900/30 text-red-500 text-xs font-medium rounded-lg mb-3 border border-red-600/30">
-                      <Cpu className="w-3.5 h-3.5" />
-                      {doc.category}
+                    {/* ✅ Category Badges (show all categories) */}
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {documentCategories.map((cat) => (
+                        <div key={cat} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-900/30 text-red-500 text-xs font-medium rounded-lg border border-red-600/30">
+                          <Cpu className="w-3.5 h-3.5" />
+                          {cat}
+                        </div>
+                      ))}
                     </div>
 
                     {/* Description */}

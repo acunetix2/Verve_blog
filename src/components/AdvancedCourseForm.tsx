@@ -1,5 +1,5 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from "react";
-import { Plus, Trash2, ChevronDown, ChevronUp, Zap, Film, FileDown, X } from "lucide-react";
+import { Plus, Trash2, ChevronDown, ChevronUp, Zap, Film, FileDown, X, Upload, Image as ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 import CourseContentEditor from "./CourseContentEditor";
 import QuizBuilder from "./QuizBuilder";
@@ -41,6 +41,8 @@ interface CourseFormData {
   title: string;
   description: string;
   image: string;
+  imageFile?: File;
+  imagePreview?: string;
   modules: Module[];
   finalExam?: {
     questions: any[];
@@ -58,6 +60,7 @@ interface AdvancedCourseFormProps {
 export interface AdvancedCourseFormHandle {
   submit: () => Promise<void>;
   submitDraft: () => Promise<void>;
+  getCourseData: () => CourseFormData;
 }
 
 export const AdvancedCourseForm = forwardRef<AdvancedCourseFormHandle, AdvancedCourseFormProps>(
@@ -79,6 +82,33 @@ export const AdvancedCourseForm = forwardRef<AdvancedCourseFormHandle, AdvancedC
   const [expandedModuleIndex, setExpandedModuleIndex] = useState<number | null>(null);
   const [expandedLessonIndex, setExpandedLessonIndex] = useState<{ module: number; lesson: number } | null>(null);
   const [activeTab, setActiveTab] = useState<'content' | 'quiz' | 'video' | 'resources' | 'finalExam'>('content');
+  const [imagePreview, setImagePreview] = useState<string>("");
+
+  // Handle image file selection
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file is an image
+      if (!file.type.startsWith('image/')) {
+        toast.error('Please select a valid image file');
+        return;
+      }
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('Image size must be less than 5MB');
+        return;
+      }
+      // Create preview URL
+      const preview = URL.createObjectURL(file);
+      setImagePreview(preview);
+      setCourseForm({
+        ...courseForm,
+        imageFile: file,
+        imagePreview: preview,
+        image: file.name, // Store filename as fallback
+      });
+    }
+  };
 
   const addModule = () => {
     const newModules = [
@@ -197,6 +227,7 @@ export const AdvancedCourseForm = forwardRef<AdvancedCourseFormHandle, AdvancedC
   useImperativeHandle(ref, () => ({
     submit: handleSave,
     submitDraft: handleSaveDraft,
+    getCourseData: () => courseForm,
   }));
 
   return (
@@ -224,14 +255,51 @@ export const AdvancedCourseForm = forwardRef<AdvancedCourseFormHandle, AdvancedC
           />
         </div>
         <div>
-          <label className="text-slate-300 text-sm font-medium mb-2 block">Image URL</label>
-          <input
-            type="text"
-            value={courseForm.image}
-            onChange={(e) => setCourseForm({ ...courseForm, image: e.target.value })}
-            placeholder="Enter image URL (optional)"
-            className="w-full bg-slate-900/50 border border-slate-700/50 text-white placeholder-slate-500 px-4 py-2.5 rounded-lg focus:border-blue-500/50 focus:outline-none focus:ring-1 focus:ring-blue-500/30 transition-all"
-          />
+          <label className="text-slate-300 text-sm font-medium mb-2 block">Course Image (Optional)</label>
+          <div className="space-y-3">
+            {/* Image Preview */}
+            {courseForm.imagePreview ? (
+              <div className="relative w-full h-40 rounded-lg overflow-hidden border border-slate-700/50 bg-slate-900/50">
+                <img
+                  src={courseForm.imagePreview}
+                  alt="Course preview"
+                  className="w-full h-full object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    setImagePreview("");
+                    setCourseForm({
+                      ...courseForm,
+                      imageFile: undefined,
+                      imagePreview: undefined,
+                      image: "",
+                    });
+                  }}
+                  className="absolute top-2 right-2 bg-red-600/80 hover:bg-red-600 text-white p-1 rounded transition-all"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            ) : null}
+
+            {/* File Input */}
+            <label className="flex items-center gap-3 w-full bg-slate-900/50 border-2 border-dashed border-slate-700/50 rounded-lg px-4 py-3 cursor-pointer hover:border-blue-500/50 transition-colors">
+              <Upload size={18} className="text-slate-400" />
+              <div className="flex-1">
+                <p className="text-slate-300 text-sm font-medium">
+                  {courseForm.imageFile ? courseForm.imageFile.name : "Click to upload course image"}
+                </p>
+                <p className="text-slate-500 text-xs">PNG, JPG, GIF up to 5MB</p>
+              </div>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="hidden"
+              />
+            </label>
+          </div>
         </div>
       </div>
 

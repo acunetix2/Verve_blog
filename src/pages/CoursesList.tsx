@@ -15,6 +15,7 @@ interface Course {
   title: string;
   description: string;
   image?: string;
+  imageUrl?: string;
   modules?: Module[];
   difficulty?: "beginner" | "intermediate" | "advanced";
   rating?: number;
@@ -339,7 +340,7 @@ const CoursesList: React.FC = () => {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
             {filteredCourses.map((course) => {
               const isEnrolled = enrolledCourses.includes(course._id);
               const moduleCount = course.modules?.length || 0;
@@ -348,74 +349,76 @@ const CoursesList: React.FC = () => {
               return (
                 <div
                   key={course._id}
-                  className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg hover:border-green-300 transition-all group h-full flex flex-col"
+                  className="bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl border border-red-600/20 hover:border-red-600/50 transition-all duration-300 overflow-hidden group h-full flex flex-col"
                 >
-                  {/* Course Image/Banner */}
-                  {course.image ? (
-                    <div className="h-40 bg-gradient-to-br from-green-100 to-emerald-100 overflow-hidden">
+                  {/* Course Image/Banner Header */}
+                  <div className="h-2 bg-gradient-to-r from-red-500 via-orange-500 to-red-600"></div>
+
+                  {/* Course Image */}
+                  {course.imageUrl || course.image ? (
+                    <div className="h-40 bg-gradient-to-br from-red-900/30 to-orange-900/30 overflow-hidden">
                       <img
-                        src={course.image}
+                        src={course.imageUrl || course.image}
                         alt={course.title}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                       />
                     </div>
                   ) : (
-                    <div className="h-40 bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center">
-                      <BookOpen className="text-green-400" size={40} />
+                    <div className="h-40 bg-gradient-to-br from-red-900/30 to-orange-900/30 flex items-center justify-center">
+                      <BookOpen className="text-red-500/60" size={40} />
                     </div>
                   )}
 
                   {/* Course Content */}
-                  <div className="p-4 space-y-3 flex flex-col flex-1">
-                    <div className="flex-1">
-                      <h3 className="text-sm font-bold text-gray-900 mb-1 group-hover:text-green-600 transition-colors line-clamp-2">
+                  <div className="p-6 space-y-4 flex flex-col flex-1">
+                    {/* Title */}
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-lg font-semibold text-white mb-2 line-clamp-2 group-hover:text-orange-400 transition-colors">
                         {course.title}
                       </h3>
-                      <p className="text-gray-600 text-xs line-clamp-2">{course.description}</p>
+                      <p className="text-gray-400 text-sm line-clamp-2">{course.description}</p>
                     </div>
 
                     {/* Course Meta */}
                     <div className="flex flex-wrap gap-2">
                       {course.difficulty && (
-                        <span style={smallFontStyle} className={`px-2 py-1 rounded text-xs font-medium border ${getDifficultyColor(course.difficulty)}`}>
+                        <span style={smallFontStyle} className={`px-2.5 py-1 rounded-lg text-xs font-medium ${
+                          course.difficulty === 'beginner' ? 'bg-green-900/30 text-green-400 border border-green-600/50' :
+                          course.difficulty === 'intermediate' ? 'bg-yellow-900/30 text-yellow-400 border border-yellow-600/50' :
+                          'bg-red-900/30 text-red-400 border border-red-600/50'
+                        }`}>
                           {course.difficulty.charAt(0).toUpperCase() + course.difficulty.slice(1)}
                         </span>
                       )}
                       {isEnrolled && (
-                        <span style={smallFontStyle} className="px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-700 border border-green-300">
+                        <span style={smallFontStyle} className="px-2.5 py-1 rounded-lg text-xs font-medium bg-green-900/30 text-green-400 border border-green-600/50">
                           Enrolled
                         </span>
                       )}
                     </div>
 
                     {/* Course Stats */}
-                    <div className="grid grid-cols-2 gap-2 py-2 border-t border-b border-gray-200">
-                      <div style={smallFontStyle} className="flex items-center gap-1 text-gray-700 text-xs">
-                        <BookOpen size={12} className="text-green-600" />
-                        <span>{moduleCount} Modules</span>
+                    <div className="grid grid-cols-2 gap-3 py-3 border-t border-gray-700">
+                      <div style={smallFontStyle} className="flex items-center gap-2 text-gray-400">
+                        <BookOpen size={14} className="text-orange-500" />
+                        <span className="text-xs">{moduleCount} Modules</span>
                       </div>
-                      <div style={smallFontStyle} className="flex items-center gap-1 text-gray-700 text-xs">
-                        <Clock size={12} className="text-orange-600" />
-                        <span>{lessonCount} Lessons</span>
+                      <div style={smallFontStyle} className="flex items-center gap-2 text-gray-400">
+                        <Clock size={14} className="text-orange-500" />
+                        <span className="text-xs">{lessonCount} Lessons</span>
                       </div>
-                      {course.rating && (
-                        <div style={smallFontStyle} className="flex items-center gap-1 text-gray-700 text-xs">
-                          <Star size={12} className="text-yellow-500 fill-yellow-500" />
-                          <span>{course.rating.toFixed(1)}</span>
-                        </div>
-                      )}
                     </div>
 
                     {/* Progress Bar - Only for Enrolled Courses */}
                     {activeTab === "enrolled" && isEnrolled && (
-                      <div className="space-y-2">
+                      <div className="space-y-2 pt-2">
                         <div className="flex items-center justify-between">
-                          <span style={smallFontStyle} className="text-xs text-gray-600">Progress</span>
-                          <span style={smallFontStyle} className="text-xs font-semibold text-green-700">{calculateProgress(course)}%</span>
+                          <span style={smallFontStyle} className="text-xs text-gray-400">Progress</span>
+                          <span style={smallFontStyle} className="text-xs font-semibold text-orange-400">{calculateProgress(course)}%</span>
                         </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                        <div className="w-full bg-gray-700/50 rounded-full h-2 overflow-hidden">
                           <div
-                            className="bg-gradient-to-r from-green-500 to-green-600 h-full rounded-full transition-all duration-500"
+                            className="bg-gradient-to-r from-orange-500 to-red-500 h-full rounded-full transition-all duration-500"
                             style={{ width: `${calculateProgress(course)}%` }}
                           ></div>
                         </div>
@@ -431,10 +434,10 @@ const CoursesList: React.FC = () => {
                           handleEnroll(course._id);
                         }
                       }}
-                      className={`w-full py-2 rounded-lg font-semibold text-xs transition-all flex items-center justify-center gap-2 ${
+                      className={`w-full py-3 px-4 rounded-lg font-semibold text-xs transition-all flex items-center justify-center gap-2 ${
                         isEnrolled
-                          ? "bg-green-600 hover:bg-green-700 text-white"
-                          : "bg-gray-200 hover:bg-gray-300 text-gray-900"
+                          ? "bg-orange-600 hover:bg-orange-700 text-white"
+                          : "bg-red-600/20 hover:bg-red-600/30 text-orange-500 border border-red-600/50"
                       }`}
                     >
                       {isEnrolled ? (

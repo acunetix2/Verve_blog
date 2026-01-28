@@ -1470,28 +1470,33 @@ const AdminPage: React.FC = () => {
               initialData={courseForm as any}
               onSave={async (data, status = 'published') => {
                 const token = localStorage.getItem("token");
-                const payload = {
-                  title: data.title,
-                  description: data.description,
-                  image: data.image,
-                  modules: data.modules,
-                  finalExam: data.finalExam,
-                  status: status
-                };
+                
+                // Create FormData for multipart submission if image file exists
+                const formData = new FormData();
+                formData.append('title', data.title);
+                formData.append('description', data.description);
+                formData.append('modules', JSON.stringify(data.modules));
+                formData.append('finalExam', JSON.stringify(data.finalExam));
+                formData.append('status', status);
+                
+                // Only append image file if it exists
+                if (data.imageFile) {
+                  formData.append('image', data.imageFile);
+                }
                 
                 try {
                   if (editingCourseId) {
                     await axios.put(
                       `${import.meta.env.VITE_API_BASE_URL}/courses/${editingCourseId}`,
-                      payload,
-                      { headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } }
+                      formData,
+                      { headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" } }
                     );
                     toast.success("Course updated successfully", { icon: <CheckCircle2 className="text-green-500" /> });
                   } else {
                     await axios.post(
                       `${import.meta.env.VITE_API_BASE_URL}/courses`,
-                      payload,
-                      { headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } }
+                      formData,
+                      { headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" } }
                     );
                     toast.success("Course created successfully", { icon: <CheckCircle2 className="text-green-500" /> });
                   }

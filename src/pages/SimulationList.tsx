@@ -166,15 +166,15 @@ export default function SimulationList() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex flex-col">
       <div className="flex-grow py-8 px-4">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-medium text-gray-900 mb-2" style={{ fontFamily: 'Google Sans, sans-serif' }}>
+            <h1 className="text-3xl font-medium text-white mb-2" style={{ fontFamily: 'Google Sans, sans-serif' }}>
               Common Cyber Attacks Simulations
             </h1>
-            <p className="text-sm text-gray-600" style={{ fontFamily: 'Google Sans, sans-serif' }}>
+            <p className="text-sm text-gray-400" style={{ fontFamily: 'Google Sans, sans-serif' }}>
               Explore interactive cybersecurity attack simulations
             </p>
           </div>
@@ -183,7 +183,7 @@ export default function SimulationList() {
           <div className="mb-6">
             <div className="relative">
               <svg
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
+                className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -200,24 +200,24 @@ export default function SimulationList() {
                 placeholder="Search simulations..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 text-gray-700  text-sm bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none shadow-sm"
+                className="w-full pl-12 pr-4 py-3 text-gray-300  text-sm bg-gray-800 border border-red-600/30 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all outline-none shadow-sm"
                 style={{ fontFamily: 'Google Sans, sans-serif' }}
               />
             </div>
           </div>
 
           {/* Filters and Sort */}
-          <div className="mb-6 bg-white rounded-xl shadow-sm border border-blue-100 p-4">
+          <div className="mb-6 bg-gray-800 rounded-xl shadow-sm border border-red-600/20 p-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Category Filter */}
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-2" style={{ fontFamily: 'Google Sans, sans-serif' }}>
+                <label className="block text-xs font-medium text-gray-300 mb-2" style={{ fontFamily: 'Google Sans, sans-serif' }}>
                   Category
                 </label>
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full px-3 py-2 text-gray-700 text-sm bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                  className="w-full px-3 py-2 text-gray-300 text-sm bg-gray-700 border border-red-600/30 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all outline-none"
                   style={{ fontFamily: 'Google Sans, sans-serif' }}
                 >
                   {categories.map((category) => (
@@ -230,13 +230,13 @@ export default function SimulationList() {
 
               {/* Difficulty Filter */}
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-2" style={{ fontFamily: 'Google Sans, sans-serif' }}>
+                <label className="block text-xs font-medium text-gray-300 mb-2" style={{ fontFamily: 'Google Sans, sans-serif' }}>
                   Difficulty Level
                 </label>
                 <select
                   value={selectedDifficulty}
                   onChange={(e) => setSelectedDifficulty(e.target.value)}
-                  className="w-full px-3 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                  className="w-full px-3 py-2 text-sm text-gray-300 bg-gray-700 border border-red-600/30 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all outline-none"
                   style={{ fontFamily: 'Google Sans, sans-serif' }}
                 >
                   {difficulties.map((difficulty) => (
@@ -249,13 +249,13 @@ export default function SimulationList() {
 
               {/* Sort By */}
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-2" style={{ fontFamily: 'Google Sans, sans-serif' }}>
+                <label className="block text-xs font-medium text-gray-300 mb-2" style={{ fontFamily: 'Google Sans, sans-serif' }}>
                   Sort By
                 </label>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="w-full px-3 py-2 text-gray-700 text-sm bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                  className="w-full px-3 py-2 text-gray-300 text-sm bg-gray-700 border border-red-600/30 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all outline-none"
                   style={{ fontFamily: 'Google Sans, sans-serif' }}
                 >
                   <option value="newest">Newest First</option>
@@ -270,26 +270,26 @@ export default function SimulationList() {
             {/* Active Filters Display */}
             {(selectedCategory !== "All" || selectedDifficulty !== "All" || searchTerm) && (
               <div className="mt-4 flex flex-wrap gap-2 items-center">
-                <span className="text-xs text-gray-600" style={{ fontFamily: 'Google Sans, sans-serif' }}>
+                <span className="text-xs text-gray-400" style={{ fontFamily: 'Google Sans, sans-serif' }}>
                   Active filters:
                 </span>
                 {searchTerm && (
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs bg-blue-100 text-blue-700 border border-blue-200" style={{ fontFamily: 'Google Sans, sans-serif' }}>
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs bg-orange-900/30 text-orange-400 border border-orange-600/50" style={{ fontFamily: 'Google Sans, sans-serif' }}>
                     Search: "{searchTerm}"
                     <button
                       onClick={() => setSearchTerm("")}
-                      className="ml-2 hover:text-blue-900"
+                      className="ml-2 hover:text-orange-300"
                     >
                       ×
                     </button>
                   </span>
                 )}
                 {selectedCategory !== "All" && (
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs bg-purple-100 text-purple-700 border border-purple-200" style={{ fontFamily: 'Google Sans, sans-serif' }}>
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs bg-red-900/30 text-red-400 border border-red-600/50" style={{ fontFamily: 'Google Sans, sans-serif' }}>
                     {selectedCategory}
                     <button
                       onClick={() => setSelectedCategory("All")}
-                      className="ml-2 hover:text-purple-900"
+                      className="ml-2 hover:text-red-300"
                     >
                       ×
                     </button>
@@ -312,7 +312,7 @@ export default function SimulationList() {
                     setSelectedCategory("All");
                     setSelectedDifficulty("All");
                   }}
-                  className="text-xs text-blue-600 hover:text-blue-700 underline"
+                  className="text-xs text-orange-500 hover:text-orange-400 underline"
                   style={{ fontFamily: 'Google Sans, sans-serif' }}
                 >
                   Clear all
@@ -323,30 +323,30 @@ export default function SimulationList() {
 
           {/* Simulations Grid */}
           {sortedSimulations.length === 0 ? (
-            <div className="bg-white rounded-2xl shadow-lg border border-blue-100 p-12 text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-gray-800 rounded-2xl shadow-lg border border-red-600/20 p-12 text-center">
+              <div className="w-16 h-16 bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                 </svg>
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2" style={{ fontFamily: 'Google Sans, sans-serif' }}>
+              <h3 className="text-lg font-medium text-white mb-2" style={{ fontFamily: 'Google Sans, sans-serif' }}>
                 No Simulations Found
               </h3>
-              <p className="text-sm text-gray-600" style={{ fontFamily: 'Google Sans, sans-serif' }}>
+              <p className="text-sm text-gray-400" style={{ fontFamily: 'Google Sans, sans-serif' }}>
                 {searchTerm || selectedCategory !== "All" || selectedDifficulty !== "All" 
                   ? "Try adjusting your filters or search terms" 
                   : "No simulations available yet"}
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
               {sortedSimulations.map((simulation) => (
                 <div
                   key={simulation.id}
                   onClick={() => handleViewSimulation(simulation.id)}
-                  className="bg-white rounded-3xl shadow-lg border border-blue-100 overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:scale-105 active:scale-95 cursor-pointer hover:-translate-y-2"
+                  className="bg-gray-800 rounded-2xl shadow-lg border border-red-600/20 overflow-hidden hover:border-red-600/50 hover:shadow-2xl transition-all duration-300 transform hover:scale-105 active:scale-95 cursor-pointer hover:-translate-y-2"
                 >
-                  <div className="bg-gradient-to-r from-green-500 to-green-600 h-20 flex items-center justify-center">
+                  <div className="bg-gradient-to-r from-red-500 via-orange-500 to-red-600 h-20 flex items-center justify-center">
                     <svg className="w-10 h-10 text-white opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
@@ -355,7 +355,7 @@ export default function SimulationList() {
                     {/* Category and Difficulty Badges */}
                     <div className="flex flex-wrap gap-2 mb-2">
                       {simulation.category && (
-                        <span className="inline-block px-2 py-1 text-xs bg-purple-100 text-purple-700 rounded-md border border-purple-200" style={{ fontFamily: 'Google Sans, sans-serif' }}>
+                        <span className="inline-block px-2 py-1 text-xs bg-orange-900/30 text-orange-400 rounded-md border border-orange-600/50" style={{ fontFamily: 'Google Sans, sans-serif' }}>
                           {simulation.category}
                         </span>
                       )}
@@ -366,10 +366,10 @@ export default function SimulationList() {
                       )}
                     </div>
 
-                    <h3 className="text-sm font-medium text-gray-900 mb-1.5 line-clamp-2" style={{ fontFamily: 'Google Sans, sans-serif' }}>
+                    <h3 className="text-sm font-medium text-white mb-1.5 line-clamp-2" style={{ fontFamily: 'Google Sans, sans-serif' }}>
                       {simulation.title}
                     </h3>
-                    <p className="text-xs text-gray-600 mb-3 line-clamp-2" style={{ fontFamily: 'Google Sans, sans-serif' }}>
+                    <p className="text-xs text-gray-400 mb-3 line-clamp-2" style={{ fontFamily: 'Google Sans, sans-serif' }}>
                       {simulation.description}
                     </p>
 
@@ -377,7 +377,7 @@ export default function SimulationList() {
                     {simulation.tags && simulation.tags.length > 0 && (
                       <div className="flex flex-wrap gap-1 mb-3">
                         {simulation.tags.slice(0, 3).map((tag, index) => (
-                          <span key={index} className="inline-block px-2 py-0.5 text-xs bg-gray-100 text-gray-600 rounded" style={{ fontFamily: 'Google Sans, sans-serif' }}>
+                          <span key={index} className="inline-block px-2 py-0.5 text-xs bg-gray-700/50 text-gray-300 rounded" style={{ fontFamily: 'Google Sans, sans-serif' }}>
                             #{tag}
                           </span>
                         ))}
@@ -386,7 +386,7 @@ export default function SimulationList() {
 
                     <button
                       onClick={() => handleViewSimulation(simulation._id)}
-                      className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 text-xs"
+                      className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 text-xs"
                       style={{ fontFamily: 'Google Sans, sans-serif' }}
                     >
                       View Simulation
@@ -407,15 +407,15 @@ export default function SimulationList() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-gradient-to-r from-blue-600 to-blue-700 border-t border-blue-800 py-6 px-4 mt-12">
+      <footer className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border-t border-red-600/20 py-6 px-4 mt-12">
         <div className="max-w-6xl mx-auto text-center">
           <h3 className="text-xl font-medium text-white mb-2" style={{ fontFamily: 'Google Sans, sans-serif' }}>
             Verve Hub Writeups
           </h3>
-          <p className="text-sm text-blue-100" style={{ fontFamily: 'Google Sans, sans-serif' }}>
+          <p className="text-sm text-gray-400" style={{ fontFamily: 'Google Sans, sans-serif' }}>
             Cybersecurity Simulations & Educational Resources
           </p>
-          <div className="mt-4 text-xs text-blue-200" style={{ fontFamily: 'Google Sans, sans-serif' }}>
+          <div className="mt-4 text-xs text-gray-500" style={{ fontFamily: 'Google Sans, sans-serif' }}>
             © {new Date().getFullYear()} Verve Hub. All rights reserved.
           </div>
         </div>

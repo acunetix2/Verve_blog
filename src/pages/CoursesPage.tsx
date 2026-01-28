@@ -9,6 +9,7 @@ interface Course {
   title: string;
   description: string;
   image?: string;
+  imageUrl?: string;
   modules?: any[];
   createdAt?: string;
 }
@@ -191,8 +192,8 @@ const CoursesPage: React.FC = () => {
                 >
                   {/* Course Image */}
                   <div className="relative h-48 bg-gradient-to-br from-blue-600/20 to-purple-600/20 overflow-hidden">
-                    {course.image ? (
-                      <img src={course.image} alt={course.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                    {course.imageUrl || course.image ? (
+                      <img src={course.imageUrl || course.image} alt={course.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
                         <BookOpen className="w-16 h-16 text-slate-600" />

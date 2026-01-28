@@ -30,9 +30,10 @@ interface Lesson {
   content?: string;
   contentUrl?: string; // B2 URL
   contentBlocks?: Array<{
-    type: 'text' | 'header' | 'subheader' | 'points' | 'highlight';
+    type: 'text' | 'header' | 'subheader' | 'points' | 'highlight' | 'code' | 'command' | 'table';
     content: string;
     color?: string;
+    language?: string; // for code blocks
     order?: number;
   }>;
   quiz?: Quiz[];
@@ -431,16 +432,7 @@ const LessonView: React.FC = () => {
                     orange: 'text-orange-700',
                     red: 'text-red-700',
                   };
-                  const highlightBg = {
-                    slate: 'bg-gray-100 border-gray-300',
-                    blue: 'bg-blue-100 border-blue-300',
-                    green: 'bg-green-100 border-green-300',
-                    purple: 'bg-purple-100 border-purple-300',
-                    orange: 'bg-orange-100 border-orange-300',
-                    red: 'bg-red-100 border-red-300',
-                  };
                   const textColor = colorClasses[block.color as keyof typeof colorClasses] || colorClasses.slate;
-                  const bgColor = highlightBg[block.color as keyof typeof highlightBg] || highlightBg.slate;
 
                   if (block.type === 'header') {
                     return (
@@ -468,12 +460,87 @@ const LessonView: React.FC = () => {
                       </div>
                     );
                   }
+                  // ✅ Updated highlight to use green color
                   if (block.type === 'highlight') {
                     return (
-                      <div key={idx} className={`p-4 rounded-lg border-l-4 ${bgColor} border-blue-500`}>
-                        <p className={`${textColor}`}>{block.content}</p>
+                      <div key={idx} className="p-4 rounded-lg border-l-4 bg-green-50 border-green-500">
+                        <p className="text-green-800">{block.content}</p>
                       </div>
                     );
+                  }
+                  // ✅ Code block support
+                  if (block.type === 'code') {
+                    return (
+                      <div key={idx} className="bg-gray-900 rounded-lg overflow-hidden border border-gray-700">
+                        <div className="bg-gray-800 px-4 py-2 text-xs font-semibold text-gray-300">
+                          {block.language || 'Code'}
+                        </div>
+                        <pre className="p-4 overflow-x-auto">
+                          <code className="text-green-400 font-mono text-sm leading-relaxed">
+                            {block.content}
+                          </code>
+                        </pre>
+                      </div>
+                    );
+                  }
+                  // ✅ Command/Terminal block support
+                  if (block.type === 'command') {
+                    return (
+                      <div key={idx} className="bg-black rounded-lg overflow-hidden border border-gray-700">
+                        <div className="bg-gray-900 px-4 py-2 text-xs font-semibold text-gray-400">
+                          $ Terminal
+                        </div>
+                        <div className="p-4 font-mono text-sm">
+                          {block.content.split('\n').map((line, lineIdx) => (
+                            <div key={lineIdx} className="text-green-400 hover:bg-green-900/20 px-2 py-1">
+                              <span className="text-green-600">$</span> {line}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  }
+                  // ✅ Table block support
+                  if (block.type === 'table') {
+                    try {
+                      const rows = block.content.split('\n').filter(l => l.trim());
+                      const headers = rows[0]?.split('|').map(h => h.trim()).filter(h => h) || [];
+                      const data = rows.slice(1).map(row => 
+                        row.split('|').map(cell => cell.trim()).filter(cell => cell)
+                      );
+                      return (
+                        <div key={idx} className="overflow-x-auto rounded-lg border border-gray-300">
+                          <table className="w-full border-collapse bg-white">
+                            <thead className="bg-gray-100 border-b border-gray-300">
+                              <tr>
+                                {headers.map((header, hIdx) => (
+                                  <th key={hIdx} className="px-4 py-3 text-left font-semibold text-gray-800 border-r border-gray-300 last:border-r-0">
+                                    {header}
+                                  </th>
+                                ))}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {data.map((row, rIdx) => (
+                                <tr key={rIdx} className={rIdx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                                  {row.map((cell, cIdx) => (
+                                    <td key={cIdx} className="px-4 py-3 text-gray-700 border-r border-gray-300 last:border-r-0">
+                                      {cell}
+                                    </td>
+                                  ))}
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      );
+                    } catch (e) {
+                      return (
+                        <div key={idx} className="p-4 bg-red-50 rounded-lg border border-red-300 text-red-700">
+                          Error rendering table
+                        </div>
+                      );
+                    }
                   }
                   return (
                     <p key={idx} className="text-gray-700 leading-relaxed">

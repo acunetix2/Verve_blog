@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import { Plus, Trash2, ChevronUp, ChevronDown, Type, Heading1, Heading2, List, Highlighter, Eye } from "lucide-react";
+import { Plus, Trash2, ChevronUp, ChevronDown, Type, Heading1, Heading2, List, Highlighter, Eye, Code2, Terminal, Table } from "lucide-react";
 import { toast } from "sonner";
 
 interface ContentBlock {
   id?: string;
-  type: 'text' | 'header' | 'subheader' | 'points' | 'highlight';
+  type: 'text' | 'header' | 'subheader' | 'points' | 'highlight' | 'code' | 'command' | 'table';
   content: string;
   color: string;
+  language?: string; // for code blocks
   order: number;
 }
 
@@ -32,8 +33,9 @@ export const CourseContentEditor: React.FC<CourseContentEditorProps> = ({ blocks
     const newBlock: ContentBlock = {
       id: `block-${Date.now()}`,
       type,
-      content: '',
+      content: type === 'table' ? '| Header 1 | Header 2 |\n| --- | --- |\n| Cell 1 | Cell 2 |' : '',
       color: type === 'header' || type === 'subheader' ? selectedColor : 'slate',
+      language: type === 'code' ? 'javascript' : undefined,
       order: blocks.length,
     };
     onChange([...blocks, newBlock]);
@@ -65,6 +67,9 @@ export const CourseContentEditor: React.FC<CourseContentEditorProps> = ({ blocks
     subheader: <Heading2 size={16} />,
     points: <List size={16} />,
     highlight: <Highlighter size={16} />,
+    code: <Code2 size={16} />,
+    command: <Terminal size={16} />,
+    table: <Table size={16} />,
   };
 
   const typeLabels = {
@@ -72,7 +77,10 @@ export const CourseContentEditor: React.FC<CourseContentEditorProps> = ({ blocks
     header: 'Header',
     subheader: 'Subheader',
     points: 'Points/Bullet',
-    highlight: 'Highlight',
+    highlight: 'Highlight (Green)',
+    code: 'Code Block',
+    command: 'Command/Terminal',
+    table: 'Table',
   };
 
   if (preview) {
@@ -122,8 +130,8 @@ export const CourseContentEditor: React.FC<CourseContentEditorProps> = ({ blocks
               }
               if (block.type === 'highlight') {
                 return (
-                  <div key={idx} className={`p-4 rounded-lg border-l-4 ${colorScheme.bg} ${colorScheme.darkBg} border-blue-500 dark:border-blue-400`}>
-                    <p className={`${colorScheme.text} ${colorScheme.darkText}`}>{block.content}</p>
+                  <div key={idx} className="p-4 rounded-lg border-l-4 bg-green-50 border-green-500 dark:bg-green-900/30 dark:border-green-400">
+                    <p className="text-green-900 dark:text-green-200">{block.content}</p>
                   </div>
                 );
               }
@@ -170,6 +178,27 @@ export const CourseContentEditor: React.FC<CourseContentEditorProps> = ({ blocks
           <button
             onClick={() => addBlock('highlight')}
             className="text-xs bg-yellow-600/40 hover:bg-yellow-600/60 text-yellow-300 px-2.5 py-1.5 rounded transition-all flex items-center gap-1 border border-yellow-500/30"
+          >
+            <Highlighter size={14} /> Highlight
+          </button>
+          {/* ✅ New content type buttons */}
+          <button
+            onClick={() => addBlock('code')}
+            className="text-xs bg-green-600/40 hover:bg-green-600/60 text-green-300 px-2.5 py-1.5 rounded transition-all flex items-center gap-1 border border-green-500/30"
+          >
+            <Code2 size={14} /> Code
+          </button>
+          <button
+            onClick={() => addBlock('command')}
+            className="text-xs bg-cyan-600/40 hover:bg-cyan-600/60 text-cyan-300 px-2.5 py-1.5 rounded transition-all flex items-center gap-1 border border-cyan-500/30"
+          >
+            <Terminal size={14} /> Terminal
+          </button>
+          <button
+            onClick={() => addBlock('table')}
+            className="text-xs bg-indigo-600/40 hover:bg-indigo-600/60 text-indigo-300 px-2.5 py-1.5 rounded transition-all flex items-center gap-1 border border-indigo-500/30"
+          >
+            <Table size={14} /> Table
           >
             <Highlighter size={14} /> Highlight
           </button>

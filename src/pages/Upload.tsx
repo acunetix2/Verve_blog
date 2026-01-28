@@ -1,30 +1,15 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Upload, Loader2, CheckCircle2, ArrowLeft, Home } from "lucide-react";
+import { Upload, Loader2, CheckCircle2, ArrowLeft, Home, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
-const DOCUMENT_CATEGORIES = [
-  "Uncategorized",
-  "Web Exploitation",
-  "Binary Exploitation",
-  "Reverse Engineering",
-  "Cryptography",
-  "Forensics",
-  "Network Security",
-  "Malware Analysis",
-  "Penetration Testing",
-  "CTF Writeups",
-  "Vulnerability Research",
-  "Cloud Security",
-  "Wireless Security",
-  "Database Security",
-];
+import TECH_CATEGORIES from "../config/techCategories";
 
 const UploadPage: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("Uncategorized"); // ✅ Added category state
+  // ✅ Changed to array of selected categories
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(["Uncategorized"]);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error" | ""; text: string }>({
     type: "",
@@ -35,6 +20,30 @@ const UploadPage: React.FC = () => {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) setFile(e.target.files[0]);
+  };
+
+  // ✅ Handle category selection/deselection
+  const handleCategoryToggle = (category: string) => {
+    setSelectedCategories((prev) => {
+      if (prev.includes(category)) {
+        // Remove if already selected
+        const filtered = prev.filter((cat) => cat !== category);
+        // Keep at least one category
+        return filtered.length === 0 ? ["Uncategorized"] : filtered;
+      } else {
+        // Add new category
+        const updated = [...prev];
+        // Remove 'Uncategorized' if adding a real category
+        if (category !== "Uncategorized" && prev.includes("Uncategorized")) {
+          return updated.filter((cat) => cat !== "Uncategorized").concat(category);
+        }
+        // If adding Uncategorized, remove others
+        if (category === "Uncategorized") {
+          return ["Uncategorized"];
+        }
+        return updated.concat(category);
+      }
+    });
   };
 
   const handleUpload = async (e: React.FormEvent) => {
@@ -49,7 +58,10 @@ const UploadPage: React.FC = () => {
     formData.append("title", title);
     formData.append("description", description);
     formData.append("file", file);
-    formData.append("category", category); // ✅ Append category
+    // ✅ Append categories as array
+    selectedCategories.forEach((cat) => {
+      formData.append("categories", cat);
+    });
 
     try {
       setUploading(true);
@@ -63,7 +75,7 @@ const UploadPage: React.FC = () => {
       setTitle("");
       setDescription("");
       setFile(null);
-      setCategory("Uncategorized");
+      setSelectedCategories(["Uncategorized"]);
     } catch {
       setMessage({ type: "error", text: "Upload failed. Please try again." });
     } finally {
@@ -127,23 +139,46 @@ const UploadPage: React.FC = () => {
                   ></textarea>
                 </div>
 
-                {/* Category dropdown */}
+                {/* ✅ Multi-select Categories */}
                 <div>
-                  <label className="block text-sm font-medium mb-2 text-gray-300">Category</label>
-                  <select
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-gray-800 border border-red-600/30 
-                               text-gray-100 placeholder-gray-500
-                               focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 
-                               outline-none transition-all duration-200"
-                  >
-                    {DOCUMENT_CATEGORIES.map((cat) => (
-                      <option key={cat} value={cat}>
-                        {cat}
-                      </option>
+                  <label className="block text-sm font-medium mb-3 text-gray-300">
+                    Technology Categories (Select one or more)
+                  </label>
+                  <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto bg-gray-900/50 p-3 rounded-lg border border-red-600/20">
+                    {TECH_CATEGORIES.map((cat) => (
+                      <label
+                        key={cat}
+                        className="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-red-600/10 transition-all"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={selectedCategories.includes(cat)}
+                          onChange={() => handleCategoryToggle(cat)}
+                          className="w-4 h-4 rounded accent-orange-500 cursor-pointer"
+                        />
+                        <span className="text-sm text-gray-300">{cat}</span>
+                      </label>
                     ))}
-                  </select>
+                  </div>
+                  {selectedCategories.length > 0 && (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {selectedCategories.map((cat) => (
+                        <div
+                          key={cat}
+                          className="inline-flex items-center gap-2 px-3 py-1 bg-orange-600/30 border border-orange-600/50 rounded-full text-xs text-orange-300"
+                        >
+                          {cat}
+                          <button
+                            type="button"
+                            onClick={() => handleCategoryToggle(cat)}
+                            className="ml-1 hover:text-orange-200"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 <div>

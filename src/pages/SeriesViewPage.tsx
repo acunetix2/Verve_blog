@@ -49,10 +49,10 @@ const SeriesViewPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin inline-block w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full mb-4"></div>
-          <p className="text-gray-600">Loading series...</p>
+          <div className="animate-spin inline-block w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full mb-4"></div>
+          <p className="text-gray-400">Loading series...</p>
         </div>
       </div>
     );
@@ -60,10 +60,10 @@ const SeriesViewPage: React.FC = () => {
 
   if (!series) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
         <div className="text-center">
-          <BookOpen size={48} className="mx-auto mb-4 text-gray-400" />
-          <p className="text-gray-600 text-lg">Series not found</p>
+          <BookOpen size={48} className="mx-auto mb-4 text-gray-600" />
+          <p className="text-gray-400 text-lg">Series not found</p>
         </div>
       </div>
     );
@@ -72,21 +72,21 @@ const SeriesViewPage: React.FC = () => {
   const sortedPosts = [...series.posts].sort((a, b) => a.seriesOrder - b.seriesOrder);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="bg-gray-800 border-b border-red-600/20">
         <div className="max-w-4xl mx-auto px-6 py-12">
           <div className="flex items-center gap-3 mb-4">
-            <BookOpen className="text-blue-600" size={32} />
-            <span className="text-sm font-semibold text-gray-600 bg-blue-50 px-3 py-1 rounded-full">
+            <BookOpen className="text-orange-500" size={32} />
+            <span className="text-sm font-semibold text-orange-400 bg-orange-900/20 px-3 py-1 rounded-full border border-orange-600/30">
               {series.category}
             </span>
           </div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">{series.title}</h1>
-          <p className="text-lg text-gray-600 mb-6">{series.description}</p>
-          <div className="flex items-center gap-6 text-sm text-gray-600">
+          <h1 className="text-4xl font-bold text-white mb-4">{series.title}</h1>
+          <p className="text-lg text-gray-400 mb-6">{series.description}</p>
+          <div className="flex items-center gap-6 text-sm text-gray-400">
             <span className="flex items-center gap-2">
-              <Eye size={18} className="text-gray-400" />
+              <Eye size={18} className="text-gray-500" />
               {series.views.toLocaleString()} views
             </span>
             <span>By {series.author?.name}</span>
@@ -98,31 +98,31 @@ const SeriesViewPage: React.FC = () => {
       {/* Content */}
       <div className="max-w-4xl mx-auto px-6 py-12">
         {sortedPosts.length === 0 ? (
-          <div className="bg-white rounded-lg border border-gray-200 p-12 text-center">
-            <BookOpen className="mx-auto mb-4 text-gray-400" size={48} />
-            <p className="text-gray-600 text-lg">No posts in this series yet</p>
+          <div className="bg-gray-800 rounded-lg border border-red-600/20 p-12 text-center">
+            <BookOpen className="mx-auto mb-4 text-gray-600" size={48} />
+            <p className="text-gray-400 text-lg">No posts in this series yet</p>
           </div>
         ) : (
           <div className="space-y-4">
             {sortedPosts.map((post, index) => (
               <div
                 key={post._id}
-                className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-lg transition-shadow"
+                className="bg-gray-800 rounded-2xl border border-red-600/20 p-6 hover:border-red-600/50 hover:shadow-lg transition-all shadow-lg"
               >
                 <div className="flex items-start gap-6">
                   {/* Series Order Number */}
                   <div className="flex-shrink-0">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold text-lg">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center text-white font-bold text-lg">
                       {index + 1}
                     </div>
                   </div>
 
                   {/* Post Content */}
                   <div className="flex-1 min-w-0">
-                    <h2 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">
+                    <h2 className="text-xl font-bold text-white mb-2 line-clamp-2">
                       {post.title}
                     </h2>
-                    <p className="text-gray-600 mb-4 line-clamp-2">
+                    <p className="text-gray-400 mb-4 line-clamp-2">
                       {post.description}
                     </p>
                     <div className="flex items-center gap-4 text-sm text-gray-500">
@@ -137,7 +137,7 @@ const SeriesViewPage: React.FC = () => {
                   <div className="flex-shrink-0">
                     <a
                       href={`/blog/${post.slug}`}
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-all"
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-all"
                     >
                       Read <ArrowRight size={18} />
                     </a>
@@ -149,10 +149,10 @@ const SeriesViewPage: React.FC = () => {
         )}
 
         {/* Back to Series List */}
-        <div className="mt-12 pt-8 border-t border-gray-200">
+        <div className="mt-12 pt-8 border-t border-red-600/20">
           <a
             href="/series"
-            className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium"
+            className="inline-flex items-center gap-2 text-orange-500 hover:text-orange-400 font-medium"
           >
             ← Back to all series
           </a>

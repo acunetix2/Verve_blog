@@ -59,94 +59,95 @@ const AnalyticsCard: React.FC<AnalyticsCardProps> = ({
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
       {/* Total Documents */}
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200">
-        <div className="h-1 bg-green-500"></div>
+      <div className="bg-gray-800 rounded-2xl border border-red-600/20 overflow-hidden hover:border-red-600/50 hover:shadow-lg transition-all shadow-lg">
+        <div className="h-1 bg-gradient-to-r from-orange-500 to-red-600"></div>
         <div className="p-4">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <FileText className="text-gray-400 w-4 h-4" />
-              <span className="text-xs text-gray-500 font-medium">TOTAL</span>
+              <FileText className="text-gray-500 w-4 h-4" />
+              <span className="text-xs text-gray-400 font-medium">TOTAL</span>
             </div>
-            <span className="text-xs text-green-600 font-semibold bg-green-50 px-2 py-0.5 rounded">
+            <span className="text-xs text-orange-500 font-semibold bg-orange-900/20 px-2 py-0.5 rounded border border-orange-600/30">
               Active
             </span>
           </div>
           <div>
-            <p className="text-3xl font-bold text-gray-900 mb-1">
+            <p className="text-3xl font-bold text-white mb-1">
               {loading ? "..." : documents.length.toLocaleString()}
             </p>
-            <p className="text-xs text-gray-500">All time documents</p>
+            <p className="text-xs text-gray-400">All time documents</p>
           </div>
         </div>
       </div>
 
       {/* Recent Documents */}
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200">
-        <div className="h-1 bg-red-500"></div>
+      <div className="bg-gray-800 rounded-2xl border border-red-600/20 overflow-hidden hover:border-red-600/50 hover:shadow-lg transition-all shadow-lg">
+        <div className="h-1 bg-gradient-to-r from-red-500 to-red-600"></div>
         <div className="p-4">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <Calendar className="text-gray-400 w-4 h-4" />
-              <span className="text-xs text-gray-500 font-medium">RECENT</span>
+              <Calendar className="text-gray-500 w-4 h-4" />
+              <span className="text-xs text-gray-400 font-medium">RECENT</span>
             </div>
-            <span className="text-xs text-red-600 font-semibold bg-red-50 px-2 py-0.5 rounded">
+            <span className="text-xs text-red-400 font-semibold bg-red-900/20 px-2 py-0.5 rounded border border-red-600/30">
               {timeframeDays} days
             </span>
           </div>
           <div>
-            <p className="text-3xl font-bold text-gray-900 mb-1">
+            <p className="text-3xl font-bold text-white mb-1">
               {loading ? "..." : analytics.recentDocs.toLocaleString()}
             </p>
-            <p className="text-xs text-gray-500">Documents this week</p>
+            <p className="text-xs text-gray-400">Documents this week</p>
           </div>
         </div>
       </div>
 
       {/* Growth Rate */}
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200">
-        <div className="h-1 bg-yellow-500"></div>
+      <div className="bg-gray-800 rounded-2xl border border-red-600/20 overflow-hidden hover:border-red-600/50 hover:shadow-lg transition-all shadow-lg">
+        <div className="h-1 bg-gradient-to-r from-orange-400 to-orange-500"></div>
         <div className="p-4">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <TrendingUp className="text-gray-400 w-4 h-4" />
-              <span className="text-xs text-gray-500 font-medium">GROWTH</span>
+              <TrendingUp className="text-gray-500 w-4 h-4" />
+              <span className="text-xs text-gray-400 font-medium">GROWTH</span>
             </div>
-            <span className="text-xs text-yellow-600 font-semibold bg-yellow-50 px-2 py-0.5 rounded">
+            <span className="text-xs text-orange-400 font-semibold bg-orange-900/20 px-2 py-0.5 rounded border border-orange-600/30">
               Rate
             </span>
           </div>
           <div>
-            <p className="text-3xl font-bold text-gray-900 mb-1">
+            <p className="text-3xl font-bold text-white mb-1">
               {loading ? "..." : analytics.growthRate}%
             </p>
-            <p className="text-xs text-gray-500">Weekly performance</p>
+            <p className="text-xs text-gray-400">Weekly performance</p>
           </div>
         </div>
       </div>
 
       {/* System Status */}
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200">
-        <div className="h-1 bg-cyan-500"></div>
+      <div className="bg-gray-800 rounded-2xl border border-red-600/20 overflow-hidden hover:border-red-600/50 hover:shadow-lg transition-all shadow-lg">
+        <div className="h-1 bg-gradient-to-r from-orange-500 to-red-500"></div>
         <div className="p-4">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <Zap className="text-gray-400 w-4 h-4" />
-              <span className="text-xs text-gray-500 font-medium">SYSTEM</span>
+              <Zap className="text-gray-500 w-4 h-4" />
+              <span className="text-xs text-gray-400 font-medium">SYSTEM</span>
             </div>
-            <span className="text-xs text-cyan-600 font-semibold bg-cyan-50 px-2 py-0.5 rounded">
+            <span className="text-xs text-orange-400 font-semibold bg-orange-900/20 px-2 py-0.5 rounded border border-orange-600/30">
               Status
             </span>
           </div>
           <div>
-            <p className="text-3xl font-bold text-gray-900 mb-1">
+            <p className="text-3xl font-bold text-white mb-1">
               Optimal
             </p>
-            <p className="text-xs text-gray-500">Ready to fetch documents</p>
+            <p className="text-xs text-gray-400">Ready to fetch documents</p>
           </div>
         </div>
       </div>
     </div>
   );
+};
 };
 
 export default AnalyticsCard;
