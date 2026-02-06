@@ -199,10 +199,12 @@ export const CourseContentEditor: React.FC<CourseContentEditorProps> = ({ blocks
             className="text-xs bg-indigo-600/40 hover:bg-indigo-600/60 text-indigo-300 px-2.5 py-1.5 rounded transition-all flex items-center gap-1 border border-indigo-500/30"
           >
             <Table size={14} /> Table
-<<<<<<< HEAD
+          </button>
           
-=======
->>>>>>> c7f7631ba13d2550cf61002f9486e890c8b88ed7
+          <button
+            onClick={() => addBlock('highlight')}
+            className="text-xs bg-yellow-600/40 hover:bg-yellow-600/60 text-yellow-300 px-2.5 py-1.5 rounded transition-all flex items-center gap-1 border border-yellow-500/30"
+          >
             <Highlighter size={14} /> Highlight
           </button>
         </div>
