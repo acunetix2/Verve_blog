@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Search, Play, BookOpen, Users, Clock, Star, Lock, CheckCircle2 } from "lucide-react";
 import axios from "axios";
 import { toast } from "sonner";
+import CourseImage from "@/components/CourseImage";
 
 interface Course {
   _id: string;
@@ -10,13 +11,13 @@ interface Course {
   description: string;
   image?: string;
   imageUrl?: string;
-  modules?: any[];
+  modules?: Array<{ lessons?: Array<{ _id?: string }> }>;
   createdAt?: string;
 }
 
 interface UserProgress {
   courseId: string;
-  completedLessons?: any[];
+  completedLessons?: Array<{ lessonId: string; completedAt: string; quizScore?: number }>;
   enrolledAt?: string;
 }
 
@@ -38,11 +39,23 @@ const CoursesPage: React.FC = () => {
         const coursesData = Array.isArray(res.data) ? res.data : res.data.courses || [];
         setCourses(coursesData);
         setError(null);
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error("Failed to fetch courses - Full error:", error);
-        console.error("Response status:", error.response?.status);
-        console.error("Response data:", error.response?.data);
-        const errorMsg = error.response?.data?.message || error.message || "Failed to fetch courses";
+        let errorMsg = "Failed to fetch courses";
+        if (error instanceof Error) {
+          errorMsg = error.message;
+        } else if (typeof error === "object" && error !== null) {
+          const errorObj = error as Record<string, unknown>;
+          if ("response" in errorObj && typeof errorObj.response === "object" && errorObj.response !== null) {
+            const response = errorObj.response as Record<string, unknown>;
+            console.error("Response status:", response.status);
+            console.error("Response data:", response.data);
+            if (typeof response.data === "object" && response.data !== null) {
+              const data = response.data as Record<string, unknown>;
+              errorMsg = (data.message as string) || errorMsg;
+            }
+          }
+        }
         setError(errorMsg);
         setCourses([]);
         toast.error(errorMsg);
@@ -193,7 +206,13 @@ const CoursesPage: React.FC = () => {
                   {/* Course Image */}
                   <div className="relative h-48 bg-gradient-to-br from-blue-600/20 to-purple-600/20 overflow-hidden">
                     {course.imageUrl || course.image ? (
-                      <img src={course.imageUrl || course.image} alt={course.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                      <CourseImage
+                        courseId={course._id}
+                        courseTitle={course.title}
+                        imageUrl={course.imageUrl || course.image}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        alt={course.title}
+                      />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
                         <BookOpen className="w-16 h-16 text-slate-600" />

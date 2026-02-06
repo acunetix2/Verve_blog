@@ -7,6 +7,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useTheme } from "@/components/ThemeContext";
+import CourseImage from "@/components/CourseImage";
 
 interface Module {
   lessons?: Array<{ _id?: string }>;
@@ -90,7 +91,7 @@ const CoursesList: React.FC = () => {
           `${import.meta.env.VITE_API_BASE_URL}/wishlist`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        setWishlistItems(res.data?.map((item: any) => item.courseId) || []);
+        setWishlistItems(res.data?.map((item: { courseId: string }) => item.courseId) || []);
       } catch (error) {
         console.error("Failed to fetch wishlist:", error);
       }
@@ -146,7 +147,7 @@ const CoursesList: React.FC = () => {
     const filterCourses = () => {
       const sourceData = activeTab === "enrolled" ? enrolledCoursesData : courses;
       
-      let filtered = sourceData.filter(course => {
+      const filtered = sourceData.filter(course => {
         // Search filter
         if (searchTerm && !course.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
             !course.description.toLowerCase().includes(searchTerm.toLowerCase())) {
@@ -260,7 +261,7 @@ const CoursesList: React.FC = () => {
     }
   };
 
-  const updateFilters = (key: keyof Filters, value: any) => {
+  const updateFilters = (key: keyof Filters, value: string | number | boolean | string[]) => {
     setFilters(prev => ({
       ...prev,
       [key]: value
@@ -487,7 +488,7 @@ const CoursesList: React.FC = () => {
                   <h4 className="font-semibold text-sm mb-3">Sort By</h4>
                   <select
                     value={filters.sortBy}
-                    onChange={(e) => updateFilters("sortBy", e.target.value as any)}
+                    onChange={(e) => updateFilters("sortBy", e.target.value as string)}
                     className={`w-full px-3 py-2 rounded-lg text-sm border ${isDark ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'} outline-none focus:border-blue-600`}
                   >
                     <option value="newest">Newest First</option>
@@ -581,10 +582,12 @@ const CoursesList: React.FC = () => {
                           {/* Image */}
                           {(course.imageUrl || course.image) && (
                             <div className="w-40 h-32 flex-shrink-0 rounded-lg overflow-hidden">
-                              <img
-                                src={course.imageUrl || course.image}
-                                alt={course.title}
+                              <CourseImage
+                                courseId={course._id}
+                                courseTitle={course.title}
+                                imageUrl={course.imageUrl || course.image}
                                 className="w-full h-full object-cover group-hover:scale-110 transition-transform"
+                                alt={course.title}
                               />
                             </div>
                           )}
@@ -681,10 +684,12 @@ const CoursesList: React.FC = () => {
                       {/* Image Section */}
                       <div className={`relative h-40 ${isDark ? 'bg-gray-700' : 'bg-gray-200'} overflow-hidden`}>
                         {(course.imageUrl || course.image) ? (
-                          <img
-                            src={course.imageUrl || course.image}
-                            alt={course.title}
+                          <CourseImage
+                            courseId={course._id}
+                            courseTitle={course.title}
+                            imageUrl={course.imageUrl || course.image}
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                            alt={course.title}
                           />
                         ) : (
                           <div className={`w-full h-full flex items-center justify-center ${isDark ? 'bg-gradient-to-br from-gray-700 to-gray-800' : 'bg-gradient-to-br from-gray-300 to-gray-400'}`}>

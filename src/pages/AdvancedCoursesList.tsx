@@ -10,11 +10,12 @@ interface Course {
   description: string;
   imageUrl?: string;
   difficulty?: 'beginner' | 'intermediate' | 'advanced';
-  modules?: any[];
+  modules?: Array<{ lessons?: Array<{ _id?: string }> }>;
   rating?: number;
   students?: number;
   tier?: string;
   pricing?: { oneTimeFee?: number };
+  createdAt?: string | Date;
 }
 
 const AdvancedCoursesList: React.FC = () => {
@@ -39,22 +40,7 @@ const AdvancedCoursesList: React.FC = () => {
     fetchCourses();
   }, []);
 
-  useEffect(() => {
-    applyFiltersAndSort();
-  }, [courses, searchTerm, difficultyFilter, priceFilter, sortBy]);
-
-  const fetchCourses = async () => {
-    try {
-      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/courses`);
-      setCourses(response.data || []);
-    } catch (error) {
-      toast.error('Failed to load courses');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const applyFiltersAndSort = () => {
+  const applyFiltersAndSort = React.useCallback(() => {
     let filtered = [...courses];
 
     // Search
@@ -95,7 +81,24 @@ const AdvancedCoursesList: React.FC = () => {
 
     setFilteredCourses(filtered);
     setPage(1);
+  }, [courses, searchTerm, difficultyFilter, priceFilter, sortBy]);
+
+  useEffect(() => {
+    applyFiltersAndSort();
+  }, [applyFiltersAndSort]);
+
+  const fetchCourses = async () => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/courses`);
+      setCourses(response.data || []);
+    } catch (error) {
+      toast.error('Failed to load courses');
+    } finally {
+      setLoading(false);
+    }
   };
+
+
 
   const getDifficultyColor = (difficulty?: string) => {
     const colors = {

@@ -3,7 +3,7 @@ import { useTheme } from "@/components/ThemeContext";
 import ViewSimulation from "@/components/ViewSimulation";
 
 interface Simulation {
-  id: string;
+  _id: string;
   title: string;
   description: string;
   fileUrl: string;
@@ -342,8 +342,8 @@ export default function SimulationList() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
               {sortedSimulations.map((simulation) => (
                 <div
-                  key={simulation.id}
-                  onClick={() => handleViewSimulation(simulation.id)}
+                  key={simulation._id}
+                  onClick={() => handleViewSimulation(simulation._id)}
                   className="bg-gray-800 rounded-2xl shadow-lg border border-red-600/20 overflow-hidden hover:border-red-600/50 hover:shadow-2xl transition-all duration-300 transform hover:scale-105 active:scale-95 cursor-pointer hover:-translate-y-2 flex flex-col h-full"
                 >
                   <div className="bg-gradient-to-r from-red-500 via-orange-500 to-red-600 h-20 flex items-center justify-center flex-shrink-0">
@@ -387,12 +387,12 @@ export default function SimulationList() {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleViewSimulation(simulation.id);
+                        handleViewSimulation(simulation._id);
                       }}
                       className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 text-xs flex-shrink-0"
                       style={{ fontFamily: 'Google Sans, sans-serif' }}
                     >
-                      View Simulation
+                      Simulate
                     </button>
                   </div>
                 </div>

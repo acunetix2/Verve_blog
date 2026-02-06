@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTheme } from '@/components/ThemeContext';
+import CourseImage from '@/components/CourseImage';
 
 interface Lesson {
   _id?: string;
@@ -330,10 +331,12 @@ const CourseDetail: React.FC = () => {
               {/* Course Image */}
               {(course.imageUrl || course.image) && (
                 <div className="rounded-lg overflow-hidden mb-6 h-40">
-                  <img
-                    src={course.imageUrl || course.image}
-                    alt={course.title}
+                  <CourseImage
+                    courseId={course._id}
+                    courseTitle={course.title}
+                    imageUrl={course.imageUrl || course.image}
                     className="w-full h-full object-cover"
+                    alt={course.title}
                   />
                 </div>
               )}
