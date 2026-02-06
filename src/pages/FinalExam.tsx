@@ -109,32 +109,44 @@ const FinalExam: React.FC = () => {
       }
     });
 
-    const calculatedScore = Math.round(
-      (correctAnswers / exam.questions.length) * 100
-    );
-    setScore(calculatedScore);
-    setSubmitted(true);
+    // Submit to backend
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/courses/${courseId}/exam/submit`,
+        { answers },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
-    // If passed, generate certificate
-    if (calculatedScore >= exam.passingScore) {
-      try {
-        const response = await axios.post(
-          `${import.meta.env.VITE_API_BASE_URL}/certificates/generate`,
-          { courseId },
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+      const { score: backendScore, passed, certificate: cert, detailedResults } = response.data;
+      
+      setScore(backendScore);
+      setSubmitted(true);
 
-        setCertificate(response.data.certificate);
+      if (passed && cert) {
+        setCertificate(cert);
         setShowCertificate(true);
         toast.success('Congratulations! You passed the exam and earned your certificate!');
-      } catch (error) {
-        console.error('Failed to generate certificate:', error);
-        toast.error('Failed to generate certificate');
+      } else {
+        toast.error(`You scored ${backendScore}%. Passing score: ${exam.passingScore}%`);
       }
-    } else {
-      toast.error(`You scored ${calculatedScore}%. Passing score: ${exam.passingScore}%`);
+    } catch (error) {
+      console.error('Failed to submit exam:', error);
+      toast.error('Failed to submit exam. Please try again.');
+      
+      // Fallback to client-side calculation
+      const correctAnswers = exam.questions.filter((q, idx) => answers[idx] === q.correctAnswer).length;
+      const calculatedScore = Math.round((correctAnswers / exam.questions.length) * 100);
+      
+      setScore(calculatedScore);
+      setSubmitted(true);
+      
+      if (calculatedScore >= exam.passingScore) {
+        toast.success('Exam submitted! Certificate will be generated shortly.');
+      } else {
+        toast.error(`You scored ${calculatedScore}%. Passing score: ${exam.passingScore}%`);
+      }
     }
   };
 

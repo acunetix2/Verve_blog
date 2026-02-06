@@ -111,7 +111,7 @@ export default function Login() {
   }, [location, navigate]);
 
   const validateForm = () => {
-    const newErrors: any = {};
+    const newErrors: Record<string, string> = {};
 
     if (!formData.email) newErrors.email = "Email is required";
     else if (!/\S+@\S+\.\S+/.test(formData.email))
@@ -183,8 +183,9 @@ export default function Login() {
       } else {
         setMessage({ type: "error", text: res.data?.message || "Login failed" });
       }
-    } catch (err: any) {
-      const msg = err?.response?.data?.message || "Incorrect username or password";
+    } catch (err: unknown) {
+      const errorObj = err as { response?: { data?: { message?: string } } };
+      const msg = errorObj?.response?.data?.message || "Incorrect username or password";
       setMessage({ type: "error", text: String(msg || "Login failed") });
     } finally {
       setIsLoading(false);
@@ -297,11 +298,11 @@ export default function Login() {
         className="absolute inset-0 bg-cover bg-center bg-no-repeat" 
         style={{
           backgroundImage: "url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1920&h=1080&fit=crop')",
-          backgroundColor: '#1e3a8a'
+          backgroundColor: '#1a1a2e'
         }}
       />
       {/* DARK OVERLAY FOR READABILITY */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-900/85 via-blue-800/80 to-blue-700/75" />
+      <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/45 to-black/55" />
       
       {/* BACKGROUND ORBS */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">

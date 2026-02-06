@@ -51,6 +51,7 @@ import UserCertificates from "@/pages/UserCertificates";
 import NotificationsPage from "@/pages/NotificationsPage";
 import FloatingActionButton from "@/components/FloatingActionButton";
 import VerveHubLogo  from "@/components/VerveHubLogo";
+import UserProfile from  "@/pages/UserProfile";
 
 // --- Auth Context ---
 interface AuthContextType {
@@ -234,6 +235,7 @@ const App = () => (
                   <Route path="/documentation" element={<Documentation />} />
                   <Route path="/support" element={<Support />} />
                   <Route path="/community" element={<Community />} />
+                  <Route path="/v/profile" element={<UserProfile /> } />
                   <Route path="/newsletter" element={<Newsletter />} />
                   <Route path="/v/billing" element={<Billing />} />
                   <Route path="/v/courses" element={<CoursesList />} />

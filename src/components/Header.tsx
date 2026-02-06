@@ -459,8 +459,10 @@ const UserDropdown = ({
             className="w-8 h-8 rounded-full object-cover ring-2 ring-gray-200 dark:ring-gray-700 cursor-pointer hover:opacity-80 transition-opacity"
             onClick={(e) => {
               e.stopPropagation();
-              onAvatarClick?.();
+              navigate("/v/profile");
+              setOpen(false);
             }}
+            title="Go to profile"
           />
         ) : (
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-700 to-green-700 flex items-center justify-center text-white font-semibold text-xs shadow-sm">
@@ -493,6 +495,20 @@ const UserDropdown = ({
           )}
 
           <div className="py-1">
+            <button
+              onClick={() => {
+                navigate("/v/profile");
+                setOpen(false);
+              }}
+              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+            >
+              <div className="w-4 h-4 rounded-full bg-blue-600 flex items-center justify-center flex-shrink-0">
+                <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <span>My Profile</span>
+            </button>
             <button
               onClick={() => {
                 navigate("/v/account");

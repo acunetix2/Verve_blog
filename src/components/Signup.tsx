@@ -116,11 +116,11 @@ export default function Signup() {
         className="absolute inset-0 bg-cover bg-center bg-no-repeat" 
         style={{
           backgroundImage: "url('https://images.unsplash.com/photo-1550439062-7e5fb6bfb773?w=1920&h=1080&fit=crop')",
-          backgroundColor: '#1e3a8a'
+          backgroundColor: '#1a1a2e'
         }}
       />
       {/* DARK OVERLAY FOR READABILITY */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-900/85 via-blue-800/80 to-blue-700/75" />
+      <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/45 to-black/55" />
       
 	  {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">

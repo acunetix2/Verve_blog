@@ -173,6 +173,7 @@ const AdminPage: React.FC = () => {
     title: "", 
     description: "", 
     image: "",
+    imageFile: undefined as File | undefined,
     modules: [] as Array<{ title: string; description?: string; lessons: Array<{ title: string; content?: string }> }>
   });
   const [editingCourseId, setEditingCourseId] = useState<string | null>(null);
@@ -446,35 +447,42 @@ const AdminPage: React.FC = () => {
     }
     try {
       const token = localStorage.getItem("token");
-      // Send modules as JSON (not stringified)
-      const payload = {
-        title: courseForm.title,
-        description: courseForm.description,
-        image: courseForm.image,
-        modules: courseForm.modules
-      };
+      
+      // Use FormData to properly handle image file upload
+      const formData = new FormData();
+      formData.append("title", courseForm.title);
+      formData.append("description", courseForm.description);
+      
+      // Only append image file if it exists (for new uploads)
+      if (courseForm.imageFile) {
+        formData.append("image", courseForm.imageFile);
+      }
+      
+      // Send modules as JSON string for multipart/form-data
+      formData.append("modules", JSON.stringify(courseForm.modules));
       
       if (editingCourseId) {
         await axios.put(
           `${import.meta.env.VITE_API_BASE_URL}/courses/${editingCourseId}`,
-          payload,
-          { headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } }
+          formData,
+          { headers: { Authorization: `Bearer ${token}` } }
         );
         toast.success("Course updated successfully", { icon: <CheckCircle2 className="text-green-500" /> });
       } else {
         await axios.post(
           `${import.meta.env.VITE_API_BASE_URL}/courses`,
-          payload,
-          { headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } }
+          formData,
+          { headers: { Authorization: `Bearer ${token}` } }
         );
         toast.success("Course created successfully", { icon: <CheckCircle2 className="text-green-500" /> });
       }
-      setCourseForm({ title: "", description: "", image: "", modules: [] });
+      setCourseForm({ title: "", description: "", image: "", imageFile: undefined, modules: [] });
       setEditingCourseId(null);
       setShowCourseModal(false);
       setExpandedModuleIndex(null);
       await fetchCourses();
     } catch (error) {
+      console.error('Course save error:', error);
       toast.error("Failed to save course", { icon: <XCircle className="text-red-500" /> });
     }
   };
@@ -492,6 +500,7 @@ const AdminPage: React.FC = () => {
         title: fullCourse.title, 
         description: fullCourse.description, 
         image: fullCourse.imageUrl || "",
+        imageFile: undefined,
         modules: fullCourse.modules || [],
         finalExam: fullCourse.finalExam || {
           questions: [],
@@ -1500,7 +1509,7 @@ const AdminPage: React.FC = () => {
                     );
                     toast.success("Course created successfully", { icon: <CheckCircle2 className="text-green-500" /> });
                   }
-                  setCourseForm({ title: "", description: "", image: "", modules: [] });
+                  setCourseForm({ title: "", description: "", image: "", imageFile: undefined, modules: [] });
                   setEditingCourseId(null);
                   setShowCourseModal(false);
                   setExpandedModuleIndex(null);
@@ -1516,7 +1525,7 @@ const AdminPage: React.FC = () => {
               <button
                 onClick={() => {
                   setShowCourseModal(false);
-                  setCourseForm({ title: "", description: "", image: "", modules: [] });
+                  setCourseForm({ title: "", description: "", image: "", imageFile: undefined, modules: [] });
                   setEditingCourseId(null);
                   setExpandedModuleIndex(null);
                 }}
@@ -2015,6 +2024,7 @@ const AdminPage: React.FC = () => {
 				  <thead className="bg-slate-900/50 border-b border-slate-700/50">
 					<tr>
 					  <th className="px-6 py-3 text-left text-sm font-semibold text-slate-300">Document</th>
+					  <th className="px-6 py-3 text-left text-sm font-semibold text-slate-300">Category</th>
 					  <th className="px-6 py-3 text-left text-sm font-semibold text-slate-300">Type</th>
 					  <th className="px-6 py-3 text-left text-sm font-semibold text-slate-300">Uploaded</th>
 					  <th className="px-6 py-3 text-right text-sm font-semibold text-slate-300">Actions</th>
@@ -2023,7 +2033,7 @@ const AdminPage: React.FC = () => {
 				  <tbody className="divide-y divide-slate-700/50">
 					{documents.length === 0 ? (
 					  <tr>
-						<td colSpan={4} className="px-6 py-8 text-center text-slate-400">
+						<td colSpan={5} className="px-6 py-8 text-center text-slate-400">
 						  No documents found
 						</td>
 					  </tr>
@@ -2038,6 +2048,23 @@ const AdminPage: React.FC = () => {
 							  <div>
 								<p className="text-white font-medium line-clamp-1">{doc.title || "Untitled"}</p>
 								<p className="text-xs text-slate-500">{doc.fileName || "unknown"}</p>
+							  </div>
+							</td>
+							<td className="px-6 py-4 text-sm text-slate-400">
+							  <div className="flex gap-1 flex-wrap">
+								{doc.categories && Array.isArray(doc.categories) && doc.categories.length > 0 ? (
+								  doc.categories.map((cat) => (
+									<span key={cat} className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded text-xs">
+									  {cat}
+									</span>
+								  ))
+								) : doc.category ? (
+								  <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded text-xs">
+									{doc.category}
+									</span>
+								) : (
+								  <span className="text-slate-500">Uncategorized</span>
+								)}
 							  </div>
 							</td>
 							<td className="px-6 py-4 text-sm text-slate-400">
@@ -2083,7 +2110,7 @@ const AdminPage: React.FC = () => {
 			<div className="flex gap-4 items-center flex-wrap">
 			  <button
 				onClick={() => {
-				  setCourseForm({ title: "", description: "", image: "", modules: [] });
+				  setCourseForm({ title: "", description: "", image: "", imageFile: undefined, modules: [] });
 				  setEditingCourseId(null);
 				  setExpandedModuleIndex(null);
 				  setShowCourseModal(true);

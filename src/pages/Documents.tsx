@@ -270,7 +270,7 @@ const Documents: React.FC = () => {
             </p>
           </div>
         ) : (
-          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5">
+          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4">
             {filteredDocuments.map((doc) => {
               // ✅ Support both new and legacy category fields
               const documentCategories = doc.categories || (doc.category ? [doc.category] : ["Uncategorized"]);
@@ -280,16 +280,16 @@ const Documents: React.FC = () => {
               return (
                 <div
                   key={doc._id}
-                  className="bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl border border-red-600/20 hover:border-red-600/50 transition-all duration-300 overflow-hidden group cursor-pointer"
+                  className="bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl border border-red-600/20 hover:border-red-600/50 transition-all duration-300 overflow-hidden group cursor-pointer flex flex-col h-full"
                 >
                   {/* Card Header with gradient */}
-                  <div className="h-2 bg-gradient-to-r from-red-500 via-orange-500 to-red-600"></div>
+                  <div className="h-2 bg-gradient-to-r from-red-500 via-orange-500 to-red-600 flex-shrink-0"></div>
                   
                   {/* Card Content */}
-                  <div className="p-6">
+                  <div className="p-6 flex flex-col flex-grow">
                     {/* Icon and Title */}
                     <div className="flex items-start gap-3 mb-4">
-                      <div className="flex-shrink-0 w-12 h-12 bg-red-900/30 rounded-xl flex items-center justify-center border border-red-600/30">
+                      <div className="flex-shrink-0 w-12 h-12 bg-red-900/30 rounded-xl flex items-center justify-center border border-red-600/30 flex-shrink-0">
                         <Icon className="w-6 h-6 text-red-500" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -311,13 +311,16 @@ const Documents: React.FC = () => {
 
                     {/* Description */}
                     {doc.description && (
-                      <p className="text-gray-400 text-sm mb-4 line-clamp-2">
+                      <p className="text-gray-400 text-sm mb-4 line-clamp-2 flex-grow">
                         {doc.description}
                       </p>
                     )}
 
+                    {/* Spacer to push buttons to bottom */}
+                    <div className="flex-grow"></div>
+
                     {/* Action Buttons */}
-                    <div className="flex items-center gap-3 pt-4 border-t border-gray-700">
+                    <div className="flex items-center gap-3 pt-4 border-t border-gray-700 mt-4">
                       <button
                         onClick={() => handlePreview(doc._id)}
                         className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-900 hover:bg-gray-800 text-orange-500 font-medium rounded-xl border border-orange-500/30 hover:border-orange-500/50 transition-colors"

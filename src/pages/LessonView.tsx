@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ArrowLeft, CheckCircle2, ChevronRight, Loader2, Award, Play } from 'lucide-react';
+import {
+  ArrowLeft, CheckCircle2, ChevronRight, Loader2, Award, Play, MessageSquare,
+  ChevronLeft, Heart, Share2, BookOpen, Clock, Volume2, Download, Menu, X,
+  Eye, Lightbulb, AlertCircle
+} from 'lucide-react';
 import { toast } from 'sonner';
 import CertificateDisplay from '../components/CertificateDisplay';
 import VideoPlayer from '../components/VideoPlayer';
@@ -13,6 +17,17 @@ interface Quiz {
   question: string;
   options: string[];
   answer: string;
+  correctAnswer?: string;
+  explanation?: string;
+}
+
+interface QuizResult {
+  questionIndex: number;
+  question: string;
+  userAnswer: string;
+  correctAnswer: string;
+  isCorrect: boolean;
+  explanation?: string;
 }
 
 interface Resource {
@@ -28,12 +43,12 @@ interface Lesson {
   _id?: string;
   title: string;
   content?: string;
-  contentUrl?: string; // B2 URL
+  contentUrl?: string;
   contentBlocks?: Array<{
     type: 'text' | 'header' | 'subheader' | 'points' | 'highlight' | 'code' | 'command' | 'table';
     content: string;
     color?: string;
-    language?: string; // for code blocks
+    language?: string;
     order?: number;
   }>;
   quiz?: Quiz[];
@@ -55,9 +70,10 @@ interface Course {
   slug?: string;
   title: string;
   modules: Module[];
+  description?: string;
+  totalDuration?: string;
 }
 
-// Use same Certificate type as CertificateDisplay
 interface Certificate {
   _id: string;
   courseTitle: string;
@@ -67,6 +83,15 @@ interface Certificate {
   totalQuizScore?: number;
   isDownloaded?: boolean;
   downloadedAt?: string;
+}
+
+interface Comment {
+  _id: string;
+  content: string;
+  author: { name: string; avatar?: string };
+  createdAt: string;
+  helpful: number;
+  replies?: Comment[];
 }
 
 const LessonView: React.FC = () => {
@@ -88,11 +113,18 @@ const LessonView: React.FC = () => {
   const [quizAnswers, setQuizAnswers] = useState<{ [key: number]: string }>({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
   const [quizScore, setQuizScore] = useState(0);
+  const [detailedResults, setDetailedResults] = useState<QuizResult[]>([]);
   const [token] = useState<string | null>(localStorage.getItem('token'));
   const [certificate, setCertificate] = useState<Certificate | null>(null);
   const [showCertificate, setShowCertificate] = useState(false);
   const [isCourseComplete, setIsCourseComplete] = useState(false);
   const [isLessonCompleted, setIsLessonCompleted] = useState(false);
+  const [activeTab, setActiveTab] = useState<'lesson' | 'resources' | 'qa' | 'notes'>('lesson');
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [loadingComments, setLoadingComments] = useState(false);
+  const [commentText, setCommentText] = useState('');
+  const [notes, setNotes] = useState<string>('');
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -186,42 +218,60 @@ const LessonView: React.FC = () => {
   const handleSubmitQuiz = async () => {
     if (!lesson?.quiz) return;
 
-    // Calculate score
-    let correct = 0;
-    lesson.quiz.forEach((q, idx) => {
-      if (quizAnswers[idx] === q.answer) {
-        correct++;
-      }
-    });
-
-    const score = Math.round((correct / lesson.quiz.length) * 100);
-    setQuizScore(score);
-    setQuizSubmitted(true);
-
-    // Mark lesson as complete and get certificate if course is complete
+    // Submit to backend API for proper scoring
     if (token && course?._id && lesson._id) {
       try {
         const response = await axios.post(
-          `${import.meta.env.VITE_API_BASE_URL}/courses/${course._id}/lesson/${lesson._id}/complete`,
-          { quizScore: score },
+          `${import.meta.env.VITE_API_BASE_URL}/courses/${course._id}/lessons/${lesson._id}/quiz/submit`,
+          { answers: quizAnswers },
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        
-        // Check if course is now complete and certificate was generated
-        if (response.data.isCourseComplete && response.data.certificate) {
-          setIsCourseComplete(true);
-          setCertificate(response.data.certificate);
-          setShowCertificate(true);
-          setIsLessonCompleted(true);
-          toast.success('🎉 Congratulations! You completed the course!');
-        } else {
+
+        const { score, passed, detailedResults } = response.data;
+        setQuizScore(score);
+        setQuizSubmitted(true);
+
+        // Now mark lesson as complete with the quiz score
+        try {
+          const completeResponse = await axios.post(
+            `${import.meta.env.VITE_API_BASE_URL}/courses/${course._id}/lesson/${lesson._id}/complete`,
+            { quizScore: score },
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+          
+          // Check if course is now complete and certificate was generated
+          if (completeResponse.data.isCourseComplete && completeResponse.data.certificate) {
+            setIsCourseComplete(true);
+            setCertificate(completeResponse.data.certificate);
+            setShowCertificate(true);
+            setIsLessonCompleted(true);
+            toast.success('🎉 Congratulations! You completed the course!');
+          } else {
+            setIsLessonCompleted(true);
+            toast.success(`Quiz submitted! Score: ${score}%`);
+          }
+        } catch (completeError) {
+          console.error('Error marking lesson complete:', completeError);
           setIsLessonCompleted(true);
           toast.success(`Quiz submitted! Score: ${score}%`);
         }
       } catch (error) {
-        console.error('Error marking lesson complete:', error);
+        console.error('Error submitting quiz:', error);
         toast.error('Failed to submit quiz. Please try again.');
       }
+    } else {
+      // Fallback if not authenticated
+      let correct = 0;
+      lesson.quiz.forEach((q, idx) => {
+        if (quizAnswers[idx] === q.correctAnswer) {
+          correct++;
+        }
+      });
+
+      const score = Math.round((correct / lesson.quiz.length) * 100);
+      setQuizScore(score);
+      setQuizSubmitted(true);
+      toast.success(`Quiz submitted! Score: ${score}%`);
     }
   };
 

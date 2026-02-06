@@ -6,11 +6,16 @@ interface AnalyticsCardProps {
   timeframeDays?: number; // default: 7 days
 }
 
+interface Document {
+  uploadedAt?: string;
+  createdAt?: string;
+}
+
 const AnalyticsCard: React.FC<AnalyticsCardProps> = ({
   endpoint,
   timeframeDays = 7,
 }) => {
-  const [documents, setDocuments] = useState<any[]>([]);
+  const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
@@ -54,94 +59,112 @@ const AnalyticsCard: React.FC<AnalyticsCardProps> = ({
     return { recentDocs, monthlyDocs, growthRate };
   }, [documents, timeframeDays]);
 
-  if (error) return <p className="text-red-500">Failed to load document analytics.</p>;
+  if (error) return <p className="text-red-500 text-xs" style={{ fontFamily: "'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}>Failed to load document analytics.</p>;
+
+  const fontStyle = {
+    fontFamily: "'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+    fontSize: '0.8125rem'
+  };
+
+  const smallFontStyle = {
+    fontFamily: "'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+    fontSize: '0.75rem'
+  };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
       {/* Total Documents */}
-      <div className="bg-gray-800 rounded-2xl border border-red-600/20 overflow-hidden hover:border-red-600/50 hover:shadow-lg transition-all shadow-lg">
-        <div className="h-1 bg-gradient-to-r from-orange-500 to-red-600"></div>
-        <div className="p-4">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <FileText className="text-gray-500 w-4 h-4" />
-              <span className="text-xs text-gray-400 font-medium">TOTAL</span>
+      <div className="group bg-gradient-to-br from-gray-850 to-gray-900 rounded-2xl border border-red-600/25 overflow-hidden hover:border-red-600/60 hover:shadow-2xl transition-all shadow-lg hover:-translate-y-1">
+        <div className="h-1.5 bg-gradient-to-r from-orange-400 via-orange-500 to-red-600"></div>
+        <div className="p-5">
+          <div className="flex items-center justify-between mb-3.5">
+            <div className="flex items-center gap-2.5">
+              <div className="p-1.5 rounded-lg bg-orange-600/20">
+                <FileText className="text-orange-500 w-4 h-4" />
+              </div>
+              <span className="text-xs font-semibold text-gray-400" style={smallFontStyle}>Total</span>
             </div>
-            <span className="text-xs text-orange-500 font-semibold bg-orange-900/20 px-2 py-0.5 rounded border border-orange-600/30">
+            <span className="text-xs font-bold text-orange-400 bg-orange-600/20 px-2.5 py-1 rounded-md border border-orange-600/40">
               Active
             </span>
           </div>
           <div>
-            <p className="text-3xl font-bold text-white mb-1">
+            <p className="text-3xl font-bold text-white mb-1.5">
               {loading ? "..." : documents.length.toLocaleString()}
             </p>
-            <p className="text-xs text-gray-400">All time documents</p>
+            <p className="text-xs text-gray-400" style={smallFontStyle}>Overall Documents</p>
           </div>
         </div>
       </div>
 
       {/* Recent Documents */}
-      <div className="bg-gray-800 rounded-2xl border border-red-600/20 overflow-hidden hover:border-red-600/50 hover:shadow-lg transition-all shadow-lg">
-        <div className="h-1 bg-gradient-to-r from-red-500 to-red-600"></div>
-        <div className="p-4">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <Calendar className="text-gray-500 w-4 h-4" />
-              <span className="text-xs text-gray-400 font-medium">RECENT</span>
+      <div className="group bg-gradient-to-br from-gray-850 to-gray-900 rounded-2xl border border-red-600/25 overflow-hidden hover:border-red-600/60 hover:shadow-2xl transition-all shadow-lg hover:-translate-y-1">
+        <div className="h-1.5 bg-gradient-to-r from-red-400 via-red-500 to-red-600"></div>
+        <div className="p-5">
+          <div className="flex items-center justify-between mb-3.5">
+            <div className="flex items-center gap-2.5">
+              <div className="p-1.5 rounded-lg bg-red-600/20">
+                <Calendar className="text-red-500 w-4 h-4" />
+              </div>
+              <span className="text-xs font-semibold text-gray-400" style={smallFontStyle}>Latest</span>
             </div>
-            <span className="text-xs text-red-400 font-semibold bg-red-900/20 px-2 py-0.5 rounded border border-red-600/30">
-              {timeframeDays} days
+            <span className="text-xs font-bold text-red-400 bg-red-600/20 px-2.5 py-1 rounded-md border border-red-600/40">
+              {timeframeDays}d
             </span>
           </div>
           <div>
-            <p className="text-3xl font-bold text-white mb-1">
+            <p className="text-3xl font-bold text-white mb-1.5">
               {loading ? "..." : analytics.recentDocs.toLocaleString()}
             </p>
-            <p className="text-xs text-gray-400">Documents this week</p>
+            <p className="text-xs text-gray-400" style={smallFontStyle}>This week</p>
           </div>
         </div>
       </div>
 
       {/* Growth Rate */}
-      <div className="bg-gray-800 rounded-2xl border border-red-600/20 overflow-hidden hover:border-red-600/50 hover:shadow-lg transition-all shadow-lg">
-        <div className="h-1 bg-gradient-to-r from-orange-400 to-orange-500"></div>
-        <div className="p-4">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <TrendingUp className="text-gray-500 w-4 h-4" />
-              <span className="text-xs text-gray-400 font-medium">GROWTH</span>
+      <div className="group bg-gradient-to-br from-gray-850 to-gray-900 rounded-2xl border border-red-600/25 overflow-hidden hover:border-red-600/60 hover:shadow-2xl transition-all shadow-lg hover:-translate-y-1">
+        <div className="h-1.5 bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500"></div>
+        <div className="p-5">
+          <div className="flex items-center justify-between mb-3.5">
+            <div className="flex items-center gap-2.5">
+              <div className="p-1.5 rounded-lg bg-amber-600/20">
+                <TrendingUp className="text-amber-500 w-4 h-4" />
+              </div>
+              <span className="text-xs font-semibold text-gray-400" style={smallFontStyle}>Growth</span>
             </div>
-            <span className="text-xs text-orange-400 font-semibold bg-orange-900/20 px-2 py-0.5 rounded border border-orange-600/30">
+            <span className="text-xs font-bold text-amber-400 bg-amber-600/20 px-2.5 py-1 rounded-md border border-amber-600/40">
               Rate
             </span>
           </div>
           <div>
-            <p className="text-3xl font-bold text-white mb-1">
+            <p className="text-3xl font-bold text-white mb-1.5">
               {loading ? "..." : analytics.growthRate}%
             </p>
-            <p className="text-xs text-gray-400">Weekly performance</p>
+            <p className="text-xs text-gray-400" style={smallFontStyle}>Weekly</p>
           </div>
         </div>
       </div>
 
       {/* System Status */}
-      <div className="bg-gray-800 rounded-2xl border border-red-600/20 overflow-hidden hover:border-red-600/50 hover:shadow-lg transition-all shadow-lg">
-        <div className="h-1 bg-gradient-to-r from-orange-500 to-red-500"></div>
-        <div className="p-4">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <Zap className="text-gray-500 w-4 h-4" />
-              <span className="text-xs text-gray-400 font-medium">SYSTEM</span>
+      <div className="group bg-gradient-to-br from-gray-850 to-gray-900 rounded-2xl border border-red-600/25 overflow-hidden hover:border-red-600/60 hover:shadow-2xl transition-all shadow-lg hover:-translate-y-1">
+        <div className="h-1.5 bg-gradient-to-r from-green-400 via-emerald-500 to-teal-600"></div>
+        <div className="p-5">
+          <div className="flex items-center justify-between mb-3.5">
+            <div className="flex items-center gap-2.5">
+              <div className="p-1.5 rounded-lg bg-green-600/20">
+                <Zap className="text-green-500 w-4 h-4" />
+              </div>
+              <span className="text-xs font-semibold text-gray-400" style={smallFontStyle}>SYSTEM</span>
             </div>
-            <span className="text-xs text-orange-400 font-semibold bg-orange-900/20 px-2 py-0.5 rounded border border-orange-600/30">
+            <span className="text-xs font-bold text-green-400 bg-green-600/20 px-2.5 py-1 rounded-md border border-green-600/40">
               Status
             </span>
           </div>
           <div>
-            <p className="text-3xl font-bold text-white mb-1">
-              Optimal
+            <p className="text-3xl font-bold text-white mb-1.5">
+              {loading ? "..." : "✓ Good"}
             </p>
-            <p className="text-xs text-gray-400">Ready to fetch documents</p>
+            <p className="text-xs text-gray-400" style={smallFontStyle}>Ready</p>
           </div>
         </div>
       </div>

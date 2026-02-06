@@ -182,7 +182,7 @@ const DashboardAnalytics: React.FC<DashboardAnalyticsProps> = ({ endpoints }) =>
       <div className="flex items-start justify-between mb-3">
         <div className="flex-1">
           <p className="text-xs font-medium text-gray-500 mb-1">{title}</p>
-          <p className="text-xl sm:text-2xl font-bold text-gray-900" style={{ fontFamily: "'Google Sans', sans-serif" }}>
+          <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white" style={{ fontFamily: "'Google Sans', sans-serif" }}>
             {value.toLocaleString()}
           </p>
         </div>
@@ -217,7 +217,7 @@ const DashboardAnalytics: React.FC<DashboardAnalyticsProps> = ({ endpoints }) =>
             <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-200"></div>
             <div className="absolute top-0 left-0 animate-spin rounded-full h-16 w-16 border-4 border-t-blue-600 border-transparent"></div>
           </div>
-          <p className="mt-6 text-gray-700 font-medium text-lg" style={{ fontFamily: "'Google Sans', sans-serif" }}>
+          <p className="mt-6 text-gray-700 dark:text-gray-300 font-medium text-lg" style={{ fontFamily: "'Google Sans', sans-serif" }}>
             Loading analytics...
           </p>
         </div>
@@ -273,7 +273,7 @@ const DashboardAnalytics: React.FC<DashboardAnalyticsProps> = ({ endpoints }) =>
                 Analytics Dashboard
               </h1>
             </div>
-            <p className="text-gray-600 text-xs sm:text-sm ml-4 font-medium" style={{ fontFamily: "'Google Sans', sans-serif" }}>
+            <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm ml-4 font-medium" style={{ fontFamily: "'Google Sans', sans-serif" }}>
               Real-time performance metrics and insights
             </p>
           </div>
@@ -293,7 +293,7 @@ const DashboardAnalytics: React.FC<DashboardAnalyticsProps> = ({ endpoints }) =>
             <div className={`${actualTheme === 'dark' ? 'bg-slate-800 border-slate-700 text-slate-200' : 'bg-white border-gray-100 text-slate-900'} rounded-xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow`}>
               <div className="flex items-center gap-2 mb-4">
                 <div className="w-1 h-5 bg-gradient-to-b from-blue-600 to-purple-600 rounded-full"></div>
-                <h3 className="text-base sm:text-lg font-bold text-gray-900" style={{ fontFamily: "'Google Sans', sans-serif" }}>
+                <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white" style={{ fontFamily: "'Google Sans', sans-serif" }}>
                   Data Distribution
                 </h3>
               </div>
@@ -312,7 +312,7 @@ const DashboardAnalytics: React.FC<DashboardAnalyticsProps> = ({ endpoints }) =>
             <div className={`${actualTheme === 'dark' ? 'bg-slate-800 border-slate-700 text-slate-200' : 'bg-white border-gray-100 text-slate-900'} rounded-xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow`}>
               <div className="flex items-center gap-2 mb-4">
                 <div className="w-1 h-5 bg-gradient-to-b from-blue-600 to-purple-600 rounded-full"></div>
-                <h3 className="text-base sm:text-lg font-bold text-gray-900" style={{ fontFamily: "'Google Sans', sans-serif" }}>
+                <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white" style={{ fontFamily: "'Google Sans', sans-serif" }}>
                   Activity Trend
                 </h3>
               </div>
@@ -326,7 +326,7 @@ const DashboardAnalytics: React.FC<DashboardAnalyticsProps> = ({ endpoints }) =>
           <div className={`${actualTheme === 'dark' ? 'bg-slate-800 border-slate-700 text-slate-200' : 'bg-white border-gray-100 text-slate-900'} rounded-xl p-4 sm:p-6 shadow-sm border hover:shadow-md transition-shadow`}>
             <div className="flex items-center gap-2 mb-4">
               <div className="w-1 h-5 bg-gradient-to-b from-blue-600 to-purple-600 rounded-full"></div>
-              <h3 className="text-base sm:text-lg font-bold text-gray-900" style={{ fontFamily: "'Google Sans', sans-serif" }}>
+              <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white" style={{ fontFamily: "'Google Sans', sans-serif" }}>
                 Category Comparison
               </h3>
             </div>

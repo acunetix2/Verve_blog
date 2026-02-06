@@ -137,11 +137,12 @@ const CreatePost: React.FC = () => {
 
       toast.success("Post published successfully!");
       navigate("/admin");
-    } catch (error: any) {
+    } catch (error) {
+      const err = error as { response?: { status: number; data: unknown } };
       console.error(
         "Post creation failed:",
-        error.response?.status,
-        error.response?.data
+        err.response?.status,
+        err.response?.data
       );
       toast.error(`Error: ${error.response?.data?.message || error.message}`);
     }
