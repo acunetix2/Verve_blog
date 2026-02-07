@@ -1,0 +1,22 @@
+<svg width="64" height="64" viewBox="0 0 140 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="1" floodOpacity="0.3" floodColor="#000"/>
+    </filter>
+  </defs>
+  
+  <!-- Combined V and H - MAXIMUM SIZE -->
+  <g filter="url(#shadow)">
+    <!-- Left leg of V -->
+    <path d="M 10 10 L 40 110 L 55 110 L 55 10 L 40 10 L 40 80 Z" fill="#047857" />
+    
+    <!-- Center stroke (shared between V and H) -->
+    <path d="M 55 10 L 55 110 L 70 110 L 70 10 Z" fill="#047857" />
+    
+    <!-- H crossbar -->
+    <rect x="55" y="55" width="60" height="15" fill="#047857" />
+    
+    <!-- Right side of H -->
+    <path d="M 100 10 L 100 110 L 115 110 L 115 10 Z" fill="#047857" />
+  </g>
+</svg>
