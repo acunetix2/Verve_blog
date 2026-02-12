@@ -295,17 +295,17 @@ export default function Login() {
     <div className="min-h-screen relative overflow-hidden" style={{ fontFamily: "'Product Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
       {/* BACKGROUND IMAGE WITH OVERLAY */}
       <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat" 
+        className="absolute inset-0 -z-20 bg-cover bg-center bg-no-repeat" 
         style={{
           backgroundImage: "url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1920&h=1080&fit=crop')",
           backgroundColor: '#1a1a2e'
         }}
       />
       {/* DARK OVERLAY FOR READABILITY */}
-      <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/45 to-black/55" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-black/60 via-black/45 to-black/55" />
       
       {/* BACKGROUND ORBS */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-72 h-72 bg-white/5 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-white/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }}></div>
         <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-white/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "2s" }}></div>

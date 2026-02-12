@@ -36,17 +36,24 @@ const WishlistButton: React.FC<WishlistButtonProps> = ({
         toast.success('Removed from wishlist');
       } else {
         // Add to wishlist
-        await axios.post(
+        const response = await axios.post(
           `${import.meta.env.VITE_API_BASE_URL}/wishlist/${courseId}`,
-          {},
+          { courseId },
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setIsInWishlist(true);
         toast.success('Added to wishlist');
       }
       onWishlistChange?.(!isInWishlist);
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to update wishlist');
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else if (typeof error === 'object' && error !== null && 'response' in error) {
+        const errorResponse = error as { response?: { data?: { message?: string } } };
+        toast.error(errorResponse.response?.data?.message || 'Failed to update wishlist');
+      } else {
+        toast.error('Failed to update wishlist');
+      }
     } finally {
       setLoading(false);
     }

@@ -159,14 +159,226 @@ export default function LandingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 overflow-x-hidden" style={{ fontFamily: "'Google Sans', 'Product Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
+    <div className="min-h-screen bg-white text-gray-900 overflow-x-hidden relative" style={{ fontFamily: "'Google Sans', 'Product Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
+      {/* Background Image - Visible on all devices */}
+      <div 
+        className="fixed inset-0 -z-20 bg-cover bg-center bg-no-repeat bg-fixed opacity-8"
+        style={{
+          backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="%23e5e7eb" stroke-width="0.5"/></pattern><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:%23dbeafe;stop-opacity:0.3" /><stop offset="100%" style="stop-color:%236366f1;stop-opacity:0.1" /></linearGradient></defs><rect width="1200" height="800" fill="url(%23grad)"/><rect width="1200" height="800" fill="url(%23grid)"/></svg>')`,
+          backgroundSize: '40px 40px'
+        }}
+      ></div>
+      
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Product+Sans:wght@400;500;700&display=swap');
+        
+        /* Floating animation for cards */
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-10px);
+          }
+        }
+
+        @keyframes float-slow {
+          0%, 100% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-15px);
+          }
+        }
+
+        @keyframes float-delayed {
+          0%, 100% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-8px);
+          }
+        }
+
+        /* Scroll-triggered fade-in */
+        @keyframes scroll-fade-in {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        /* Glow effect for cards */
+        @keyframes glow-pulse {
+          0%, 100% {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+          }
+          50% {
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+          }
+        }
+
+        /* Sliding animations for cards and elements */
+        @keyframes slide-in-left {
+          from {
+            transform: translateX(-40px);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
+
+        @keyframes slide-in-right {
+          from {
+            transform: translateX(40px);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
+
+        @keyframes slide-in-up {
+          from {
+            transform: translateY(40px);
+            opacity: 0;
+          }
+          to {
+            transform: translateY(0);
+            opacity: 1;
+          }
+        }
+
+        @keyframes slide-in-down {
+          from {
+            transform: translateY(-40px);
+            opacity: 0;
+          }
+          to {
+            transform: translateY(0);
+            opacity: 1;
+          }
+        }
+
+        @keyframes float-in {
+          from {
+            transform: translateY(20px);
+            opacity: 0;
+          }
+          to {
+            transform: translateY(0);
+            opacity: 1;
+          }
+        }
+
+        /* Card slide animation */
+        @keyframes card-slide-up {
+          from {
+            transform: translateY(30px) scale(0.95);
+            opacity: 0;
+          }
+          to {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+          }
+        }
+
+        @keyframes card-slide-left {
+          from {
+            transform: translateX(-30px) scale(0.95);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0) scale(1);
+            opacity: 1;
+          }
+        }
+
+        @keyframes card-slide-right {
+          from {
+            transform: translateX(30px) scale(0.95);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0) scale(1);
+            opacity: 1;
+          }
+        }
+
+        .animate-slide-left {
+          animation: slide-in-left 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .animate-slide-right {
+          animation: slide-in-right 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .animate-slide-up {
+          animation: slide-in-up 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .animate-slide-down {
+          animation: slide-in-down 0.6s cubic-bezier(0.26, 1.02, 0.26, 1.02) forwards;
+        }
+
+        .animate-float-in {
+          animation: float-in 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .animate-card-slide-up {
+          animation: card-slide-up 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .animate-card-slide-left {
+          animation: card-slide-left 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .animate-card-slide-right {
+          animation: card-slide-right 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        /* Floating card effects */
+        .floating-card {
+          animation: float 3s ease-in-out infinite;
+        }
+
+        .floating-card-slow {
+          animation: float-slow 4s ease-in-out infinite;
+        }
+
+        .floating-card-delayed {
+          animation: float-delayed 3.5s ease-in-out infinite;
+          animation-delay: 0.5s;
+        }
+
+        .glow-card {
+          animation: glow-pulse 2s ease-in-out infinite;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+        .delay-6 { animation-delay: 0.6s; }
+
+        /* Card hover effect */
+        .card-hover {
+          transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .card-hover:hover {
+          transform: translateY(-5px);
+        }
       `}</style>
-      
-      {/* Subtle Background */}
-      <div className="fixed inset-0 -z-10 bg-gradient-to-b from-blue-50/30 via-white to-gray-50/30"></div>
 
       {/* Header */}
       <header className={`w-full py-3 px-4 sm:px-6 flex justify-between items-center fixed top-0 z-50 transition-all duration-300 ${
@@ -228,22 +440,22 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className="relative flex flex-col items-center justify-center text-center min-h-screen px-4 sm:px-6 pt-24 pb-16">
         <div className="max-w-5xl mx-auto w-full">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-green-50 border border-green-200 rounded-full mb-6 hover:scale-105 transition-transform">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-green-50 border border-green-200 rounded-full mb-6 hover:scale-105 transition-transform opacity-0 animate-slide-left">
             <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
             <span className="text-xs text-green-700 font-medium">New writeups added weekly</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold mb-5 leading-tight tracking-tight">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold mb-5 leading-tight tracking-tight opacity-0 animate-slide-left delay-1">
             Master Cybersecurity
             <br />
             <span className="text-blue-600">Through Practice</span>
           </h1>
           
-          <p className="max-w-3xl mx-auto text-gray-600 text-sm sm:text-base lg:text-lg mb-8 leading-relaxed">
+          <p className="max-w-3xl mx-auto text-gray-600 text-sm sm:text-base lg:text-lg mb-8 leading-relaxed opacity-0 animate-slide-left delay-2">
             Deep-dive CTF writeups, TryHackMe walkthroughs, and comprehensive learning resources. From reconnaissance to privilege escalation—everything documented.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 opacity-0 animate-slide-up delay-3">
             <button
               onClick={() => navigate("/login")}
               className="group flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md shadow-blue-500/20 transition-all hover:shadow-lg hover:shadow-blue-500/30 text-sm cursor-pointer"
@@ -263,7 +475,7 @@ export default function LandingPage() {
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto">
             {stats.map((stat, index) => (
-              <div key={index} className="bg-white border border-gray-200 rounded-xl p-4 hover:border-blue-300 hover:shadow-sm transition-all">
+              <div key={index} className={`bg-white border border-gray-200 rounded-xl p-4 hover:border-blue-300 hover:shadow-sm transition-all opacity-0 animate-slide-up ${["delay-2", "delay-3", "delay-4"][index % 3]}`}>
                 <div className="text-2xl font-bold text-blue-600 mb-1">{stat.number}</div>
                 <div className="text-xs text-gray-600 font-medium">{stat.label}</div>
               </div>
@@ -276,8 +488,8 @@ export default function LandingPage() {
       <section id="content" className="py-16 px-4 sm:px-6 bg-gray-50/50">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-3 text-gray-900">Latest Content</h2>
-            <p className="text-gray-600 text-sm">New blog posts and resources added regularly</p>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-3 text-gray-900 opacity-0 animate-slide-down">Latest Content</h2>
+            <p className="text-gray-600 text-sm opacity-0 animate-slide-up delay-1">New blog posts and resources added regularly</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -291,7 +503,7 @@ export default function LandingPage() {
               </div>
             ) : recentContent.length > 0 ? (
               recentContent.map((item, index) => (
-                <button key={index} onClick={() => handleContentClick(item.slug)} className="group bg-white rounded-xl p-5 border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all cursor-pointer text-left">
+                <button key={index} onClick={() => handleContentClick(item.slug)} className={`group bg-white rounded-xl p-5 border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all cursor-pointer opacity-0 animate-card-slide-up card-hover ${["delay-1", "delay-2", "delay-3"][index % 3]}`}>
                   <div className="flex items-center justify-between mb-4">
                     <span className={`px-2.5 py-1 text-xs font-medium rounded-md ${
                       item.difficulty === "Hard" ? "bg-red-50 text-red-700 border border-red-200" :
@@ -330,7 +542,7 @@ export default function LandingPage() {
             )}
           </div>
 
-          <div className="text-center mt-10">
+          <div className="text-center mt-10 opacity-0 animate-slide-up delay-2">
             <button onClick={handleViewAllContent} className="inline-flex items-center gap-2 px-6 py-2.5 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 font-medium rounded-lg transition-all text-sm">
               {isAuthenticated ? "View All Content" : "Login to View All"}
               <ArrowRight size={16} />
@@ -343,7 +555,7 @@ export default function LandingPage() {
       <section className="py-16 px-4 sm:px-6 bg-white">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
-            <div>
+            <div className="opacity-0 animate-slide-left">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 border border-blue-200 rounded-full mb-6">
                 <span className="w-2 h-2 bg-blue-600 rounded-full"></span>
                 <span className="text-xs text-blue-700 font-medium">About Our Platform</span>
@@ -362,7 +574,7 @@ export default function LandingPage() {
               </p>
               
               <div className="space-y-4">
-                <div className="flex gap-4 items-start">
+                <div className="flex gap-4 items-start opacity-0 animate-slide-left delay-1">
                   <div className="flex-shrink-0">
                     <div className="flex items-center justify-center h-8 w-8 rounded-md bg-blue-600">
                       <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -376,7 +588,7 @@ export default function LandingPage() {
                   </div>
                 </div>
                 
-                <div className="flex gap-4 items-start">
+                <div className="flex gap-4 items-start opacity-0 animate-slide-left delay-2">
                   <div className="flex-shrink-0">
                     <div className="flex items-center justify-center h-8 w-8 rounded-md bg-blue-600">
                       <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -390,7 +602,7 @@ export default function LandingPage() {
                   </div>
                 </div>
                 
-                <div className="flex gap-4 items-start">
+                <div className="flex gap-4 items-start opacity-0 animate-slide-left delay-3">
                   <div className="flex-shrink-0">
                     <div className="flex items-center justify-center h-8 w-8 rounded-md bg-blue-600">
                       <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -406,11 +618,11 @@ export default function LandingPage() {
               </div>
             </div>
             
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 border border-blue-200">
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 border border-blue-200 opacity-0 animate-slide-right floating-card-slow">
               <h3 className="text-xl font-bold mb-6 text-gray-900">What You'll Get</h3>
               
               <div className="space-y-5">
-                <div className="bg-white rounded-lg p-4 border border-blue-100">
+                <div className="bg-white rounded-lg p-4 border border-blue-100 opacity-0 animate-card-slide-left delay-1 card-hover hover:border-blue-300 hover:shadow-md floating-card">
                   <div className="flex items-center gap-3 mb-2">
                     <div className="w-8 h-8 rounded bg-red-100 flex items-center justify-center">
                       <Target size={16} className="text-red-600" />
@@ -420,7 +632,7 @@ export default function LandingPage() {
                   <p className="text-gray-600 text-xs ml-11">Comprehensive courses covering all aspects of cybersecurity</p>
                 </div>
                 
-                <div className="bg-white rounded-lg p-4 border border-blue-100">
+                <div className="bg-white rounded-lg p-4 border border-blue-100 opacity-0 animate-card-slide-left delay-2 card-hover hover:border-blue-300 hover:shadow-md floating-card-delayed">
                   <div className="flex items-center gap-3 mb-2">
                     <div className="w-8 h-8 rounded bg-green-100 flex items-center justify-center">
                       <BookOpen size={16} className="text-green-600" />
@@ -430,7 +642,7 @@ export default function LandingPage() {
                   <p className="text-gray-600 text-xs ml-11">Step-by-step guides for CTF challenges and penetration testing labs</p>
                 </div>
                 
-                <div className="bg-white rounded-lg p-4 border border-blue-100">
+                <div className="bg-white rounded-lg p-4 border border-blue-100 opacity-0 animate-card-slide-left delay-3 card-hover hover:border-blue-300 hover:shadow-md floating-card">
                   <div className="flex items-center gap-3 mb-2">
                     <div className="w-8 h-8 rounded bg-purple-100 flex items-center justify-center">
                       <FileText size={16} className="text-purple-600" />
@@ -440,7 +652,7 @@ export default function LandingPage() {
                   <p className="text-gray-600 text-xs ml-11">Cheatsheets, notes, and reference materials for quick learning</p>
                 </div>
                 
-                <div className="bg-white rounded-lg p-4 border border-blue-100">
+                <div className="bg-white rounded-lg p-4 border border-blue-100 opacity-0 animate-card-slide-left delay-4 card-hover hover:border-blue-300 hover:shadow-md floating-card-delayed">
                   <div className="flex items-center gap-3 mb-2">
                     <div className="w-8 h-8 rounded bg-orange-100 flex items-center justify-center">
                       <Users size={16} className="text-orange-600" />
@@ -454,11 +666,11 @@ export default function LandingPage() {
           </div>
 
           {/* Course Highlights */}
-          <div className="bg-gray-50 rounded-2xl p-8 border border-gray-200">
-            <h3 className="text-2xl font-bold mb-8 text-gray-900 text-center">Popular Learning Paths</h3>
+          <div className="bg-gray-50 rounded-2xl p-8 border border-gray-200 opacity-0 animate-slide-up">
+            <h3 className="text-2xl font-bold mb-8 text-gray-900 text-center opacity-0 animate-slide-down delay-1">Popular Learning Paths</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-white rounded-xl p-6 border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all">
+            <div className="bg-white rounded-xl p-6 border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all opacity-0 animate-card-slide-up delay-1 card-hover floating-card glow-card">
                 <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-orange-500 rounded-lg flex items-center justify-center mb-4 shadow-sm">
                   <Shield size={24} className="text-white" />
                 </div>
@@ -480,7 +692,7 @@ export default function LandingPage() {
                 </ul>
               </div>
 
-              <div className="bg-white rounded-xl p-6 border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all">
+              <div className="bg-white rounded-xl p-6 border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all opacity-0 animate-card-slide-up delay-2 card-hover floating-card-delayed glow-card">
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center mb-4 shadow-sm">
                   <Code size={24} className="text-white" />
                 </div>
@@ -502,7 +714,7 @@ export default function LandingPage() {
                 </ul>
               </div>
 
-              <div className="bg-white rounded-xl p-6 border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all">
+              <div className="bg-white rounded-xl p-6 border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all opacity-0 animate-card-slide-up delay-3 card-hover floating-card glow-card">
                 <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mb-4 shadow-sm">
                   <Terminal size={24} className="text-white" />
                 </div>
@@ -532,15 +744,15 @@ export default function LandingPage() {
       <section id="categories" className="py-16 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-3 text-gray-900">Content Categories</h2>
-            <p className="text-gray-600 text-sm">Organized learning paths for your cybersecurity journey</p>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-3 text-gray-900 opacity-0 animate-slide-down">Content Categories</h2>
+            <p className="text-gray-600 text-sm opacity-0 animate-slide-up delay-1">Organized learning paths for your cybersecurity journey</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {contentCategories.map((category, index) => {
               const Icon = category.icon;
               return (
-                <div key={index} className="group bg-white rounded-xl p-6 border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all text-center cursor-pointer">
+                <div key={index} className={`group bg-white rounded-xl p-6 border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all text-center cursor-pointer opacity-0 animate-slide-up ${["delay-1", "delay-2", "delay-3", "delay-4"][index % 4]} floating-card`}>
                   <div className={`w-14 h-14 bg-gradient-to-br ${category.color} rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-sm`}>
                     <Icon size={26} className="text-white" />
                   </div>
@@ -563,8 +775,8 @@ export default function LandingPage() {
       <section id="features" className="py-16 px-4 sm:px-6 bg-gray-50/50">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-3 text-gray-900">Why Verve Hub Academy?</h2>
-            <p className="text-gray-600 text-sm">Everything you need to level up your security skills</p>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-3 text-gray-900 opacity-0 animate-slide-down">Why Verve Hub Academy?</h2>
+            <p className="text-gray-600 text-sm opacity-0 animate-slide-up delay-1">Everything you need to level up your security skills</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -578,7 +790,7 @@ export default function LandingPage() {
             ].map((feature, idx) => {
               const Icon = feature.icon;
               return (
-                <div key={idx} className="group bg-white rounded-xl p-6 border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all">
+                <div key={idx} className={`group bg-white rounded-xl p-6 border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all opacity-0 animate-card-slide-up card-hover floating-card-delayed ${["delay-1", "delay-2", "delay-3", "delay-4", "delay-5", "delay-6"][idx % 6]} glow-card`}>
                   <div className={`w-12 h-12 bg-gradient-to-br ${feature.color} rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-sm`}>
                     <Icon size={22} className="text-white" />
                   </div>
@@ -594,19 +806,19 @@ export default function LandingPage() {
       {/* CTA */}
       <section className="py-16 px-4 sm:px-6 bg-gradient-to-br from-blue-600 to-blue-700">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full mb-6 opacity-0 animate-slide-down">
             <Zap size={16} className="text-white" />
             <span className="text-xs text-white font-medium">Join 100+ Active Users</span>
           </div>
           
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-white">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-white opacity-0 animate-slide-left delay-1">
             Ready to Master Cybersecurity?
           </h2>
-          <p className="text-blue-100 text-base mb-8 max-w-2xl mx-auto">
+          <p className="text-blue-100 text-base mb-8 max-w-2xl mx-auto opacity-0 animate-slide-right delay-2">
             Access detailed CTF writeups, TryHackMe walkthroughs, and learning resources. Start your journey today.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6 opacity-0 animate-slide-up delay-3">
             <button
               onClick={() => navigate("/login")}
               className="group flex items-center justify-center gap-2 px-6 py-3 bg-white hover:bg-gray-50 text-blue-600 font-medium rounded-lg shadow-lg transition-all text-sm cursor-pointer"
@@ -632,12 +844,12 @@ export default function LandingPage() {
       {/* Contact */}
       <section id="contact" className="py-16 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-gray-900">Get In Touch</h2>
-          <p className="text-gray-600 mb-8 text-sm">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-gray-900 opacity-0 animate-slide-down">Get In Touch</h2>
+          <p className="text-gray-600 mb-8 text-sm opacity-0 animate-slide-up delay-1">
             Have questions? Want to contribute? Reach out through any channel below.
           </p>
           
-          <div className="flex justify-center gap-4 mb-10">
+          <div className="flex justify-center gap-4 mb-10 opacity-0 animate-slide-up delay-2">
             {[
               { icon: Github, href: "https://github.com/verveblog.git", color: "hover:bg-gray-900 hover:text-white" },
               { icon: Linkedin, href: "https://linkedin.com/in/iddy-chesire-55009b264/", color: "hover:bg-blue-600 hover:text-white" },
@@ -659,7 +871,7 @@ export default function LandingPage() {
             })}
           </div>
 
-          <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
+          <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 opacity-0 animate-slide-up delay-2">
             <p className="text-gray-700 text-sm mb-3">
               Want to contribute your own writeups or learning materials?
             </p>
@@ -678,7 +890,7 @@ export default function LandingPage() {
       <footer className="py-10 px-4 sm:px-6 bg-gray-50 border-t border-gray-200">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-2 opacity-0 animate-slide-up">
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-8 h-8 flex items-center justify-center">
                   <VerveHubLogo size="sm" />
@@ -704,7 +916,7 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div>
+            <div className="opacity-0 animate-slide-up delay-1">
               <h4 className="text-gray-900 font-semibold mb-3 text-xs">Content</h4>
               <ul className="space-y-2 text-xs text-gray-600">
                 <li><a href="/login" className="hover:text-blue-600 transition-colors">CTF Writeups</a></li>
@@ -714,7 +926,7 @@ export default function LandingPage() {
               </ul>
             </div>
 
-            <div>
+            <div className="opacity-0 animate-slide-up delay-2">
               <h4 className="text-gray-900 font-semibold mb-3 text-xs">Resources</h4>
               <ul className="space-y-2 text-xs text-gray-600">
                 <li><a href="/about" className="hover:text-blue-600 transition-colors">About</a></li>
@@ -725,7 +937,7 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <div className="pt-6 border-t border-gray-200 text-center">
+          <div className="pt-6 border-t border-gray-200 text-center opacity-0 animate-slide-down delay-3">
             <p className="text-gray-600 text-xs">
               © {new Date().getFullYear()} Verve Hub Academy. Empowering cybersecurity learners worldwide.
             </p>

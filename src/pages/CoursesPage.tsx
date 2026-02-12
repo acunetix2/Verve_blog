@@ -13,6 +13,7 @@ interface Course {
   imageUrl?: string;
   modules?: Array<{ lessons?: Array<{ _id?: string }> }>;
   createdAt?: string;
+  enrollmentCount?: number;
 }
 
 interface UserProgress {
@@ -240,6 +241,10 @@ const CoursesPage: React.FC = () => {
                       <div className="flex items-center gap-1">
                         <Clock className="w-4 h-4" />
                         <span>{course.modules?.length || 0} modules</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Users className="w-4 h-4" />
+                        <span>{course.enrollmentCount || 0} enrolled</span>
                       </div>
                     </div>
 

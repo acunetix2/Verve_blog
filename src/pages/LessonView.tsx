@@ -4,7 +4,7 @@ import axios from 'axios';
 import {
   ArrowLeft, CheckCircle2, ChevronRight, Loader2, Award, Play, MessageSquare,
   ChevronLeft, Heart, Share2, BookOpen, Clock, Volume2, Download, Menu, X,
-  Eye, Lightbulb, AlertCircle
+  Eye, Lightbulb, AlertCircle, ChevronDown
 } from 'lucide-react';
 import { toast } from 'sonner';
 import CertificateDisplay from '../components/CertificateDisplay';
@@ -125,6 +125,8 @@ const LessonView: React.FC = () => {
   const [loadingComments, setLoadingComments] = useState(false);
   const [commentText, setCommentText] = useState('');
   const [notes, setNotes] = useState<string>('');
+  const [expandedModules, setExpandedModules] = useState<Set<number>>(new Set([currentModuleIdx]));
+  const [videoWatched, setVideoWatched] = useState(false);
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -276,6 +278,12 @@ const LessonView: React.FC = () => {
   };
 
   const handleMarkComplete = async () => {
+    // Check if lesson has video and if it's been watched
+    if (lesson.videoUrl && !videoWatched) {
+      toast.error('Please watch the entire video (80%+) before marking as complete');
+      return;
+    }
+
     if (token && course?._id && lesson._id) {
       try {
         const response = await axios.post(
@@ -325,6 +333,12 @@ const LessonView: React.FC = () => {
 
   const handleNextLesson = () => {
     if (!course) return;
+
+    // Check if lesson has video and if it's been watched
+    if (lesson.videoUrl && !videoWatched) {
+      toast.error('Please watch the entire video (80%+) before proceeding to the next lesson');
+      return;
+    }
     
     const modules = course.modules;
     let nextLessonFound = false;
@@ -371,8 +385,8 @@ const LessonView: React.FC = () => {
   return (
     <div className={`min-h-screen ${isDark ? 'bg-white' : 'bg-white'} flex transition-colors`}>
       {/* Lesson Sidebar Navigation - TryHackMe Style */}
-      {course && (
-        <div className={`w-72 ${isDark ? 'bg-gradient-to-b from-slate-800 to-slate-900' : 'bg-gradient-to-b from-slate-700 to-slate-800'} border-r ${isDark ? 'border-slate-700' : 'border-slate-600'} overflow-y-auto max-h-screen transition-colors`}>
+      {course && sidebarOpen && (
+        <div className={`w-72 z-40 ${isDark ? 'bg-gradient-to-b from-slate-800 to-slate-900' : 'bg-gradient-to-b from-slate-700 to-slate-800'} border-r ${isDark ? 'border-slate-700' : 'border-slate-600'} overflow-y-auto max-h-screen transition-all duration-300 ease-in-out`}>
           <div className={`p-4 ${isDark ? 'border-b border-slate-700' : 'border-b border-slate-600'} transition-colors`}>
             <button
               onClick={() => navigate(`/v/courses/${course.slug || courseId}`)}
@@ -386,57 +400,98 @@ const LessonView: React.FC = () => {
           
           {/* Modules and Lessons List */}
           <div className="p-4 space-y-3">
-            {course.modules.map((module, mIdx) => (
-              <div key={mIdx} className="space-y-2">
-                <h3 className={`text-xs font-bold ${isDark ? 'text-slate-400' : 'text-slate-300'} uppercase tracking-wider transition-colors`}>
-                  Module {mIdx + 1}: {module.title}
-                </h3>
-                <div className="space-y-1">
-                  {module.lessons.map((les, lIdx) => {
-                    const isCurrentLesson = mIdx === currentModuleIdx && lIdx === currentLessonIdx;
-                    const isCompleted = les._id && isLessonCompleted && mIdx === currentModuleIdx && lIdx === currentLessonIdx;
-                    return (
-                      <button
-                        key={lIdx}
-                        onClick={() =>
-                          navigate(
-                            `/v/courses/${course.slug || courseId}/lesson/${les._id || lIdx}`
-                          )
-                        }
-                        className={`w-full text-left px-3 py-2 rounded text-xs transition flex items-center gap-2 ${
-                          isCurrentLesson
-                            ? 'bg-green-600 text-white font-semibold'
-                            : `${isDark ? 'text-slate-300 hover:bg-slate-700' : 'text-slate-200 hover:bg-slate-600'}`
-                        }`}
-                      >
-                        {isCompleted ? (
-                          <CheckCircle2 size={12} className="text-green-400 flex-shrink-0" />
-                        ) : (
-                          <Play size={12} className={`${isDark ? 'text-slate-500' : 'text-slate-400'} flex-shrink-0`} />
-                        )}
-                        <span className="truncate text-xs">{les.title}</span>
-                      </button>
-                    );
-                  })}
+            {course.modules.map((module, mIdx) => {
+              const isExpanded = expandedModules.has(mIdx);
+              return (
+                <div key={mIdx} className="space-y-2">
+                  <button
+                    onClick={() => {
+                      const newExpanded = new Set(expandedModules);
+                      if (newExpanded.has(mIdx)) {
+                        newExpanded.delete(mIdx);
+                      } else {
+                        newExpanded.add(mIdx);
+                      }
+                      setExpandedModules(newExpanded);
+                    }}
+                    className={`w-full text-left px-3 py-2 rounded text-xs font-bold uppercase tracking-wider transition flex items-center justify-between ${isDark ? 'text-slate-400 hover:bg-slate-700' : 'text-slate-300 hover:bg-slate-700'}`}
+                  >
+                    <span>Module {mIdx + 1}: {module.title}</span>
+                    <ChevronDown size={12} className={`transition-transform ${isExpanded ? 'rotate-0' : '-rotate-90'}`} />
+                  </button>
+                  {isExpanded && (
+                    <div className="space-y-1">
+                      {module.lessons.map((les, lIdx) => {
+                        const isCurrentLesson = mIdx === currentModuleIdx && lIdx === currentLessonIdx;
+                        const isCompleted = les._id && isLessonCompleted && mIdx === currentModuleIdx && lIdx === currentLessonIdx;
+                        return (
+                          <button
+                            key={lIdx}
+                            onClick={() =>
+                              navigate(
+                                `/v/courses/${course.slug || courseId}/lesson/${les._id || lIdx}`
+                              )
+                            }
+                            className={`w-full text-left px-3 py-2 rounded text-xs transition flex items-center gap-2 ${
+                              isCurrentLesson
+                                ? 'bg-green-600 text-white font-semibold'
+                                : `${isDark ? 'text-slate-300 hover:bg-slate-700' : 'text-slate-200 hover:bg-slate-600'}`
+                            }`}
+                          >
+                            {isCompleted ? (
+                              <CheckCircle2 size={12} className="text-green-400 flex-shrink-0" />
+                            ) : (
+                              <Play size={12} className={`${isDark ? 'text-slate-500' : 'text-slate-400'} flex-shrink-0`} />
+                            )}
+                            <span className="truncate text-xs">{les.title}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
 
       {/* Main Content */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto relative">
         {/* Header */}
-        <div className="bg-white border-b border-gray-200 py-4 sticky top-0 z-50">
+        <div className="w-full bg-white border-b border-gray-200 py-4 sticky top-0 z-[100] shadow-md">
           <div className="max-w-4xl mx-auto px-6">
-            <h1 className="text-xl font-bold text-gray-900">{lesson.title}</h1>
+            <div className="flex items-center justify-between gap-4 mb-2">
+              <button
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                className={`p-2 -ml-2 rounded hover:bg-gray-100 transition-all flex items-center justify-center ${sidebarOpen ? 'text-gray-600' : 'text-green-600 rotate-180'}`}
+                title={sidebarOpen ? 'Hide navigation' : 'Show navigation'}
+              >
+                <ChevronLeft size={20} />
+              </button>
+              <h1 className="text-xl font-bold text-gray-900 flex-1">{lesson.title}</h1>
+            </div>
             <p className="text-xs text-gray-600 mt-1">Follow the steps below to complete this lesson</p>
           </div>
         </div>
 
         {/* Content */}
-        <div className="max-w-4xl mx-auto px-6 py-8">
+        <div className="max-w-4xl mx-auto px-6 py-8 relative">
+          {/* Breadcrumb - Module Navigation */}
+          <div className="mb-6 pb-4 border-b border-gray-200 sticky top-[60px] z-[50] bg-white">
+            <p className="text-xs text-gray-600">
+              <span className="font-semibold">{course?.title}</span>
+              {currentModuleIdx >= 0 && course?.modules && course.modules[currentModuleIdx] && (
+                <>
+                  <span className="mx-2">›</span>
+                  <span className="font-semibold">{course.modules[currentModuleIdx].title}</span>
+                  <span className="mx-2">›</span>
+                  <span>{lesson.title}</span>
+                </>
+              )}
+            </p>
+          </div>
+
           {/* Video Player - Display if lesson has video */}
           {lesson.videoUrl && (
             <VideoPlayer 
@@ -447,7 +502,10 @@ const LessonView: React.FC = () => {
               transcript={lesson.transcript}
               canDownload={true}
               onProgress={(progress) => {
-                // Optional: track video progress
+                if (progress >= 80) {
+                  setVideoWatched(true);
+                  console.log('Video watched sufficiently for completion');
+                }
                 console.log('Video progress:', progress);
               }}
             />
@@ -619,13 +677,20 @@ const LessonView: React.FC = () => {
 
           {/* Mark as Complete Button - For lessons without quiz or after quiz completion */}
           {(!lesson.quiz || lesson.quiz.length === 0 || quizSubmitted) && !isLessonCompleted && (
-            <div className="mb-8">
+            <div className="mb-6">
               <button
                 onClick={handleMarkComplete}
-                className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition flex items-center justify-center gap-2 text-sm"
+                disabled={lesson.videoUrl && !videoWatched}
+                className={`w-full font-semibold py-2 px-4 rounded-lg transition flex items-center justify-center gap-2 text-xs sm:text-sm md:py-2.5 md:px-5 ${
+                  lesson.videoUrl && !videoWatched
+                    ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                    : 'bg-green-600 hover:bg-green-700 text-white'
+                }`}
+                title={lesson.videoUrl && !videoWatched ? 'Please watch the video (80%+) first' : ''}
               >
-                <CheckCircle2 size={18} />
-                Mark as Complete
+                <CheckCircle2 size={16} className="sm:w-4 sm:h-4" />
+                <span className="hidden sm:inline">Mark as Complete</span>
+                <span className="sm:hidden">Complete</span>
               </button>
             </div>
           )}
@@ -693,11 +758,11 @@ const LessonView: React.FC = () => {
                   <div className="space-y-2">
                     {q.options.map((option, oIdx) => {
                       const isSelected = quizAnswers[qIdx] === option;
-                      const isCorrect = quizSubmitted && q.answer === option;
+                      const isCorrect = quizSubmitted && q.correctAnswer === option;
                       const isWrong =
                         quizSubmitted &&
                         isSelected &&
-                        q.answer !== option;
+                        q.correctAnswer !== option;
 
                       return (
                         <label
@@ -749,7 +814,7 @@ const LessonView: React.FC = () => {
             {!quizSubmitted && (
               <button
                 onClick={handleSubmitQuiz}
-                className="mt-8 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition text-sm"
+                className="mt-6 w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition text-xs sm:text-sm md:py-2.5 md:px-5"
               >
                 Submit Quiz
               </button>
@@ -758,32 +823,41 @@ const LessonView: React.FC = () => {
           )}
 
         {/* Navigation Buttons - Previous/Next at bottom */}
-        <div className="flex gap-4 mt-8">
+        <div className="flex gap-2 sm:gap-3 md:gap-4 mt-6 sm:mt-8">
           <button
             onClick={handlePreviousLesson}
-            className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-3 px-6 rounded-lg transition flex items-center justify-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-3 rounded-lg transition flex items-center justify-center gap-2 text-xs sm:text-sm md:py-2.5 md:px-5 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={currentModuleIdx === 0 && currentLessonIdx === 0}
           >
-            ← Previous Lesson
+            <span className="hidden sm:inline">← Previous</span>
+            <span className="sm:hidden">←</span>
           </button>
           
           {(!lesson.quiz || lesson.quiz.length === 0 || quizSubmitted) && (
             <button
               onClick={handleNextLesson}
-              className="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition flex items-center justify-center gap-2 text-sm"
+              disabled={lesson.videoUrl && !videoWatched}
+              className={`flex-1 font-semibold py-2 px-3 rounded-lg transition flex items-center justify-center gap-2 text-xs sm:text-sm md:py-2.5 md:px-5 ${
+                lesson.videoUrl && !videoWatched
+                  ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                  : 'bg-green-600 hover:bg-green-700 text-white'
+              }`}
+              title={lesson.videoUrl && !videoWatched ? 'Please watch the video (80%+) first' : ''}
             >
-              Next Lesson →
-              <ChevronRight size={18} />
+              <span className="hidden sm:inline">Next</span>
+              <span className="sm:hidden">→</span>
+              <ChevronRight size={16} className="sm:w-4 sm:h-4" />
             </button>
           )}
           
           {lesson.quiz && lesson.quiz.length > 0 && !quizSubmitted && (
             <button
               disabled
-              className="flex-1 bg-gray-300 text-gray-600 font-bold py-3 px-6 rounded-lg cursor-not-allowed flex items-center justify-center gap-2 text-sm"
+              className="flex-1 bg-gray-300 text-gray-600 font-semibold py-2 px-3 rounded-lg cursor-not-allowed flex items-center justify-center gap-2 text-xs sm:text-sm md:py-2.5 md:px-5"
               title="Complete the quiz first"
             >
-              🔒 Complete Quiz First
+              <span className="hidden sm:inline">🔒 Quiz</span>
+              <span className="sm:hidden">🔒</span>
             </button>
           )}
         </div>
@@ -791,10 +865,11 @@ const LessonView: React.FC = () => {
         {quizSubmitted && (
           <button
             onClick={handleNextLesson}
-            className="mt-8 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition flex items-center justify-center gap-2 text-sm"
+            className="mt-6 sm:mt-8 w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition flex items-center justify-center gap-2 text-xs sm:text-sm md:py-2.5 md:px-5"
           >
-            Continue to Next Lesson
-            <ChevronRight size={18} />
+            <span className="hidden sm:inline">Continue to Next Lesson</span>
+            <span className="sm:hidden">Next</span>
+            <ChevronRight size={16} className="sm:w-4 sm:h-4" />
           </button>
         )}
 

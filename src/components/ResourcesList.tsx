@@ -71,8 +71,8 @@ const ResourcesList: React.FC<ResourcesListProps> = ({
     try {
       const token = localStorage.getItem('token');
       
-      // Track download
-      await axios.post(
+      // Get signed download URL from backend
+      const response = await axios.post(
         `${import.meta.env.VITE_API_BASE_URL}/courses/${courseId}/lessons/${lessonId}/resources/${index}/download`,
         {},
         {
@@ -80,11 +80,13 @@ const ResourcesList: React.FC<ResourcesListProps> = ({
         }
       );
 
-      // Download file
+      const { downloadUrl, fileName } = response.data;
+
+      // Download file using signed URL
       const link = document.createElement('a');
-      link.href = resource.url;
+      link.href = downloadUrl;
       link.target = '_blank';
-      link.download = resource.title;
+      link.download = fileName || resource.title;
       link.click();
 
       toast.success(`Downloaded: ${resource.title}`);

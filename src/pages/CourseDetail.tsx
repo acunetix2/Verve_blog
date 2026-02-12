@@ -238,10 +238,10 @@ const CourseDetail: React.FC = () => {
 
   if (loading) {
     return (
-      <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'} flex items-center justify-center`}>
+      <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-white'} flex items-center justify-center`}>
         <div className="text-center">
           <div className="animate-spin mb-4">
-            <BookOpen size={40} className="text-blue-600 mx-auto" />
+            <BookOpen size={40} className="text-green-600 mx-auto" />
           </div>
           <p style={fontStyle} className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Loading course...</p>
         </div>
@@ -251,7 +251,7 @@ const CourseDetail: React.FC = () => {
 
   if (!course) {
     return (
-      <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'} flex items-center justify-center`}>
+      <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-white'} flex items-center justify-center`}>
         <p style={fontStyle} className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Course not found</p>
       </div>
     );
@@ -264,12 +264,12 @@ const CourseDetail: React.FC = () => {
   return (
     <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
       {/* Hero Header */}
-      <div className={`${isDark ? 'bg-gradient-to-br from-gray-900 via-blue-900/20 to-gray-900' : 'bg-gradient-to-br from-blue-50 via-blue-100/50 to-white'} border-b ${isDark ? 'border-gray-800' : 'border-blue-200'} py-12`}>
+      <div className={`${isDark ? 'bg-gradient-to-br from-gray-900 via-green-600/5 to-gray-900' : 'bg-white'} border-b ${isDark ? 'border-gray-800' : 'border-gray-200'} py-12`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           {/* Back Button */}
           <button
             onClick={() => navigate('/v/courses')}
-            className={`flex items-center gap-2 ${isDark ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-700'} mb-6 font-medium transition-colors`}
+            className={`flex items-center gap-2 ${isDark ? 'text-green-400 hover:text-green-300' : 'text-green-600 hover:text-green-700'} mb-6 font-medium transition-colors`}
           >
             <ArrowLeft size={20} />
             <span>Back to Courses</span>
@@ -344,7 +344,7 @@ const CourseDetail: React.FC = () => {
               {/* Instructor */}
               {course.instructor && (
                 <div className="flex items-center gap-3 mb-6 pb-6 border-b border-gray-300/20">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center text-white font-bold">
                     {course.instructor.name?.charAt(0).toUpperCase()}
                   </div>
                   <div>
@@ -361,14 +361,14 @@ const CourseDetail: React.FC = () => {
                 {!isEnrolled ? (
                   <button
                     onClick={handleEnroll}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-colors"
+                    className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg transition-colors"
                   >
                     Enroll Now
                   </button>
                 ) : (
                   <button
                     onClick={() => navigate(`/v/courses/${course.slug || course._id}/lesson/${course.modules?.[0]?.lessons?.[0]?._id || '0'}`)}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
+                    className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
                   >
                     <Play size={18} />
                     Continue Learning
@@ -398,13 +398,13 @@ const CourseDetail: React.FC = () => {
                 <span className={`text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                   Your Progress
                 </span>
-                <span className={`text-sm font-bold ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
+                <span className={`text-sm font-bold ${isDark ? 'text-green-400' : 'text-green-600'}`}>
                   {progress_percent}%
                 </span>
               </div>
-              <div className={`w-full rounded-full h-3 overflow-hidden ${isDark ? 'bg-gray-700' : 'bg-gray-200'}`}>
+              <div className={`w-full rounded-full h-3 overflow-hidden bg-white dark:bg-gray-900`}>
                 <div
-                  className="bg-gradient-to-r from-blue-500 to-purple-600 h-full rounded-full transition-all duration-500"
+                  className="bg-green-600 h-full rounded-full transition-all duration-500"
                   style={{ width: `${progress_percent}%` }}
                 ></div>
               </div>
@@ -423,7 +423,7 @@ const CourseDetail: React.FC = () => {
                 onClick={() => setActiveTab(tab as 'overview' | 'reviews' | 'qa')}
                 className={`px-4 py-4 font-semibold border-b-2 transition-all text-sm ${
                   activeTab === tab
-                    ? "border-blue-600 text-blue-600"
+                    ? "border-green-600 text-green-600"
                     : `border-transparent ${isDark ? 'text-gray-400' : 'text-gray-600'} hover:${isDark ? 'text-gray-300' : 'text-gray-900'}`
                 }`}
               >
@@ -486,7 +486,7 @@ const CourseDetail: React.FC = () => {
                   {course.modules.map((module, idx) => (
                     <div
                       key={module._id || idx}
-                      className={`${isDark ? 'bg-gray-800 border-gray-700 hover:border-blue-600/50' : 'bg-white border-gray-200 hover:border-blue-600'} border rounded-lg overflow-hidden transition-all`}
+                      className={`${isDark ? 'bg-gray-800 border-gray-700 hover:border-green-600/50' : 'bg-white border-gray-200 hover:border-green-600'} border rounded-lg overflow-hidden transition-all`}
                     >
                       <button
                         onClick={() => setExpandedModule(expandedModule === idx ? null : idx)}
@@ -507,7 +507,7 @@ const CourseDetail: React.FC = () => {
                         </div>
                         <ChevronDown
                           size={20}
-                          className={`transition-transform ${expandedModule === idx ? 'rotate-180' : ''} ${isDark ? 'text-gray-500' : 'text-gray-400'}`}
+                            className={`transition-transform ${expandedModule === idx ? 'rotate-180' : ''} ${isDark ? 'text-gray-500' : 'text-gray-400'}`}
                         />
                       </button>
 
@@ -671,7 +671,7 @@ const CourseDetail: React.FC = () => {
               </div>
             ) : (
               <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-12 text-center`}>
-                <p className={isDark ? 'text-gray-400' : 'text-gray-600'}>
+                <p className={isDark ? 'text-slate-400' : 'text-slate-600'}>
                   No reviews yet. Be the first to review this course!
                 </p>
               </div>
@@ -683,9 +683,9 @@ const CourseDetail: React.FC = () => {
         {activeTab === 'qa' && (
           <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-12 text-center`}>
             <MessageSquare className={`mx-auto mb-4 ${isDark ? 'text-gray-600' : 'text-gray-400'}`} size={40} />
-            <p className={`text-lg font-semibold mb-2 ${isDark ? 'text-gray-300' : 'text-gray-900'}`}>
+            <h3 className={`text-lg font-semibold mb-2 ${isDark ? 'text-gray-300' : 'text-gray-900'}`}>
               Discussion Coming Soon
-            </p>
+            </h3>
             <p className={isDark ? 'text-gray-400' : 'text-gray-600'}>
               Be part of the community Q&A section launching soon
             </p>

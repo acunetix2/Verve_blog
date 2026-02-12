@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -26,7 +27,8 @@ import {
   Settings,
   LogOut,
   Inbox,
-  Calendar
+  Calendar,
+  RotateCcw
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTheme } from '@/components/ThemeContext';
@@ -88,13 +90,13 @@ const UserProgressDashboard: React.FC = () => {
   const [editData, setEditData] = useState<Partial<UserProfile>>({});
 
   const fontStyle = {
-    fontFamily: "'Google Sans', 'Segoe UI', sans-serif",
-    fontSize: '0.8125rem',
+    fontFamily: "'Google Product Sans', 'Google Sans', -apple-system, 'Segoe UI', sans-serif",
+    fontSize: '0.75rem',
   };
 
   const smallFontStyle = {
-    fontFamily: "'Google Sans', 'Segoe UI', sans-serif",
-    fontSize: '0.75rem',
+    fontFamily: "'Google Product Sans', 'Google Sans', -apple-system, 'Segoe UI', sans-serif",
+    fontSize: '0.7rem',
   };
 
   useEffect(() => {
@@ -138,54 +140,38 @@ const UserProgressDashboard: React.FC = () => {
           console.log('Wishlist not available');
         }
 
-        // Fetch all courses
-        const coursesRes = await axios.get(
-          `${import.meta.env.VITE_API_BASE_URL}/courses`
+        // Fetch enrolled courses with progress data
+        const enrollRes = await axios.get(
+          `${import.meta.env.VITE_API_BASE_URL}/users/courses/enrolled`,
+          { headers: { Authorization: `Bearer ${token}` } }
         );
-        const allCourses = coursesRes.data || [];
+        const enrolledCoursesList = enrollRes.data?.enrolledCourses || [];
 
-        // Fetch user progress for each course
-        const progressPromises = allCourses.map((course: { _id: string }) =>
-          axios.get(
-            `${import.meta.env.VITE_API_BASE_URL}/courses/${course._id}/progress`,
-            { headers: { Authorization: `Bearer ${token}` } }
-          )
-        );
+        // Build progress data from enrolled courses
+        const data: ProgressData[] = enrolledCoursesList.map((course: any) => {
+          const totalLessons = course.modules?.reduce(
+            (sum: number, m: { lessons?: Array<unknown> }) => sum + (m.lessons?.length || 0),
+            0
+          ) || 0;
+          const completedCount = course.progress?.completedLessons?.length || 0;
+          const progressPercent =
+            totalLessons > 0
+              ? Math.round((completedCount / totalLessons) * 100)
+              : 0;
 
-        const progressResults = await Promise.allSettled(progressPromises);
-
-        // Build progress data
-        const data: ProgressData[] = allCourses
-          .map((course: { _id: string; slug: string; title: string; description: string; modules: Array<{ lessons?: Array<unknown> }>; imageUrl?: string }, idx: number) => {
-            const result = progressResults[idx];
-            if (result.status === 'fulfilled' && result.value.data) {
-              const progress = result.value.data;
-              const totalLessons = course.modules.reduce(
-                (sum: number, m: { lessons?: Array<unknown> }) => sum + (m.lessons?.length || 0),
-                0
-              );
-              const completedCount = progress.completedLessons?.length || 0;
-              const progressPercent =
-                totalLessons > 0
-                  ? Math.round((completedCount / totalLessons) * 100)
-                  : 0;
-
-              return {
-                courseId: course._id,
-                slug: course.slug,
-                courseName: course.title,
-                description: course.description,
-                progress: progressPercent,
-                completedLessons: completedCount,
-                totalLessons,
-                enrolledAt: progress.enrolledAt || new Date().toISOString(),
-                lastAccessed: progress.lastAccessed || new Date().toISOString(),
-                image: course.imageUrl,
-              };
-            }
-            return null;
-          })
-          .filter((item): item is ProgressData => item !== null);
+          return {
+            courseId: course._id,
+            slug: course.slug,
+            courseName: course.title,
+            description: course.description,
+            progress: progressPercent,
+            completedLessons: completedCount,
+            totalLessons,
+            enrolledAt: course.progress?.enrolledAt || new Date().toISOString(),
+            lastAccessed: course.progress?.lastAccessed || new Date().toISOString(),
+            image: course.imageUrl || course.image,
+          };
+        });
 
         setProgressData(data);
       } catch (error) {
@@ -227,7 +213,7 @@ const UserProgressDashboard: React.FC = () => {
     return (
       <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'} flex items-center justify-center`}>
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
           <p className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Loading your dashboard...</p>
         </div>
       </div>
@@ -237,13 +223,13 @@ const UserProgressDashboard: React.FC = () => {
   return (
     <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
       {/* Header */}
-      <div className={`${isDark ? 'bg-gradient-to-br from-gray-900 via-blue-900/20 to-gray-900' : 'bg-gradient-to-br from-blue-50 via-blue-100/50 to-white'} border-b ${isDark ? 'border-gray-800' : 'border-blue-200'} py-12`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex items-start justify-between gap-6">
+      <div className={`${isDark ? 'bg-gradient-to-br from-gray-900 via-green-900/20 to-gray-900' : 'bg-gradient-to-br from-green-50 via-green-100/50 to-white'} border-b ${isDark ? 'border-gray-800' : 'border-green-200'} py-8 sm:py-12 px-4 sm:px-6`}>
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 justify-between">
             {/* Profile Section */}
-            <div className="flex items-start gap-6">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
               {/* Avatar */}
-              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-3xl font-bold overflow-hidden flex-shrink-0">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center text-white text-2xl sm:text-3xl font-bold overflow-hidden flex-shrink-0">
                 {userProfile?.avatar ? (
                   <img src={userProfile.avatar} alt={userProfile.name} className="w-full h-full object-cover" />
                 ) : (
@@ -252,35 +238,35 @@ const UserProgressDashboard: React.FC = () => {
               </div>
 
               {/* Profile Info */}
-              <div>
-                <h1 className={`text-3xl font-bold mb-1 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+              <div className="text-center sm:text-left">
+                <h1 className={`text-xl sm:text-3xl font-bold mb-1 ${isDark ? 'text-white' : 'text-gray-900'}`} style={fontStyle}>
                   Welcome back, {userProfile?.name || userProfile?.email?.split('@')[0] || 'Learner'}!
                 </h1>
-                <p className={`text-lg mb-3 ${isDark ? 'text-gray-400' : 'text-gray-700'}`}>
+                <p className={`text-sm sm:text-base mb-2 ${isDark ? 'text-gray-400' : 'text-gray-700'}`} style={fontStyle}>
                   {userProfile?.bio || 'Keep learning, keep growing'}
                 </p>
                 
                 {/* Social Links */}
                 {(userProfile?.github || userProfile?.linkedin || userProfile?.twitter || userProfile?.website) && (
-                  <div className="flex items-center gap-3 mt-3">
+                  <div className="flex items-center justify-center sm:justify-start gap-2 mt-2">
                     {userProfile?.github && (
-                      <a href={`https://github.com/${userProfile.github}`} target="_blank" rel="noopener noreferrer" className={`p-2 rounded-lg ${isDark ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-100 hover:bg-gray-200'} transition`}>
-                        <Github size={18} className={isDark ? 'text-gray-300' : 'text-gray-600'} />
+                      <a href={`https://github.com/${userProfile.github}`} target="_blank" rel="noopener noreferrer" className={`p-1.5 sm:p-2 rounded-lg ${isDark ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-100 hover:bg-gray-200'} transition`}>
+                        <Github size={16} className={isDark ? 'text-gray-300' : 'text-gray-600'} />
                       </a>
                     )}
                     {userProfile?.linkedin && (
-                      <a href={`https://linkedin.com/in/${userProfile.linkedin}`} target="_blank" rel="noopener noreferrer" className={`p-2 rounded-lg ${isDark ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-100 hover:bg-gray-200'} transition`}>
-                        <Linkedin size={18} className={isDark ? 'text-gray-300' : 'text-gray-600'} />
+                      <a href={`https://linkedin.com/in/${userProfile.linkedin}`} target="_blank" rel="noopener noreferrer" className={`p-1.5 sm:p-2 rounded-lg ${isDark ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-100 hover:bg-gray-200'} transition`}>
+                        <Linkedin size={16} className={isDark ? 'text-gray-300' : 'text-gray-600'} />
                       </a>
                     )}
                     {userProfile?.twitter && (
-                      <a href={`https://twitter.com/${userProfile.twitter}`} target="_blank" rel="noopener noreferrer" className={`p-2 rounded-lg ${isDark ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-100 hover:bg-gray-200'} transition`}>
-                        <Twitter size={18} className={isDark ? 'text-gray-300' : 'text-gray-600'} />
+                      <a href={`https://twitter.com/${userProfile.twitter}`} target="_blank" rel="noopener noreferrer" className={`p-1.5 sm:p-2 rounded-lg ${isDark ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-100 hover:bg-gray-200'} transition`}>
+                        <Twitter size={16} className={isDark ? 'text-gray-300' : 'text-gray-600'} />
                       </a>
                     )}
                     {userProfile?.website && (
-                      <a href={userProfile.website} target="_blank" rel="noopener noreferrer" className={`p-2 rounded-lg ${isDark ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-100 hover:bg-gray-200'} transition`}>
-                        <Globe size={18} className={isDark ? 'text-gray-300' : 'text-gray-600'} />
+                      <a href={userProfile.website} target="_blank" rel="noopener noreferrer" className={`p-1.5 sm:p-2 rounded-lg ${isDark ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-100 hover:bg-gray-200'} transition`}>
+                        <Globe size={16} className={isDark ? 'text-gray-300' : 'text-gray-600'} />
                       </a>
                     )}
                   </div>
@@ -289,18 +275,18 @@ const UserProgressDashboard: React.FC = () => {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-shrink-0">
               <button
                 onClick={() => setIsEditingProfile(!isEditingProfile)}
-                className="p-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition"
+                className="p-1.5 sm:p-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition"
               >
-                <Edit size={20} />
+                <Edit size={16} className="sm:w-5 sm:h-5" />
               </button>
               <button
                 onClick={() => navigate('/settings')}
-                className={`p-2 rounded-lg ${isDark ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-100 hover:bg-gray-200'} transition`}
+                className={`p-1.5 sm:p-2 rounded-lg ${isDark ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-100 hover:bg-gray-200'} transition`}
               >
-                <Settings size={20} />
+                <Settings size={16} className="sm:w-5 sm:h-5" />
               </button>
             </div>
           </div>
@@ -308,18 +294,19 @@ const UserProgressDashboard: React.FC = () => {
       </div>
 
       {/* Tabs */}
-      <div className={`border-b ${isDark ? 'border-gray-800 bg-gray-900/50' : 'border-gray-200 bg-white'}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex gap-8">
+      <div className={`border-b ${isDark ? 'border-gray-800 bg-gray-900/50' : 'border-gray-200 bg-white'} overflow-x-auto`}>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="flex gap-4 sm:gap-8">
             {(['overview', 'profile', 'achievements', 'activity'] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-4 py-4 font-semibold border-b-2 transition-all text-sm ${
+                className={`px-3 sm:px-4 py-3 sm:py-4 font-semibold border-b-2 transition-all text-xs sm:text-sm whitespace-nowrap ${
                   activeTab === tab
-                    ? "border-blue-600 text-blue-600"
+                    ? "border-green-600 text-green-600"
                     : `border-transparent ${isDark ? 'text-gray-400' : 'text-gray-600'} hover:${isDark ? 'text-gray-300' : 'text-gray-900'}`
                 }`}
+                style={fontStyle}
               >
                 {tab === 'overview' && 'Overview'}
                 {tab === 'profile' && 'Profile'}
@@ -332,108 +319,109 @@ const UserProgressDashboard: React.FC = () => {
       </div>
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+      <div className={`min-h-full px-4 sm:px-6 py-6 sm:py-12 ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
+        <div className="max-w-6xl mx-auto">
         {/* OVERVIEW TAB */}
         {activeTab === 'overview' && (
-          <div className="space-y-8">
+          <div className="space-y-6">
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
-              <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-4`}>
-                <div className="flex items-center gap-3 mb-2">
-                  <BookOpen size={18} className="text-blue-600" />
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+              <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-3`}>
+                <div className="flex items-center gap-2 mb-2">
+                  <BookOpen size={16} className="text-green-600" />
                   <p className={`text-xs font-medium ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Courses</p>
                 </div>
-                <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>{stats.totalCourses}</p>
+                <p className={`text-xl sm:text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`} style={fontStyle}>{stats.totalCourses}</p>
               </div>
-              <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-4`}>
-                <div className="flex items-center gap-3 mb-2">
-                  <CheckCircle2 size={18} className="text-green-600" />
+              <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-3`}>
+                <div className="flex items-center gap-2 mb-2">
+                  <CheckCircle2 size={16} className="text-green-600" />
                   <p className={`text-xs font-medium ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Completed</p>
                 </div>
-                <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>{stats.completedCourses}</p>
+                <p className={`text-xl sm:text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`} style={fontStyle}>{stats.completedCourses}</p>
               </div>
-              <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-4`}>
-                <div className="flex items-center gap-3 mb-2">
-                  <Zap size={18} className="text-amber-600" />
+              <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-3`}>
+                <div className="flex items-center gap-2 mb-2">
+                  <Zap size={16} className="text-amber-600" />
                   <p className={`text-xs font-medium ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>In Progress</p>
                 </div>
-                <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>{stats.inProgressCourses}</p>
+                <p className={`text-xl sm:text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`} style={fontStyle}>{stats.inProgressCourses}</p>
               </div>
-              <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-4`}>
-                <div className="flex items-center gap-3 mb-2">
-                  <Flame size={18} className="text-red-600" />
+              <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-3`}>
+                <div className="flex items-center gap-2 mb-2">
+                  <Flame size={16} className="text-red-600" />
                   <p className={`text-xs font-medium ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Lessons</p>
                 </div>
-                <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>{stats.totalLessonsCompleted}</p>
+                <p className={`text-xl sm:text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`} style={fontStyle}>{stats.totalLessonsCompleted}</p>
               </div>
-              <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-4`}>
-                <div className="flex items-center gap-3 mb-2">
-                  <Heart size={18} className="text-red-500" />
+              <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-3`}>
+                <div className="flex items-center gap-2 mb-2">
+                  <Heart size={16} className="text-red-500" />
                   <p className={`text-xs font-medium ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Wishlisted</p>
                 </div>
-                <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>{wishlistCount}</p>
+                <p className={`text-xl sm:text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`} style={fontStyle}>{wishlistCount}</p>
               </div>
-              <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-4`}>
-                <div className="flex items-center gap-3 mb-2">
-                  <TrendingUp size={18} className="text-purple-600" />
+              <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-3`}>
+                <div className="flex items-center gap-2 mb-2">
+                  <TrendingUp size={16} className="text-purple-600" />
                   <p className={`text-xs font-medium ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Avg Progress</p>
                 </div>
-                <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>{stats.avgProgress}%</p>
+                <p className={`text-xl sm:text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`} style={fontStyle}>{stats.avgProgress}%</p>
               </div>
             </div>
 
             {/* Learning Statistics Section - Using Full User Model */}
             <div>
-              <h2 className={`text-xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>Learning Statistics</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-6`}>
-                  <div className="flex items-center gap-3 mb-3">
-                    <Clock size={20} className="text-blue-600" />
-                    <p className={`text-sm font-medium ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Total Learning Time</p>
+              <h2 className={`text-lg sm:text-xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>Learning Statistics</h2>
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-4`}>
+                  <div className="flex items-center gap-2 mb-3">
+                    <Clock size={16} className="text-green-600" />
+                    <p className={`text-xs font-medium ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Learning Time</p>
                   </div>
-                  <p className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                  <p className={`text-lg sm:text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
                     {Math.floor((userProfile?.totalLearningMinutes || 0) / 60)}h {(userProfile?.totalLearningMinutes || 0) % 60}m
                   </p>
-                  <p className={`text-xs mt-2 ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
-                    {userProfile?.totalLearningMinutes || 0} minutes total
+                  <p className={`text-xs mt-2 ${isDark ? 'text-gray-500' : 'text-gray-500'}`} style={smallFontStyle}>
+                    {userProfile?.totalLearningMinutes || 0} mins
                   </p>
                 </div>
 
-                <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-6`}>
-                  <div className="flex items-center gap-3 mb-3">
-                    <Flame size={20} className="text-orange-600" />
-                    <p className={`text-sm font-medium ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Current Streak</p>
+                <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-4`}>
+                  <div className="flex items-center gap-2 mb-3">
+                    <Flame size={16} className="text-orange-600" />
+                    <p className={`text-xs font-medium ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Streak</p>
                   </div>
-                  <p className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                  <p className={`text-lg sm:text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
                     {userProfile?.currentStreak || 0}
                   </p>
-                  <p className={`text-xs mt-2 ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
+                  <p className={`text-xs mt-2 ${isDark ? 'text-gray-500' : 'text-gray-500'}`} style={smallFontStyle}>
                     days in a row
                   </p>
                 </div>
 
-                <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-6`}>
-                  <div className="flex items-center gap-3 mb-3">
-                    <Target size={20} className="text-green-600" />
-                    <p className={`text-sm font-medium ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Max Streak</p>
+                <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-4`}>
+                  <div className="flex items-center gap-2 mb-3">
+                    <Target size={16} className="text-green-600" />
+                    <p className={`text-xs font-medium ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Max Streak</p>
                   </div>
-                  <p className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                  <p className={`text-lg sm:text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
                     {userProfile?.maxStreak || 0}
                   </p>
-                  <p className={`text-xs mt-2 ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
-                    your personal best
+                  <p className={`text-xs mt-2 ${isDark ? 'text-gray-500' : 'text-gray-500'}`} style={smallFontStyle}>
+                    best
                   </p>
                 </div>
 
-                <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-6`}>
-                  <div className="flex items-center gap-3 mb-3">
-                    <Calendar size={20} className="text-purple-600" />
-                    <p className={`text-sm font-medium ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Member Since</p>
+                <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-4`}>
+                  <div className="flex items-center gap-2 mb-3">
+                    <Calendar size={16} className="text-purple-600" />
+                    <p className={`text-xs font-medium ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Since</p>
                   </div>
-                  <p className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                  <p className={`text-lg sm:text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
                     {userProfile?.createdAt ? new Date(userProfile.createdAt).getFullYear() : 'N/A'}
                   </p>
-                  <p className={`text-xs mt-2 ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
+                  <p className={`text-xs mt-2 ${isDark ? 'text-gray-500' : 'text-gray-500'}`} style={smallFontStyle}>
                     {userProfile?.createdAt ? new Date(userProfile.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : ''}
                   </p>
                 </div>
@@ -442,139 +430,187 @@ const UserProgressDashboard: React.FC = () => {
 
             {/* Courses List */}
             <div>
-              <h2 className={`text-xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>Your Courses</h2>
-              {progressData.length === 0 ? (
-                <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-12 text-center`}>
-                  <BookOpen size={48} className={`mx-auto mb-4 opacity-50 ${isDark ? 'text-gray-600' : 'text-gray-400'}`} />
-                  <p className={`mb-4 ${isDark ? 'text-gray-400' : 'text-gray-700'}`}>You haven't enrolled in any courses yet.</p>
-                  <button
-                    onClick={() => navigate('/v/courses')}
-                    className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition"
-                  >
-                    Browse Courses <ArrowRight size={16} />
-                  </button>
+              <h2 className={`text-lg sm:text-xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>Your Courses</h2>
+              {progressData.filter(c => c.progress < 100).length === 0 ? (
+                <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-8 sm:p-12 text-center`}>
+                  <BookOpen size={40} className={`mx-auto mb-4 opacity-50 ${isDark ? 'text-gray-600' : 'text-gray-400'}`} />
+                  <p className={`mb-4 text-sm sm:text-base ${isDark ? 'text-gray-400' : 'text-gray-700'}`}>No courses in progress. {progressData.filter(c => c.progress === 100).length > 0 ? 'Check your completed courses below!' : 'Browse courses to get started.'}</p>
+                  {progressData.filter(c => c.progress === 100).length === 0 && (
+                    <button
+                      onClick={() => navigate('/v/courses')}
+                      className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition text-sm"
+                    >
+                      Browse Courses <ArrowRight size={16} />
+                    </button>
+                  )}
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {progressData.map((course) => (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {progressData.filter(c => c.progress < 100).map((course) => (
                     <div
                       key={course.courseId}
-                      className={`${isDark ? 'bg-gray-800 border-gray-700 hover:border-blue-600/50' : 'bg-white border-gray-200 hover:border-blue-600'} border rounded-lg p-6 transition-all group`}
+                      className={`${isDark ? 'bg-gray-800 border-gray-700 hover:border-green-600/50' : 'bg-white border-gray-200 hover:border-green-600'} border rounded-lg p-4 sm:p-6 transition-all group`}
                     >
                       {course.image && (
-                        <div className="rounded-lg overflow-hidden mb-4 h-32">
+                        <div className="rounded-lg overflow-hidden mb-3 h-24 sm:h-32">
                           <img src={course.image} alt={course.courseName} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
                         </div>
                       )}
-                      <h3 className={`font-bold mb-1 ${isDark ? 'text-white group-hover:text-blue-400' : 'text-gray-900 group-hover:text-blue-600'} transition`}>
+                      <h3 className={`font-bold mb-1 text-xs sm:text-sm ${isDark ? 'text-white group-hover:text-green-400' : 'text-gray-900 group-hover:text-green-600'} transition line-clamp-2`}>
                         {course.courseName}
                       </h3>
-                      <p className={`text-sm mb-3 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                      <p className={`text-xs mb-3 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                         {course.completedLessons} of {course.totalLessons} lessons
                       </p>
                       <div className="space-y-2 mb-4">
                         <div className="flex justify-between text-xs">
                           <span className={isDark ? 'text-gray-400' : 'text-gray-600'}>Progress</span>
-                          <span className={`font-bold ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>{course.progress}%</span>
+                          <span className={`font-bold ${isDark ? 'text-green-400' : 'text-green-600'}`}>{course.progress}%</span>
                         </div>
-                        <div className={`w-full rounded-full h-2 ${isDark ? 'bg-gray-700' : 'bg-gray-200'} overflow-hidden`}>
-                          <div className="bg-gradient-to-r from-blue-500 to-purple-600 h-full transition-all" style={{ width: `${course.progress}%` }}></div>
+                        <div className={`w-full rounded-full h-2 bg-white dark:bg-gray-900 overflow-hidden`}>
+                          <div className="bg-green-600 h-full transition-all" style={{ width: `${course.progress}%` }}></div>
                         </div>
                       </div>
                       <button
                         onClick={() => navigate(`/v/courses/${course.slug || course.courseId}`)}
-                        className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition text-sm flex items-center justify-center gap-2"
+                        className="w-full py-2 px-3 text-xs sm:text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition flex items-center justify-center gap-2"
                       >
-                        {course.progress === 100 ? <CheckCircle2 size={16} /> : <Play size={16} />}
-                        {course.progress === 100 ? 'Review' : 'Continue'}
+                        <Play size={14} />
+                        Continue
                       </button>
                     </div>
                   ))}
                 </div>
               )}
             </div>
+
+            {/* Completed Courses */}
+            {progressData.filter(c => c.progress === 100).length > 0 && (
+              <div>
+                <h2 className={`text-lg sm:text-xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>Completed Courses</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {progressData.filter(c => c.progress === 100).map((course) => (
+                    <div
+                      key={course.courseId}
+                      className={`${isDark ? 'bg-gray-800 border-gray-700 hover:border-green-600/50' : 'bg-white border-gray-200 hover:border-green-600'} border rounded-lg p-4 sm:p-6 transition-all group relative`}
+                    >
+                      <div className="absolute top-2 right-2 bg-green-600 text-white rounded-full p-1">
+                        <CheckCircle2 size={16} />
+                      </div>
+                      {course.image && (
+                        <div className="rounded-lg overflow-hidden mb-3 h-24 sm:h-32">
+                          <img src={course.image} alt={course.courseName} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                        </div>
+                      )}
+                      <h3 className={`font-bold mb-1 text-xs sm:text-sm ${isDark ? 'text-white group-hover:text-green-400' : 'text-gray-900 group-hover:text-green-600'} transition line-clamp-2`}>
+                        {course.courseName}
+                      </h3>
+                      <p className={`text-xs mb-3 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                        {course.completedLessons} of {course.totalLessons} lessons
+                      </p>
+                      <div className="space-y-2 mb-4">
+                        <div className="flex justify-between text-xs">
+                          <span className={isDark ? 'text-gray-400' : 'text-gray-600'}>Complete</span>
+                          <span className={`font-bold ${isDark ? 'text-green-400' : 'text-green-600'}`}>100%</span>
+                        </div>
+                        <div className={`w-full rounded-full h-2 bg-white dark:bg-gray-900 overflow-hidden`}>
+                          <div className="bg-green-600 h-full" style={{ width: '100%' }}></div>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => navigate(`/v/courses/${course.slug || course.courseId}`)}
+                        className="w-full py-2 px-3 text-xs sm:text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition flex items-center justify-center gap-2"
+                      >
+                        <RotateCcw size={14} />
+                        Revisit
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
         {/* PROFILE TAB */}
         {activeTab === 'profile' && (
-          <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-8 max-w-2xl`}>
-            <h2 className={`text-2xl font-bold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>Profile Information</h2>
+          <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-4 sm:p-8 max-w-2xl`}>
+            <h2 className={`text-xl sm:text-2xl font-bold mb-4 sm:mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>Profile Information</h2>
             <div className="space-y-4">
               <div>
-                <label className={`text-sm font-medium block mb-1 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Name</label>
+                <label className={`text-xs sm:text-sm font-medium block mb-1 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Name</label>
                 <input
                   type="text"
                   value={editData.name || ''}
                   onChange={(e) => setEditData({ ...editData, name: e.target.value })}
                   disabled={!isEditingProfile}
-                  className={`w-full px-4 py-2 rounded-lg border transition ${isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'} ${!isEditingProfile && 'opacity-50'}`}
+                  className={`w-full px-3 sm:px-4 py-2 text-sm rounded-lg border transition ${isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'} ${!isEditingProfile && 'opacity-50'}`}
                 />
               </div>
               <div>
-                <label className={`text-sm font-medium block mb-1 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Bio</label>
+                <label className={`text-xs sm:text-sm font-medium block mb-1 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Bio</label>
                 <textarea
                   value={editData.bio || ''}
                   onChange={(e) => setEditData({ ...editData, bio: e.target.value })}
                   disabled={!isEditingProfile}
-                  className={`w-full px-4 py-2 rounded-lg border transition resize-none h-24 ${isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'} ${!isEditingProfile && 'opacity-50'}`}
+                  className={`w-full px-3 sm:px-4 py-2 text-sm rounded-lg border transition resize-none h-20 sm:h-24 ${isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'} ${!isEditingProfile && 'opacity-50'}`}
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
-                  <label className={`text-sm font-medium block mb-1 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Location</label>
+                  <label className={`text-xs sm:text-sm font-medium block mb-1 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Location</label>
                   <input
                     type="text"
                     value={editData.location || ''}
                     onChange={(e) => setEditData({ ...editData, location: e.target.value })}
                     disabled={!isEditingProfile}
-                    className={`w-full px-4 py-2 rounded-lg border transition ${isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'} ${!isEditingProfile && 'opacity-50'}`}
+                    className={`w-full px-3 sm:px-4 py-2 text-sm rounded-lg border transition ${isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'} ${!isEditingProfile && 'opacity-50'}`}
                     placeholder="City, Country"
                   />
                 </div>
                 <div>
-                  <label className={`text-sm font-medium block mb-1 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Website</label>
+                  <label className={`text-xs sm:text-sm font-medium block mb-1 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Website</label>
                   <input
                     type="url"
                     value={editData.website || ''}
                     onChange={(e) => setEditData({ ...editData, website: e.target.value })}
                     disabled={!isEditingProfile}
-                    className={`w-full px-4 py-2 rounded-lg border transition ${isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'} ${!isEditingProfile && 'opacity-50'}`}
+                    className={`w-full px-3 sm:px-4 py-2 text-sm rounded-lg border transition ${isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'} ${!isEditingProfile && 'opacity-50'}`}
                     placeholder="https://..."
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                 <div>
-                  <label className={`text-sm font-medium block mb-1 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>GitHub</label>
+                  <label className={`text-xs sm:text-sm font-medium block mb-1 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>GitHub</label>
                   <input
                     type="text"
                     value={editData.github || ''}
                     onChange={(e) => setEditData({ ...editData, github: e.target.value })}
                     disabled={!isEditingProfile}
-                    className={`w-full px-4 py-2 rounded-lg border transition ${isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'} ${!isEditingProfile && 'opacity-50'}`}
+                    className={`w-full px-3 sm:px-4 py-2 text-sm rounded-lg border transition ${isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'} ${!isEditingProfile && 'opacity-50'}`}
                     placeholder="username"
                   />
                 </div>
                 <div>
-                  <label className={`text-sm font-medium block mb-1 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>LinkedIn</label>
+                  <label className={`text-xs sm:text-sm font-medium block mb-1 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>LinkedIn</label>
                   <input
                     type="text"
                     value={editData.linkedin || ''}
                     onChange={(e) => setEditData({ ...editData, linkedin: e.target.value })}
                     disabled={!isEditingProfile}
-                    className={`w-full px-4 py-2 rounded-lg border transition ${isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'} ${!isEditingProfile && 'opacity-50'}`}
+                    className={`w-full px-3 sm:px-4 py-2 text-sm rounded-lg border transition ${isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'} ${!isEditingProfile && 'opacity-50'}`}
                     placeholder="username"
                   />
                 </div>
                 <div>
-                  <label className={`text-sm font-medium block mb-1 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Twitter</label>
+                  <label className={`text-xs sm:text-sm font-medium block mb-1 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Twitter</label>
                   <input
                     type="text"
                     value={editData.twitter || ''}
                     onChange={(e) => setEditData({ ...editData, twitter: e.target.value })}
                     disabled={!isEditingProfile}
-                    className={`w-full px-4 py-2 rounded-lg border transition ${isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'} ${!isEditingProfile && 'opacity-50'}`}
+                    className={`w-full px-3 sm:px-4 py-2 text-sm rounded-lg border transition ${isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'} ${!isEditingProfile && 'opacity-50'}`}
                     placeholder="@username"
                   />
                 </div>
@@ -587,7 +623,7 @@ const UserProgressDashboard: React.FC = () => {
                       // TODO: Save profile changes
                       toast.success('Profile updated successfully!');
                     }}
-                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition flex-1"
+                    className="px-3 sm:px-4 py-2 text-xs sm:text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition flex-1"
                   >
                     Save Changes
                   </button>
@@ -596,7 +632,7 @@ const UserProgressDashboard: React.FC = () => {
                       setIsEditingProfile(false);
                       setEditData(userProfile || {});
                     }}
-                    className={`px-4 py-2 ${isDark ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'} rounded-lg font-medium transition flex-1`}
+                    className={`px-3 sm:px-4 py-2 text-xs sm:text-sm ${isDark ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'} rounded-lg font-medium transition flex-1`}
                   >
                     Cancel
                   </button>
@@ -609,6 +645,48 @@ const UserProgressDashboard: React.FC = () => {
         {/* ACHIEVEMENTS TAB */}
         {activeTab === 'achievements' && (
           <div className="space-y-6">
+            {/* Achievement Metrics */}
+            <div>
+              <h2 className={`text-2xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>Learning Achievements</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-6`}>
+                  <div className="flex items-center gap-3 mb-3">
+                    <CheckCircle2 size={24} className="text-green-600" />
+                    <p className={`text-sm font-medium ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Courses Completed</p>
+                  </div>
+                  <p className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>{stats.completedCourses}</p>
+                  <p className={`text-xs mt-2 ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>Out of {stats.totalCourses} enrolled</p>
+                </div>
+
+                <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-6`}>
+                  <div className="flex items-center gap-3 mb-3">
+                    <Award size={24} className="text-green-600" />
+                    <p className={`text-sm font-medium ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Certificates Earned</p>
+                  </div>
+                  <p className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>{stats.completedCourses}</p>
+                  <p className={`text-xs mt-2 ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>One per completed course</p>
+                </div>
+
+                <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-6`}>
+                  <div className="flex items-center gap-3 mb-3">
+                    <Clock size={24} className="text-purple-600" />
+                    <p className={`text-sm font-medium ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Learning Hours</p>
+                  </div>
+                  <p className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>{Math.round((userProfile?.totalLearningMinutes || 0) / 60)}</p>
+                  <p className={`text-xs mt-2 ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>{(userProfile?.totalLearningMinutes || 0) % 60} minutes remaining</p>
+                </div>
+
+                <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-6`}>
+                  <div className="flex items-center gap-3 mb-3">
+                    <BookOpen size={24} className="text-orange-600" />
+                    <p className={`text-sm font-medium ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Lessons Completed</p>
+                  </div>
+                  <p className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>{stats.totalLessonsCompleted}</p>
+                  <p className={`text-xs mt-2 ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>Across all courses</p>
+                </div>
+              </div>
+            </div>
+
             {/* Badges */}
             {userProfile?.badges && userProfile.badges.length > 0 && (
               <div>
@@ -651,10 +729,10 @@ const UserProgressDashboard: React.FC = () => {
             )}
 
             {/* No achievements */}
-            {(!userProfile?.badges || userProfile.badges.length === 0) && (!userProfile?.stats || userProfile.stats.postsPublished === 0) && (
+            {(!userProfile?.badges || userProfile.badges.length === 0) && (!userProfile?.stats || userProfile.stats.postsPublished === 0) && stats.completedCourses === 0 && (
               <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-12 text-center`}>
                 <Award size={48} className={`mx-auto mb-4 opacity-50 ${isDark ? 'text-gray-600' : 'text-gray-400'}`} />
-                <p className={isDark ? 'text-gray-400' : 'text-gray-600'}>Complete courses and engage with the community to earn badges!</p>
+                <p className={isDark ? 'text-gray-400' : 'text-gray-600'}>Complete courses and engage with the community to earn badges and certificates!</p>
               </div>
             )}
           </div>
@@ -667,7 +745,7 @@ const UserProgressDashboard: React.FC = () => {
             <div className="space-y-4">
               {progressData.slice(0, 5).map((course, idx) => (
                 <div key={idx} className={`flex items-center gap-4 pb-4 border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
                     {course.progress}%
                   </div>
                   <div className="flex-1 min-w-0">
@@ -687,8 +765,7 @@ const UserProgressDashboard: React.FC = () => {
               )}
             </div>
           </div>
-        )}
-      </div>
+        )}        </div>      </div>
     </div>
   );
 };

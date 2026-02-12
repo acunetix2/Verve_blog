@@ -59,17 +59,9 @@ const CoursesList: React.FC = () => {
   const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
   const [enrolledCourses, setEnrolledCourses] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<"all" | "enrolled">("all");
-  const [showFilters, setShowFilters] = useState(true);
-  const [expandFilters, setExpandFilters] = useState(false);
+
   const [hoveredCourse, setHoveredCourse] = useState<string | null>(null);
   const [wishlistItems, setWishlistItems] = useState<string[]>([]);
-  const [filters, setFilters] = useState<Filters>({
-    difficulty: [],
-    priceRange: [0, 500],
-    rating: 0,
-    category: [],
-    sortBy: "newest"
-  });
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   const fontStyle = {
@@ -142,63 +134,24 @@ const CoursesList: React.FC = () => {
     fetchCourses();
   }, [token]);
 
-  // Advanced filtering and sorting
+  // Search filtering
   useEffect(() => {
     const filterCourses = () => {
       const sourceData = activeTab === "enrolled" ? enrolledCoursesData : courses;
       
       const filtered = sourceData.filter(course => {
-        // Search filter
+        // Search filter only
         if (searchTerm && !course.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
             !course.description.toLowerCase().includes(searchTerm.toLowerCase())) {
           return false;
         }
-
-        // Difficulty filter
-        if (filters.difficulty.length > 0 && !filters.difficulty.includes(course.difficulty || "")) {
-          return false;
-        }
-
-        // Price filter
-        const coursePrice = course.price || 0;
-        if (coursePrice < filters.priceRange[0] || coursePrice > filters.priceRange[1]) {
-          return false;
-        }
-
-        // Rating filter
-        const courseRating = course.rating || 0;
-        if (courseRating < filters.rating) {
-          return false;
-        }
-
-        // Category filter
-        if (filters.category.length > 0 && !filters.category.includes(course.category || "")) {
-          return false;
-        }
-
         return true;
       });
-
-      // Sorting
-      switch (filters.sortBy) {
-        case "popular":
-          filtered.sort((a, b) => (b.students || 0) - (a.students || 0));
-          break;
-        case "rating":
-          filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-          break;
-        case "trending":
-          filtered.sort((a, b) => (b.students || 0) - (a.students || 0));
-          break;
-        case "newest":
-        default:
-          break;
-      }
 
       setFilteredCourses(filtered);
     };
     filterCourses();
-  }, [searchTerm, filters, courses, enrolledCoursesData, activeTab]);
+  }, [searchTerm, courses, enrolledCoursesData, activeTab]);
 
   const handleEnroll = async (courseId: string) => {
     if (!token) {
@@ -261,21 +214,7 @@ const CoursesList: React.FC = () => {
     }
   };
 
-  const updateFilters = (key: keyof Filters, value: string | number | boolean | string[]) => {
-    setFilters(prev => ({
-      ...prev,
-      [key]: value
-    }));
-  };
-
-  const clearFilters = () => {
-    setFilters({
-      difficulty: [],
-      priceRange: [0, 500],
-      rating: 0,
-      category: [],
-      sortBy: "newest"
-    });
+  const clearSearch = () => {
     setSearchInput("");
   };
 
@@ -301,18 +240,18 @@ const CoursesList: React.FC = () => {
 
   // Skeleton Loader
   const SkeletonCard = () => (
-    <div className="bg-gray-800 rounded-2xl overflow-hidden border border-gray-700 animate-pulse">
-      <div className="h-2 bg-gradient-to-r from-gray-700 to-gray-600"></div>
-      <div className="h-40 bg-gray-700"></div>
+    <div className="bg-gray-100 dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 animate-pulse">
+      <div className="h-2 bg-gradient-to-r from-gray-200 dark:from-gray-700 to-gray-100 dark:to-gray-600"></div>
+      <div className="h-40 bg-gray-200 dark:bg-gray-700"></div>
       <div className="p-6 space-y-4">
-        <div className="h-4 bg-gray-700 rounded w-3/4"></div>
-        <div className="h-3 bg-gray-700 rounded w-full"></div>
-        <div className="h-3 bg-gray-700 rounded w-2/3"></div>
-        <div className="grid grid-cols-2 gap-2 py-3 border-t border-gray-700">
-          <div className="h-3 bg-gray-700 rounded"></div>
-          <div className="h-3 bg-gray-700 rounded"></div>
+        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+        <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+        <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
+        <div className="grid grid-cols-2 gap-2 py-3 border-t border-gray-200 dark:border-gray-700">
+          <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+          <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
         </div>
-        <div className="h-10 bg-gray-700 rounded"></div>
+        <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded"></div>
       </div>
     </div>
   );
@@ -330,7 +269,7 @@ const CoursesList: React.FC = () => {
     );
   }
 
-  const hasActiveFilters = filters.difficulty.length > 0 || filters.rating > 0 || filters.category.length > 0;
+
 
   return (
     <div className={`min-h-screen transition-colors`}>
@@ -361,7 +300,7 @@ const CoursesList: React.FC = () => {
               <button
                 onClick={() => setViewMode("list")}
                 className={`p-2 rounded-lg transition-all ${viewMode === "list" 
-                  ? 'bg-blue-600 text-white' 
+                  ? 'bg-green-600 text-white' 
                   : `${isDark ? 'bg-gray-800 text-gray-400' : 'bg-gray-200 text-gray-600'}`}`}
                 title="List view"
               >
@@ -380,7 +319,7 @@ const CoursesList: React.FC = () => {
               placeholder="Search by course name, instructor, or topic..."
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
-              className={`w-full ${isDark ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-500' : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'} border pl-12 pr-4 py-3 rounded-xl focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all`}
+              className={`w-full ${isDark ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-500' : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'} border pl-12 pr-4 py-3 rounded-xl focus:border-green-600 focus:outline-none focus:ring-2 focus:ring-green-500/30 transition-all`}
             />
           </div>
         </div>
@@ -388,7 +327,7 @@ const CoursesList: React.FC = () => {
 
       {/* Tabs */}
       {token && (
-        <div className={`border-b ${isDark ? 'border-gray-800 bg-gray-900/50' : 'border-gray-200 bg-white'}`}>
+          <div className={`border-b ${isDark ? 'border-slate-700 bg-slate-900/50' : 'border-slate-200 bg-slate-50'}`}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <div className="flex gap-8">
               <button
@@ -423,101 +362,14 @@ const CoursesList: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         <div className="flex gap-6">
-          {/* Sidebar Filters */}
-          <div className={`${showFilters ? 'w-80' : 'w-0'} transition-all duration-300 overflow-hidden flex-shrink-0`}>
-            {showFilters && (
-              <div className={`${isDark ? 'bg-gray-800' : 'bg-white'} rounded-xl p-6 border ${isDark ? 'border-gray-700' : 'border-gray-200'} h-fit sticky top-20`}>
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-semibold">Filters</h3>
-                  {hasActiveFilters && (
-                    <button
-                      onClick={clearFilters}
-                      className="text-xs text-blue-600 hover:text-blue-700 font-medium"
-                    >
-                      Clear All
-                    </button>
-                  )}
-                </div>
-
-                {/* Difficulty */}
-                <div className="mb-6">
-                  <h4 className="font-semibold text-sm mb-3">Difficulty</h4>
-                  <div className="space-y-2">
-                    {["beginner", "intermediate", "advanced"].map((level) => (
-                      <label key={level} className="flex items-center gap-3 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={filters.difficulty.includes(level)}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              updateFilters("difficulty", [...filters.difficulty, level]);
-                            } else {
-                              updateFilters("difficulty", filters.difficulty.filter(d => d !== level));
-                            }
-                          }}
-                          className="w-4 h-4 rounded"
-                        />
-                        <span className="text-sm">{level.charAt(0).toUpperCase() + level.slice(1)}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Rating */}
-                <div className="mb-6 pb-6 border-b border-gray-300/20">
-                  <h4 className="font-semibold text-sm mb-3">Minimum Rating</h4>
-                  <div className="flex items-center gap-2">
-                    {[0, 4, 4.5, 5].map((rating) => (
-                      <button
-                        key={rating}
-                        onClick={() => updateFilters("rating", filters.rating === rating ? 0 : rating)}
-                        className={`px-3 py-2 rounded-lg text-sm transition-all ${
-                          filters.rating === rating
-                            ? "bg-blue-600 text-white"
-                            : `${isDark ? 'bg-gray-700' : 'bg-gray-100'} hover:${isDark ? 'bg-gray-600' : 'bg-gray-200'}`
-                        }`}
-                      >
-                        {rating === 0 ? "All" : `${rating}+`}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Sort */}
-                <div>
-                  <h4 className="font-semibold text-sm mb-3">Sort By</h4>
-                  <select
-                    value={filters.sortBy}
-                    onChange={(e) => updateFilters("sortBy", e.target.value as string)}
-                    className={`w-full px-3 py-2 rounded-lg text-sm border ${isDark ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'} outline-none focus:border-blue-600`}
-                  >
-                    <option value="newest">Newest First</option>
-                    <option value="popular">Most Popular</option>
-                    <option value="rating">Highest Rated</option>
-                    <option value="trending">Trending</option>
-                  </select>
-                </div>
-              </div>
-            )}
-          </div>
-
           {/* Main Content */}
           <div className="flex-1">
             {/* Results Header */}
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                  Showing <span className="font-semibold">{filteredCourses.length}</span> of{" "}
-                  <span className="font-semibold">{courses.length}</span> courses
-                </p>
-              </div>
-              <button
-                onClick={() => setShowFilters(!showFilters)}
-                className={`lg:hidden flex items-center gap-2 px-4 py-2 rounded-lg ${isDark ? 'bg-gray-800' : 'bg-gray-100'} text-sm font-medium`}
-              >
-                <Filter size={16} />
-                Filters
-              </button>
+            <div className="mb-6">
+              <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                Showing <span className="font-semibold">{filteredCourses.length}</span> of{" "}
+                <span className="font-semibold">{courses.length}</span> courses
+              </p>
             </div>
 
             {/* Error State */}
@@ -537,14 +389,14 @@ const CoursesList: React.FC = () => {
                 <p className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-sm mb-4`}>
                   {activeTab === "enrolled"
                     ? "You haven't enrolled in any courses yet. Browse all courses to get started!"
-                    : "Try adjusting your filters or search terms."}
+                    : "Try searching with different terms."}
                 </p>
-                {(searchInput || hasActiveFilters) && (
+                {searchInput && (
                   <button
-                    onClick={clearFilters}
+                    onClick={clearSearch}
                     className="text-blue-600 hover:text-blue-700 font-medium text-sm"
                   >
-                    Clear filters
+                    Clear search
                   </button>
                 )}
               </div>
@@ -573,7 +425,7 @@ const CoursesList: React.FC = () => {
                     return (
                       <div
                         key={course._id}
-                        className={`${isDark ? 'bg-gray-800 border-gray-700 hover:border-blue-600/50' : 'bg-white border-gray-200 hover:border-blue-600'} border rounded-xl p-6 hover:shadow-lg transition-all cursor-pointer`}
+                        className={`${isDark ? 'bg-gray-800 border-gray-700 hover:border-green-600/50' : 'bg-white border-gray-200 hover:border-green-600'} border rounded-xl p-6 hover:shadow-lg transition-all cursor-pointer`}
                         onClick={() => navigate(`/v/courses/${course.slug || course._id}`)}
                         onMouseEnter={() => setHoveredCourse(course._id)}
                         onMouseLeave={() => setHoveredCourse(null)}
@@ -676,7 +528,7 @@ const CoursesList: React.FC = () => {
                   return (
                     <div
                       key={course._id}
-                      className={`${isDark ? 'bg-gray-800 border-gray-700 hover:border-blue-600/50' : 'bg-white border-gray-200 hover:border-blue-600'} border rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group h-full flex flex-col cursor-pointer`}
+                      className={`${isDark ? 'bg-gray-800 border-gray-700 hover:border-green-600/50' : 'bg-white border-gray-200 hover:border-green-600'} border rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group h-full flex flex-col cursor-pointer`}
                       onClick={() => navigate(`/v/courses/${course.slug || course._id}`)}
                       onMouseEnter={() => setHoveredCourse(course._id)}
                       onMouseLeave={() => setHoveredCourse(null)}
@@ -773,9 +625,9 @@ const CoursesList: React.FC = () => {
                               <span className="text-xs font-medium">Progress</span>
                               <span className="text-xs font-bold text-blue-600">{calculateProgress(course)}%</span>
                             </div>
-                            <div className={`w-full rounded-full h-2 ${isDark ? 'bg-gray-700' : 'bg-gray-200'} overflow-hidden`}>
+                            <div className={`w-full rounded-full h-2 bg-white dark:bg-gray-900 overflow-hidden`}>
                               <div
-                                className="bg-gradient-to-r from-blue-500 to-purple-600 h-full rounded-full transition-all duration-500"
+                                className="bg-green-600 h-full rounded-full transition-all duration-500"
                                 style={{ width: `${calculateProgress(course)}%` }}
                               ></div>
                             </div>
@@ -793,8 +645,8 @@ const CoursesList: React.FC = () => {
                           }}
                           className={`w-full py-2.5 px-4 rounded-lg font-semibold text-xs transition-all flex items-center justify-center gap-2 group/btn ${
                             isEnrolled
-                              ? `bg-blue-600 hover:bg-blue-700 text-white`
-                              : `${isDark ? 'bg-blue-600/20 text-blue-400 border border-blue-600/30 hover:bg-blue-600/30' : 'bg-blue-600/10 text-blue-700 border border-blue-200 hover:bg-blue-600'} hover:${isDark ? 'text-blue-300' : 'text-white'}`
+                              ? `bg-green-600 hover:bg-green-700 text-white`
+                              : `${isDark ? 'bg-green-600/20 text-green-400 border border-green-600/30 hover:bg-green-600/30' : 'bg-green-600/10 text-green-700 border border-green-200 hover:bg-green-600'} hover:${isDark ? 'text-green-300' : 'text-white'}`
                           }`}
                         >
                           {isEnrolled ? (

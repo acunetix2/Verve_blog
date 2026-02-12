@@ -15,6 +15,7 @@ import '@/lib/axiosConfig'; // Initialize axios interceptors
 
 // Wrapper
 import VerveHubWrapper from "@/components/VerveHubWrapper";
+import AdminWrapper from "@/components/AdminWrapper";
 // Pages
 import LandingPage from "./pages/Landing";
 import Index from "./pages/Index";
@@ -249,7 +250,7 @@ const App = () => (
 
               {/* Protected Admin */}
               <Route element={<ProtectedRoute role="admin" />}>
-                <Route element={<VerveHubWrapper />}>
+                <Route element={<AdminWrapper />}>
                   <Route path="/admin" element={<AdminPage />} />
                   <Route path="/admin/create" element={<CreatePost />} />
                   <Route path="/admin/documents" element={<UploadPage />} />

@@ -4,7 +4,7 @@ import axios from 'axios';
 import {
   User, Mail, Phone, MapPin, Award, Book, Clock, TrendingUp, Heart, Settings,
   LogOut, Edit2, Camera, Check, X, Lock, Shield, Bell, ArrowLeft, Star,
-  Calendar, Zap, Target, BookOpen, Users, Download, Flame
+  Calendar, Zap, Target, BookOpen, Users, Download, Flame, CheckCircle2
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTheme } from '@/components/ThemeContext';
@@ -56,6 +56,10 @@ interface CourseData {
   };
 }
 
+interface ModuleType {
+  lessons?: Array<{ _id?: string; duration?: number }>;
+}
+
 interface BadgeData {
   _id: string;
   name: string;
@@ -86,13 +90,13 @@ const UserProfile: React.FC = () => {
   const [isOwnProfile, setIsOwnProfile] = useState(true);
 
   const fontStyle = {
-    fontFamily: "'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-    fontSize: '0.8125rem',
+    fontFamily: "'Google Product Sans', 'Google Sans', -apple-system, 'Segoe UI', sans-serif",
+    fontSize: '0.75rem',
   };
 
   const smallFontStyle = {
-    fontFamily: "'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-    fontSize: '0.75rem',
+    fontFamily: "'Google Product Sans', 'Google Sans', -apple-system, 'Segoe UI', sans-serif",
+    fontSize: '0.7rem',
   };
 
   const tabs: TabType[] = [
@@ -242,7 +246,7 @@ const UserProfile: React.FC = () => {
       <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'} flex items-center justify-center`}>
         <div className="text-center">
           <div className="animate-spin mb-4">
-            <User size={40} className="text-blue-600 mx-auto" />
+            <User size={40} className="text-green-600 mx-auto" />
           </div>
           <p className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Loading profile...</p>
         </div>
@@ -263,21 +267,21 @@ const UserProfile: React.FC = () => {
   return (
     <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
       {/* Header */}
-      <div className={`${isDark ? 'bg-gradient-to-br from-gray-900 via-blue-900/20 to-gray-900 border-gray-800' : 'bg-gradient-to-br from-blue-50 via-blue-100/50 to-white border-blue-200'} border-b py-8`}>
+      <div className={`${isDark ? 'bg-gradient-to-br from-gray-900 via-green-900/20 to-gray-900 border-gray-800' : 'bg-gradient-to-br from-green-50 via-green-100/50 to-white border-green-200'} border-b py-8`}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <button
             onClick={() => navigate(-1)}
-            className={`flex items-center gap-2 mb-6 transition-colors ${isDark ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-700'}`}
+            className={`flex items-center gap-2 mb-6 transition-colors ${isDark ? 'text-green-400 hover:text-green-300' : 'text-green-600 hover:text-green-700'}`}
           >
             <ArrowLeft size={20} />
             <span style={fontStyle}>Back</span>
           </button>
 
           {/* Profile Header */}
-          <div className="flex flex-col md:flex-row items-start md:items-end gap-6 mb-8">
+          <div className="flex flex-col sm:flex-row items-center sm:items-end gap-4 sm:gap-6">
             {/* Avatar */}
             <div className="relative">
-              <div className="w-32 h-32 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-5xl font-bold overflow-hidden ring-4 ring-white dark:ring-gray-800">
+              <div className="w-24 sm:w-32 h-24 sm:h-32 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center text-white text-3xl sm:text-5xl font-bold overflow-hidden ring-4 ring-white dark:ring-gray-800 flex-shrink-0">
                 {user.avatar ? (
                   <img src={user.avatar} alt={fullName} className="w-full h-full object-cover" />
                 ) : (
@@ -285,15 +289,15 @@ const UserProfile: React.FC = () => {
                 )}
               </div>
               {isOwnProfile && editMode && (
-                <button className="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors">
-                  <Camera size={18} />
+                <button className="absolute bottom-0 right-0 bg-green-600 text-white p-1.5 sm:p-2 rounded-full hover:bg-green-700 transition-colors">
+                  <Camera size={16} />
                 </button>
               )}
             </div>
 
             {/* Info */}
-            <div className="flex-1">
-              <h1 className={`text-4xl font-bold mb-1 ${isDark ? 'text-white' : 'text-black'}`}>
+            <div className="flex-1 text-center sm:text-left w-full">
+              <h1 className={`text-2xl sm:text-4xl font-bold mb-1 ${isDark ? 'text-white' : 'text-black'}`}>
                 {fullName}
               </h1>
               {editMode ? (
@@ -345,24 +349,24 @@ const UserProfile: React.FC = () => {
               )}
 
               {/* Quick Stats */}
-              <div className="flex flex-wrap gap-6">
+              <div className="flex flex-wrap justify-center sm:justify-start gap-4 sm:gap-6">
                 <div className="text-center">
-                  <div className={`text-2xl font-bold ${isDark ? 'text-green-400' : 'text-green-600'}`}>{enrolledCourses.length}</div>
+                  <div className={`text-xl sm:text-2xl font-bold ${isDark ? 'text-green-400' : 'text-green-600'}`}>{enrolledCourses.length}</div>
                   <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`} style={fontStyle}>Enrolled</p>
                 </div>
                 <div className="text-center">
-                  <div className={`text-2xl font-bold ${isDark ? 'text-green-400' : 'text-green-600'}`}>{completedCourses.length}</div>
+                  <div className={`text-xl sm:text-2xl font-bold ${isDark ? 'text-green-400' : 'text-green-600'}`}>{completedCourses.length}</div>
                   <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`} style={fontStyle}>Completed</p>
                 </div>
                 <div className="text-center">
-                  <div className={`text-2xl font-bold ${isDark ? 'text-green-400' : 'text-green-600'}`}>{userBadges.length}</div>
+                  <div className={`text-xl sm:text-2xl font-bold ${isDark ? 'text-green-400' : 'text-green-600'}`}>{userBadges.length}</div>
                   <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`} style={fontStyle}>Badges</p>
                 </div>
                 <div className="text-center flex items-center gap-1">
-                  <Flame size={20} className={isDark ? 'text-green-400' : 'text-green-600'} />
+                  <Flame size={18} className={`${isDark ? 'text-green-400' : 'text-green-600'}`} />
                   <div>
-                    <div className={`text-2xl font-bold ${isDark ? 'text-green-400' : 'text-green-600'}`}>{calculateDayStreak()}</div>
-                    <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`} style={fontStyle}>Day Streak</p>
+                    <div className={`text-xl sm:text-2xl font-bold ${isDark ? 'text-green-400' : 'text-green-600'}`}>{calculateDayStreak()}</div>
+                    <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`} style={fontStyle}>Streak</p>
                   </div>
                 </div>
               </div>
@@ -375,7 +379,7 @@ const UserProfile: React.FC = () => {
                   <>
                     <button
                       onClick={handleSaveProfile}
-                      className={`flex-1 md:flex-none ${isDark ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'} text-white font-semibold py-2 px-6 rounded-lg transition-colors flex items-center justify-center gap-2`}
+                      className={`flex-1 md:flex-none ${isDark ? 'bg-green-600 hover:bg-green-700' : 'bg-green-500 hover:bg-green-600'} text-white font-semibold py-2 px-6 rounded-lg transition-colors flex items-center justify-center gap-2`}
                     >
                       <Check size={18} />
                       Save
@@ -392,7 +396,7 @@ const UserProfile: React.FC = () => {
                   <>
                     <button
                       onClick={() => setEditMode(true)}
-                      className={`flex-1 md:flex-none ${isDark ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'} text-white font-semibold py-2 px-6 rounded-lg transition-colors flex items-center justify-center gap-2`}
+                      className={`flex-1 md:flex-none ${isDark ? 'bg-green-600 hover:bg-green-700' : 'bg-green-500 hover:bg-green-600'} text-white font-semibold py-2 px-6 rounded-lg transition-colors flex items-center justify-center gap-2`}
                     >
                       <Edit2 size={18} />
                       Edit Profile
@@ -409,14 +413,14 @@ const UserProfile: React.FC = () => {
       {/* Tabs */}
       <div className={`border-b ${isDark ? 'border-gray-800 bg-gray-900/50' : 'border-gray-200 bg-white'}`}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="flex gap-8 overflow-x-auto">
+          <div className="flex gap-4 sm:gap-8 overflow-x-auto">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-4 py-4 font-semibold border-b-2 transition-all flex items-center gap-2 text-sm ${
+                className={`px-3 sm:px-4 py-3 sm:py-4 font-semibold border-b-2 transition-all flex items-center gap-1 sm:gap-2 text-xs sm:text-sm whitespace-nowrap ${
                   activeTab === tab.id
-                    ? isDark ? 'border-blue-600 text-blue-400' : 'border-blue-500 text-blue-600'
+                    ? isDark ? 'border-green-600 text-green-400' : 'border-green-500 text-green-600'
                     : `border-transparent ${isDark ? 'text-gray-400 hover:text-gray-300' : 'text-gray-600 hover:text-gray-900'}`
                 }`}
                 style={fontStyle}
@@ -430,15 +434,16 @@ const UserProfile: React.FC = () => {
       </div>
 
       {/* Content */}
-      <div className={`max-w-6xl mx-auto px-4 sm:px-6 py-12 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
+      <div className={`min-h-screen px-4 sm:px-6 py-6 sm:py-12 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
+        <div className="max-w-6xl mx-auto">
         {/* Overview Tab */}
         {activeTab === 'overview' && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
             {/* Left: User Info */}
-            <div className="lg:col-span-2 space-y-6">
+            <div className="md:col-span-2 space-y-4 sm:space-y-6">
               {/* Bio */}
-              <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-6`}>
-                <h3 className={`text-lg font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`} style={fontStyle}>
+              <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-4 sm:p-6`}>
+                <h3 className={`text-base sm:text-lg font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`} style={fontStyle}>
                   About
                 </h3>
                 {editMode ? (
@@ -447,105 +452,105 @@ const UserProfile: React.FC = () => {
                     value={editFormData.bio || ''}
                     onChange={(e) => setEditFormData({ ...editFormData, bio: e.target.value })}
                     rows={4}
-                    className={`w-full px-4 py-2 rounded-lg border ${isDark ? 'bg-gray-700 border-blue-600/50 text-white' : 'bg-gray-50 border-blue-300 text-gray-900'} focus:outline-none focus:ring-2 focus:ring-blue-600`}
+                    className={`w-full px-3 sm:px-4 py-2 text-sm rounded-lg border ${isDark ? 'bg-gray-700 border-blue-600/50 text-white' : 'bg-gray-50 border-blue-300 text-gray-900'} focus:outline-none focus:ring-2 focus:ring-blue-600`}
                   />
                 ) : (
-                  <p className={isDark ? 'text-gray-300' : 'text-gray-700'} style={fontStyle}>
+                  <p className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-700'}`} style={fontStyle}>
                     {user.bio || 'No bio yet. Add one to complete your profile!'}
                   </p>
                 )}
               </div>
 
               {/* Contact Info */}
-              <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-6`}>
-                <h3 className={`text-lg font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`} style={fontStyle}>
+              <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-4 sm:p-6`}>
+                <h3 className={`text-base sm:text-lg font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`} style={fontStyle}>
                   Contact Information
                 </h3>
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
-                    <Mail size={20} className={`${isDark ? 'text-blue-400' : 'text-blue-600'} flex-shrink-0`} />
+                    <Mail size={18} className={`${isDark ? 'text-green-400' : 'text-green-600'} flex-shrink-0`} />
                     {editMode ? (
                       <input
                         type="email"
                         value={editFormData.email || ''}
                         onChange={(e) => setEditFormData({ ...editFormData, email: e.target.value })}
-                        className={`flex-1 px-3 py-2 rounded-lg border ${isDark ? 'bg-gray-700 border-blue-600/50 text-white' : 'bg-gray-50 border-blue-300 text-gray-900'} focus:outline-none focus:ring-2 focus:ring-blue-600`}
+                        className={`flex-1 px-3 py-2 text-sm rounded-lg border ${isDark ? 'bg-gray-700 border-green-600/50 text-white' : 'bg-gray-50 border-green-300 text-gray-900'} focus:outline-none focus:ring-2 focus:ring-green-600`}
                       />
                     ) : (
-                      <span className={isDark ? 'text-gray-300' : 'text-gray-700'} style={fontStyle}>{user.email}</span>
+                      <span className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-700'}`} style={fontStyle}>{user.email}</span>
                     )}
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <Phone size={20} className={`${isDark ? 'text-blue-400' : 'text-blue-600'} flex-shrink-0`} />
+                    <Phone size={18} className={`${isDark ? 'text-green-400' : 'text-green-600'} flex-shrink-0`} />
                     {editMode ? (
                       <input
                         type="tel"
                         value={editFormData.phoneNumber || ''}
                         onChange={(e) => setEditFormData({ ...editFormData, phoneNumber: e.target.value })}
-                        className={`flex-1 px-3 py-2 rounded-lg border ${isDark ? 'bg-gray-700 border-blue-600/50 text-white' : 'bg-gray-50 border-blue-300 text-gray-900'} focus:outline-none focus:ring-2 focus:ring-blue-600`}
+                        className={`flex-1 px-3 py-2 text-sm rounded-lg border ${isDark ? 'bg-gray-700 border-green-600/50 text-white' : 'bg-gray-50 border-green-300 text-gray-900'} focus:outline-none focus:ring-2 focus:ring-green-600`}
                       />
                     ) : (
-                      <span className={isDark ? 'text-gray-300' : 'text-gray-700'} style={fontStyle}>{user.phoneNumber || 'Not provided'}</span>
+                      <span className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-700'}`} style={fontStyle}>{user.phoneNumber || 'Not provided'}</span>
                     )}
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <MapPin size={20} className={`${isDark ? 'text-blue-400' : 'text-blue-600'} flex-shrink-0`} />
+                    <MapPin size={18} className={`${isDark ? 'text-blue-400' : 'text-blue-600'} flex-shrink-0`} />
                     {editMode ? (
                       <input
                         type="text"
                         value={editFormData.location || ''}
                         onChange={(e) => setEditFormData({ ...editFormData, location: e.target.value })}
-                        className={`flex-1 px-3 py-2 rounded-lg border ${isDark ? 'bg-gray-700 border-blue-600/50 text-white' : 'bg-gray-50 border-blue-300 text-gray-900'} focus:outline-none focus:ring-2 focus:ring-blue-600`}
+                        className={`flex-1 px-3 py-2 text-sm rounded-lg border ${isDark ? 'bg-gray-700 border-blue-600/50 text-white' : 'bg-gray-50 border-blue-300 text-gray-900'} focus:outline-none focus:ring-2 focus:ring-blue-600`}
                       />
                     ) : (
-                      <span className={isDark ? 'text-gray-300' : 'text-gray-700'} style={fontStyle}>{user.location || 'Not provided'}</span>
+                      <span className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-700'}`} style={fontStyle}>{user.location || 'Not provided'}</span>
                     )}
                   </div>
                 </div>
               </div>
 
               {/* Learning Stats */}
-              <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-6`}>
-                <h3 className={`text-lg font-bold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`} style={fontStyle}>
+              <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-4 sm:p-6`}>
+                <h3 className={`text-base sm:text-lg font-bold mb-4 sm:mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`} style={fontStyle}>
                   Learning Statistics
                 </h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className={`${isDark ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-200'} border rounded p-4`}>
+                <div className="grid grid-cols-2 sm:grid-cols-2 gap-3">
+                  <div className={`${isDark ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-200'} border rounded p-3 sm:p-4`}>
                     <div className="flex items-center gap-2 mb-2">
-                      <Clock className={isDark ? 'text-blue-400' : 'text-blue-600'} size={18} />
-                      <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`} style={smallFontStyle}>Total Learning</span>
+                      <Clock className={isDark ? 'text-blue-400' : 'text-blue-600'} size={14} />
+                      <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`} style={smallFontStyle}>Learning</span>
                     </div>
-                    <div className={`text-2xl font-bold ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
-                      {Math.floor((user.totalLearningMinutes || calculateTotalLearningTime()) / 60)}h {((user.totalLearningMinutes || calculateTotalLearningTime()) % 60)}m
+                    <div className={`text-lg sm:text-2xl font-bold ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
+                      {Math.floor((user.totalLearningMinutes || calculateTotalLearningTime()) / 60)}h
                     </div>
                   </div>
 
-                  <div className={`${isDark ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-200'} border rounded p-4`}>
+                  <div className={`${isDark ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-200'} border rounded p-3 sm:p-4`}>
                     <div className="flex items-center gap-2 mb-2">
-                      <Flame className={isDark ? 'text-blue-400' : 'text-blue-600'} size={18} />
-                      <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`} style={smallFontStyle}>Current Streak</span>
+                      <Flame className={isDark ? 'text-blue-400' : 'text-blue-600'} size={14} />
+                      <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`} style={smallFontStyle}>Streak</span>
                     </div>
-                    <div className={`text-2xl font-bold ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
-                      {calculateDayStreak()} days
+                    <div className={`text-lg sm:text-2xl font-bold ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
+                      {calculateDayStreak()}
                     </div>
                   </div>
 
-                  <div className={`${isDark ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-200'} border rounded p-4`}>
+                  <div className={`${isDark ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-200'} border rounded p-3 sm:p-4`}>
                     <div className="flex items-center gap-2 mb-2">
-                      <TrendingUp className={isDark ? 'text-blue-400' : 'text-blue-600'} size={18} />
-                      <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`} style={smallFontStyle}>Max Streak</span>
+                      <TrendingUp className={isDark ? 'text-blue-400' : 'text-blue-600'} size={14} />
+                      <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`} style={smallFontStyle}>Max</span>
                     </div>
-                    <div className={`text-2xl font-bold ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
-                      {user.maxStreak || 0} days
+                    <div className={`text-lg sm:text-2xl font-bold ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
+                      {user.maxStreak || 0}
                     </div>
                   </div>
 
-                  <div className={`${isDark ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-200'} border rounded p-4`}>
+                  <div className={`${isDark ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-200'} border rounded p-3 sm:p-4`}>
                     <div className="flex items-center gap-2 mb-2">
-                      <Calendar className={isDark ? 'text-blue-400' : 'text-blue-600'} size={18} />
-                      <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`} style={smallFontStyle}>Member Since</span>
+                      <Calendar className={isDark ? 'text-blue-400' : 'text-blue-600'} size={14} />
+                      <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`} style={smallFontStyle}>Since</span>
                     </div>
                     <div className={`text-sm font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
                       {user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) : 'N/A'}
@@ -556,20 +561,20 @@ const UserProfile: React.FC = () => {
             </div>
 
             {/* Right: Sidebar */}
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {/* Quick Actions */}
               {isOwnProfile && (
-                <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-6`}>
-                  <h3 className={`text-lg font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`} style={fontStyle}>
+                <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-4 sm:p-6`}>
+                  <h3 className={`text-base sm:text-lg font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`} style={fontStyle}>
                     Quick Actions
                   </h3>
                   <div className="space-y-2">
-                    <button className={`w-full p-3 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2 ${isDark ? 'bg-blue-600/20 text-blue-400 hover:bg-blue-600/30' : 'bg-blue-100 text-blue-700 hover:bg-blue-200'}`}>
-                      <Heart size={18} />
+                    <button className={`w-full p-2 sm:p-3 rounded-lg text-xs sm:text-sm font-semibold transition-colors flex items-center justify-center gap-2 ${isDark ? 'bg-green-600/20 text-green-400 hover:bg-green-600/30' : 'bg-green-100 text-green-700 hover:bg-green-200'}`}>
+                      <Heart size={16} />
                       Wishlisted Courses
                     </button>
-                    <button className={`w-full p-3 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2 ${isDark ? 'bg-blue-600/20 text-blue-400 hover:bg-blue-600/30' : 'bg-blue-100 text-blue-700 hover:bg-blue-200'}`}>
-                      <Award size={18} />
+                    <button className={`w-full p-2 sm:p-3 rounded-lg text-xs sm:text-sm font-semibold transition-colors flex items-center justify-center gap-2 ${isDark ? 'bg-green-600/20 text-green-400 hover:bg-green-600/30' : 'bg-green-100 text-green-700 hover:bg-green-200'}`}>
+                      <Award size={16} />
                       My Certificates
                     </button>
                   </div>
@@ -577,24 +582,24 @@ const UserProfile: React.FC = () => {
               )}
 
               {/* Account Status */}
-              <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-6`}>
-                <h3 className={`text-lg font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`} style={fontStyle}>
+              <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-4 sm:p-6`}>
+                <h3 className={`text-base sm:text-lg font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`} style={fontStyle}>
                   Account Status
                 </h3>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`} style={smallFontStyle}>Last Login</span>
-                    <span className={`font-semibold ${isDark ? 'text-gray-300' : 'text-gray-900'}`} style={smallFontStyle}>
+                    <span className={`text-xs sm:text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`} style={smallFontStyle}>Last Login</span>
+                    <span className={`text-xs sm:text-sm font-semibold ${isDark ? 'text-gray-300' : 'text-gray-900'}`} style={smallFontStyle}>
                       {user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : 'N/A'}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`} style={smallFontStyle}>2FA Status</span>
+                    <span className={`text-xs sm:text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`} style={smallFontStyle}>2FA Status</span>
                     <span className="flex items-center gap-1">
                       {user.twoFactorEnabled ? (
                         <>
-                          <Check size={16} className="text-blue-600" />
-                          <span className={`text-sm font-semibold ${isDark ? 'text-blue-400' : 'text-blue-600'}`} style={smallFontStyle}>Enabled</span>
+                          <Check size={14} className="text-blue-600" />
+                          <span className={`text-xs sm:text-sm font-semibold ${isDark ? 'text-blue-400' : 'text-blue-600'}`} style={smallFontStyle}>Enabled</span>
                         </>
                       ) : (
                         <>
@@ -612,41 +617,50 @@ const UserProfile: React.FC = () => {
 
         {/* Courses Tab */}
         {activeTab === 'courses' && (
-          <div className="space-y-8">
+          <div className="space-y-8 sm:space-y-12">
             {/* Enrolled Courses */}
             <div>
-              <h2 className={`text-2xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`} style={fontStyle}>
-                Enrolled Courses
+              <h2 className={`text-xl sm:text-2xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`} style={fontStyle}>
+                Enrolled Courses ({enrolledCourses.filter(c => {
+                  const progress = c.progress?.completedLessons ? Math.round((c.progress.completedLessons.length / ((c.modules?.reduce((sum: number, m: ModuleType) => sum + (m.lessons?.length || 0), 0)) || 1)) * 100) : 0;
+                  return progress < 100;
+                }).length})
               </h2>
-              {enrolledCourses.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {enrolledCourses.map((course) => {
+              {enrolledCourses.filter(c => {
+                const progress = c.progress?.completedLessons ? Math.round((c.progress.completedLessons.length / ((c.modules?.reduce((sum: number, m: ModuleType) => sum + (m.lessons?.length || 0), 0)) || 1)) * 100) : 0;
+                return progress < 100;
+              }).length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {enrolledCourses.filter(c => {
+                    const progress = c.progress?.completedLessons ? Math.round((c.progress.completedLessons.length / ((c.modules?.reduce((sum: number, m: ModuleType) => sum + (m.lessons?.length || 0), 0)) || 1)) * 100) : 0;
+                    return progress < 100;
+                  }).map((course) => {
                     // Calculate progress if available
-                    const progress = course.progress?.completedLessons ? Math.round((course.progress.completedLessons.length / ((course.modules?.reduce((sum: number, m: any) => sum + (m.lessons?.length || 0), 0)) || 1)) * 100) : 0;
+                    const progress = course.progress?.completedLessons ? Math.round((course.progress.completedLessons.length / ((course.modules?.reduce((sum: number, m: ModuleType) => sum + (m.lessons?.length || 0), 0)) || 1)) * 100) : 0;
                     
                     return (
                       <div
                         key={course._id}
                         onClick={() => navigate(`/v/courses/${course._id}`)}
-                        className={`${isDark ? 'bg-gray-800 border-gray-700 hover:border-blue-600/50' : 'bg-white border-gray-200 hover:border-blue-600'} border rounded-lg overflow-hidden hover:shadow-lg transition-all cursor-pointer group`}
+                        className={`${isDark ? 'bg-gray-800 border-gray-700 hover:border-green-600/50' : 'bg-white border-gray-200 hover:border-green-600'} border rounded-lg overflow-hidden hover:shadow-lg transition-all cursor-pointer group`}
                       >
-                        <div className="h-40 bg-gray-300 relative overflow-hidden">
+                        <div className="h-32 sm:h-40 bg-gray-300 relative overflow-hidden">
                           {course.imageUrl || course.image ? (
                             <img src={course.imageUrl || course.image} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
                           ) : (
                             <div className={`w-full h-full flex items-center justify-center ${isDark ? 'bg-gray-700' : 'bg-gray-100'}`}>
-                              <BookOpen size={40} className={isDark ? 'text-gray-600' : 'text-gray-400'} />
+                              <BookOpen size={32} className={isDark ? 'text-gray-600' : 'text-gray-400'} />
                             </div>
                           )}
                         </div>
-                        <div className="p-4 space-y-3">
+                        <div className="p-3 sm:p-4 space-y-2">
                           <div>
-                            <h3 className={`font-bold mb-1 line-clamp-2 ${isDark ? 'text-white group-hover:text-blue-400' : 'text-gray-900 group-hover:text-blue-600'} transition`} style={fontStyle}>
+                            <h3 className={`text-xs sm:text-sm font-bold mb-1 line-clamp-2 ${isDark ? 'text-white group-hover:text-green-400' : 'text-gray-900 group-hover:text-green-600'} transition`} style={fontStyle}>
                               {course.title}
                             </h3>
                             {course.progress?.completedLessons && (
                               <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`} style={smallFontStyle}>
-                                {course.progress.completedLessons.length} of {course.modules?.reduce((sum: number, m: any) => sum + (m.lessons?.length || 0), 0) || 0} lessons
+                                {course.progress.completedLessons.length} of {course.modules?.reduce((sum: number, m: ModuleType) => sum + (m.lessons?.length || 0), 0) || 0} lessons
                               </p>
                             )}
                           </div>
@@ -655,10 +669,10 @@ const UserProfile: React.FC = () => {
                             <div className="space-y-2">
                               <div className="flex justify-between items-center">
                                 <span className={`text-xs font-medium ${isDark ? 'text-gray-400' : 'text-gray-600'}`} style={smallFontStyle}>Progress</span>
-                                <span className={`text-xs font-bold ${isDark ? 'text-blue-400' : 'text-blue-600'}`} style={smallFontStyle}>{progress}%</span>
+                                <span className={`text-xs font-bold ${isDark ? 'text-green-400' : 'text-green-600'}`} style={smallFontStyle}>{progress}%</span>
                               </div>
-                              <div className={`w-full rounded-full h-2 ${isDark ? 'bg-gray-700' : 'bg-gray-200'} overflow-hidden`}>
-                                <div className="bg-gradient-to-r from-blue-500 to-purple-600 h-full transition-all" style={{ width: `${progress}%` }}></div>
+                              <div className={`w-full rounded-full h-2 bg-white dark:bg-gray-900 overflow-hidden`}>
+                                <div className="bg-green-600 h-full transition-all" style={{ width: `${progress}%` }}></div>
                               </div>
                             </div>
                           )}
@@ -684,11 +698,92 @@ const UserProfile: React.FC = () => {
               ) : (
                 <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-12 text-center`}>
                   <p className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`} style={fontStyle}>
-                    No enrolled courses yet. <button onClick={() => navigate('/v/courses')} className={`${isDark ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-700'} hover:underline font-medium`}>Browse courses</button>
+                    No courses in progress. {enrolledCourses.filter(c => {
+                      const progress = c.progress?.completedLessons ? Math.round((c.progress.completedLessons.length / ((c.modules?.reduce((sum: number, m: ModuleType) => sum + (m.lessons?.length || 0), 0)) || 1)) * 100) : 0;
+                      return progress === 100;
+                    }).length > 0 ? 'Check your completed courses below!' : <button onClick={() => navigate('/v/courses')} className={`${isDark ? 'text-green-400 hover:text-green-300' : 'text-green-600 hover:text-green-700'} hover:underline font-medium`}>Browse courses</button>}
                   </p>
                 </div>
               )}
             </div>
+
+            {/* Completed Courses */}
+            {enrolledCourses.filter(c => {
+              const progress = c.progress?.completedLessons ? Math.round((c.progress.completedLessons.length / ((c.modules?.reduce((sum: number, m: ModuleType) => sum + (m.lessons?.length || 0), 0)) || 1)) * 100) : 0;
+              return progress === 100;
+            }).length > 0 && (
+              <div>
+                <h2 className={`text-xl sm:text-2xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`} style={fontStyle}>
+                  Completed Courses ({enrolledCourses.filter(c => {
+                    const progress = c.progress?.completedLessons ? Math.round((c.progress.completedLessons.length / ((c.modules?.reduce((sum: number, m: ModuleType) => sum + (m.lessons?.length || 0), 0)) || 1)) * 100) : 0;
+                    return progress === 100;
+                  }).length})
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {enrolledCourses.filter(c => {
+                    const progress = c.progress?.completedLessons ? Math.round((c.progress.completedLessons.length / ((c.modules?.reduce((sum: number, m: ModuleType) => sum + (m.lessons?.length || 0), 0)) || 1)) * 100) : 0;
+                    return progress === 100;
+                  }).map((course) => {
+                    return (
+                      <div
+                        key={course._id}
+                        onClick={() => navigate(`/v/courses/${course._id}`)}
+                        className={`${isDark ? 'bg-gray-800 border-gray-700 hover:border-green-600/50' : 'bg-white border-gray-200 hover:border-green-600'} border rounded-lg overflow-hidden hover:shadow-lg transition-all cursor-pointer group relative`}
+                      >
+                        <div className="absolute top-2 right-2 bg-green-600 text-white rounded-full p-1 z-10">
+                          <CheckCircle2 size={16} />
+                        </div>
+                        <div className="h-32 sm:h-40 bg-gray-300 relative overflow-hidden">
+                          {course.imageUrl || course.image ? (
+                            <img src={course.imageUrl || course.image} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                          ) : (
+                            <div className={`w-full h-full flex items-center justify-center ${isDark ? 'bg-gray-700' : 'bg-gray-100'}`}>
+                              <BookOpen size={32} className={isDark ? 'text-gray-600' : 'text-gray-400'} />
+                            </div>
+                          )}
+                        </div>
+                        <div className="p-3 sm:p-4 space-y-2">
+                          <div>
+                            <h3 className={`text-xs sm:text-sm font-bold mb-1 line-clamp-2 ${isDark ? 'text-white group-hover:text-green-400' : 'text-gray-900 group-hover:text-green-600'} transition`} style={fontStyle}>
+                              {course.title}
+                            </h3>
+                            {course.progress?.completedLessons && (
+                              <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`} style={smallFontStyle}>
+                                {course.progress.completedLessons.length} of {course.modules?.reduce((sum: number, m: ModuleType) => sum + (m.lessons?.length || 0), 0) || 0} lessons
+                              </p>
+                            )}
+                          </div>
+                          
+                          <div className="space-y-2">
+                            <div className="flex justify-between items-center">
+                              <span className={`text-xs font-medium ${isDark ? 'text-gray-400' : 'text-gray-600'}`} style={smallFontStyle}>Complete</span>
+                              <span className={`text-xs font-bold ${isDark ? 'text-green-400' : 'text-green-600'}`} style={smallFontStyle}>100%</span>
+                            </div>
+                            <div className={`w-full rounded-full h-2 bg-white dark:bg-gray-900 overflow-hidden`}>
+                              <div className="bg-green-600 h-full" style={{ width: '100%' }}></div>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center justify-between pt-2">
+                            <div className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`} style={smallFontStyle}>
+                              {course.difficulty && (
+                                <span className="capitalize">{course.difficulty}</span>
+                              )}
+                            </div>
+                            {course.rating && (
+                              <div className="flex items-center gap-1">
+                                <Star size={14} className="text-yellow-500" fill="currentColor" />
+                                <span className="text-xs font-semibold" style={smallFontStyle}>{course.rating}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
             {/* Completed Courses */}
             {completedCourses.length > 0 && (
@@ -710,7 +805,7 @@ const UserProfile: React.FC = () => {
                             <BookOpen size={40} className={isDark ? 'text-gray-600' : 'text-gray-400'} />
                           </div>
                         )}
-                        <div className="absolute top-2 right-2 bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-full p-2">
+                        <div className="absolute top-2 right-2 bg-gradient-to-br from-green-500 to-green-600 text-white rounded-full p-2">
                           <Check size={20} />
                         </div>
                       </div>
@@ -718,7 +813,7 @@ const UserProfile: React.FC = () => {
                         <h3 className={`font-bold mb-2 line-clamp-2 ${isDark ? 'text-white' : 'text-gray-900'}`} style={fontStyle}>
                           {course.title}
                         </h3>
-                        <div className="w-full rounded-full h-2 bg-gradient-to-r from-blue-500 to-purple-600 mb-2"></div>
+                        <div className="w-full rounded-full h-2 bg-green-600 mb-2"></div>
                         <p className={`text-xs font-semibold ${isDark ? 'text-blue-400' : 'text-blue-600'}`} style={smallFontStyle}>
                           ✓ Completed
                         </p>
@@ -744,7 +839,7 @@ const UserProfile: React.FC = () => {
                     key={badge._id}
                     className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-6 text-center hover:shadow-lg transition-shadow`}
                   >
-                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center mx-auto mb-3 text-2xl">
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center mx-auto mb-3 text-2xl">
                       🏆
                     </div>
                     <h3 className={`font-bold mb-1 ${isDark ? 'text-white' : 'text-gray-900'}`} style={fontStyle}>
@@ -835,8 +930,9 @@ const UserProfile: React.FC = () => {
             </div>
           </div>
         )}
+        </div>
       </div>
     </div>
-);
+  );
 };
 export default UserProfile;

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState, useRef } from "react";
 import {
   Terminal,
@@ -37,6 +38,7 @@ import {
   PieChart as PieChartIcon,
   ChevronUp,
   ChevronDown,
+  Globe,
 } from "lucide-react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -70,6 +72,7 @@ interface Post {
   createdAt?: string;
   category?: string;
   status?: string;
+  views?: number;
 }
 
 interface User {
@@ -111,6 +114,100 @@ interface Document {
   category?: string;
   b2FileId?: string;
   uploadedAt: string;
+}
+
+// Helper function to generate comprehensive resources over time data
+function generateResourcesTimeSeries(
+  posts: Post[],
+  documents: Document[],
+  simulations: Simulation[],
+  courses: any[]
+): Array<{ date: string; posts: number; documents: number; simulations: number; courses: number }> {
+  const last7Days: Array<{ date: string; posts: number; documents: number; simulations: number; courses: number }> = [];
+  const today = new Date();
+  
+  console.log("📊 generateResourcesTimeSeries called with:", {
+    postsCount: posts?.length || 0,
+    docsCount: documents?.length || 0,
+    simsCount: simulations?.length || 0,
+    coursesCount: courses?.length || 0,
+  });
+  
+  for (let i = 6; i >= 0; i--) {
+    const date = new Date(today);
+    date.setDate(date.getDate() - i);
+    const dateString = date.toLocaleDateString();
+    
+    // Count items created on this date - with better error handling
+    const postsOnDate = posts && Array.isArray(posts) ? posts.filter((p) => {
+      try {
+        const pDate = new Date(p.createdAt || "");
+        return !isNaN(pDate.getTime()) && pDate.toLocaleDateString() === dateString;
+      } catch {
+        return false;
+      }
+    }).length : 0;
+    
+    const docsOnDate = documents && Array.isArray(documents) ? documents.filter((d) => {
+      try {
+        const dDate = new Date(d.uploadedAt || "");
+        return !isNaN(dDate.getTime()) && dDate.toLocaleDateString() === dateString;
+      } catch {
+        return false;
+      }
+    }).length : 0;
+    
+    const simsOnDate = simulations && Array.isArray(simulations) ? simulations.filter((s) => {
+      try {
+        const sDate = new Date(s.createdAt || "");
+        return !isNaN(sDate.getTime()) && sDate.toLocaleDateString() === dateString;
+      } catch {
+        return false;
+      }
+    }).length : 0;
+    
+    const coursesOnDate = courses && Array.isArray(courses) ? courses.filter((c) => {
+      try {
+        const cDate = new Date(c.createdAt || "");
+        return !isNaN(cDate.getTime()) && cDate.toLocaleDateString() === dateString;
+      } catch {
+        return false;
+      }
+    }).length : 0;
+    
+    const dayName = date.toLocaleDateString("en-US", { weekday: "short" });
+    
+    last7Days.push({
+      date: dayName,
+      posts: postsOnDate,
+      documents: docsOnDate,
+      simulations: simsOnDate,
+      courses: coursesOnDate,
+    });
+  }
+  
+  console.log("📊 Generated chart data:", last7Days);
+  return last7Days;
+}
+
+// Helper function to generate posts time series data (kept for backward compatibility)
+function generatePostsTimeSeries(posts: Post[]): Array<{ date: string; posts: number }> {
+  const last7Days: Array<{ date: string; posts: number }> = [];
+  const today = new Date();
+  for (let i = 6; i >= 0; i--) {
+    const date = new Date(today);
+    date.setDate(date.getDate() - i);
+    const postsOnDate = posts.filter((p) => {
+      const pDate = new Date(p.createdAt || "");
+      return pDate.toLocaleDateString() === date.toLocaleDateString();
+    });
+    const dayName = date.toLocaleDateString("en-US", { weekday: "short" });
+    last7Days.push({
+      date: dayName,
+      posts: postsOnDate.length,
+    });
+  }
+  return last7Days;
 }
 
 const AdminPage: React.FC = () => {
@@ -174,7 +271,8 @@ const AdminPage: React.FC = () => {
     description: "", 
     image: "",
     imageFile: undefined as File | undefined,
-    modules: [] as Array<{ title: string; description?: string; lessons: Array<{ title: string; content?: string }> }>
+    modules: [] as Array<{ title: string; description?: string; lessons: Array<{ title: string; content?: string }> }>,
+    finalExam: { questions: [], passingScore: 70, isEnabled: false }
   });
   const [editingCourseId, setEditingCourseId] = useState<string | null>(null);
   const [expandedModuleIndex, setExpandedModuleIndex] = useState<number | null>(null);
@@ -476,7 +574,7 @@ const AdminPage: React.FC = () => {
         );
         toast.success("Course created successfully", { icon: <CheckCircle2 className="text-green-500" /> });
       }
-      setCourseForm({ title: "", description: "", image: "", imageFile: undefined, modules: [] });
+      setCourseForm({ title: "", description: "", image: "", imageFile: undefined, modules: [], finalExam: { questions: [], passingScore: 70, isEnabled: false } });
       setEditingCourseId(null);
       setShowCourseModal(false);
       setExpandedModuleIndex(null);
@@ -646,7 +744,7 @@ const AdminPage: React.FC = () => {
       setUsers(res.data || []);
     } catch (error) {
       console.warn("Failed to fetch users, using mock data");
-      setUsers(mockUsers);
+      // Users loaded from API
     }
   };
 
@@ -770,6 +868,7 @@ const AdminPage: React.FC = () => {
       };
       loadAllData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn]);
 
   // Login handler
@@ -1006,25 +1105,25 @@ const AdminPage: React.FC = () => {
   // Loading Screen
   if (loading)
     return (
-      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-blue-900 via-blue-700 to-blue-500 px-4" style={{ fontFamily: "'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
+      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 px-4" style={{ fontFamily: "'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
         <div className="text-center space-y-6">
           <div className="relative w-20 h-20 mx-auto">
-            <div className="absolute inset-0 border-4 border-white rounded-full animate-pulse"></div>
-            <div className="absolute inset-0 border-4 border-blue-200 border-t-transparent rounded-full animate-spin" style={{ animationDuration: "1.5s" }}></div>
-            <div className="absolute inset-2 border-4 border-white border-b-transparent rounded-full animate-spin" style={{ animationDuration: "1s" }}></div>
+            <div className="absolute inset-0 border-4 border-cyan-400 rounded-full animate-pulse"></div>
+            <div className="absolute inset-0 border-4 border-cyan-300 border-t-transparent rounded-full animate-spin" style={{ animationDuration: "1.5s" }}></div>
+            <div className="absolute inset-2 border-4 border-green-400 border-b-transparent rounded-full animate-spin" style={{ animationDuration: "1s" }}></div>
           </div>
           <div className="space-y-2">
             <p className="text-white text-sm font-semibold animate-pulse">
               Initializing Admin Dashboard
             </p>
-            <p className="text-blue-100 text-xs">
+            <p className="text-cyan-300/80 text-xs">
               Please wait a moment...
             </p>
           </div>
           <div className="flex justify-center gap-2">
-            <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
-            <div className="w-2 h-2 bg-blue-200 rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></div>
-            <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></div>
+            <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
+            <div className="w-2 h-2 bg-green-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></div>
+            <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></div>
           </div>
         </div>
       </div>
@@ -1068,16 +1167,16 @@ const AdminPage: React.FC = () => {
 
   // ADMIN DASHBOARD
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-700 to-slate-500" style={{ fontFamily: "'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif", fontSize: "0.875rem" }}>
+    <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900" style={{ fontFamily: "'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif", fontSize: "0.875rem" }}>
       {showLogoutModal && <LogoutModal />}
 
       {/* Password Change Modal */}
       {showPasswordModal && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4">
-          <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl shadow-2xl max-w-md w-full border border-slate-700 animate-scale-in">
+          <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 rounded-2xl shadow-2xl shadow-cyan-500/10 max-w-md w-full border border-slate-700/70 animate-scale-in">
             <div className="p-6 border-b border-slate-700/50">
               <div className="flex items-center gap-3">
-                <Lock className="text-blue-400" size={24} />
+                <Lock className="text-cyan-400" size={24} />
                 <h2 className="text-xl font-bold text-white">Change Password</h2>
               </div>
             </div>
@@ -1112,7 +1211,7 @@ const AdminPage: React.FC = () => {
               </button>
               <button
                 onClick={handleSavePassword}
-                className="flex-1 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white px-4 py-2.5 rounded-lg transition-all font-medium"
+                className="flex-1 bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-700 hover:to-cyan-600 text-white px-4 py-2.5 rounded-lg transition-all font-medium"
               >
                 Save Password
               </button>
@@ -1124,10 +1223,10 @@ const AdminPage: React.FC = () => {
       {/* Sessions Modal */}
       {showSessionsModal && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4">
-          <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl shadow-2xl max-w-md w-full border border-slate-700 animate-scale-in max-h-96 overflow-y-auto">
-            <div className="p-6 border-b border-slate-700/50 sticky top-0 bg-gradient-to-br from-slate-800 to-slate-900">
+          <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 rounded-2xl shadow-2xl shadow-magenta-500/10 max-w-md w-full border border-slate-700/70 animate-scale-in max-h-96 overflow-y-auto">
+            <div className="p-6 border-b border-slate-700/50 sticky top-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
               <div className="flex items-center gap-3">
-                <Cpu className="text-purple-400" size={24} />
+                <Cpu className="text-magenta-400" size={24} />
                 <h2 className="text-xl font-bold text-white">Active Sessions</h2>
               </div>
             </div>
@@ -1180,7 +1279,7 @@ const AdminPage: React.FC = () => {
               <div className="bg-slate-700/30 border border-slate-700/50 rounded-lg p-5">
                 <div className="flex items-center justify-between mb-3">
                   <p className="text-white text-sm font-semibold">Current Status</p>
-                  <span className={`px-3 py-1 rounded-full text-xs font-bold ${twoFAEnabled ? "bg-green-500/20 text-green-400" : "bg-red-500/20 text-red-400"}`}>
+                  <span className={`px-3 py-1 rounded-full text-xs font-bold ${twoFAEnabled ? "bg-green-600/30 text-green-400 border border-green-600/50" : "bg-red-600/30 text-red-400 border border-red-600/50"}`}>
                     {twoFAEnabled ? "✓ Enabled" : "✗ Disabled"}
                   </span>
                 </div>
@@ -1228,7 +1327,7 @@ const AdminPage: React.FC = () => {
                 <p className="text-xs text-slate-400">Last Verified: <span className="text-slate-300">Jan 5, 2025 at 2:45 PM</span></p>
               </div>
             </div>
-            <div className="p-6 border-t border-slate-700/50 flex gap-3 sticky bottom-0 bg-gradient-to-t from-slate-900 to-transparent">
+            <div className="p-6 border-t border-slate-700/50 flex gap-3 sticky bottom-0 bg-gradient-to-t from-slate-950 via-slate-950 to-transparent">
               <button
                 onClick={() => setShow2FAModal(false)}
                 className="flex-1 bg-slate-700/50 hover:bg-slate-700/70 text-white px-4 py-2.5 rounded-lg transition-all font-medium"
@@ -1509,7 +1608,14 @@ const AdminPage: React.FC = () => {
                     );
                     toast.success("Course created successfully", { icon: <CheckCircle2 className="text-green-500" /> });
                   }
-                  setCourseForm({ title: "", description: "", image: "", imageFile: undefined, modules: [] });
+                  setCourseForm({ 
+                    title: "", 
+                    description: "", 
+                    image: "", 
+                    imageFile: undefined, 
+                    modules: [] as Array<{ title: string; description?: string; lessons: Array<{ title: string; content?: string }> }>,
+                    finalExam: { questions: [], passingScore: 70, isEnabled: false } 
+                  });
                   setEditingCourseId(null);
                   setShowCourseModal(false);
                   setExpandedModuleIndex(null);
@@ -1525,7 +1631,14 @@ const AdminPage: React.FC = () => {
               <button
                 onClick={() => {
                   setShowCourseModal(false);
-                  setCourseForm({ title: "", description: "", image: "", imageFile: undefined, modules: [] });
+                  setCourseForm({ 
+                    title: "", 
+                    description: "", 
+                    image: "", 
+                    imageFile: undefined, 
+                    modules: [] as Array<{ title: string; description?: string; lessons: Array<{ title: string; content?: string }> }>,
+                    finalExam: { questions: [], passingScore: 70, isEnabled: false } 
+                  });
                   setEditingCourseId(null);
                   setExpandedModuleIndex(null);
                 }}
@@ -1695,37 +1808,79 @@ const AdminPage: React.FC = () => {
 
 			{/* Analytics Charts */}
 			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-			  {/* Posts Over Time */}
-			  <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-sm border border-slate-700/50 rounded-lg p-6">
+			  {/* Resources Over Time - All Content Types */}
+			  <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 backdrop-blur-sm border border-slate-700/70 rounded-lg p-6 shadow-2xl shadow-blue-500/10">
 				<h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-				  <LineChartIcon size={20} className="text-blue-400" />
-				  Posts Over Time
+				  <LineChartIcon size={20} className="text-cyan-400" />
+				  Resources Over Time
 				</h3>
 				<ResponsiveContainer width="100%" height={300}>
-				  <LineChart data={generatePostsTimeSeries(posts)}>
-					<CartesianGrid strokeDasharray="3 3" stroke="rgba(148, 163, 184, 0.1)" />
-					<XAxis dataKey="date" stroke="rgba(148, 163, 184, 0.6)" />
-					<YAxis stroke="rgba(148, 163, 184, 0.6)" />
-					<Tooltip contentStyle={{ backgroundColor: "rgba(15, 23, 42, 0.9)", border: "1px solid rgba(148, 163, 184, 0.3)" }} />
-					<Legend />
-					<Line type="monotone" dataKey="posts" stroke="#3b82f6" strokeWidth={2} dot={{ fill: "#3b82f6", r: 4 }} />
+				  <LineChart data={generateResourcesTimeSeries(posts, documents, simulations, courses)}>
+					<CartesianGrid strokeDasharray="3 3" stroke="rgba(100, 200, 255, 0.15)" />
+					<XAxis dataKey="date" stroke="rgba(148, 163, 184, 0.8)" />
+					<YAxis stroke="rgba(148, 163, 184, 0.8)" />
+					<Tooltip 
+						contentStyle={{ backgroundColor: "rgba(5, 15, 35, 0.95)", border: "2px solid rgba(100, 200, 255, 0.5)", borderRadius: "8px" }}
+						formatter={(value) => value}
+						labelStyle={{ color: "#06f" }}
+					/>
+					<Legend 
+						wrapperStyle={{ paddingTop: "10px" }}
+						iconType="line"
+					/>
+					<Line 
+						type="monotone" 
+						dataKey="posts" 
+						stroke="#00D7FF" 
+						strokeWidth={2.5} 
+						dot={false}
+						isAnimationActive={true}
+						name="Posts"
+					/>
+					<Line 
+						type="monotone" 
+						dataKey="documents" 
+						stroke="#00D779" 
+						strokeWidth={2.5} 
+						dot={false}
+						isAnimationActive={true}
+						name="Documents"
+					/>
+					<Line 
+						type="monotone" 
+						dataKey="simulations" 
+						stroke="#FFA54F" 
+						strokeWidth={2.5} 
+						dot={false}
+						isAnimationActive={true}
+						name="Simulations"
+					/>
+					<Line 
+						type="monotone" 
+						dataKey="courses" 
+						stroke="#FF33FF" 
+						strokeWidth={2.5} 
+						dot={false}
+						isAnimationActive={true}
+						name="Courses"
+					/>
 				  </LineChart>
 				</ResponsiveContainer>
 			  </div>
 
         {/* Distribution: Posts / Users / Documents / Simulations */}
         <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-sm border border-slate-700/50 rounded-lg p-6">
+        <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 backdrop-blur-sm border border-slate-700/70 rounded-lg p-6 shadow-2xl shadow-green-500/10">
           <h3 className="text-lg font-semibold text-white mb-4">Content Distribution</h3>
           <ResponsiveContainer width="100%" height={300}>
           <PieChart>
             {
             (() => {
               const dist = [
-              { name: 'Posts', value: posts.length, color: '#3b82f6' },
-              { name: 'Users', value: users.length, color: '#10b981' },
-              { name: 'Documents', value: documents.length, color: '#f97316' },
-              { name: 'Simulations', value: simulations.length, color: '#8b5cf6' },
+              { name: 'Posts', value: posts.length, color: '#00D7FF' },
+              { name: 'Users', value: users.length, color: '#00D779' },
+              { name: 'Documents', value: documents.length, color: '#FFA54F' },
+              { name: 'Simulations', value: simulations.length, color: '#FF33FF' },
               ];
               return (
               <>
@@ -1734,7 +1889,7 @@ const AdminPage: React.FC = () => {
                   <Cell key={`cell-${idx}`} fill={entry.color} />
                 ))}
                 </Pie>
-                <Tooltip contentStyle={{ backgroundColor: 'rgba(15,23,42,0.9)', border: '1px solid rgba(148,163,184,0.3)' }} />
+                <Tooltip contentStyle={{ backgroundColor: 'rgba(5,15,35,0.95)', border: '2px solid rgba(0,215,255,0.5)' }} />
               </>
               );
             })()
@@ -1742,26 +1897,26 @@ const AdminPage: React.FC = () => {
           </PieChart>
           </ResponsiveContainer>
         </div>
-        <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-sm border border-slate-700/50 rounded-lg p-6">
+        <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 backdrop-blur-sm border border-slate-700/70 rounded-lg p-6 shadow-2xl shadow-orange-500/10">
           <h3 className="text-lg font-semibold text-white mb-4">Counts Comparison</h3>
           <ResponsiveContainer width="100%" height={300}>
           <BarChart data={[{ name: 'Counts', Posts: posts.length, Users: users.length, Documents: documents.length, Simulations: simulations.length }] }>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.06)" />
-            <XAxis dataKey="name" stroke="rgba(148,163,184,0.6)" />
-            <YAxis stroke="rgba(148,163,184,0.6)" />
-            <Tooltip contentStyle={{ backgroundColor: 'rgba(15,23,42,0.9)', border: '1px solid rgba(148,163,184,0.3)' }} />
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(100, 200, 255, 0.15)" />
+            <XAxis dataKey="name" stroke="rgba(148,163,184,0.8)" />
+            <YAxis stroke="rgba(148,163,184,0.8)" />
+            <Tooltip contentStyle={{ backgroundColor: 'rgba(5,15,35,0.95)', border: '2px solid rgba(0,215,255,0.5)' }} />
             <Legend />
-            <Bar dataKey="Posts" fill="#22c55e"><Cell /></Bar>
-            <Bar dataKey="Users" fill="#3b82f6" /><Bar dataKey="Documents" fill="#eab308" /><Bar dataKey="Simulations" fill="#ef4444" />
+            <Bar dataKey="Posts" fill="#00D7FF"><Cell /></Bar>
+            <Bar dataKey="Users" fill="#00D779" /><Bar dataKey="Documents" fill="#FFA54F" /><Bar dataKey="Simulations" fill="#FF33FF" />
           </BarChart>
           </ResponsiveContainer>
         </div>
         </div>
 
 			  {/* Content Status Distribution */}
-			  <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-sm border border-slate-700/50 rounded-lg p-6">
+			  <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 backdrop-blur-sm border border-slate-700/70 rounded-lg p-6 shadow-2xl shadow-cyan-500/10">
 				<h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-				  <PieChartIcon size={20} className="text-purple-400" />
+				  <PieChartIcon size={20} className="text-cyan-400" />
 				  Content Status
 				</h3>
 				<ResponsiveContainer width="100%" height={300}>
@@ -1779,11 +1934,11 @@ const AdminPage: React.FC = () => {
 					  fill="#8884d8"
 					  dataKey="value"
 					>
-					  <Cell fill="#3b82f6" />
-					  <Cell fill="#6366f1" />
-					  <Cell fill="#f97316" />
+					  <Cell fill="#00D7FF" />
+					  <Cell fill="#00D779" />
+					  <Cell fill="#FFA54F" />
 					</Pie>
-					<Tooltip contentStyle={{ backgroundColor: "rgba(15, 23, 42, 0.9)", border: "1px solid rgba(148, 163, 184, 0.3)" }} />
+					<Tooltip contentStyle={{ backgroundColor: "rgba(5, 15, 35, 0.95)", border: "2px solid rgba(0, 215, 255, 0.5)" }} />
 				  </PieChart>
 				</ResponsiveContainer>
 			  </div>
@@ -2052,13 +2207,7 @@ const AdminPage: React.FC = () => {
 							</td>
 							<td className="px-6 py-4 text-sm text-slate-400">
 							  <div className="flex gap-1 flex-wrap">
-								{doc.categories && Array.isArray(doc.categories) && doc.categories.length > 0 ? (
-								  doc.categories.map((cat) => (
-									<span key={cat} className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded text-xs">
-									  {cat}
-									</span>
-								  ))
-								) : doc.category ? (
+								{doc.category ? (
 								  <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded text-xs">
 									{doc.category}
 									</span>
@@ -2110,7 +2259,14 @@ const AdminPage: React.FC = () => {
 			<div className="flex gap-4 items-center flex-wrap">
 			  <button
 				onClick={() => {
-				  setCourseForm({ title: "", description: "", image: "", imageFile: undefined, modules: [] });
+				  setCourseForm({ 
+                    title: "", 
+                    description: "", 
+                    image: "", 
+                    imageFile: undefined, 
+                    modules: [] as Array<{ title: string; description?: string; lessons: Array<{ title: string; content?: string }> }>,
+                    finalExam: { questions: [], passingScore: 70, isEnabled: false }
+                  });
 				  setEditingCourseId(null);
 				  setExpandedModuleIndex(null);
 				  setShowCourseModal(true);
@@ -2412,6 +2568,7 @@ const AdminPage: React.FC = () => {
 			</form>
 		  </div>
 		)}
+		</div>
               {/* Enhanced Footer */}
 		<footer className="relative border-t bg-slate-800 border-border/50 mt-20 bg-card/30 backdrop-blur-sm">
 		  <div className="container max-w-7xl mx-auto py-12 px-4">
@@ -2511,7 +2668,7 @@ const AdminPage: React.FC = () => {
 			  {/* Footer Bottom */}
 			  <div className="pt-8 border-t border-border/50 flex flex-col sm:flex-row items-center justify-between gap-4">
 				<p className="text-xs text-white">
-				  &copy; {new Date().getFullYear()} Verve Hub WriteUps. All rights reserved.
+				  &copy; {new Date().getFullYear()} Verve Hub Academy. All rights reserved.
 				</p>
 				<div className="flex items-center gap-4">
 				  <a href="#" className="text-xs text-white hover:text-cyan-400 transition-colors">
@@ -2529,93 +2686,7 @@ const AdminPage: React.FC = () => {
 		  </div>
 		</footer>
       </div>
-    </div>
   );
 };
 
 export default AdminPage;
-
-// Helper function to generate posts time series data
-function generatePostsTimeSeries(posts: Post[]) {
-  const last7Days = [];
-  for (let i = 6; i >= 0; i--) {
-    const date = new Date();
-    date.setDate(date.getDate() - i);
-    const dateStr = date.toLocaleDateString('en-US', { weekday: 'short' });
-    const count = posts.filter(p => {
-      const pDate = new Date(p.createdAt || '');
-      return pDate.toLocaleDateString() === date.toLocaleDateString();
-    }).length;
-    last7Days.push({ date: dateStr, posts: count });
-  }
-  return last7Days;
-}
-
-// Mock data for development
-const mockUsers: User[] = [
-  {
-    _id: "1",
-    name: "Admin User",
-    email: "admin@verve.com",
-    role: "admin",
-    joinDate: "2024-06-01",
-    posts: 45,
-    status: "active",
-  },
-  {
-    _id: "2",
-    name: "Jane Contributor",
-    email: "jane@verve.com",
-    role: "user",
-    joinDate: "2024-08-15",
-    posts: 12,
-    status: "active",
-  },
-  {
-    _id: "3",
-    name: "John Writer",
-    email: "john@verve.com",
-    role: "user",
-    joinDate: "2024-09-20",
-    posts: 8,
-    status: "active",
-  },
-];
-
-const mockActivityLogs: ActivityLog[] = [
-  {
-    id: "1",
-    user: "Jane Contributor",
-    action: "Published new article",
-    type: "POST",
-    timestamp: "2025-01-05 14:32",
-  },
-  {
-    id: "2",
-    user: "Admin User",
-    action: "Deleted user account",
-    type: "USER",
-    timestamp: "2025-01-05 10:15",
-  },
-  {
-    id: "3",
-    user: "John Writer",
-    action: "Updated article",
-    type: "POST",
-    timestamp: "2025-01-04 16:45",
-  },
-];
-
-
-
-const chartData = {
-  viewsData: [
-    { date: "Mon", views: 2400 },
-    { date: "Tue", views: 1398 },
-    { date: "Wed", views: 9800 },
-    { date: "Thu", views: 3908 },
-    { date: "Fri", views: 4800 },
-    { date: "Sat", views: 3800 },
-    { date: "Sun", views: 4300 },
-  ],
-};

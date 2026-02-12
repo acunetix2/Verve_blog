@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ChevronLeft, Play, CheckCircle2, Lock, BookOpen, Clock, User } from "lucide-react";
+import { ChevronLeft, Play, CheckCircle2, Lock, BookOpen, Clock, User, ChevronDown } from "lucide-react";
 import axios from "axios";
 import { toast } from "sonner";
 
@@ -8,7 +8,11 @@ interface Lesson {
   _id?: string;
   title: string;
   content: string;
-  quiz?: any[];
+  quiz?: Array<{
+    question: string;
+    options: string[];
+    correctAnswer: string;
+  }>;
   order: number;
 }
 
@@ -42,6 +46,7 @@ const CourseDetailPage: React.FC = () => {
   const [selectedModule, setSelectedModule] = useState(0);
   const [selectedLesson, setSelectedLesson] = useState(0);
   const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
+  const [expandedModules, setExpandedModules] = useState<Set<number>>(new Set([0]));
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -73,7 +78,7 @@ const CourseDetailPage: React.FC = () => {
     };
 
     loadData();
-  }, [courseId, token]);
+  }, [courseId, token, navigate]);
 
   const handleCompleteLesson = async () => {
     if (!token || !course) return;
@@ -115,6 +120,16 @@ const CourseDetailPage: React.FC = () => {
 
   const isLessonCompleted = (lessonId: string) => {
     return userProgress?.completedLessons?.some(l => l.lessonId === lessonId) || false;
+  };
+
+  const toggleModuleExpanded = (idx: number) => {
+    const newExpanded = new Set(expandedModules);
+    if (newExpanded.has(idx)) {
+      newExpanded.delete(idx);
+    } else {
+      newExpanded.add(idx);
+    }
+    setExpandedModules(newExpanded);
   };
 
   if (loading) {
@@ -181,23 +196,28 @@ const CourseDetailPage: React.FC = () => {
                   const moduleCompleted = module.lessons.every(lesson =>
                     isLessonCompleted(lesson._id || "")
                   );
+                  const isExpanded = expandedModules.has(idx);
                   return (
                     <div key={idx} className="space-y-1">
                       <button
                         onClick={() => {
                           setSelectedModule(idx);
                           setSelectedLesson(0);
+                          toggleModuleExpanded(idx);
                         }}
-                        className={`w-full text-left px-4 py-2.5 rounded-lg transition-all font-medium text-sm flex items-center gap-2 ${
+                        className={`w-full text-left px-4 py-2.5 rounded-lg transition-all font-medium text-sm flex items-center justify-between gap-2 ${
                           selectedModule === idx
                             ? "bg-green-600 text-white border border-green-700"
                             : "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
                         }`}
                       >
-                        {moduleCompleted ? <CheckCircle2 className="w-4 h-4 text-green-600 dark:text-green-400" /> : <BookOpen className="w-4 h-4" />}
-                        {module.title}
+                        <div className="flex items-center gap-2">
+                          {moduleCompleted ? <CheckCircle2 className="w-4 h-4" /> : <BookOpen className="w-4 h-4" />}
+                          {module.title}
+                        </div>
+                        <ChevronDown className={`w-4 h-4 transition-transform ${isExpanded ? "rotate-0" : "-rotate-90"}`} />
                       </button>
-                      {selectedModule === idx && (
+                      {isExpanded && (
                         <div className="pl-4 space-y-1">
                           {module.lessons.map((lesson, lessonIdx) => {
                             const completed = isLessonCompleted(lesson._id || "");
@@ -211,7 +231,7 @@ const CourseDetailPage: React.FC = () => {
                                     : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
                                 }`}
                               >
-                                {completed ? <CheckCircle2 className="w-3 h-3 text-green-600 dark:text-green-400" /> : <Play className="w-3 h-3" />}
+                                {completed ? <CheckCircle2 className="w-3 h-3" /> : <Play className="w-3 h-3" />}
                                 <span className="line-clamp-1">{lesson.title}</span>
                               </button>
                             );
