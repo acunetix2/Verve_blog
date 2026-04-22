@@ -48,6 +48,12 @@ import CourseDetail from "@/pages/CourseDetail";
 import LessonView from "@/pages/LessonView";
 import FinalExam from "@/pages/FinalExam";
 import UserProgressDashboard from "@/pages/UserProgressDashboard";
+import THMRoomDetail from "@/components/THMRoomDetail";
+import THMDashboard from "@/components/THMDashboard";
+import THMLayout from "@/components/THMLayout";
+import Leaderboard from "@/pages/Leaderboard";
+import Badges from "@/pages/Badges";
+import Forum from "@/pages/Forum";
 import UserCertificates from "@/pages/UserCertificates";
 import NotificationsPage from "@/pages/NotificationsPage";
 import FloatingActionButton from "@/components/FloatingActionButton";
@@ -245,6 +251,16 @@ const App = () => (
                   <Route path="/exam/:courseId" element={<FinalExam />} />
                   <Route path="/v/my-progress" element={<UserProgressDashboard />} />
                   <Route path="/v/my-certificates" element={<UserCertificates />} />
+                  {/* THM-Style Rooms - With THM Layout and Sidebar */}
+                  <Route element={<THMLayout />}>
+                    <Route path="/dashboard" element={<THMDashboard />} />
+                    <Route path="/rooms" element={<CoursesList />} />
+                    <Route path="/rooms/:roomId" element={<THMRoomDetail />} />
+                    <Route path="/leaderboard" element={<Leaderboard />} />
+                    <Route path="/badges" element={<Badges />} />
+                    <Route path="/forum" element={<Forum />} />
+                    <Route path="/community" element={<Community />} />
+                  </Route>
                 </Route>
               </Route>
 

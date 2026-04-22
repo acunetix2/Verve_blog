@@ -48,7 +48,7 @@ import { Link } from "react-router-dom";
 import AnalyticsCard from "@/components/AnalyticsCard";
 import PostAnalyticsCard from "@/components/PostAnalyticsCard";
 import DashboardAnalytics from "@/components/DashboardAnalytics";
-import AdvancedCourseForm from "@/components/AdvancedCourseForm";
+import THMAdminRoomCreator from "@/components/THMAdminRoomCreator";
 import {
   LineChart,
   Line,
@@ -121,16 +121,16 @@ function generateResourcesTimeSeries(
   posts: Post[],
   documents: Document[],
   simulations: Simulation[],
-  courses: any[]
-): Array<{ date: string; posts: number; documents: number; simulations: number; courses: number }> {
-  const last7Days: Array<{ date: string; posts: number; documents: number; simulations: number; courses: number }> = [];
+  rooms: any[]
+): Array<{ date: string; posts: number; documents: number; simulations: number; rooms: number }> {
+  const last7Days: Array<{ date: string; posts: number; documents: number; simulations: number; rooms: number }> = [];
   const today = new Date();
   
   console.log("📊 generateResourcesTimeSeries called with:", {
     postsCount: posts?.length || 0,
     docsCount: documents?.length || 0,
     simsCount: simulations?.length || 0,
-    coursesCount: courses?.length || 0,
+    roomsCount: rooms?.length || 0,
   });
   
   for (let i = 6; i >= 0; i--) {
@@ -166,10 +166,10 @@ function generateResourcesTimeSeries(
       }
     }).length : 0;
     
-    const coursesOnDate = courses && Array.isArray(courses) ? courses.filter((c) => {
+    const roomsOnDate = rooms && Array.isArray(rooms) ? rooms.filter((r) => {
       try {
-        const cDate = new Date(c.createdAt || "");
-        return !isNaN(cDate.getTime()) && cDate.toLocaleDateString() === dateString;
+        const rDate = new Date(r.createdAt || "");
+        return !isNaN(rDate.getTime()) && rDate.toLocaleDateString() === dateString;
       } catch {
         return false;
       }
@@ -182,7 +182,7 @@ function generateResourcesTimeSeries(
       posts: postsOnDate,
       documents: docsOnDate,
       simulations: simsOnDate,
-      courses: coursesOnDate,
+      rooms: roomsOnDate,
     });
   }
   
@@ -217,7 +217,7 @@ const AdminPage: React.FC = () => {
   const [activityLogs, setActivityLogs] = useState<ActivityLog[]>([]);
   const [simulations, setSimulations] = useState<Simulation[]>([]);
   const [documents, setDocuments] = useState<Document[]>([]);
-  const [courses, setCourses] = useState<any[]>([]);
+  const [rooms, setRooms] = useState<any[]>([]);
   const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
   const [loading, setLoading] = useState<boolean>(true);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -229,7 +229,7 @@ const AdminPage: React.FC = () => {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [showAnalytics, setShowAnalytics] = useState(false);
-  const [activeTab, setActiveTab] = useState<"overview" | "posts" | "users" | "activity" | "simulations" | "documents" | "courses" | "settings">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "posts" | "users" | "activity" | "simulations" | "documents" | "rooms" | "settings">("overview");
   const [filterStatus, setFilterStatus] = useState("all");
 
   // Current user info
@@ -257,7 +257,7 @@ const AdminPage: React.FC = () => {
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [showPerformanceModal, setShowPerformanceModal] = useState(false);
   const [showLogsModal, setShowLogsModal] = useState(false);
-  const [showCourseModal, setShowCourseModal] = useState(false);
+  const [showRoomModal, setShowRoomModal] = useState(false);
   const [systemStatus, setSystemStatus] = useState<any>(null);
   const [performanceData, setPerformanceData] = useState<any>(null);
   const [activeSessions, setActiveSessions] = useState<any[]>([]);
@@ -266,7 +266,7 @@ const AdminPage: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [twoFAEnabled, setTwoFAEnabled] = useState(false);
   const [twoFAMethods, setTwoFAMethods] = useState<string[]>([]);
-  const [courseForm, setCourseForm] = useState({ 
+  const [roomForm, setRoomForm] = useState({ 
     title: "", 
     description: "", 
     image: "",
@@ -274,7 +274,7 @@ const AdminPage: React.FC = () => {
     modules: [] as Array<{ title: string; description?: string; lessons: Array<{ title: string; content?: string }> }>,
     finalExam: { questions: [], passingScore: 70, isEnabled: false }
   });
-  const [editingCourseId, setEditingCourseId] = useState<string | null>(null);
+  const [editingRoomId, setEditingRoomId] = useState<string | null>(null);
   const [expandedModuleIndex, setExpandedModuleIndex] = useState<number | null>(null);
 
   const courseFormRef = useRef<any>(null);
@@ -839,17 +839,17 @@ const AdminPage: React.FC = () => {
     }
   };
 
-  // Fetch courses
-  const fetchCourses = async () => {
+  // Fetch rooms
+  const fetchRooms = async () => {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/courses`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setCourses(res.data || []);
+      setRooms(res.data || []);
     } catch (error) {
-      console.warn("Failed to fetch courses");
-      setCourses([]);
+      console.warn("Failed to fetch rooms");
+      setRooms([]);
     }
   };
 
@@ -861,7 +861,7 @@ const AdminPage: React.FC = () => {
           fetchUsers(),
           fetchSimulations(),
           fetchDocuments(),
-          fetchCourses(),
+          fetchRooms(),
         ]);
         // Call activity logs after all other data is fetched
         await fetchActivityLogs();
@@ -1700,7 +1700,7 @@ const AdminPage: React.FC = () => {
 			  { id: "overview", label: "Overview", icon: BarChart3 },
 			  { id: "posts", label: "Posts", icon: FileText },
 			  { id: "users", label: "Users", icon: Users },
-			  { id: "courses", label: "Courses", icon: Zap },
+			  { id: "rooms", label: "Rooms", icon: Zap },
 			  { id: "simulations", label: "Sims", icon: Zap },
 			  { id: "documents", label: "Docs", icon: Database },
 			  { id: "activity", label: "Activity", icon: Activity },
@@ -1815,7 +1815,7 @@ const AdminPage: React.FC = () => {
 				  Resources Over Time
 				</h3>
 				<ResponsiveContainer width="100%" height={300}>
-				  <LineChart data={generateResourcesTimeSeries(posts, documents, simulations, courses)}>
+				  <LineChart data={generateResourcesTimeSeries(posts, documents, simulations, rooms)}>
 					<CartesianGrid strokeDasharray="3 3" stroke="rgba(100, 200, 255, 0.15)" />
 					<XAxis dataKey="date" stroke="rgba(148, 163, 184, 0.8)" />
 					<YAxis stroke="rgba(148, 163, 184, 0.8)" />
@@ -1857,12 +1857,12 @@ const AdminPage: React.FC = () => {
 					/>
 					<Line 
 						type="monotone" 
-						dataKey="courses" 
+						dataKey="rooms" 
 						stroke="#FF33FF" 
 						strokeWidth={2.5} 
 						dot={false}
 						isAnimationActive={true}
-						name="Courses"
+						name="Rooms"
 					/>
 				  </LineChart>
 				</ResponsiveContainer>
@@ -2253,109 +2253,9 @@ const AdminPage: React.FC = () => {
 		  </div>
 		)}
 
-		{/* Courses Tab */}
-		{activeTab === "courses" && (
-		  <div className="space-y-6">
-			<div className="flex gap-4 items-center flex-wrap">
-			  <button
-				onClick={() => {
-				  setCourseForm({ 
-                    title: "", 
-                    description: "", 
-                    image: "", 
-                    imageFile: undefined, 
-                    modules: [] as Array<{ title: string; description?: string; lessons: Array<{ title: string; content?: string }> }>,
-                    finalExam: { questions: [], passingScore: 70, isEnabled: false }
-                  });
-				  setEditingCourseId(null);
-				  setExpandedModuleIndex(null);
-				  setShowCourseModal(true);
-				}}
-				className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-2.5 rounded-lg transition-all font-medium text-sm"
-			  >
-				<Plus size={18} />
-				Add New Course
-			  </button>
-			  <div className="relative flex-1 min-w-[250px]">
-				<Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
-				<input
-				  type="text"
-				  placeholder="Search courses..."
-				  value={searchTerm}
-				  onChange={(e) => setSearchTerm(e.target.value)}
-				  className="w-full bg-slate-800/50 border border-slate-700/50 text-white placeholder-slate-500 pl-10 pr-4 py-2.5 rounded-lg focus:border-blue-500/50 focus:outline-none focus:ring-1 focus:ring-blue-500/30 transition-all"
-				/>
-			  </div>
-			</div>
-
-			{/* Courses Grid */}
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-			  {courses.length === 0 ? (
-				<div className="col-span-full text-center py-12 text-slate-400">
-				  <Zap size={48} className="mx-auto mb-4 opacity-50" />
-				  <p>No courses found. Create your first course to get started!</p>
-				</div>
-			  ) : (
-				courses
-				  .filter(course => 
-					(course.title || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
-					(course.description || "").toLowerCase().includes(searchTerm.toLowerCase())
-				  )
-				  .map((course) => (
-					<div
-					  key={course._id}
-					  className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-sm border border-slate-700/50 rounded-lg overflow-hidden hover:border-slate-600/50 transition-all hover:shadow-lg hover:shadow-blue-500/10 flex flex-col"
-					>
-					  {(course.image || course.imageUrl) && (
-						<div className="w-full h-40 bg-slate-700/50 overflow-hidden">
-						  <img
-							src={course.image || course.imageUrl}
-							alt={course.title}
-							className="w-full h-full object-cover"
-							onError={(e) => {
-							  const imgElement = e.target as HTMLImageElement;
-							  imgElement.style.display = 'none';
-							}}
-						  />
-						</div>
-					  )}
-					  <div className="p-6 flex-1 flex flex-col">
-						<h3 className="text-lg font-semibold text-white mb-2 line-clamp-2">{course.title}</h3>
-						<p className="text-sm text-slate-400 mb-4 line-clamp-3">{course.description}</p>
-						<div className="flex gap-2 mb-4">
-						  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-500/20 text-blue-300 border border-blue-500/30">
-							{course.modules?.length || 0} Modules
-						  </span>
-						  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-500/20 text-purple-300 border border-purple-500/30">
-							{(course.modules || []).reduce((sum, m) => sum + (m.lessons?.length || 0), 0)} Lessons
-						  </span>
-						</div>
-						<div className="flex gap-2 mt-auto">
-						  <button
-							onClick={() => handleEditCourse(course)}
-							className="flex-1 bg-slate-700/50 hover:bg-blue-600/40 text-white px-3 py-2 rounded-lg transition-all text-sm font-medium border border-slate-600/50 hover:border-blue-500/50 flex items-center justify-center gap-2"
-						  >
-							<Edit size={16} />
-							Edit
-						  </button>
-						  <button
-							onClick={() => {
-							  if (window.confirm("Delete this course?")) {
-								handleDeleteCourse(course._id);
-							  }
-							}}
-							className="flex-1 bg-slate-700/50 hover:bg-red-600/40 text-white px-3 py-2 rounded-lg transition-all text-sm font-medium border border-slate-600/50 hover:border-red-500/50 flex items-center justify-center gap-2"
-						  >
-							<Trash2 size={16} />
-							Delete
-						  </button>
-						</div>
-					  </div>
-					</div>
-				  ))
-			  )}
-			</div>
-		  </div>
+		{/* Rooms Tab */}
+		{activeTab === "rooms" && (
+		  <THMAdminRoomCreator />
 		)}
 
 		{/* Activity Tab */}

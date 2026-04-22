@@ -14,9 +14,28 @@ export default {
     },
     extend: {
       fontFamily: {
+        'sans': ['Product Sans', 'Roboto', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
         'mono': ['"JetBrains Mono"', 'monospace'],
-        'display': ['"Space Grotesk"', 'sans-serif'],
-        'body': ['"Space Grotesk"', 'sans-serif'],
+        'display': ['"Product Sans"', 'sans-serif'],
+        'body': ['"Product Sans"', 'sans-serif'],
+      },
+      fontSize: {
+        'xs': ['11px', { lineHeight: '1.4', letterSpacing: '0px' }],
+        'sm': ['12px', { lineHeight: '1.5', letterSpacing: '0.2px' }],
+        'base': ['14px', { lineHeight: '1.6', letterSpacing: '0.2px' }],
+        'lg': ['16px', { lineHeight: '1.6', letterSpacing: '0.3px' }],
+        'xl': ['18px', { lineHeight: '1.7', letterSpacing: '0.3px' }],
+        '2xl': ['20px', { lineHeight: '1.7', letterSpacing: '0.4px' }],
+        '3xl': ['24px', { lineHeight: '1.8', letterSpacing: '0.4px' }],
+        '4xl': ['28px', { lineHeight: '1.8', letterSpacing: '0.5px' }],
+      },
+      spacing: {
+        'xs': '4px',
+        'sm': '8px',
+        'md': '12px',
+        'lg': '16px',
+        'xl': '24px',
+        '2xl': '32px',
       },
       colors: {
         border: "hsl(var(--border))",

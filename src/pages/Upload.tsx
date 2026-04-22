@@ -86,69 +86,96 @@ const UploadPage: React.FC = () => {
 
   return (
     <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Sohne:wght@400;500;600;700&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Charter:wght@400;700&display=swap');
-        
-        * { font-family: sohne, "Helvetica Neue", Helvetica, Arial, sans-serif; }
-      `}</style>
-
       <div className="min-h-screen bg-gray-950 text-gray-100 flex flex-col">
-        {/* Top Navigation Bar */}
-       
         {/* Upload Form */}
-        <div className="flex-1 flex items-center justify-center p-6">
-          <div className="max-w-lg w-full bg-gray-900 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-red-600/30 relative overflow-hidden">
+        <div className="flex-1 flex items-center justify-center p-4 sm:p-6 pt-24">
+          <div className="max-w-2xl w-full bg-gray-900 backdrop-blur-md rounded-xl shadow-2xl p-6 sm:p-8 border border-red-600/30 relative overflow-hidden">
             {/* Ambient glow effect */}
             <div className="absolute inset-0 bg-gradient-to-br from-red-600/5 via-transparent to-orange-600/5 pointer-events-none"></div>
 
             <div className="relative z-10">
               <div className="flex items-center gap-3 mb-8">
-                <div className="p-3 bg-red-600/20 rounded-xl border border-red-600/30">
-                  <Upload className="w-6 h-6 text-orange-500" />
+                <div className="p-3 bg-red-600/20 rounded-xl border border-red-600/30 flex-shrink-0">
+                  <Upload className="w-5 h-5 text-orange-500" />
                 </div>
-                <h2 className="text-2xl font-bold text-white">Upload Learning Material</h2>
+                <div>
+                  <h2 className="text-2xl font-bold text-white font-sans">Upload Learning Material</h2>
+                  <p className="text-sm text-gray-400 mt-1">Share knowledge with the community</p>
+                </div>
               </div>
 
               <form onSubmit={handleUpload} className="space-y-6">
+                {/* Title Input */}
                 <div>
-                  <label className="block text-sm font-medium mb-2 text-gray-300">Title</label>
+                  <label className="block text-sm font-medium mb-2 text-gray-300 font-sans">Title</label>
                   <input
                     type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-gray-800 border border-red-600/30 
-                               text-gray-100 placeholder-gray-500
+                    className="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-red-600/30 
+                               text-gray-100 placeholder-gray-500 text-sm font-sans
                                focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 
                                outline-none transition-all duration-200"
                     placeholder="Enter material title"
+                    required
                   />
                 </div>
 
+                {/* Description Input */}
                 <div>
-                  <label className="block text-sm font-medium mb-2 text-gray-300">Description</label>
+                  <label className="block text-sm font-medium mb-2 text-gray-300 font-sans">Description</label>
                   <textarea
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     rows={3}
-                    className="w-full px-4 py-3 rounded-xl bg-gray-800 border border-red-600/30 
-                               text-gray-100 placeholder-gray-500
+                    className="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-red-600/30 
+                               text-gray-100 placeholder-gray-500 text-sm font-sans
                                focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 
                                outline-none transition-all duration-200 resize-none"
                     placeholder="Short description (optional)"
                   ></textarea>
                 </div>
 
-                {/* ✅ Multi-select Categories */}
+                {/* File Upload */}
                 <div>
-                  <label className="block text-sm font-medium mb-3 text-gray-300">
-                    Technology Categories (Select one or more)
+                  <label className="block text-sm font-medium mb-2 text-gray-300 font-sans">Select File</label>
+                  <div className="relative">
+                    <input
+                      type="file"
+                      onChange={handleFileChange}
+                      className="hidden"
+                      id="file-input"
+                      required
+                    />
+                    <label
+                      htmlFor="file-input"
+                      className="flex items-center justify-center w-full px-4 py-3 rounded-lg border-2 border-dashed border-red-600/40 
+                                 bg-gray-800/50 hover:bg-gray-800 cursor-pointer transition-all duration-200"
+                    >
+                      <div className="text-center">
+                        <Upload className="w-5 h-5 mx-auto mb-2 text-gray-400" />
+                        <p className="text-sm text-gray-300 font-sans">
+                          {file ? file.name : 'Click to upload or drag and drop'}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1">PDF, DOC, or other document formats</p>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Multi-select Categories */}
+                <div>
+                  <label className="block text-sm font-medium mb-3 text-gray-300 font-sans">
+                    Technology Categories 
+                    <span className="text-gray-500 font-normal">(select one or more)</span>
                   </label>
-                  <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto bg-gray-900/50 p-3 rounded-lg border border-red-600/20">
+                  
+                  {/* Category Grid */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-56 overflow-y-auto bg-gray-800/50 p-4 rounded-lg border border-red-600/20 mb-3">
                     {TECH_CATEGORIES.map((cat) => (
                       <label
                         key={cat}
-                        className="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-red-600/10 transition-all"
+                        className="flex items-center gap-2 p-2 rounded-lg cursor-pointer hover:bg-red-600/10 transition-all"
                       >
                         <input
                           type="checkbox"
@@ -156,22 +183,24 @@ const UploadPage: React.FC = () => {
                           onChange={() => handleCategoryToggle(cat)}
                           className="w-4 h-4 rounded accent-orange-500 cursor-pointer"
                         />
-                        <span className="text-sm text-gray-300">{cat}</span>
+                        <span className="text-sm text-gray-300 font-sans truncate">{cat}</span>
                       </label>
                     ))}
                   </div>
+
+                  {/* Selected Categories Display */}
                   {selectedCategories.length > 0 && (
-                    <div className="mt-3 flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-2">
                       {selectedCategories.map((cat) => (
                         <div
                           key={cat}
-                          className="inline-flex items-center gap-2 px-3 py-1 bg-orange-600/30 border border-orange-600/50 rounded-full text-xs text-orange-300"
+                          className="inline-flex items-center gap-2 px-3 py-1.5 bg-orange-600/30 border border-orange-600/50 rounded-full text-xs text-orange-300 font-sans"
                         >
-                          {cat}
+                          <span>{cat}</span>
                           <button
                             type="button"
                             onClick={() => handleCategoryToggle(cat)}
-                            className="ml-1 hover:text-orange-200"
+                            className="hover:text-orange-200 transition-colors"
                           >
                             <X className="w-3 h-3" />
                           </button>
@@ -181,34 +210,9 @@ const UploadPage: React.FC = () => {
                   )}
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium mb-2 text-gray-300">Select File</label>
-                  <div className="relative">
-                    <input
-                      type="file"
-                      onChange={handleFileChange}
-                      className="w-full text-sm text-gray-400 
-                                 file:mr-4 file:py-2.5 file:px-5
-                                 file:rounded-lg file:border-0 
-                                 file:text-sm file:font-semibold 
-                                 file:bg-red-600/20 file:text-orange-500 
-                                 file:border file:border-red-600/30
-                                 hover:file:bg-red-600/40 
-                                 file:transition-all file:duration-200
-                                 file:cursor-pointer cursor-pointer"
-                    />
-                  </div>
-                  {file && (
-                    <p className="mt-2 text-xs text-gray-400 flex items-center gap-1">
-                      <CheckCircle2 className="w-3 h-3 text-orange-500" />
-                      Selected: {file.name}
-                    </p>
-                  )}
-                </div>
-
                 {/* Status messages */}
                 {uploading && (
-                  <div className="flex items-center gap-2 text-orange-500 bg-orange-600/20 px-4 py-3 rounded-lg border border-orange-600/30">
+                  <div className="flex items-center gap-2 text-orange-500 bg-orange-600/20 px-4 py-3 rounded-lg border border-orange-600/30 font-sans">
                     <Loader2 className="animate-spin w-4 h-4" /> 
                     <span className="text-sm font-medium">Uploading your document...</span>
                   </div>
@@ -216,7 +220,7 @@ const UploadPage: React.FC = () => {
 
                 {message.text && !uploading && (
                   <div
-                    className={`flex items-center gap-2 px-4 py-3 rounded-lg border ${
+                    className={`flex items-center gap-2 px-4 py-3 rounded-lg border font-sans text-sm ${
                       message.type === "success"
                         ? "text-green-400 bg-green-600/20 border-green-600/30"
                         : message.type === "error"
@@ -224,8 +228,8 @@ const UploadPage: React.FC = () => {
                         : "text-gray-400 bg-gray-700/20 border-gray-700/30"
                     }`}
                   >
-                    {message.type === "success" && <CheckCircle2 className="w-4 h-4" />}
-                    <span className="text-sm font-medium">{message.text}</span>
+                    {message.type === "success" && <CheckCircle2 className="w-4 h-4 flex-shrink-0" />}
+                    <span className="font-medium">{message.text}</span>
                   </div>
                 )}
 
@@ -236,12 +240,31 @@ const UploadPage: React.FC = () => {
                              hover:from-red-700 hover:to-orange-700
                              disabled:from-gray-700 disabled:to-gray-700
                              disabled:cursor-not-allowed disabled:opacity-50
-                             text-white font-semibold py-3 px-6 rounded-xl 
-                             transition-all duration-200 
+                             text-white font-medium py-2.5 px-6 rounded-lg 
+                             transition-all duration-200 font-sans text-sm
                              shadow-lg shadow-red-600/30 hover:shadow-red-600/50
                              transform hover:scale-[1.02] active:scale-[0.98]"
                 >
-                  {uploading ? "Uploading..." : "Upload Material"}
+                  {uploading ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Uploading...
+                    </span>
+                  ) : (
+                    'Upload Material'
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => navigate(-1)}
+                  className="w-full bg-gray-800 hover:bg-gray-700 
+                             text-gray-300 hover:text-white
+                             font-medium py-2.5 px-6 rounded-lg 
+                             transition-all duration-200 font-sans text-sm
+                             border border-gray-700/50 hover:border-gray-600/50"
+                >
+                  Cancel
                 </button>
               </form>
             </div>
